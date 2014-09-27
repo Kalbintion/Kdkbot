@@ -1,5 +1,6 @@
 package kdkbot;
 
+import java.lang.reflect.Array;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -23,7 +24,9 @@ public class Kdkbot extends PircBot {
 		BOT.setName(botCfg.getSetting("nick"));
 		BOT.setVerbose(Boolean.parseBoolean(botCfg.getSetting("verbose")));
 		BOT.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
-			
+		System.out.println("IMPORTANT DEBUG:" + kdkbot.commands.channel.Update.class.getDeclaredMethod("executeCommand", String[].class));
+		System.out.println("IMPORTANT DEBUG:" + kdkbot.Kdkbot.class.getDeclaredMethod("onMessage", String.class, String.class, String.class, String.class, String.class));
+		
 		// Get channels
 		String[] cfgChannels = botCfg.getSetting("channels").split(",");
 		
@@ -31,8 +34,12 @@ public class Kdkbot extends PircBot {
 		for(int i = 0; i < cfgChannels.length; i++) {
 			CHANS.add(new Channel(BOT, cfgChannels[i]));
 		}
+		
 	}
 	
+	/**
+	 * Event handler for messages received
+	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
     	// Temp Section
     	if(channel.equalsIgnoreCase("#kalbintion")) {

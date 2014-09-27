@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.jibble.pircbot.*;
-
+/**
+ * @deprecated Use kdkbot.Kdkbot
+ */
 public class Kdkbot extends PircBot {
 	private String version = "0.1.0.17";
 	

@@ -5,6 +5,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import kdkbot.filemanager.Config;
 
@@ -17,9 +19,30 @@ public class Commands {
 
 	}
 
+	/**
+	 * Loads the commands for this particular commands instance from a given channel
+	 * @param channel
+	 */
 	public void loadCommandsFromFile(String channel) throws Exception {
+		// Setup the config for this particular channel
 		Config cfg = new Config(FileSystems.getDefault().getPath("./cfg/channels/" + channel + ".cmd"));
-		cfg.loadConfigContents();
+		List<String> contents = cfg.getConfigContents();
+		
+		// Init the command params
+		String lineContents;	// Holds the current line
+		String[] lineArgs;		// Holds the split up line contents
+		String commandTrigger;
+		CommandPermissionLevel commandPermissionLevel;
+		Method method_target;
+		
+		// Parse the string list
+		Iterator<String> iter = contents.iterator();
+		while(iter.hasNext()) {
+			lineContents = iter.next();
+			lineArgs = lineContents.split("|");
+			commandTrigger = lineArgs[1];
+			commandPermissionLevel = new CommandPermissionLevel(Integer.parseInt(lineArgs[0]));
+		}
 	}
 	
 	public void commandHandler(String channel, String sender, String login, String hostname, String message) {

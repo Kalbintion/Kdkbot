@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 import sun.security.ssl.Debug;
 
-
+/**
+ * @deprecated Replaced by kdkbot.commands.Commands;
+ */
 public class KdkbotCommands {
 	// To be used in a <String CommandName, String CommandText> setup
 	private HashMap<String, String> commands;

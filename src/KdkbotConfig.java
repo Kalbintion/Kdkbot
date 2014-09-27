@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+/**
+ * @deprecated Replaced by kdkbot.filemanager.Config;
+ */
 public class KdkbotConfig {
 	private File file;
 	private FileInputStream fileInStream;

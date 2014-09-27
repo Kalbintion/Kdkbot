@@ -1,4 +1,9 @@
 
+/**
+ * @deprecated Replaced by kdkbot.channel.Channel;
+ * @author KDK
+ *
+ */
 public class KdkbotChannel {
 	private java.util.Date uptime;
 	private java.util.Date curtime;

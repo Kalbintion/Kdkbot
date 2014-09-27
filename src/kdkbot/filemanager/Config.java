@@ -5,11 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Config {
 	private Path filePath;
@@ -76,5 +79,11 @@ public class Config {
 		fis.close();
 		isr.close();
 		br.close();
+	}
+	
+	public List<String> getConfigContents() throws Exception {
+		List<String> lines = Files.readAllLines(this.filePath.toAbsolutePath(), StandardCharsets.US_ASCII);
+
+		return lines;
 	}
 }

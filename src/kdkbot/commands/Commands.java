@@ -38,8 +38,8 @@ public class Commands {
 		// Parse the string list
 		Iterator<String> iter = contents.iterator();
 		while(iter.hasNext()) {
-			lineContents = iter.next();
-			lineArgs = lineContents.split("|");
+			lineContents = iter.next();			// Grab the next line in the list
+			lineArgs = lineContents.split("|");	// Grab the individual information, per ./help/Command_Config_Setup.txt
 			commandTrigger = lineArgs[1];
 			commandPermissionLevel = new CommandPermissionLevel(Integer.parseInt(lineArgs[0]));
 		}
@@ -67,5 +67,12 @@ public class Commands {
 	
 	public int getCommandCount() {
 		return commands.size();
+	}
+	
+	/**
+	 * Gives some basic commands to this particular command group, in the event none exist.
+	 */
+	public void initializeBasicCommands() {
+		
 	}
 }

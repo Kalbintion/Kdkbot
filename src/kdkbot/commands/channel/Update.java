@@ -28,7 +28,6 @@ public class Update implements Command {
 				hurl.setRequestMethod("PUT");
 				hurl.setRequestProperty("Accept", "application/vnd.twitchtv.v2+json");
 				hurl.setRequestProperty("Authorization", "OAuth " + args[0]);
-				
 			} catch(ProtocolException e) {
 				e.printStackTrace();				
 			} catch(SecurityException e) {
@@ -41,13 +40,11 @@ public class Update implements Command {
 
 	@Override
 	public void setTrigger(String trigger) {
-		// TODO Auto-generated method stub
-		
+		this.trigger = trigger;
 	}
 
 	@Override
 	public String getTrigger() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.trigger;
 	}
 }

@@ -7,13 +7,19 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.regex.*;
+import kdkbot.commands.*;
+import kdkbot.commands.quotes.*;
+import kdkbot.commands.channel.*;
+import kdkbot.commands.counters.*;
 import kdkbot.filemanager.Config;
 
 public class Commands {
 	public HashMap<Command, Method> commands;
 	public Path permissionPath;
 	public Path commandListPath;
+	
+	private static Pattern commandConfig = Pattern.compile("(?<Class>([A-Za-z.]*\\.?)*?)\\.(?<Method>(.*?))\\((?<Params>.*)*?\\)");
 	
 	public Commands() {
 
@@ -42,6 +48,14 @@ public class Commands {
 			lineArgs = lineContents.split("|");	// Grab the individual information, per ./help/Command_Config_Setup.txt
 			commandTrigger = lineArgs[1];
 			commandPermissionLevel = new CommandPermissionLevel(Integer.parseInt(lineArgs[0]));
+			Matcher matcher = commandConfig.matcher(lineArgs[2]);
+			if(matcher.matches()) {
+				String tClass = matcher.group("Class");
+				String tMethod = matcher.group("Method");
+				String[] tParams = matcher.group("Params").split(",");
+			} else {
+				throw new IllegalArgumentException();
+			}
 		}
 	}
 	
@@ -73,6 +87,13 @@ public class Commands {
 	 * Gives some basic commands to this particular command group, in the event none exist.
 	 */
 	public void initializeBasicCommands() {
+		try {
+			commands.put(new Update(), Update.class.getDeclaredMethod("executeCommand", String[].class));
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
 		
 	}
 }

@@ -120,6 +120,6 @@ public class Commands {
 	}
 	
 	public void saveSenderRanks() {
-		
+		cfg.saveSettings();
 	}
 }

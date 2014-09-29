@@ -60,9 +60,21 @@ public class Config {
 		this.saveSettings();
 	}
 	
+	/**
+	 * Saves this instances configuration file
+	 */
 	public void saveSettings() {
+		saveSettings(this.values);
+	}
+	
+	/**
+	 * Saves this instances configuration file with a provided HashMap of values to save to.
+	 * Stores them in the file path provided by this configs instance.
+	 * @param hash the HashMap containing the key value pairs to save.
+	 */
+	public void saveSettings(HashMap<String, String> hash) {
 		try {
-			Iterator hashMapIter = values.entrySet().iterator();
+			Iterator hashMapIter = hash.entrySet().iterator();
 			
 			BufferedWriter write = new BufferedWriter(
 					new OutputStreamWriter(
@@ -75,11 +87,15 @@ public class Config {
 			}
 			
 			write.close();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Verifies the existence of the file at a given path, if it does not exist, it will
+	 * automatically create it.
+	 */
 	public void verifyExists() throws Exception {
 		if(!Files.exists(this.filePath)) {
 			System.out.println("DBG: Doesn't exist: " + this.filePath.toString());
@@ -93,6 +109,10 @@ public class Config {
 		}
 	}
 	
+	/**
+	 * Loads the configuration contents at the instances given file path location into
+	 * the instances provided values variable.
+	 */
 	public void loadConfigContents() throws Exception {
 		FileInputStream fis = new FileInputStream(this.filePath.toAbsolutePath().toString());
 		InputStreamReader isr = new InputStreamReader(fis);
@@ -111,6 +131,10 @@ public class Config {
 		br.close();
 	}
 	
+	/**
+	 * Gets the configuration contents, in a list, where each list item contains an unmodified key value pair.
+	 * @return A list containing the key value pairs.
+	 */
 	public List<String> getConfigContents() throws Exception {
 		List<String> lines = Files.readAllLines(this.filePath.toAbsolutePath(), StandardCharsets.US_ASCII);
 

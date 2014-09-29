@@ -39,7 +39,6 @@ public class Kdkbot extends PircBot {
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
     	// Temp Section
-    	/*
     	if(channel.equalsIgnoreCase("#kalbintion")) {
 	    	if(message.equalsIgnoreCase("!mumble")) {
 	    		BOT.sendMessage(channel, "Mumble IP: mumble.thespawn.net Port: 6667");
@@ -64,7 +63,18 @@ public class Kdkbot extends PircBot {
     	} else if (message.equalsIgnoreCase("!mumble get")) {
     		BOT.sendMessage(channel, "You can download mumble @ http://wiki.mumble.info/wiki/Main_Page");
     	}
-    	*/
+    	if(sender.equalsIgnoreCase("kalbintion")) {
+    		if(message.equalsIgnoreCase("|leavechan")) {
+    			BOT.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
+    			BOT.partChannel(channel, "By order of the king!");
+    		} else if(message.startsWith("|joinchan ")) {
+    			String channelToJoin = message.substring("|joinchan ".length());
+    			BOT.sendMessage(channel, "Joining channel" + channelToJoin);
+    			Channel channelToAdd = new Channel(this, channelToJoin);
+    			CHANS.add(channelToAdd);
+    			BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
+    		}
+    	}
     	// Send info off to correct channel
     	Iterator<Channel> iter = CHANS.iterator();
     	while(iter.hasNext()) {

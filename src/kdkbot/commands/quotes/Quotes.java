@@ -15,7 +15,25 @@ public class Quotes implements Command {
 	@Override
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
 		String[] args = message.split(" ");
-		
+		switch(args[1]) {
+			case "get":
+				try {
+					int quoteID = Integer.parseInt(args[2]);
+					String quote = quotes.get(quoteID - 1);
+					instance.sendMessage(channel, "Quote #" + quoteID + ": " + quote);
+				} catch(NumberFormatException e) {
+					this.instance.sendMessage(channel, "That is not a number, therefore I cannot find the quote.");
+				} catch(IndexOutOfBoundsException e) {
+					this.instance.sendMessage(channel, "The requested quote cannot be found.");
+				}
+				
+				instance.sendMessage(channel, "Quote #" + quotes.get(Integer.parseInt(args[2])));
+			case "add":
+				quotes.add(message.substring("quote add ".length()));
+				instance.sendMessage(channel, "Quote #" + quotes.size() + " added.");
+			case "save":
+				
+		}
 	}
 
 	@Override

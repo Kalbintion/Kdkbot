@@ -17,71 +17,67 @@ import kdkbot.commands.counters.*;
 import kdkbot.filemanager.Config;
 
 public class Commands {
-	public HashMap<Command, Method> commands;
+	public Kdkbot instance;
 	public Path permissionPath;
 	public Path commandListPath;
 	public String commandPrefix = "";
-	public Kdkbot instance;
 	
 	public Update channelUpdater = new Update();
 	public Quotes quotes = new Quotes();
+	public Config cfg;
 	
-	private static Pattern commandConfig = Pattern.compile("(?<Class>([A-Za-z.]*\\.?)*?)\\.(?<Method>(.*?))\\((?<Params>.*)*?\\)");
+	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
-	public Commands(Kdkbot instance) {
+	public Commands(Kdkbot instance, String channel) {
 		this.instance = instance;
-	}
-
-	/**
-	 * Loads the commands for this particular commands instance from a given channel
-	 * @param channel
-	 */
-	public void loadCommandsFromFile(String channel) throws Exception {
-		// Setup the config for this particular channel
-		Config cfg = new Config(FileSystems.getDefault().getPath("./cfg/channels/" + channel + ".cmd"));
-		List<String> contents = cfg.getConfigContents();
-		
-		// Init the command params
-		String lineContents;	// Holds the current line
-		String[] lineArgs;		// Holds the split up line contents
-		String commandTrigger;
-		CommandPermissionLevel commandPermissionLevel;
-		Method method_target;
-		
-		// Parse the string list
-		Iterator<String> iter = contents.iterator();
-		while(iter.hasNext()) {
-			lineContents = iter.next();			// Grab the next line in the list
-			lineArgs = lineContents.split("|");	// Grab the individual information, per ./help/Command_Config_Setup.txt
-			commandTrigger = lineArgs[1];
-			commandPermissionLevel = new CommandPermissionLevel(Integer.parseInt(lineArgs[0]));
-			Matcher matcher = commandConfig.matcher(lineArgs[2]);
-			if(matcher.matches()) {
-				String tClass = matcher.group("Class");
-				String tMethod = matcher.group("Method");
-				String[] tParams = matcher.group("Params").split(",");
-				Class clsTarget = Class.forName(tClass);
-				Method method = clsTarget.newInstance().getClass().getDeclaredMethod(tMethod, String.class, String.class, String.class, String.class, String.class);
-			} else {
-				throw new IllegalArgumentException();
+		try {
+			cfg = new Config("./cfg/perms/" + channel + ".cfg");
+			List<String> cfgContents = cfg.getConfigContents();
+			Iterator<String> iter = cfgContents.iterator();
+			while(iter.hasNext()) {
+				String cfgArgs[] = iter.next().split("=");
+				try {
+					senderRanks.put(cfgArgs[1], Integer.parseInt(cfgArgs[2]));
+				} catch(NumberFormatException e) {
+					e.printStackTrace();
+				}
 			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
 	public void commandHandler(String channel, String sender, String login, String hostname, String message) {
 		if(message.startsWith(commandPrefix)) {
-			String coreCommand = message.split(" ")[0].substring(commandPrefix.length()); // Snag the core command from the message
+			String args[] = message.split(" ");
+			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
 			
 			// Channel
-			if(channelUpdater.isAvailable() && channelUpdater.getTrigger().equalsIgnoreCase(coreCommand)) {
+			if(getSenderRank(sender) >= channelUpdater.getPermissionLevel() &&
+					channelUpdater.isAvailable() &&
+					channelUpdater.getTrigger().equalsIgnoreCase(coreCommand)) {
 				String[] additionalParams = {instance.botCfg.getSetting("oauth")};
 				channelUpdater.executeCommand(channel, sender, login, hostname, message, additionalParams);
 			}
+			// Permission Ranks
+			else if (getSenderRank(sender) >= 3 &&
+						coreCommand.equalsIgnoreCase("perm")) {
+				switch(args[1]) {
+					case "set":
+						this.setSenderRank(args[2], Integer.parseInt(args[3]));
+						instance.sendMessage(channel, "Set " + args[2] + " to level " + args[3] + "permission.");
+						break;
+					case "get":
+						instance.sendMessage(channel, "The user " + args[2] + " is set to " + this.getSenderRank(args[2]));
+						break;
+				}
+			}
 			// Quotes
-			else if (quotes.isAvailable() && quotes.getTrigger().equalsIgnoreCase(coreCommand)) {
+			else if (getSenderRank(sender) >= quotes.getPermissionLevel() &&
+						quotes.isAvailable() &&
+						quotes.getTrigger().equalsIgnoreCase(coreCommand)) {
 				quotes.executeCommand(channel, sender, login, hostname, message, new String[0]);
 			}
-			
 		}
 	}
 	
@@ -101,21 +97,19 @@ public class Commands {
 		return this.commandListPath;
 	}
 	
-	public int getCommandCount() {
-		return commands.size();
+	public int getSenderRank(String sender) {
+		return this.senderRanks.get(sender);
 	}
 	
-	/**
-	 * Gives some basic commands to this particular command group, in the event none exist.
-	 */
-	public void initializeBasicCommands() {
-		try {
-			commands.put(new Update(), Update.class.getDeclaredMethod("executeCommand", String[].class));
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
+	public void setSenderRank(String target, int rank) {
+		senderRanks.put(target, rank);
+	}
+	
+	public void loadSenderRanks() {
+		
+	}
+	
+	public void saveSenderRanks() {
 		
 	}
 }

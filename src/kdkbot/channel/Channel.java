@@ -20,7 +20,8 @@ public class Channel {
 	public Channel(Kdkbot instance, String channel) {
 		this.KDKBOT = instance;
 		this.channel = channel;
-		this.commands = new Commands(instance);
+		this.commands = new Commands(instance, channel);
+		this.commands.loadSenderRanks();
 		this.joinChannel();
 	}
 	
@@ -48,7 +49,4 @@ public class Channel {
 		this.KDKBOT.kick(this.channel, nick, reason);
 	}
 
-	public void loadCommands() throws Exception {
-		this.commands.loadCommandsFromFile(this.channel);
-	}
 }

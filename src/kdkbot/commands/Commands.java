@@ -98,7 +98,8 @@ public class Commands {
 	}
 	
 	public int getSenderRank(String sender) {
-		return this.senderRanks.get(sender);
+		// return this.senderRanks.get(sender);
+		return 0;
 	}
 	
 	public void setSenderRank(String target, int rank) {
@@ -106,7 +107,16 @@ public class Commands {
 	}
 	
 	public void loadSenderRanks() {
-		
+		try {
+			List<String> strings = cfg.getConfigContents();
+			Iterator<String> string = strings.iterator();
+			while(string.hasNext()) {
+				String[] args = string.next().split("=");
+				this.senderRanks.put(args[0], Integer.parseInt(args[1]));
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void saveSenderRanks() {

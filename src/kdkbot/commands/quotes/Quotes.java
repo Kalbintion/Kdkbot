@@ -2,13 +2,14 @@ package kdkbot.commands.quotes;
 
 import kdkbot.Kdkbot;
 import kdkbot.commands.*;
+
 import java.util.ArrayList;
 
 public class Quotes implements Command {
 	private String trigger = "quote";
 	private Kdkbot instance;
 	private boolean isAvailable;
-	private CommandPermissionLevel cpl;
+	private CommandPermissionLevel cpl = new CommandPermissionLevel();
 	
 	public ArrayList<String> quotes = new ArrayList<String>();
 	

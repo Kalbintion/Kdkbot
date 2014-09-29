@@ -6,14 +6,14 @@ import java.net.*;
 
 public class Update implements Command {
 	// Standard Command variables
+	private Kdkbot instance;
 	private String trigger;
-	private CommandPermissionLevel cpl;
+	private CommandPermissionLevel cpl = new CommandPermissionLevel();
 	private boolean isAvailable;
 	
 	// Other command variables
 	private URL url;
 	private HttpURLConnection hurl;
-	private Kdkbot instance;
 
 	@Override
 	public void init(String trigger, Kdkbot instance) {

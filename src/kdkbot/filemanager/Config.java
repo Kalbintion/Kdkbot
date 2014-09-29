@@ -1,10 +1,13 @@
 package kdkbot.filemanager;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,7 +15,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class Config {
 	private Path filePath;
@@ -48,6 +53,31 @@ public class Config {
 	
 	public String getSetting(String key) {
 		return this.values.get(key);
+	}
+	
+	public void setSetting(String key, String value) {
+		this.values.put(key, value);
+		this.saveSettings();
+	}
+	
+	public void saveSettings() {
+		try {
+			Iterator hashMapIter = values.entrySet().iterator();
+			
+			BufferedWriter write = new BufferedWriter(
+					new OutputStreamWriter(
+							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
+						StandardCharsets.US_ASCII));
+			
+			while(hashMapIter.hasNext()) {
+				Map.Entry pairs = (Map.Entry)hashMapIter.next();
+				write.write(pairs.getKey() + "=" + pairs.getValue());
+			}
+			
+			write.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void verifyExists() throws Exception {

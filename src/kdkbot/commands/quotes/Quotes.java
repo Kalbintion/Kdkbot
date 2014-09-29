@@ -9,12 +9,7 @@ public class Quotes implements Command {
 	private Kdkbot instance;
 	
 	public ArrayList<String> quotes = new ArrayList<String>();
-	
-	public void init(String trigger, Kdkbot instance) {
-		this.trigger = trigger;
-		this.instance = instance;
-	}
-	
+		
 	public int addQuote(String quote) {
 		quotes.add(quote);
 		return quotes.size();
@@ -34,20 +29,24 @@ public class Quotes implements Command {
 	}
 
 	@Override
-	public void executeCommand(String[] args) {
-		// TODO Auto-generated method stub
+	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
+		String[] args = message.split(" ");
 		
 	}
 
 	@Override
 	public void setTrigger(String trigger) {
-		// TODO Auto-generated method stub
-		
+		this.trigger = trigger;
 	}
 
 	@Override
 	public String getTrigger() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.trigger;
+	}
+
+	@Override
+	public void init(String trigger, Kdkbot instance) {
+		this.trigger = trigger;
+		this.instance = instance;
 	}
 }

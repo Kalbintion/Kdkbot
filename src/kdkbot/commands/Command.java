@@ -16,7 +16,7 @@ public interface Command {
      * 
      * @param args The list of command arguments to use for this.
      */
-	void executeCommand(String[] args);
+	void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams);
 	
 	/**
 	 * Sets the command trigger for this command

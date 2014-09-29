@@ -17,11 +17,11 @@ public class Custom implements Command {
 	}
 
 	@Override
-	public void executeCommand(String[] args) {
+	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
 		// args[0] is channel, args[1] is sender
 		// args[2] is login, args[3] is hostname
 		// args[4] is message
-		instance.sendMessage(args[0], parseParameters(args[0], args[1], args[2], args[3], args[4]));
+		instance.sendMessage(channel, parseParameters(channel, sender, login, hostname, message));
 	}
 
 	@Override

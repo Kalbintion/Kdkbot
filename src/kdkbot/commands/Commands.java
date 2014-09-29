@@ -53,6 +53,8 @@ public class Commands {
 				String tClass = matcher.group("Class");
 				String tMethod = matcher.group("Method");
 				String[] tParams = matcher.group("Params").split(",");
+				Class clsTarget = Class.forName(tClass);
+				Method method = clsTarget.newInstance().getClass().getDeclaredMethod(tMethod, String.class, String.class, String.class, String.class, String.class);
 			} else {
 				throw new IllegalArgumentException();
 			}

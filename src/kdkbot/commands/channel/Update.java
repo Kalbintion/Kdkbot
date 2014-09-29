@@ -18,16 +18,17 @@ public class Update implements Command {
 	}
 	
 	@Override
-	public void executeCommand(String[] args) {
-		// args[0] should be oauth
-		// args[1] should be channel
+	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
+		String[] args = message.split(" ");
+		
+		// additionalParams[0] should be oauth
 		if(args[2].startsWith("set")) {
 			try {
-				url = new URL("api.twitch.tv/kraken/channels/" + args[1]);
+				url = new URL("api.twitch.tv/kraken/channels/" + channel);
 				hurl.disconnect();
 				hurl.setRequestMethod("PUT");
 				hurl.setRequestProperty("Accept", "application/vnd.twitchtv.v2+json");
-				hurl.setRequestProperty("Authorization", "OAuth " + args[0]);
+				hurl.setRequestProperty("Authorization", "OAuth " + additionalParams[0]);
 			} catch(ProtocolException e) {
 				e.printStackTrace();				
 			} catch(SecurityException e) {

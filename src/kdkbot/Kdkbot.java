@@ -39,6 +39,7 @@ public class Kdkbot extends PircBot {
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
     	// Temp Section
+    	/*
     	if(channel.equalsIgnoreCase("#kalbintion")) {
 	    	if(message.equalsIgnoreCase("!mumble")) {
 	    		BOT.sendMessage(channel, "Mumble IP: mumble.thespawn.net Port: 6667");
@@ -63,7 +64,7 @@ public class Kdkbot extends PircBot {
     	} else if (message.equalsIgnoreCase("!mumble get")) {
     		BOT.sendMessage(channel, "You can download mumble @ http://wiki.mumble.info/wiki/Main_Page");
     	}
-    	/*
+    	*/
     	// Send info off to correct channel
     	Iterator<Channel> iter = CHANS.iterator();
     	while(iter.hasNext()) {
@@ -73,6 +74,5 @@ public class Kdkbot extends PircBot {
     			break;
     		}
     	}
-    	*/
 	}
 }

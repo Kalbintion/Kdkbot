@@ -20,6 +20,7 @@ public class Channel {
 	public Channel(Kdkbot instance, String channel) {
 		this.KDKBOT = instance;
 		this.channel = channel;
+		this.commands = new Commands(instance);
 		this.joinChannel();
 	}
 	

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.*;
+
+import kdkbot.Kdkbot;
 import kdkbot.commands.*;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.channel.*;
@@ -18,11 +20,16 @@ public class Commands {
 	public HashMap<Command, Method> commands;
 	public Path permissionPath;
 	public Path commandListPath;
+	public String commandPrefix = "";
+	public Kdkbot instance;
+	
+	public Update channelUpdater = new Update();
+	public Quotes quotes = new Quotes();
 	
 	private static Pattern commandConfig = Pattern.compile("(?<Class>([A-Za-z.]*\\.?)*?)\\.(?<Method>(.*?))\\((?<Params>.*)*?\\)");
 	
-	public Commands() {
-
+	public Commands(Kdkbot instance) {
+		this.instance = instance;
 	}
 
 	/**
@@ -62,7 +69,20 @@ public class Commands {
 	}
 	
 	public void commandHandler(String channel, String sender, String login, String hostname, String message) {
-		
+		if(message.startsWith(commandPrefix)) {
+			String coreCommand = message.split(" ")[0].substring(commandPrefix.length()); // Snag the core command from the message
+			
+			// Channel
+			if(channelUpdater.isAvailable() && channelUpdater.getTrigger().equalsIgnoreCase(coreCommand)) {
+				String[] additionalParams = {instance.botCfg.getSetting("oauth")};
+				channelUpdater.executeCommand(channel, sender, login, hostname, message, additionalParams);
+			}
+			// Quotes
+			else if (quotes.isAvailable() && quotes.getTrigger().equalsIgnoreCase(coreCommand)) {
+				quotes.executeCommand(channel, sender, login, hostname, message, new String[0]);
+			}
+			
+		}
 	}
 	
 	public void setPermissionPath(Path filePath) {

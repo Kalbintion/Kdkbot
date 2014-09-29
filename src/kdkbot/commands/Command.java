@@ -31,5 +31,19 @@ public interface Command {
 	 * @return the command trigger.
 	 */
 	public String getTrigger();
+	
+	/**
+	 * Gets whether this command is available or not
+	 */
+	public boolean isAvailable();
+	
+	/**
+	 * Sets whether this command is available or not
+	 * @param available is available (true) or not available (false)
+	 */
+	public void setAvailability(boolean available);
 
+	public int getPermissionLevel();
+	
+	public void setPermissionLevel(int level);
 }

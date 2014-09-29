@@ -6,6 +6,8 @@ import kdkbot.Kdkbot;
 import kdkbot.commands.*;
 
 public class Custom implements Command {
+	private boolean isAvailable;
+	private CommandPermissionLevel cpl;
 	private Kdkbot instance;
 	private String trigger;
 	private String message;
@@ -45,5 +47,25 @@ public class Custom implements Command {
 		out = out.replace("(_RAND_)", Integer.toString(new Random().nextInt()));
 		
 		return out;
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return this.isAvailable;
+	}
+
+	@Override
+	public void setAvailability(boolean available) {
+		this.isAvailable = available;
+	}
+
+	@Override
+	public int getPermissionLevel() {
+		return this.cpl.getLevel();
+	}
+
+	@Override
+	public void setPermissionLevel(int level) {
+		this.cpl.setLevel(level);
 	}
 }

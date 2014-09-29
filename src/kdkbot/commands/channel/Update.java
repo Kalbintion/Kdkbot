@@ -5,8 +5,12 @@ import kdkbot.commands.*;
 import java.net.*;
 
 public class Update implements Command {
+	// Standard Command variables
 	private String trigger;
 	private CommandPermissionLevel cpl;
+	private boolean isAvailable;
+	
+	// Other command variables
 	private URL url;
 	private HttpURLConnection hurl;
 	private Kdkbot instance;
@@ -47,5 +51,25 @@ public class Update implements Command {
 	@Override
 	public String getTrigger() {
 		return this.trigger;
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return this.isAvailable;
+	}
+
+	@Override
+	public void setAvailability(boolean available) {
+		this.isAvailable = available;
+	}
+
+	@Override
+	public int getPermissionLevel() {
+		return this.cpl.getLevel();
+	}
+
+	@Override
+	public void setPermissionLevel(int level) {
+		this.cpl.setLevel(level);
 	}
 }

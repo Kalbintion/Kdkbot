@@ -39,22 +39,44 @@ public class Config {
 		loadConfigContents();
 	}
 	
+	/**
+	 * Sets this configs Path location
+	 * @param filePath the path to set to
+	 */
 	public void setPath(Path filePath) {
 		this.filePath = filePath;
 	}
 	
+	/**
+	 * Sets this configs Path location, based off of a string
+	 * @param filePath the path to set to.
+	 */
 	public void setPath(String filePath) {
 		this.filePath = Paths.get(filePath);
 	}
 	
+	/**
+	 * 
+	 * @return The path for this config.
+	 */
 	public Path getPath() {
 		return this.filePath;
 	}
 	
+	/**
+	 * Returns the setting with a given key value.
+	 * @param key The setting to look for
+	 * @return the value, or null if not exists, of a given setting
+	 */
 	public String getSetting(String key) {
 		return this.values.get(key);
 	}
 	
+	/**
+	 * Sets the config setting to a given value specific by a given key name. Automatically re-saves after setting value
+	 * @param key the name of the setting to change
+	 * @param value the value to change the setting to
+	 */
 	public void setSetting(String key, String value) {
 		this.values.put(key, value);
 		this.saveSettings();

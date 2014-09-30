@@ -20,24 +20,27 @@ public class Commands {
 	public Kdkbot instance;
 	public Path permissionPath;
 	public Path commandListPath;
-	public String commandPrefix = "";
+	public String commandPrefix = "|";
 	
 	public Update channelUpdater = new Update();
 	public Quotes quotes = new Quotes();
-	public Config cfg;
+	public Config cfgRanks;
 	
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
 	public Commands(Kdkbot instance, String channel) {
 		this.instance = instance;
 		try {
-			cfg = new Config("./cfg/perms/" + channel + ".cfg");
-			List<String> cfgContents = cfg.getConfigContents();
+			System.out.println("[DBG] [CMDS] [INIT] Attempting to load config ranks.");
+			cfgRanks = new Config("./cfg/perms/" + channel + ".cfg");
+			List<String> cfgContents = cfgRanks.getConfigContents();
 			Iterator<String> iter = cfgContents.iterator();
 			while(iter.hasNext()) {
+				System.out.println("[DBG] [CMDS] [INIT] Parsing next line of cfgArgs.");
 				String cfgArgs[] = iter.next().split("=");
+				System.out.println("[DBG] [CMDS] [INIT] Size of cfgArgs is " + cfgArgs.length + " a value of 2 is expected.");
 				try {
-					senderRanks.put(cfgArgs[1], Integer.parseInt(cfgArgs[2]));
+					senderRanks.put(cfgArgs[0], Integer.parseInt(cfgArgs[1]));
 				} catch(NumberFormatException e) {
 					e.printStackTrace();
 				}
@@ -48,9 +51,14 @@ public class Commands {
 	}
 	
 	public void commandHandler(String channel, String sender, String login, String hostname, String message) {
+		// System.out.println("[DBG] [CMD] [HND] Attempting to parse last message for channel " + channel);
 		if(message.startsWith(commandPrefix)) {
+			// System.out.println("DBG: Previous line detected as a command");
 			String args[] = message.split(" ");
 			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
+			
+			// System.out.println("[DBG] [CMD] [HND] Core Command detected as '" + coreCommand + "'");
+			// System.out.println("[DBG] [CMD] [HND] Senders level detected as " + getSenderRank(sender) + " for value " + sender);
 			
 			// Channel
 			if(getSenderRank(sender) >= channelUpdater.getPermissionLevel() &&
@@ -62,6 +70,7 @@ public class Commands {
 			// Permission Ranks
 			else if (getSenderRank(sender) >= 3 &&
 						coreCommand.equalsIgnoreCase("perm")) {
+				// System.out.println("DBG: Detected command perm, checking for sub-command.");
 				switch(args[1]) {
 					case "set":
 						this.setSenderRank(args[2], Integer.parseInt(args[3]));
@@ -71,6 +80,19 @@ public class Commands {
 						instance.sendMessage(channel, "The user " + args[2] + " is set to " + this.getSenderRank(args[2]));
 						break;
 				}
+			}
+			// Ban
+			else if(getSenderRank(sender) >= 3 &&
+						coreCommand.startsWith("ban")) {
+				instance.ban(channel, args[1]);
+				instance.sendMessage(channel, "Banned user " + args[1]);
+			}
+			// Devoice
+			else if(getSenderRank(sender) >= 3 && (
+						coreCommand.startsWith("devoice") ||
+						coreCommand.startsWith("dv"))) {
+				instance.deVoice(channel, args[1]);
+				instance.sendMessage(channel, "Devoiced user " + args[1]);
 			}
 			// Quotes
 			else if (getSenderRank(sender) >= quotes.getPermissionLevel() &&
@@ -98,8 +120,7 @@ public class Commands {
 	}
 	
 	public int getSenderRank(String sender) {
-		// return this.senderRanks.get(sender);
-		return 0;
+		return this.senderRanks.get(sender);
 	}
 	
 	public void setSenderRank(String target, int rank) {
@@ -108,7 +129,7 @@ public class Commands {
 	
 	public void loadSenderRanks() {
 		try {
-			List<String> strings = cfg.getConfigContents();
+			List<String> strings = cfgRanks.getConfigContents();
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {
 				String[] args = string.next().split("=");
@@ -120,6 +141,6 @@ public class Commands {
 	}
 	
 	public void saveSenderRanks() {
-		cfg.saveSettings();
+		cfgRanks.saveSettings();
 	}
 }

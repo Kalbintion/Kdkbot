@@ -33,6 +33,10 @@ public class Config {
 		loadConfigContents();
 	}
 	
+	/**
+	 * 
+	 * @param filePath
+	 */
 	public Config(String filePath) throws Exception {
 		this.filePath = Paths.get(filePath);
 		verifyExists();
@@ -142,9 +146,9 @@ public class Config {
 		
 		String line;
 		while((line = br.readLine()) != null) {
-			System.out.println("DBG: " + line);
+			System.out.println("[DBG] [CFG] [LCC] Loaded line: " + line);
 			String[] args = line.split("=");
-			System.out.println("DBG: " + args.length);
+			System.out.println("[DBG] [CFG] [LCC] Args size: " + args.length);
 			this.values.put(args[0], args[1]);
 		}
 		

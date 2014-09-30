@@ -5,6 +5,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jibble.pircbot.*;
 import kdkbot.channel.*;
@@ -38,6 +39,7 @@ public class Kdkbot extends PircBot {
 	 * Event handler for messages received
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
+    	/*
     	// Temp Section
     	if(channel.equalsIgnoreCase("#kalbintion")) {
 	    	if(message.equalsIgnoreCase("!mumble")) {
@@ -62,7 +64,8 @@ public class Kdkbot extends PircBot {
     		BOT.sendMessage(channel, out);
     	} else if (message.equalsIgnoreCase("!mumble get")) {
     		BOT.sendMessage(channel, "You can download mumble @ http://wiki.mumble.info/wiki/Main_Page");
-    	}
+    	} */
+    	// Master Commands
     	if(sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("|leavechan")) {
     			BOT.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
@@ -73,8 +76,27 @@ public class Kdkbot extends PircBot {
     			Channel channelToAdd = new Channel(this, channelToJoin);
     			CHANS.add(channelToAdd);
     			BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
+    		} else if(message.equalsIgnoreCase("|listallperms")) {
+    			Iterator<Channel> chan = CHANS.iterator();
+    			while(chan.hasNext()) {
+    				Channel curChan = chan.next();
+    				try {
+	    				List<String> cfgContents = curChan.commands.cfgRanks.getConfigContents();
+	    				Iterator<String> cfgContentsIter = cfgContents.iterator();
+	    				String outMsg = curChan.getChannel() + "=";
+	    				while(cfgContentsIter.hasNext()) {
+	    					outMsg += cfgContentsIter.next() + " && ";
+	    				}
+	    				
+	    				this.sendMessage(channel, outMsg);
+    				} catch(Exception e) {
+    					e.printStackTrace();
+    				}
+    				
+    			}
     		}
     	}
+    	
     	// Send info off to correct channel
     	Iterator<Channel> iter = CHANS.iterator();
     	while(iter.hasNext()) {

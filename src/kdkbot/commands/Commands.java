@@ -17,14 +17,20 @@ import kdkbot.commands.counters.*;
 import kdkbot.filemanager.Config;
 
 public class Commands {
+	// Necessary variable for instance referencing
 	public Kdkbot instance;
+	
+	// Path & Config locations (set by Commands() init)
 	public Path permissionPath;
 	public Path commandListPath;
+	public Config cfgRanks;
+	
+	// Command prefix of this particular command set
 	public String commandPrefix = "|";
 	
+	// Sub-system commands managers
 	public Update channelUpdater = new Update();
 	public Quotes quotes = new Quotes();
-	public Config cfgRanks;
 	
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
@@ -120,7 +126,11 @@ public class Commands {
 	}
 	
 	public int getSenderRank(String sender) {
-		return this.senderRanks.get(sender);
+		if(this.senderRanks.containsKey(sender)) {
+			return this.senderRanks.get(sender);
+		} else {
+			return 0;
+		}
 	}
 	
 	public void setSenderRank(String target, int rank) {

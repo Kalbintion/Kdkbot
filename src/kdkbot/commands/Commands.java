@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.*;
 
+import org.jibble.pircbot.User;
+
 import kdkbot.Kdkbot;
 import kdkbot.commands.*;
 import kdkbot.commands.quotes.*;
@@ -66,6 +68,9 @@ public class Commands {
 			// System.out.println("[DBG] [CMD] [HND] Core Command detected as '" + coreCommand + "'");
 			// System.out.println("[DBG] [CMD] [HND] Senders level detected as " + getSenderRank(sender) + " for value " + sender);
 			
+			// Enforce senders name to be lowercased - prevents case sensitive issues later on
+			sender = sender.toLowerCase();
+			
 			// Channel
 			if(getSenderRank(sender) >= channelUpdater.getPermissionLevel() &&
 					channelUpdater.isAvailable() &&
@@ -79,8 +84,8 @@ public class Commands {
 				// System.out.println("DBG: Detected command perm, checking for sub-command.");
 				switch(args[1]) {
 					case "set":
-						this.setSenderRank(args[2], Integer.parseInt(args[3]));
-						instance.sendMessage(channel, "Set " + args[2] + " to level " + args[3] + "permission.");
+						this.setSenderRank(args[2].toLowerCase(), Integer.parseInt(args[3]));
+						instance.sendMessage(channel, "Set " + args[2] + " to level " + args[3] + " permission.");
 						break;
 					case "get":
 						instance.sendMessage(channel, "The user " + args[2] + " is set to " + this.getSenderRank(args[2]));
@@ -92,6 +97,19 @@ public class Commands {
 						coreCommand.startsWith("ban")) {
 				instance.ban(channel, args[1]);
 				instance.sendMessage(channel, "Banned user " + args[1]);
+			}
+			// Unban
+			else if(getSenderRank(sender) >= 3 &&
+						coreCommand.startsWith("unban")) {
+				instance.unBan(channel, args[1]);
+				instance.sendMessage(channel, "Unbanned user " + args[1]);
+			}
+			// Voice
+			else if(getSenderRank(sender) >= 3 && (
+						coreCommand.startsWith("voice") ||
+						coreCommand.startsWith("v"))) {
+				instance.voice(channel, args[1]);
+				instance.sendMessage(channel,  "Voiced user " + args[1]);
 			}
 			// Devoice
 			else if(getSenderRank(sender) >= 3 && (
@@ -105,6 +123,11 @@ public class Commands {
 						quotes.isAvailable() &&
 						quotes.getTrigger().equalsIgnoreCase(coreCommand)) {
 				quotes.executeCommand(channel, sender, login, hostname, message, new String[0]);
+			}
+			// Raid
+			else if (getSenderRank(sender) >= 3 &&
+						coreCommand.startsWith("raid")) {
+				instance.sendMessage(channel, "Raid http://www.twitch.tv/" + args[1]);
 			}
 		}
 	}
@@ -126,15 +149,16 @@ public class Commands {
 	}
 	
 	public int getSenderRank(String sender) {
-		if(this.senderRanks.containsKey(sender)) {
-			return this.senderRanks.get(sender);
+		if(this.senderRanks.containsKey(sender.toLowerCase())) {
+			return this.senderRanks.get(sender.toLowerCase());
 		} else {
 			return 0;
 		}
 	}
 	
 	public void setSenderRank(String target, int rank) {
-		senderRanks.put(target, rank);
+		senderRanks.put(target.toLowerCase(), rank);
+		this.saveSenderRanks(true);
 	}
 	
 	public void loadSenderRanks() {
@@ -152,5 +176,9 @@ public class Commands {
 	
 	public void saveSenderRanks() {
 		cfgRanks.saveSettings();
+	}
+	
+	public void saveSenderRanks(boolean sendReferenceMap) {
+		cfgRanks.saveSettings(this.senderRanks);
 	}
 }

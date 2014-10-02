@@ -90,15 +90,7 @@ public class Config {
 	 * Saves this instances configuration file
 	 */
 	public void saveSettings() {
-		saveSettings(this.values);
-	}
-	
-	/**
-	 * Saves this instances configuration file with a provided HashMap of values to save to.
-	 * Stores them in the file path provided by this configs instance.
-	 * @param hash the HashMap containing the key value pairs to save.
-	 */
-	public void saveSettings(HashMap<String, String> hash) {
+		HashMap<String, String> hash = this.values;
 		try {
 			Iterator hashMapIter = hash.entrySet().iterator();
 			
@@ -109,7 +101,32 @@ public class Config {
 			
 			while(hashMapIter.hasNext()) {
 				Map.Entry pairs = (Map.Entry)hashMapIter.next();
-				write.write(pairs.getKey() + "=" + pairs.getValue());
+				write.write(pairs.getKey() + "=" + pairs.getValue() + "\r\n");
+			}
+			
+			write.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Saves this instances configuration file with a provided HashMap of values to save to.
+	 * Stores them in the file path provided by this configs instance.
+	 * @param hash the HashMap containing the key value pairs to save.
+	 */
+	public void saveSettings(HashMap<String, Integer> hash) {
+		try {
+			Iterator hashMapIter = hash.entrySet().iterator();
+			
+			BufferedWriter write = new BufferedWriter(
+					new OutputStreamWriter(
+							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
+						StandardCharsets.US_ASCII));
+			
+			while(hashMapIter.hasNext()) {
+				Map.Entry pairs = (Map.Entry)hashMapIter.next();
+				write.write(pairs.getKey() + "=" + pairs.getValue() + "\r\n");
 			}
 			
 			write.close();

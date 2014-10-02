@@ -106,5 +106,6 @@ public class Kdkbot extends PircBot {
     			break;
     		}
     	}
+    	
 	}
 }

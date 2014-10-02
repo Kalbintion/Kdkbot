@@ -136,6 +136,30 @@ public class Config {
 	}
 	
 	/**
+	 * Saves this instances configuration file with a provided String list of values to save to.
+	 * Stores them in the file path provided by this configs instance.
+	 * @param hash the HashMap containing the key value pairs to save.
+	 */
+	public void saveSettings(List<String> lines) {
+		try {
+			Iterator hashMapIter = lines.iterator();
+			
+			BufferedWriter write = new BufferedWriter(
+					new OutputStreamWriter(
+							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
+						StandardCharsets.US_ASCII));
+			
+			while(hashMapIter.hasNext()) {
+				write.write(hashMapIter.next() + "\r\n");
+			}
+			
+			write.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Verifies the existence of the file at a given path, if it does not exist, it will
 	 * automatically create it.
 	 */

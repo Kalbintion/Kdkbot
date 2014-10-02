@@ -16,6 +16,7 @@ import kdkbot.commands.*;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.channel.*;
 import kdkbot.commands.counters.*;
+import kdkbot.commands.strings.*;
 import kdkbot.filemanager.Config;
 
 public class Commands {
@@ -33,6 +34,7 @@ public class Commands {
 	// Sub-system commands managers
 	public Update channelUpdater = new Update();
 	public Quotes quotes = new Quotes();
+	public StringCommands commandStrings;
 	
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
@@ -53,6 +55,8 @@ public class Commands {
 					e.printStackTrace();
 				}
 			}
+			this.commandStrings = new StringCommands(this.instance, channel);
+			this.commandStrings.loadCommands();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

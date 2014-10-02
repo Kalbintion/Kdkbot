@@ -17,10 +17,11 @@ public class StringCommand implements Command {
 		this.init(trigger, instance);
 	}
 	
-	public StringCommand(Kdkbot instance, String trigger, String message, int level) {
+	public StringCommand(Kdkbot instance, String trigger, String message, int level, boolean active) {
 		this.init(trigger, instance);
 		this.messageToSend = message;
 		this.cpl.setLevel(level);
+		this.setAvailability(active);
 	}
 	
 	@Override
@@ -32,6 +33,10 @@ public class StringCommand implements Command {
 	@Override
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
 		instance.sendMessage(channel, parseMessage(this.messageToSend));
+	}
+	
+	public String getMessage() {
+		return this.messageToSend;
 	}
 	
 	@Override

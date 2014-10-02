@@ -16,6 +16,8 @@ public class Kdkbot extends PircBot {
 	public static Kdkbot BOT;
 	public static ArrayList<Channel> CHANS = new ArrayList<Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
+	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
+	public ArrayList<String> msgIgnoreList = new ArrayList<String>();
 	
     /**
      * Initialization of the basic bot
@@ -67,16 +69,26 @@ public class Kdkbot extends PircBot {
     	} */
     	// Master Commands
     	if(sender.equalsIgnoreCase("kalbintion")) {
-    		if(message.equalsIgnoreCase("|leavechan")) {
+    		if(message.equalsIgnoreCase("||leavechan")) {
     			BOT.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
     			BOT.partChannel(channel, "By order of the king!");
-    		} else if(message.startsWith("|joinchan ")) {
-    			String channelToJoin = message.substring("|joinchan ".length());
+    		} else if(message.startsWith("||joinchan ")) {
+    			String channelToJoin = message.substring("||joinchan ".length());
     			BOT.sendMessage(channel, "Joining channel " + channelToJoin);
     			Channel channelToAdd = new Channel(this, channelToJoin);
     			CHANS.add(channelToAdd);
     			BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
-    		} else if(message.equalsIgnoreCase("|listallperms")) {
+    		} else if(message.startsWith("||ignoreuser ")) {
+    			String userToIgnore = message.substring("||ignoreuser ".length());
+    			msgIgnoreList.add(userToIgnore);
+    		} else if(message.startsWith("||userignored ")) {
+    			String userToFind = message.substring("||userignored ".length());
+    			if(msgIgnoreList.contains(userToFind)) {
+    				BOT.sendMessage(channel, userToFind + " is unable to globally use the bot.");
+    			} else {
+    				BOT.sendMessage(channel, userToFind + " is able to globally use the bot.");
+    			}
+    		} else if(message.equalsIgnoreCase("||listallperms")) {
     			Iterator<Channel> chan = CHANS.iterator();
     			while(chan.hasNext()) {
     				Channel curChan = chan.next();
@@ -92,7 +104,6 @@ public class Kdkbot extends PircBot {
     				} catch(Exception e) {
     					e.printStackTrace();
     				}
-    				
     			}
     		}
     	}

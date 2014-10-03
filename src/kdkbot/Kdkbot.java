@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -105,18 +106,28 @@ public class Kdkbot extends PircBot {
     					e.printStackTrace();
     				}
     			}
+    		} else if(message.equalsIgnoreCase("||listquotessize")) {
+    			Iterator<Channel> chanIter = CHANS.iterator();
+    			while(chanIter.hasNext()) {
+    				Channel chan = chanIter.next();
+    				if(chan.getChannel().equalsIgnoreCase(channel)) {
+    					HashMap<String, String> quotes = chan.commands.quotes.quotes;
+						BOT.sendMessage(channel, "Quote list size: " + quotes.size());
+    				}
+    			}
     		}
     	}
     	
-    	// Send info off to correct channel
-    	Iterator<Channel> iter = CHANS.iterator();
-    	while(iter.hasNext()) {
-    		Channel curChan = iter.next();
-    		if(curChan.getChannel().equalsIgnoreCase(channel)) {
-    			curChan.commands.commandHandler(channel, sender, login, hostname, message);
-    			break;
-    		}
+    	if(!this.msgIgnoreList.contains(sender)) {
+	    	// Send info off to correct channel
+	    	Iterator<Channel> iter = CHANS.iterator();
+	    	while(iter.hasNext()) {
+	    		Channel curChan = iter.next();
+	    		if(curChan.getChannel().equalsIgnoreCase(channel)) {
+	    			curChan.commands.commandHandler(channel, sender, login, hostname, message);
+	    			break;
+	    		}
+	    	}
     	}
-    	
 	}
 }

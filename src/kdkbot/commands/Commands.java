@@ -32,8 +32,8 @@ public class Commands {
 	public String commandPrefix = "|";
 	
 	// Sub-system commands managers
-	public Update channelUpdater = new Update();
-	public Quotes quotes = new Quotes();
+	public Update channelUpdater;
+	public Quotes quotes;
 	public StringCommands commandStrings;
 	
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
@@ -41,14 +41,14 @@ public class Commands {
 	public Commands(Kdkbot instance, String channel) {
 		this.instance = instance;
 		try {
-			System.out.println("[DBG] [CMDS] [INIT] Attempting to load config ranks.");
+			// System.out.println("[DBG] [CMDS] [INIT] Attempting to load config ranks.");
 			cfgRanks = new Config("./cfg/perms/" + channel + ".cfg");
 			List<String> cfgContents = cfgRanks.getConfigContents();
 			Iterator<String> iter = cfgContents.iterator();
 			while(iter.hasNext()) {
-				System.out.println("[DBG] [CMDS] [INIT] Parsing next line of cfgArgs.");
+				// System.out.println("[DBG] [CMDS] [INIT] Parsing next line of cfgArgs.");
 				String cfgArgs[] = iter.next().split("=");
-				System.out.println("[DBG] [CMDS] [INIT] Size of cfgArgs is " + cfgArgs.length + " a value of 2 is expected.");
+				// System.out.println("[DBG] [CMDS] [INIT] Size of cfgArgs is " + cfgArgs.length + " a value of 2 is expected.");
 				try {
 					senderRanks.put(cfgArgs[0], Integer.parseInt(cfgArgs[1]));
 				} catch(NumberFormatException e) {
@@ -57,6 +57,10 @@ public class Commands {
 			}
 			this.commandStrings = new StringCommands(this.instance, channel);
 			this.commandStrings.loadCommands();
+			
+			this.quotes = new Quotes(this.instance, channel);
+			
+			this.channelUpdater = new Update();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -125,7 +129,7 @@ public class Commands {
 			// Quotes
 			else if (getSenderRank(sender) >= quotes.getPermissionLevel() &&
 						quotes.isAvailable() &&
-						quotes.getTrigger().equalsIgnoreCase(coreCommand)) {
+						quotes.getTrigger().startsWith(coreCommand)) {
 				quotes.executeCommand(channel, sender, login, hostname, message, new String[0]);
 			}
 			// Raid
@@ -133,6 +137,27 @@ public class Commands {
 						coreCommand.startsWith("raid")) {
 				instance.sendMessage(channel, "Raid http://www.twitch.tv/" + args[1]);
 			}
+			else if(getSenderRank(sender) >= 3 &&
+						coreCommand.startsWith("commands")) {
+				String[] csArgs = message.split(" ", 3);
+				commandStrings.addCommand(csArgs[1], csArgs[3], csArgs[2]);
+			}
+			// Custom String Commands
+			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
+			while(stringIter.hasNext()) {
+				StringCommand stringNext = stringIter.next();
+				// Verify user has access to this command
+				if(getSenderRank(sender) >= stringNext.cpl.getLevel() &&
+						coreCommand.startsWith(stringNext.getTrigger()) &&
+						stringNext.isAvailable()) {
+					instance.sendMessage(channel, stringNext.parseMessage(message));
+				}
+				if(coreCommand.startsWith(stringNext.getTrigger())) {
+					// No reason to continue while loop if we meet a match.
+					break;
+				}
+			}
+			this.commandStrings.executeCommand(channel, sender, login, hostname, message, new String[0]);
 		}
 	}
 	

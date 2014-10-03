@@ -69,7 +69,7 @@ public class StringCommand implements Command {
 		this.cpl.setLevel(level);
 	}
 	
-	private String parseMessage(String message) {
+	public String parseMessage(String message) {
 		return message;
 	}
 }

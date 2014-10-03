@@ -19,6 +19,7 @@ public class StringCommands {
 			this.instance = instance;
 			this.channel = channel;
 			this.config = new Config("./cfg/stringcommands/" + channel + ".cfg");
+			this.commands = new ArrayList<StringCommand>();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -56,5 +57,10 @@ public class StringCommands {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
+		String[] args = message.split(" ", 2);
+
 	}
 }

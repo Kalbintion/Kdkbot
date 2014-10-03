@@ -43,6 +43,14 @@ public class Config {
 		loadConfigContents();
 	}
 	
+	public Config(String filePath, boolean loadContents) throws Exception {
+		this.filePath = Paths.get(filePath);
+		verifyExists();
+		if(loadContents) {
+			loadConfigContents();
+		}
+	}
+	
 	/**
 	 * Sets this configs Path location
 	 * @param filePath the path to set to
@@ -165,12 +173,12 @@ public class Config {
 	 */
 	public void verifyExists() throws Exception {
 		if(!Files.exists(this.filePath)) {
-			System.out.println("DBG: Doesn't exist: " + this.filePath.toString());
+			// System.out.println("[DBG] [CFG] [VERIFY] Doesn't exist: " + this.filePath.toString());
 			try {
-				System.out.println("DBG: Attempting to create.");
+				// System.out.println("[DBG] [CFG] [VERIFY] Attempting to create.");
 				Files.createFile(this.filePath);
 			} catch (IOException e) {
-				System.out.println("DBG: Couldn't create, attempting to create directories first.");
+				// System.out.println("[DBG] [CFG] [VERIFY] Couldn't create, attempting to create directories first.");
 				Files.createDirectories(this.filePath.getParent());
 			}
 		}
@@ -187,9 +195,9 @@ public class Config {
 		
 		String line;
 		while((line = br.readLine()) != null) {
-			System.out.println("[DBG] [CFG] [LCC] Loaded line: " + line);
+			// System.out.println("[DBG] [CFG] [LCC] Loaded line: " + line);
 			String[] args = line.split("=");
-			System.out.println("[DBG] [CFG] [LCC] Args size: " + args.length);
+			// System.out.println("[DBG] [CFG] [LCC] Args size: " + args.length);
 			this.values.put(args[0], args[1]);
 		}
 		

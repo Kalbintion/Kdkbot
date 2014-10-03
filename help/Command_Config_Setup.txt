@@ -1,5 +1,6 @@
 /**
  * This is the descriptive information in regards to the command configuration file string format
+ * @deprecated This system is no longer implemented.
  */
 
 /**

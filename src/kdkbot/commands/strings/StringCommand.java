@@ -32,7 +32,8 @@ public class StringCommand implements Command {
 	
 	@Override
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
-		instance.sendMessage(channel, parseMessage(this.messageToSend));
+		System.out.println("[DBG] [STRCMD] [EXEC] Attempting to execute command " + this.getTrigger() + " to channel " + channel);
+		instance.sendMessage(channel, parseMessage(this.messageToSend, channel, sender, login, hostname, message, additionalParams));
 	}
 	
 	public String getMessage() {
@@ -51,7 +52,7 @@ public class StringCommand implements Command {
 	
 	@Override
 	public boolean isAvailable() {
-		return this.isAvailable();
+		return this.isAvailable;
 	}
 	
 	@Override
@@ -69,7 +70,13 @@ public class StringCommand implements Command {
 		this.cpl.setLevel(level);
 	}
 	
-	public String parseMessage(String message) {
+	public String parseMessage(String message, String channel, String sender, String login, String hostname, String sentMessage, String[] additionalParams) {
+		String args[] = sentMessage.split(" ");
+		message = message.replace("%USER%", sender);
+		message = message.replace("%CHAN%", channel);
+		message = message.replace("%LOGIN%", login);
+		message = message.replace("%HOSTNAME%", hostname);
+		message = message.replace("%ARGS%", sentMessage.substring(args[0].length()));
 		return message;
 	}
 }

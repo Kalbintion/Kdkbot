@@ -25,6 +25,7 @@ public class Kdkbot extends PircBot {
      */
 	public Kdkbot() throws Exception {
 		BOT = this;
+		BOT.setEncoding("UTF-8");
 		BOT.setName(botCfg.getSetting("nick"));
 		BOT.setVerbose(Boolean.parseBoolean(botCfg.getSetting("verbose")));
 		BOT.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
@@ -42,23 +43,12 @@ public class Kdkbot extends PircBot {
 	 * Event handler for messages received
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
-    	/*
     	// Temp Section
-    	if(channel.equalsIgnoreCase("#kalbintion")) {
-	    	if(message.equalsIgnoreCase("!mumble")) {
-	    		BOT.sendMessage(channel, "Mumble IP: mumble.thespawn.net Port: 6667");
-	    	} else if (message.equalsIgnoreCase("!pmc")) {
-	    		BOT.sendMessage(channel,  "The server url is us.playmindcrack.com");
-	    	} else if (message.equalsIgnoreCase("!dvz")) {
-	    		BOT.sendMessage(channel, "DvZ stands for Dwarves Vs Zombies, a mini-game on the playmindcrack server, developed by BruceWillakers.");
-	    	} else if (message.startsWith("!raid")) {
-	    		String args = message.substring(("!raid ").length(), message.length());
-	    		BOT.sendMessage(channel, "Go raid http://www.twitch.tv/" + args);
-	    	} else if (message.equalsIgnoreCase("!hivemc")) {
-	    		BOT.sendMessage(channel, "The server url is hivemc.eu");
-	    	}
-    	}
-    	if (message.startsWith("!multi")) {
+    	/* if(channel.equalsIgnoreCase("#kalbintion")) {
+	    	String args = message.substring(("!raid ").length(), message.length());
+	    	BOT.sendMessage(channel, "Go raid http://www.twitch.tv/" + args);
+    	} */
+    	/* if (message.startsWith("!multi")) {
     		String[] args = message.split(" ");
     		String out = "http://multitwitch.tv/";
     		for(int i = 1; i < args.length; i++) {
@@ -113,6 +103,16 @@ public class Kdkbot extends PircBot {
     				if(chan.getChannel().equalsIgnoreCase(channel)) {
     					HashMap<String, String> quotes = chan.commands.quotes.quotes;
 						BOT.sendMessage(channel, "Quote list size: " + quotes.size());
+    				}
+    			}
+    		} else if(message.equalsIgnoreCase("||listallcustomstrings")) {
+    			
+    		} else if(message.equalsIgnoreCase("||listallcustomstringssize")) {
+    			Iterator<Channel> chanIter = CHANS.iterator();
+    			while(chanIter.hasNext()) {
+    				Channel chan = chanIter.next();
+    				if(chan.getChannel().equalsIgnoreCase(channel)) {
+						BOT.sendMessage(channel, "Custom Strings list size: " + chan.commands.commandStrings.commands.size());
     				}
     			}
     		}

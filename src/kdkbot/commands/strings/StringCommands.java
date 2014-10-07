@@ -18,7 +18,7 @@ public class StringCommands {
 		try {
 			this.instance = instance;
 			this.channel = channel;
-			this.config = new Config("./cfg/stringcommands/" + channel + ".cfg");
+			this.config = new Config("./cfg/stringcommands/" + channel + ".cfg", false);
 			this.commands = new ArrayList<StringCommand>();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -27,11 +27,21 @@ public class StringCommands {
 	
 	public void loadCommands() {
 		try {
+			System.out.println("[DBG] [STRCMD] [LOAD] Starting load process...");
 			List<String> strings = config.getConfigContents();
+			System.out.println("[DBG] [STRCMD] [LOAD] Loaded contents. Size: " + strings.size());
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {
-				String[] args = string.next().split("|");
-				commands.add(new StringCommand(this.instance, args[0], args[1], Integer.parseInt(args[2]), Boolean.parseBoolean(args[3])));
+				String str = string.next();
+				System.out.println("[DBG] [STRCMD] [LOAD] Parsing next string: " + str);
+				String[] args = str.split("\\|");
+				System.out.println("[DBG] [STRCMD] [LOAD] Size of args: " + args.length);
+				System.out.println("[DBG] [STRCMD] [LOAD] args[0]: " + Integer.parseInt(args[0]));
+				System.out.println("[DBG] [STRCMD] [LOAD] args[1]: " + Boolean.parseBoolean(args[1]));
+				for(int i = 0; i < args.length; i++) {
+					System.out.println("[DBG] [STRCMD] [LOAD] args[" + i + "] is " + args[i]);
+				}
+				commands.add(new StringCommand(this.instance, args[2], args[3], Integer.parseInt(args[0]), Boolean.parseBoolean(args[1])));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -60,7 +70,6 @@ public class StringCommands {
 	}
 	
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
-		String[] args = message.split(" ", 2);
 
 	}
 }

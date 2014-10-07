@@ -145,19 +145,23 @@ public class Commands {
 			// Custom String Commands
 			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
 			while(stringIter.hasNext()) {
+				System.out.println("[DBG] [CMDS] [CHK] Testing next iteration of custom string commands");
 				StringCommand stringNext = stringIter.next();
+				System.out.println("[DBG] [CMDS] [CHK] Testing coreCommand '" + coreCommand + "' against '" + stringNext.getTrigger() + "'");
 				// Verify user has access to this command
+				System.out.println("[DBG] [CMDS] [CHK] Current commands level: " + stringNext.cpl.getLevel());
+				System.out.println("[DBG] [CMDS] [CHK] Current command is available: " + stringNext.isAvailable);
 				if(getSenderRank(sender) >= stringNext.cpl.getLevel() &&
 						coreCommand.startsWith(stringNext.getTrigger()) &&
 						stringNext.isAvailable()) {
-					instance.sendMessage(channel, stringNext.parseMessage(message));
+					System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
+					stringNext.executeCommand(channel, sender, login, hostname, message, new String[0]);
 				}
 				if(coreCommand.startsWith(stringNext.getTrigger())) {
 					// No reason to continue while loop if we meet a match.
 					break;
 				}
 			}
-			this.commandStrings.executeCommand(channel, sender, login, hostname, message, new String[0]);
 		}
 	}
 	

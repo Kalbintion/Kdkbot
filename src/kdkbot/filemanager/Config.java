@@ -211,7 +211,7 @@ public class Config {
 	 * @return A list containing the key value pairs.
 	 */
 	public List<String> getConfigContents() throws Exception {
-		List<String> lines = Files.readAllLines(this.filePath.toAbsolutePath(), StandardCharsets.US_ASCII);
+		List<String> lines = Files.readAllLines(this.filePath.toAbsolutePath(), StandardCharsets.UTF_8);
 
 		return lines;
 	}

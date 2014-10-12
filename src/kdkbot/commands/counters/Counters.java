@@ -24,7 +24,7 @@ public class Counters {
 		}
 	}
 	
-	public void loadCommands() {
+	public void loadCounters() {
 		try {
 			System.out.println("[DBG] [COUNT] [LOAD] Starting load process...");
 			List<String> strings = config.getConfigContents();
@@ -35,31 +35,41 @@ public class Counters {
 				System.out.println("[DBG] [COUNT] [LOAD] Parsing next string: " + str);
 				String[] args = str.split("\\|");
 				System.out.println("[DBG] [COUNT] [LOAD] Size of args: " + args.length);
-				System.out.println("[DBG] [COUNT] [LOAD] args[0]: " + Integer.parseInt(args[0]));
-				System.out.println("[DBG] [COUNT] [LOAD] args[1]: " + Boolean.parseBoolean(args[1]));
 				for(int i = 0; i < args.length; i++) {
 					System.out.println("[DBG] [COUNT] [LOAD] args[" + i + "] is " + args[i]);
 				}
-				counters.add(new Counter());
+				counters.add(new Counter(args[0], Integer.parseInt(args[1])));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void addCommand(String trigger, String message, String level) {	
-		counters.add(new Counter());
+	public void addCounter(String name, int value) {	
+		counters.add(new Counter(name, value));
 	}
 	
-	public void saveCommands() {
+	public void removeCounter(String name) {
+		Iterator<Counter> cntrIter = counters.iterator();
+		while(cntrIter.hasNext()) {
+			Counter cntr = cntrIter.next();
+			if(cntr.name.equalsIgnoreCase(name)) {
+				counters.remove(cntr);
+				break;
+			}
+		}
+	}
+	
+	public void saveCounters() {
 		try {
 			Iterator<Counter> countersIter = this.counters.iterator();
 			List<String> toSave = new ArrayList<String>();
 			
 			while(countersIter.hasNext()) {
 				Counter curCounter = countersIter.next();
-				toSave.add("");
+				toSave.add(curCounter.name + "|" + curCounter.value);
 			}
+			config.saveSettings(toSave);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

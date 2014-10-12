@@ -27,19 +27,19 @@ public class StringCommands {
 	
 	public void loadCommands() {
 		try {
-			System.out.println("[DBG] [STRCMD] [LOAD] Starting load process...");
+			// System.out.println("[DBG] [STRCMD] [LOAD] Starting load process...");
 			List<String> strings = config.getConfigContents();
-			System.out.println("[DBG] [STRCMD] [LOAD] Loaded contents. Size: " + strings.size());
+			// System.out.println("[DBG] [STRCMD] [LOAD] Loaded contents. Size: " + strings.size());
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {
 				String str = string.next();
-				System.out.println("[DBG] [STRCMD] [LOAD] Parsing next string: " + str);
+				// System.out.println("[DBG] [STRCMD] [LOAD] Parsing next string: " + str);
 				String[] args = str.split("\\|");
-				System.out.println("[DBG] [STRCMD] [LOAD] Size of args: " + args.length);
-				System.out.println("[DBG] [STRCMD] [LOAD] args[0]: " + Integer.parseInt(args[0]));
-				System.out.println("[DBG] [STRCMD] [LOAD] args[1]: " + Boolean.parseBoolean(args[1]));
+				// System.out.println("[DBG] [STRCMD] [LOAD] Size of args: " + args.length);
+				// System.out.println("[DBG] [STRCMD] [LOAD] args[0]: " + Integer.parseInt(args[0]));
+				// System.out.println("[DBG] [STRCMD] [LOAD] args[1]: " + Boolean.parseBoolean(args[1]));
 				for(int i = 0; i < args.length; i++) {
-					System.out.println("[DBG] [STRCMD] [LOAD] args[" + i + "] is " + args[i]);
+					// System.out.println("[DBG] [STRCMD] [LOAD] args[" + i + "] is " + args[i]);
 				}
 				commands.add(new StringCommand(this.instance, args[2], args[3], Integer.parseInt(args[0]), Boolean.parseBoolean(args[1])));
 			}

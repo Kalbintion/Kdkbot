@@ -14,6 +14,7 @@ import org.jibble.pircbot.User;
 import kdkbot.Kdkbot;
 import kdkbot.commands.*;
 import kdkbot.commands.quotes.*;
+import kdkbot.commands.ama.AMA;
 import kdkbot.commands.channel.*;
 import kdkbot.commands.counters.*;
 import kdkbot.commands.strings.*;
@@ -35,6 +36,8 @@ public class Commands {
 	public Update channelUpdater;
 	public Quotes quotes;
 	public StringCommands commandStrings;
+	public Counters counters;
+	public AMA amas;
 	
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
@@ -55,12 +58,21 @@ public class Commands {
 					e.printStackTrace();
 				}
 			}
+			
 			this.commandStrings = new StringCommands(this.instance, channel);
 			this.commandStrings.loadCommands();
 			
 			this.quotes = new Quotes(this.instance, channel);
+			this.quotes.loadQuotes();
+			
+			this.counters = new Counters(this.instance, channel);
+			this.counters.loadCounters();
+			
+			this.amas = new AMA(this.instance, channel);
+			this.amas.loadQuestions();
 			
 			this.channelUpdater = new Update();
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -100,32 +112,6 @@ public class Commands {
 						break;
 				}
 			}
-			// Ban
-			else if(getSenderRank(sender) >= 3 &&
-						coreCommand.startsWith("ban")) {
-				instance.ban(channel, args[1]);
-				instance.sendMessage(channel, "Banned user " + args[1]);
-			}
-			// Unban
-			else if(getSenderRank(sender) >= 3 &&
-						coreCommand.startsWith("unban")) {
-				instance.unBan(channel, args[1]);
-				instance.sendMessage(channel, "Unbanned user " + args[1]);
-			}
-			// Voice
-			else if(getSenderRank(sender) >= 3 && (
-						coreCommand.startsWith("voice") ||
-						coreCommand.startsWith("v"))) {
-				instance.voice(channel, args[1]);
-				instance.sendMessage(channel,  "Voiced user " + args[1]);
-			}
-			// Devoice
-			else if(getSenderRank(sender) >= 3 && (
-						coreCommand.startsWith("devoice") ||
-						coreCommand.startsWith("dv"))) {
-				instance.deVoice(channel, args[1]);
-				instance.sendMessage(channel, "Devoiced user " + args[1]);
-			}
 			// Quotes
 			else if (getSenderRank(sender) >= quotes.getPermissionLevel() &&
 						quotes.isAvailable() &&
@@ -137,29 +123,107 @@ public class Commands {
 						coreCommand.startsWith("raid")) {
 				instance.sendMessage(channel, "Raid http://www.twitch.tv/" + args[1]);
 			}
+			// Custom Commands
 			else if(getSenderRank(sender) >= 3 &&
 						coreCommand.startsWith("commands")) {
-				String[] csArgs = message.split(" ", 3);
+				String[] csArgs = message.split(" ", 4);
+				System.out.println("[DBG] [CMD] [STRCMD] csArgs size: " + csArgs.length);
+				for(int i = 0 ; i < csArgs.length; i++) {
+					System.out.println("[DBG] [CMD] [STRCMD] csArgs[" + i + "] is " + csArgs[i]);
+				}
 				commandStrings.addCommand(csArgs[1], csArgs[3], csArgs[2]);
+			}
+			// AMA
+			else if(getSenderRank(sender) >= amas.getPermissionLevel() &&
+						coreCommand.startsWith(amas.getTrigger()) &&
+						amas.isAvailable()) {
+				amas.executeCommand(channel, sender, login, hostname, message, new String[0]);
+			}
+			// Counters
+			else if(getSenderRank(sender) >= 1 &&
+						coreCommand.startsWith("counter")) {
+				Iterator<Counter> cntrIter = this.counters.counters.iterator();
+				Counter cntr;
+				
+				switch(args[1]) {
+					case "new":
+						if(getSenderRank(sender) >= 2) {
+							if(args.length >= 3) {
+								this.counters.addCounter(args[2], Integer.parseInt(args[3]));
+								instance.sendMessage(channel, "Added new counter called " + args[2] + " with value of " + args[3]);
+							} else {
+								this.counters.addCounter(args[2], 0);
+								instance.sendMessage(channel, "Added new counter called " + args[2] + " with value of 0");
+							}
+						}
+						break;
+					case "delete":
+					case "remove":
+						if(getSenderRank(sender) >= 2)
+							this.counters.removeCounter(args[2]);
+						break;
+					case "+":
+					case "add":
+						while(cntrIter.hasNext()) {
+							cntr = cntrIter.next();
+							if(cntr.name.equalsIgnoreCase(args[2])) {
+								if(args.length >= 3) {
+									cntr.addValue(Integer.parseInt(args[3]));
+									instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+								} else {
+									cntr.addValue(1);
+									instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+								}
+							}
+						}
+						break;
+					case "-":
+					case "sub":
+						while(cntrIter.hasNext()) {
+							cntr = cntrIter.next();
+							if(cntr.name.equalsIgnoreCase(args[2])) {
+								cntr.subtractValue(Integer.parseInt(args[3]));
+								instance.sendMessage(channel, "Decremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+							}
+						}
+						break;
+					case "*":
+					case "mult":
+						while(cntrIter.hasNext()) {
+							cntr = cntrIter.next();
+							if(cntr.name.equalsIgnoreCase(args[2])) {
+								cntr.multiplyValue(Integer.parseInt(args[3]));
+								instance.sendMessage(channel, "Multiplied " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+							}
+						}
+						break;
+					case "/":
+					case "divide":
+						while(cntrIter.hasNext()) {
+							cntr = cntrIter.next();
+							if(cntr.name.equalsIgnoreCase(args[2])) {
+								cntr.divideValue(Integer.parseInt(args[3]));
+								instance.sendMessage(channel, "Divided " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+							}
+						}
+						break;
+				}
+				this.counters.saveCounters();
 			}
 			// Custom String Commands
 			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
 			while(stringIter.hasNext()) {
-				System.out.println("[DBG] [CMDS] [CHK] Testing next iteration of custom string commands");
+				// System.out.println("[DBG] [CMDS] [CHK] Testing next iteration of custom string commands");
 				StringCommand stringNext = stringIter.next();
-				System.out.println("[DBG] [CMDS] [CHK] Testing coreCommand '" + coreCommand + "' against '" + stringNext.getTrigger() + "'");
+				// System.out.println("[DBG] [CMDS] [CHK] Testing coreCommand '" + coreCommand + "' against '" + stringNext.getTrigger() + "'");
 				// Verify user has access to this command
-				System.out.println("[DBG] [CMDS] [CHK] Current commands level: " + stringNext.cpl.getLevel());
-				System.out.println("[DBG] [CMDS] [CHK] Current command is available: " + stringNext.isAvailable);
+				// System.out.println("[DBG] [CMDS] [CHK] Current commands level: " + stringNext.cpl.getLevel());
+				// System.out.println("[DBG] [CMDS] [CHK] Current command is available: " + stringNext.isAvailable);
 				if(getSenderRank(sender) >= stringNext.cpl.getLevel() &&
-						coreCommand.startsWith(stringNext.getTrigger()) &&
+						coreCommand.equalsIgnoreCase(stringNext.getTrigger()) &&
 						stringNext.isAvailable()) {
-					System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
+					// System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
 					stringNext.executeCommand(channel, sender, login, hostname, message, new String[0]);
-				}
-				if(coreCommand.startsWith(stringNext.getTrigger())) {
-					// No reason to continue while loop if we meet a match.
-					break;
 				}
 			}
 		}

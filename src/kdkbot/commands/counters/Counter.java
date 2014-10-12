@@ -3,46 +3,46 @@ package kdkbot.commands.counters;
 import kdkbot.Kdkbot;
 import kdkbot.commands.Command;
 
-public class Counter implements Command {
-
-	@Override
-	public void init(String trigger, Kdkbot instance) {
-		
+public class Counter {
+	public int value;
+	public String name;
+	
+	public Counter(String name, int value) {
+		this.name = name;
+		this.value = value;
 	}
-
-	@Override
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
-
+	
+	public void addValue(int value) {
+		this.value += value;
 	}
-
-	@Override
-	public void setTrigger(String trigger) {
-
+	
+	public void addValue() {
+		this.value += 1;
 	}
-
-	@Override
-	public String getTrigger() {
-		return null;
+	
+	public void subtractValue(int value) {
+		this.value -= value;
 	}
-
-	@Override
-	public boolean isAvailable() {
-		return false;
+	
+	public void subtractValue() {
+		this.value -= 1;
 	}
-
-	@Override
-	public void setAvailability(boolean available) {
-		
+	
+	public void multiplyValue(int value) {
+		this.value *= value;
 	}
-
-	@Override
-	public int getPermissionLevel() {
-		return 0;
+	
+	public void divideValue(int value) {
+		if(value != 0) {
+			this.value /= value;
+		}
 	}
-
-	@Override
-	public void setPermissionLevel(int level) {
-		
+	
+	public void setValue(int value) {
+		this.value = value;
 	}
-
+	
+	public int getValue() {
+		return this.value;
+	}
 }

@@ -1,4 +1,4 @@
-package kdkbot.commands.quotes;
+package kdkbot.commands.ama;
 
 import kdkbot.Kdkbot;
 import kdkbot.commands.*;
@@ -14,24 +14,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class Quotes implements Command {
-	private String trigger = "quote";
+public class AMA implements Command {
+	private String trigger = "ama";
 	private Kdkbot instance;
 	private boolean isAvailable;
 	private String channel;
 	private CommandPermissionLevel cpl = new CommandPermissionLevel();
 	private Config cfg;
-	private int lastIndex;
+	private ArrayList<String> questions;
+	private int curIndex;
 	
-	public HashMap<String, String> quotes = new HashMap<String, String>();
-	
-	public Quotes(Kdkbot instance, String channel) {
+	public AMA(Kdkbot instance, String channel) {
 		this.cpl.setLevel(1);
 		this.isAvailable = true;
 		this.instance = instance;
 		this.channel = channel;
+		this.curIndex = 0;
+		this.questions = new ArrayList<String>();
 		try {
-			this.cfg = new Config("./cfg/quotes/" + channel + ".cfg", false);
+			this.cfg = new Config("./cfg/ama/" + channel + ".cfg", false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,17 +42,17 @@ public class Quotes implements Command {
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
 		String[] args = message.split(" ");
 		
-		// System.out.println("[DBG] [QUOTES] [EXEC] Args[1] is " + args[1]);
+		// System.out.println("[DBG] [questions] [EXEC] Args[1] is " + args[1]);
 		
 		switch(args[1]) {
 			case "get":
 				try {
-					// System.out.println("[DBG] [QUOTES] [EXEC] Args[2] is " + args[2]);
-					String quote = quotes.get(args[2]);
-					if(quote != null) {
-						instance.sendMessage(channel, "Quote #" + args[2] + ": " + quote);
+					// System.out.println("[DBG] [questions] [EXEC] Args[2] is " + args[2]);
+					String question = questions.get(Integer.parseInt(args[1]));
+					if(question != null) {
+						instance.sendMessage(channel, "Question #" + args[1] + ": " + question);
 					} else {
-						instance.sendMessage(channel, "Quote #" + args[2] + " does not exist.");
+						instance.sendMessage(channel, "Question #" + args[1] + " does not exist.");
 					}
 					
 				} catch(NumberFormatException e) {
@@ -61,17 +62,42 @@ public class Quotes implements Command {
 				}
 				break;
 			case "add":
-				quotes.put(Integer.toString(++lastIndex), message.substring("quote add ".length()));
-				instance.sendMessage(channel, "Quote #" + lastIndex + " added.");
-				saveQuotes();
+				questions.add(message.substring("ama add ".length()));
+				instance.sendMessage(channel, "Question added.");
+				saveQuestions();
 				break;
 			case "remove":
-				quotes.remove(args[2]);
-				instance.sendMessage(channel, "Quote #" + args[2] + " removed.");
+				questions.remove(args[1]);
+				instance.sendMessage(channel, "Question #" + args[2] + " removed.");
 				break;
 			case "save":
-				this.saveQuotes();
-				instance.sendMessage(channel, "Manually saved quote list for this channel.");
+				this.saveQuestions();
+				instance.sendMessage(channel, "Manually saved question list for this channel.");
+				break;
+			case "next":
+				if(questions.size() > 0) {
+					String question = this.questions.get(curIndex++);
+					instance.sendMessage(channel, "Question: " + question);
+				} else {
+					instance.sendMessage(channel, "No more questions left!");
+				}
+				break;
+			case "index":
+				if(args.length < 3) {
+					instance.sendMessage(channel, "Current index set to " + this.curIndex);
+				} else {
+					this.curIndex = Integer.parseInt(args[2]);
+					instance.sendMessage(channel, "Set current question index to " + args[2]);
+				}
+				break;
+			case "repeat":
+				if(questions.size() > 0) {
+					String question = this.questions.get(--curIndex);
+					curIndex++;
+					instance.sendMessage(channel, "Question: " + question);
+				} else {
+					instance.sendMessage(channel, "No more questions left!");
+				}
 				break;
 		}
 	}
@@ -92,36 +118,27 @@ public class Quotes implements Command {
 		this.instance = instance;
 	}
 	
-	public boolean removeQuote(int index) {
+	public boolean removeQuestion(int index) {
 		try {
-			quotes.remove(Integer.toString(index));
+			questions.remove(Integer.toString(index));
 		} catch(IndexOutOfBoundsException e) {
 			return false;
 		}
 		return true;
 	}
 	
-	public String getQuote(int index) {
-		return quotes.get(index);
+	public String getQuestion(int index) {
+		return questions.get(index);
 	}
 	
-	public void loadQuotes() {
+	public void loadQuestions() {
 		try {
 			List<String> lines = cfg.getConfigContents();
 			Iterator<String> lineItero = lines.iterator();
 			while(lineItero.hasNext()) {
 				String line = lineItero.next();
-				String[] linePieces = line.split(": ", 2);
-				
-				// System.out.println("[DBG] [QUOTE] [LOAD] line: " + line);
-				// System.out.println("[DBG] [QUOTE] [LOAD] linePiece length: " + linePieces.length);
-				
-				quotes.put(linePieces[0], linePieces[1]);
-				
-				if(lastIndex < Integer.parseInt(linePieces[0])) {
-					// System.out.println("[DBG] [QUOTE] [LOAD] Setting lastIndex to " + linePieces[0] + " from " + lastIndex);
-					lastIndex = Integer.parseInt(linePieces[0]);
-				}
+
+				questions.add(line);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -148,17 +165,9 @@ public class Quotes implements Command {
 		this.cpl.setLevel(level);
 	}
 	
-	public void saveQuotes() {
+	public void saveQuestions() {
 		try {
-			List<String> toSave = new ArrayList<String>();
-			
-			Iterator hashMapIter = quotes.entrySet().iterator();
-			
-			while(hashMapIter.hasNext()) {
-				Map.Entry pairs = (Map.Entry)hashMapIter.next();
-				toSave.add(pairs.getKey() + ": " + pairs.getValue());
-			}
-			cfg.saveSettings(toSave);
+			cfg.saveSettings(this.questions);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

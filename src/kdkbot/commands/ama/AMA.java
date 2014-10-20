@@ -39,7 +39,7 @@ public class AMA implements Command {
 	}
 	
 	@Override
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
+	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
 		String[] args = message.split(" ");
 		
 		// System.out.println("[DBG] [questions] [EXEC] Args[1] is " + args[1]);

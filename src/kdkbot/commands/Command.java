@@ -1,5 +1,7 @@
 package kdkbot.commands;
 
+import java.util.ArrayList;
+
 import kdkbot.Kdkbot;
 
 public interface Command {
@@ -16,7 +18,7 @@ public interface Command {
      * 
      * @param args The list of command arguments to use for this.
      */
-	void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams);
+	void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams);
 	
 	/**
 	 * Sets the command trigger for this command

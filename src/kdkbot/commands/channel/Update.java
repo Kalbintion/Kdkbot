@@ -4,6 +4,7 @@ import kdkbot.Kdkbot;
 import kdkbot.commands.*;
 
 import java.net.*;
+import java.util.ArrayList;
 
 public class Update implements Command {
 	// Standard Command variables
@@ -23,7 +24,7 @@ public class Update implements Command {
 	}
 	
 	@Override
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
+	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
 		String[] args = message.split(" ");
 		
 		// additionalParams[0] should be oauth
@@ -33,7 +34,7 @@ public class Update implements Command {
 				hurl.disconnect();
 				hurl.setRequestMethod("PUT");
 				hurl.setRequestProperty("Accept", "application/vnd.twitchtv.v2+json");
-				hurl.setRequestProperty("Authorization", "OAuth " + additionalParams[0]);
+				hurl.setRequestProperty("Authorization", "OAuth " + additionalParams.get(0));
 			} catch(ProtocolException e) {
 				e.printStackTrace();				
 			} catch(SecurityException e) {

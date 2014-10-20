@@ -1,5 +1,6 @@
 package kdkbot.commands.strings;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +38,7 @@ public class StringCommand implements Command {
 	}
 	
 	@Override
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
+	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
 		// System.out.println("[DBG] [STRCMD] [EXEC] Attempting to execute command " + this.getTrigger() + " to channel " + channel);
 		instance.sendMessage(channel, parseMessage(this.messageToSend, channel, sender, login, hostname, message, additionalParams));
 	}
@@ -76,7 +77,7 @@ public class StringCommand implements Command {
 		this.cpl.setLevel(level);
 	}
 	
-	public String parseMessage(String message, String channel, String sender, String login, String hostname, String sentMessage, String[] additionalParams) {
+	public String parseMessage(String message, String channel, String sender, String login, String hostname, String sentMessage, ArrayList<String> additionalParams) {
 		String args[] = sentMessage.split(" ");
 		// Static message replacements
 		message = message.replace("%USER%", sender);

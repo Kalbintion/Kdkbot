@@ -1,5 +1,6 @@
 package kdkbot;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -9,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jibble.pircbot.*;
+
 import kdkbot.channel.*;
 import kdkbot.filemanager.*;
 
@@ -40,6 +42,22 @@ public class Kdkbot extends PircBot {
 	}
 	
 	/**
+	 * Event handler for disconnecting from a server
+	 */
+	@Override
+	public void onDisconnect() {
+		try {
+			this.reconnect();
+		} catch (NickAlreadyInUseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (IrcException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Event handler for messages received
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
@@ -63,6 +81,9 @@ public class Kdkbot extends PircBot {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			BOT.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
     			BOT.partChannel(channel, "By order of the king!");
+    		} else if(message.startsWith("||echo " )) {
+    			String messageToSend = message.substring("||echo ".length());
+    			BOT.sendMessage(channel, messageToSend);
     		} else if(message.startsWith("||joinchan ")) {
     			String channelToJoin = message.substring("||joinchan ".length());
     			BOT.sendMessage(channel, "Joining channel " + channelToJoin);
@@ -79,6 +100,10 @@ public class Kdkbot extends PircBot {
     			} else {
     				BOT.sendMessage(channel, userToFind + " is able to globally use the bot.");
     			}
+    		} else if(message.startsWith("||color")) {
+    			String colorArgs[] = message.split(" ");
+    			BOT.sendMessage(channel, "/color " + colorArgs[1]);
+    			BOT.sendMessage(channel, "Changed color to " + colorArgs[1]);
     		} else if(message.equalsIgnoreCase("||listallperms")) {
     			Iterator<Channel> chan = CHANS.iterator();
     			while(chan.hasNext()) {

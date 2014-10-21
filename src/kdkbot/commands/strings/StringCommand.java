@@ -11,12 +11,6 @@ import kdkbot.commands.*;
 import kdkbot.commands.counters.Counter;
 
 public class StringCommand extends Command {
-	// Standard Vars
-	public Kdkbot instance;
-	public String trigger;
-	public boolean isAvailable = true;
-	public CommandPermissionLevel cpl = new CommandPermissionLevel(0);
-	
 	// Class Specific
 	public String messageToSend;
 	
@@ -35,7 +29,7 @@ public class StringCommand extends Command {
 	
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
 		// System.out.println("[DBG] [STRCMD] [EXEC] Attempting to execute command " + this.getTrigger() + " to channel " + channel);
-		instance.sendMessage(channel, parseMessage(this.messageToSend, channel, sender, login, hostname, message, additionalParams));
+		this.getBotInstance().sendMessage(channel, parseMessage(this.messageToSend, channel, sender, login, hostname, message, additionalParams));
 	}
 	
 	public String getMessage() {
@@ -91,7 +85,7 @@ public class StringCommand extends Command {
 			String cntrID = result.substring("%CNTR:".length(), result.length()-1);
 			System.out.println("[DBG] [STRCMD] [PARSE] " + cntrID);
 			
-			Iterator<Channel> chanIter = instance.CHANS.iterator();
+			Iterator<Channel> chanIter = this.getBotInstance().CHANS.iterator();
 			Channel chan = null;
 			while(chanIter.hasNext()) {
 				chan = chanIter.next();

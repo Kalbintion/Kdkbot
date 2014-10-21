@@ -186,7 +186,7 @@ public class Commands {
 							while(strCmdIter.hasNext()) {
 								StringCommand stringNext = strCmdIter.next();
 								// Verify user has access to this command
-								if(stringNext.cpl.getLevel() == expectedRank) {
+								if(stringNext.getPermissionLevel() == expectedRank) {
 									// System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
 									outMessage += stringNext.getTrigger() + ", ";
 								} else if(expectedRank == -100) {
@@ -206,7 +206,7 @@ public class Commands {
 							while(strCmdIter.hasNext()) {
 								StringCommand stringNext = strCmdIter.next();
 								// Verify user has access to this command
-								if(getSenderRank(sender) >= stringNext.cpl.getLevel() &&
+								if(getSenderRank(sender) >= stringNext.getPermissionLevel() &&
 										stringNext.getAvailability()) {
 									Pattern patternCheck = Pattern.compile(stringNext.getTrigger() + ", ");
 									if(patternCheck.matcher(outMessage).find()) {
@@ -344,7 +344,7 @@ public class Commands {
 				// Verify user has access to this command
 				// System.out.println("[DBG] [CMDS] [CHK] Current commands level: " + stringNext.cpl.getLevel());
 				// System.out.println("[DBG] [CMDS] [CHK] Current command is available: " + stringNext.isAvailable);
-				if(getSenderRank(sender) >= stringNext.cpl.getLevel() &&
+				if(getSenderRank(sender) >= stringNext.getPermissionLevel() &&
 						coreCommand.equalsIgnoreCase(stringNext.getTrigger()) &&
 						stringNext.getAvailability()) {
 					// System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());

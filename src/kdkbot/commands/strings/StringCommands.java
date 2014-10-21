@@ -50,6 +50,7 @@ public class StringCommands {
 	
 	public void addCommand(String trigger, String message, String level) {	
 		commands.add(new StringCommand(this.instance, trigger, message, Integer.parseInt(level), true));
+		this.saveCommands();
 	}
 	
 	public void saveCommands() {
@@ -59,11 +60,10 @@ public class StringCommands {
 			
 			while(strings.hasNext()) {
 				StringCommand curStrCmd = strings.next();
-				curStrCmd.getTrigger();
-				curStrCmd.getMessage();
-				curStrCmd.cpl.getLevel();
-				toSave.add("");
+				toSave.add(curStrCmd.getTrigger() + "|" + curStrCmd.getPermissionLevel() + "|" + curStrCmd.getMessage());
 			}
+			
+			config.saveSettings(toSave);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

@@ -95,7 +95,7 @@ public class Commands {
 			
 			// Channel
 			if(getSenderRank(sender) >= channelUpdater.getPermissionLevel() &&
-					channelUpdater.isAvailable() &&
+					channelUpdater.getAvailability() &&
 					channelUpdater.getTrigger().equalsIgnoreCase(coreCommand)) {
 				additionalParams.add(instance.botCfg.getSetting("oauth"));
 				channelUpdater.executeCommand(channel, sender, login, hostname, message, additionalParams);
@@ -116,7 +116,7 @@ public class Commands {
 			}
 			// Quotes
 			else if (getSenderRank(sender) >= quotes.getPermissionLevel() &&
-						quotes.isAvailable() &&
+						quotes.getAvailability() &&
 						quotes.getTrigger().startsWith(coreCommand)) {
 				additionalParams.add("sender_rank=" + getSenderRank(sender));
 				quotes.executeCommand(channel, sender, login, hostname, message, additionalParams);
@@ -207,7 +207,7 @@ public class Commands {
 								StringCommand stringNext = strCmdIter.next();
 								// Verify user has access to this command
 								if(getSenderRank(sender) >= stringNext.cpl.getLevel() &&
-										stringNext.isAvailable()) {
+										stringNext.getAvailability()) {
 									Pattern patternCheck = Pattern.compile(stringNext.getTrigger() + ", ");
 									if(patternCheck.matcher(outMessage).find()) {
 										
@@ -253,7 +253,7 @@ public class Commands {
 			// AMA
 			else if(getSenderRank(sender) >= amas.getPermissionLevel() &&
 						coreCommand.startsWith(amas.getTrigger()) &&
-						amas.isAvailable()) {
+						amas.getAvailability()) {
 				amas.executeCommand(channel, sender, login, hostname, message, additionalParams);
 			}
 			// Counters
@@ -346,7 +346,7 @@ public class Commands {
 				// System.out.println("[DBG] [CMDS] [CHK] Current command is available: " + stringNext.isAvailable);
 				if(getSenderRank(sender) >= stringNext.cpl.getLevel() &&
 						coreCommand.equalsIgnoreCase(stringNext.getTrigger()) &&
-						stringNext.isAvailable()) {
+						stringNext.getAvailability()) {
 					// System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
 					stringNext.executeCommand(channel, sender, login, hostname, message, additionalParams);
 				}

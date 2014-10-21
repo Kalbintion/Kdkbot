@@ -1,13 +1,21 @@
 package kdkbot;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.jibble.pircbot.*;
 
@@ -21,15 +29,24 @@ public class Kdkbot extends PircBot {
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
 	public ArrayList<String> msgIgnoreList = new ArrayList<String>();
+	private boolean _verbose = false;
+	private boolean _logChat = false;
+	private Pattern logIgnores;
 	
     /**
      * Initialization of the basic bot
      */
 	public Kdkbot() throws Exception {
+		// Setup log system
+		this._logChat = Boolean.parseBoolean(botCfg.getSetting("logChat"));
+		logIgnores = Pattern.compile(botCfg.getSetting("logIgnores"));
+		
+		// Setup this bot
 		BOT = this;
 		BOT.setEncoding("UTF-8");
 		BOT.setName(botCfg.getSetting("nick"));
-		BOT.setVerbose(Boolean.parseBoolean(botCfg.getSetting("verbose")));
+		this._verbose = Boolean.parseBoolean(botCfg.getSetting("verbose"));
+		BOT.setVerbose(_verbose);
 		BOT.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
 
 		// Get channels
@@ -57,6 +74,42 @@ public class Kdkbot extends PircBot {
 		}
 	}
 	
+	
+	/**
+	 * Overrides the PIRC implementation of logging to console for purposes of logging to file as well.
+	 * @param line The line in which will be logged
+	 */
+    @Override
+	public void log(String line) {
+    	super.log(line);
+        
+    	// Ensure we're logging chat, and if we are, ensure there isnt a line that needs to be ignored
+    	if(this._logChat && !this.logIgnores.matcher(line).find()) {
+    		// Location To Store Logs
+    		String logPath = "./logs/";
+    		
+    		// Log contents to a file
+    		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd");
+    		Date date = new Date();
+    		String logFileName = dateFormat.format(date) + ".log";
+    		
+    		// Compile log path
+    		Path path = Paths.get(logPath + logFileName);
+    		
+    		// Open File
+    		PrintWriter out;
+			try {
+				out = new PrintWriter(new BufferedWriter(new FileWriter(path.toAbsolutePath().toString(), true)));
+				out.println(System.currentTimeMillis() + " " + line);
+	    		out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    	}
+    }
+    
 	/**
 	 * Event handler for messages received
 	 */

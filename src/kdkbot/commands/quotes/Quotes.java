@@ -14,10 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class Quotes implements Command {
-	private String trigger = "quote";
-	private Kdkbot instance;
-	private boolean isAvailable;
+public class Quotes extends Command {
 	private String channel;
 	private CommandPermissionLevel cpl = new CommandPermissionLevel();
 	private Config cfg;
@@ -26,9 +23,9 @@ public class Quotes implements Command {
 	public HashMap<String, String> quotes = new HashMap<String, String>();
 	
 	public Quotes(Kdkbot instance, String channel) {
-		this.cpl.setLevel(1);
-		this.isAvailable = true;
-		this.instance = instance;
+		this.setTrigger("quote");
+		this.setAvailability(true);
+		this.setBotInstance(instance);
 		this.channel = channel;
 		try {
 			this.cfg = new Config("./cfg/quotes/" + channel + ".cfg", false);
@@ -37,7 +34,6 @@ public class Quotes implements Command {
 		}
 	}
 	
-	@Override
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
 		String[] args = message.split(" ");
 		
@@ -49,49 +45,33 @@ public class Quotes implements Command {
 					// System.out.println("[DBG] [QUOTES] [EXEC] Args[2] is " + args[2]);
 					String quote = quotes.get(args[2]);
 					if(quote != null) {
-						instance.sendMessage(channel, "Quote #" + args[2] + ": " + quote);
+						this.getBotInstance().sendMessage(channel, "Quote #" + args[2] + ": " + quote);
 					} else {
-						instance.sendMessage(channel, "Quote #" + args[2] + " does not exist.");
+						this.getBotInstance().sendMessage(channel, "Quote #" + args[2] + " does not exist.");
 					}
 					
 				} catch(NumberFormatException e) {
-					this.instance.sendMessage(channel, "That is not a number, therefore I cannot find the quote.");
+					this.getBotInstance().sendMessage(channel, "That is not a number, therefore I cannot find the quote.");
 				} catch(IndexOutOfBoundsException e) {
-					this.instance.sendMessage(channel, "The requested quote cannot be found.");
+					this.getBotInstance().sendMessage(channel, "The requested quote cannot be found.");
 				}
 				break;
 			case "add":
 				quotes.put(Integer.toString(++lastIndex), message.substring("quote add ".length()));
-				instance.sendMessage(channel, "Quote #" + lastIndex + " added.");
+				this.getBotInstance().sendMessage(channel, "Quote #" + lastIndex + " added.");
 				saveQuotes();
 				break;
 			case "remove":
 				quotes.remove(args[2]);
-				instance.sendMessage(channel, "Quote #" + args[2] + " removed.");
+				this.getBotInstance().sendMessage(channel, "Quote #" + args[2] + " removed.");
 				break;
 			case "save":
 				this.saveQuotes();
-				instance.sendMessage(channel, "Manually saved quote list for this channel.");
+				this.getBotInstance().sendMessage(channel, "Manually saved quote list for this channel.");
 				break;
 		}
 	}
 
-	@Override
-	public void setTrigger(String trigger) {
-		this.trigger = trigger;
-	}
-
-	@Override
-	public String getTrigger() {
-		return this.trigger;
-	}
-
-	@Override
-	public void init(String trigger, Kdkbot instance) {
-		this.trigger = trigger;
-		this.instance = instance;
-	}
-	
 	public boolean removeQuote(int index) {
 		try {
 			quotes.remove(Integer.toString(index));
@@ -126,26 +106,6 @@ public class Quotes implements Command {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	@Override
-	public boolean isAvailable() {
-		return this.isAvailable;
-	}
-
-	@Override
-	public void setAvailability(boolean available) {
-		this.isAvailable = available;
-	}
-
-	@Override
-	public int getPermissionLevel() {
-		return this.cpl.getLevel();
-	}
-
-	@Override
-	public void setPermissionLevel(int level) {
-		this.cpl.setLevel(level);
 	}
 	
 	public void saveQuotes() {

@@ -6,7 +6,7 @@ import kdkbot.commands.*;
 import java.net.*;
 import java.util.ArrayList;
 
-public class Update implements Command {
+public class Update extends Command {
 	// Standard Command variables
 	private Kdkbot instance;
 	private String trigger;
@@ -16,14 +16,7 @@ public class Update implements Command {
 	// Other command variables
 	private URL url;
 	private HttpURLConnection hurl;
-
-	@Override
-	public void init(String trigger, Kdkbot instance) {
-		this.trigger = trigger;
-		this.instance = instance;
-	}
 	
-	@Override
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
 		String[] args = message.split(" ");
 		
@@ -45,33 +38,4 @@ public class Update implements Command {
 		}
 	}
 
-	@Override
-	public void setTrigger(String trigger) {
-		this.trigger = trigger;
-	}
-
-	@Override
-	public String getTrigger() {
-		return this.trigger;
-	}
-
-	@Override
-	public boolean isAvailable() {
-		return this.isAvailable;
-	}
-
-	@Override
-	public void setAvailability(boolean available) {
-		this.isAvailable = available;
-	}
-
-	@Override
-	public int getPermissionLevel() {
-		return this.cpl.getLevel();
-	}
-
-	@Override
-	public void setPermissionLevel(int level) {
-		this.cpl.setLevel(level);
-	}
 }

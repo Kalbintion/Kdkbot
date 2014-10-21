@@ -10,7 +10,7 @@ import kdkbot.channel.Channel;
 import kdkbot.commands.*;
 import kdkbot.commands.counters.Counter;
 
-public class StringCommand implements Command {
+public class StringCommand extends Command {
 	// Standard Vars
 	public Kdkbot instance;
 	public String trigger;
@@ -21,23 +21,18 @@ public class StringCommand implements Command {
 	public String messageToSend;
 	
 	public StringCommand(String trigger, Kdkbot instance) {
-		this.init(trigger, instance);
+		this.setBotInstance(instance);
+		this.setTrigger(trigger);
 	}
 	
 	public StringCommand(Kdkbot instance, String trigger, String message, int level, boolean active) {
-		this.init(trigger, instance);
+		this.setBotInstance(instance);
+		this.setTrigger(trigger);
 		this.messageToSend = message;
-		this.cpl.setLevel(level);
+		this.setPermissionLevel(level);
 		this.setAvailability(active);
 	}
 	
-	@Override
-	public void init(String trigger, Kdkbot instance) {
-		this.setTrigger(trigger);
-		this.instance = instance;
-	}
-	
-	@Override
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
 		// System.out.println("[DBG] [STRCMD] [EXEC] Attempting to execute command " + this.getTrigger() + " to channel " + channel);
 		instance.sendMessage(channel, parseMessage(this.messageToSend, channel, sender, login, hostname, message, additionalParams));
@@ -45,36 +40,6 @@ public class StringCommand implements Command {
 	
 	public String getMessage() {
 		return this.messageToSend;
-	}
-	
-	@Override
-	public void setTrigger(String trigger) {
-		this.trigger = trigger;
-	}
-	
-	@Override
-	public String getTrigger() {
-		return this.trigger;
-	}
-	
-	@Override
-	public boolean isAvailable() {
-		return this.isAvailable;
-	}
-	
-	@Override
-	public void setAvailability(boolean available) {
-		this.isAvailable = available;
-	}
-	
-	@Override
-	public int getPermissionLevel() {
-		return this.cpl.getLevel();
-	}
-	
-	@Override
-	public void setPermissionLevel(int level) {
-		this.cpl.setLevel(level);
 	}
 	
 	public String parseMessage(String message, String channel, String sender, String login, String hostname, String sentMessage, ArrayList<String> additionalParams) {

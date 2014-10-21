@@ -24,6 +24,7 @@ public class AMA extends Command {
 		this.setBotInstance(instance);
 		this.setTrigger("ama");
 		this.setPermissionLevel(1);
+		this.setAvailability(true);
 		this.channel = channel;
 		this.curIndex = 0;
 		this.questions = new ArrayList<String>();
@@ -43,13 +44,12 @@ public class AMA extends Command {
 			case "get":
 				try {
 					// System.out.println("[DBG] [questions] [EXEC] Args[2] is " + args[2]);
-					String question = questions.get(Integer.parseInt(args[1]));
+					String question = questions.get(Integer.parseInt(args[2]));
 					if(question != null) {
-						this.getBotInstance().sendMessage(channel, "Question #" + args[1] + ": " + question);
+						this.getBotInstance().sendMessage(channel, "Question #" + args[2] + ": " + question);
 					} else {
-						this.getBotInstance().sendMessage(channel, "Question #" + args[1] + " does not exist.");
+						this.getBotInstance().sendMessage(channel, "Question #" + args[2] + " does not exist.");
 					}
-					
 				} catch(NumberFormatException e) {
 					this.getBotInstance().sendMessage(channel, "That is not a number, therefore I cannot find the quote.");
 				} catch(IndexOutOfBoundsException e) {

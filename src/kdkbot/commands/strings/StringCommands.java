@@ -60,7 +60,7 @@ public class StringCommands {
 			
 			while(strings.hasNext()) {
 				StringCommand curStrCmd = strings.next();
-				toSave.add(curStrCmd.getTrigger() + "|" + curStrCmd.getPermissionLevel() + "|" + curStrCmd.getMessage());
+				toSave.add(curStrCmd.getPermissionLevel() + "|" + curStrCmd.getAvailability() + "|" + curStrCmd.getTrigger() + "|" + curStrCmd.getMessage());
 			}
 			
 			config.saveSettings(toSave);

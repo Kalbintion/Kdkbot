@@ -147,7 +147,6 @@ public class Commands {
 								System.out.println("[DBG] [CMD] [STRCMD] csArgs[" + i + "] is " + csArgs[i]);
 							}
 							commandStrings.addCommand(csArgs[2], csArgs[4], csArgs[3]);
-							commandStrings.saveCommands();
 						}
 						break;
 					case "edit":
@@ -252,8 +251,9 @@ public class Commands {
 			}
 			// AMA
 			else if(getSenderRank(sender) >= amas.getPermissionLevel() &&
-						coreCommand.startsWith(amas.getTrigger()) &&
+						coreCommand.equalsIgnoreCase(amas.getTrigger()) &&
 						amas.getAvailability()) {
+				System.out.println("[DBG] [CMDHND] [AMA] Sending message to AMA handler.");
 				amas.executeCommand(channel, sender, login, hostname, message, additionalParams);
 			}
 			// Counters

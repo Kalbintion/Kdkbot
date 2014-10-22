@@ -33,19 +33,17 @@ public class CommandPermissionLevel {
 	}
 	
 	/**
-	 * Determines if this command can be used with the supplied command level
-	 * @param commandLevel The value of the permission level to use to be checked against.
-	 * @return A boolean indicating if the user can (true) or cannot (false) execute a particular command
+	 * Sets the permission level
+	 * @param level The integer value to use
 	 */
-	public boolean canUseCommand(int commandLevel) {
-		if(this.commandLevel <= commandLevel) { return true; }
-		return false;
-	}
-	
 	public void setLevel(int level) {
 		this.commandLevel = level;
 	}
 	
+	/**
+	 * Gets the permission level
+	 * @return The permission level
+	 */
 	public int getLevel() {
 		return this.commandLevel;
 	}

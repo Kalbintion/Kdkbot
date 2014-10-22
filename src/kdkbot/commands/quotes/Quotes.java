@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Quotes extends Command {
 	private String channel;
@@ -68,6 +69,15 @@ public class Quotes extends Command {
 			case "save":
 				this.saveQuotes();
 				this.getBotInstance().sendMessage(channel, "Manually saved quote list for this channel.");
+				break;
+			case "reload":
+				this.quotes = new HashMap<String, String>();
+				this.loadQuotes();
+				this.getBotInstance().sendMessage(channel, "Manually reloaded quote list for this channel.");
+			case "random":
+				Random rnd = new Random();
+				int quoteNum = rnd.nextInt(this.quotes.size() + 1);
+				this.getBotInstance().sendMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
 				break;
 		}
 	}

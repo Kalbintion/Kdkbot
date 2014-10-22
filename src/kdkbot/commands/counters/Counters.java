@@ -75,7 +75,83 @@ public class Counters {
 		}
 	}
 	
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, String[] additionalParams) {
-
+	public void executeCommand(String channel, String sender, String login, String hostname, String message, int senderRank, ArrayList<String> additionalParams) {
+		String[] args = message.split(" ");
+		
+		Iterator<Counter> cntrIter = this.counters.iterator();
+		Counter cntr;
+		
+		switch(args[1]) {
+			case "new":
+				if(senderRank >= 2) {
+					if(args.length >= 3) {
+						this.addCounter(args[2], Integer.parseInt(args[3]));
+						instance.sendMessage(channel, "Added new counter called " + args[2] + " with value of " + args[3]);
+					} else {
+						this.addCounter(args[2], 0);
+						instance.sendMessage(channel, "Added new counter called " + args[2] + " with value of 0");
+					}
+				}
+				break;
+			case "delete":
+			case "remove":
+				if(senderRank >= 2)
+					this.removeCounter(args[2]);
+				break;
+			case "+":
+			case "add":
+				while(cntrIter.hasNext()) {
+					cntr = cntrIter.next();
+					if(cntr.name.equalsIgnoreCase(args[2])) {
+						if(args.length >= 3) {
+							cntr.addValue(Integer.parseInt(args[3]));
+							instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+						} else {
+							cntr.addValue(1);
+							instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+						}
+					}
+				}
+				break;
+			case "-":
+			case "sub":
+				while(cntrIter.hasNext()) {
+					cntr = cntrIter.next();
+					if(cntr.name.equalsIgnoreCase(args[2])) {
+						cntr.subtractValue(Integer.parseInt(args[3]));
+						instance.sendMessage(channel, "Decremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+					}
+				}
+				break;
+			case "*":
+			case "mult":
+				while(cntrIter.hasNext()) {
+					cntr = cntrIter.next();
+					if(cntr.name.equalsIgnoreCase(args[2])) {
+						cntr.multiplyValue(Integer.parseInt(args[3]));
+						instance.sendMessage(channel, "Multiplied " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+					}
+				}
+				break;
+			case "/":
+			case "divide":
+				while(cntrIter.hasNext()) {
+					cntr = cntrIter.next();
+					if(cntr.name.equalsIgnoreCase(args[2])) {
+						cntr.divideValue(Integer.parseInt(args[3]));
+						instance.sendMessage(channel, "Divided " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+					}
+				}
+				break;
+			case "=":
+			case "get":
+				while(cntrIter.hasNext()) {
+					cntr = cntrIter.next();
+					if(cntr.name.equalsIgnoreCase(args[2])) {
+						instance.sendMessage(channel, "Counter " + cntr.name + " is set to " + cntr.value);
+					}
+				}
+		}
+		this.saveCounters();
 	}
 }

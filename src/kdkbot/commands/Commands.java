@@ -138,116 +138,7 @@ public class Commands {
 			// Custom Commands
 			else if(getSenderRank(sender) >= 1 &&
 						coreCommand.startsWith("commands")) {
-				switch(args[1]) {
-					case "new":
-						if(getSenderRank(sender) >= 3 ) {
-							String[] csArgs = message.split(" ", 5);
-							System.out.println("[DBG] [CMD] [STRCMD] csArgs size: " + csArgs.length);
-							for(int i = 0 ; i < csArgs.length; i++) {
-								System.out.println("[DBG] [CMD] [STRCMD] csArgs[" + i + "] is " + csArgs[i]);
-							}
-							commandStrings.addCommand(csArgs[2], csArgs[4], csArgs[3]);
-						}
-						break;
-					case "edit":
-						if(getSenderRank(sender) >= 3) {
-							String[] csArgs = message.split(" ", 5);
-							System.out.println("[DBG] [CMD] [STRCMD] csArgs size: " + csArgs.length);
-							for(int i = 0 ; i < csArgs.length; i++) {
-								System.out.println("[DBG] [CMD] [STRCMD] csArgs[" + i + "] is " + csArgs[i]);
-							}
-						}
-						break;
-					case "list":
-						// |commands list <rank>
-						String outMessage = "Commands for " + channel + " ";
-						// Hardcoded commands - need a better situation here
-						String[] additionalCommands = {"", "ama, ama next, ama get, counter add, counter sub, counter mult, counter divide, counter get, commands list, quote get, ", "ama add, counter new, counter delete, multi, ", "commands new, commands edit, commands remove, raid, quote add, perm get, perm set, ", "", ""};
-						
-						if(args.length == 3) {
-							// We are expecting a rank to list for
-							outMessage += " @ rank " + args[2] +": ";
-							
-							int expectedRank = 0;
-							if(args[2] == "*") {
-								// Show all - Using expectedRank ID -1000
-								expectedRank = -1000;
-							} else {
-								// Grab expected rank
-								expectedRank = Integer.parseInt(args[2]);
-							}
-							
-							if(expectedRank != -1000) {
-								outMessage += additionalCommands[expectedRank];
-							}
-							// Append the rest of the commands for this channel to the list
-							Iterator<StringCommand> strCmdIter = this.commandStrings.commands.iterator();
-							while(strCmdIter.hasNext()) {
-								StringCommand stringNext = strCmdIter.next();
-								// Verify user has access to this command
-								if(stringNext.getPermissionLevel() == expectedRank) {
-									// System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
-									outMessage += stringNext.getTrigger() + ", ";
-								} else if(expectedRank == -100) {
-									outMessage += stringNext.getTrigger() + ", ";
-								}
-							}
-							
-						} else {
-							outMessage += " available to user " + sender + ": ";
-							// List commands based on users rank
-							int userRank = getSenderRank(sender);
-							while(userRank > 0 ) {
-								outMessage += additionalCommands[userRank--];
-							}
-							// Append the rest of the commands for this channel to the list
-							Iterator<StringCommand> strCmdIter = this.commandStrings.commands.iterator();
-							while(strCmdIter.hasNext()) {
-								StringCommand stringNext = strCmdIter.next();
-								// Verify user has access to this command
-								if(getSenderRank(sender) >= stringNext.getPermissionLevel() &&
-										stringNext.getAvailability()) {
-									Pattern patternCheck = Pattern.compile(stringNext.getTrigger() + ", ");
-									if(patternCheck.matcher(outMessage).find()) {
-										
-									} else {
-										outMessage += stringNext.getTrigger() + ", ";
-									}
-									
-								}
-							}
-						}
-
-						// Trim off last two characters
-						outMessage = outMessage.substring(0, outMessage.length() - 2);
-						
-						System.out.println("[DBG] [CMDS] [LIST] " + outMessage);
-						// Finally we should have compiled a list of commands, send to chat
-						if(outMessage.length() >= 400) {
-							System.out.println("[DBG] [CMDS] [LIST] Detected >400 outgoing message");
-							// outgoing message is too long, split it up into multiple messages
-							int offset = 0;
-							int endset = offset + 400;
-							String[] items = outMessage.split(", ");
-							String newMessageOut = "";
-							for(int i = 0; i < items.length; i++) {
-								System.out.println("[DBG] [CMDS] [LIST] On item " + i + " of " + items.length);
-								newMessageOut += items[i] + ", ";
-								if(newMessageOut.length() >= 400) {
-									System.out.println("[DBG] [CMDS] [LIST] Outputting a new message: " + newMessageOut);
-									instance.sendMessage(channel, newMessageOut);
-									newMessageOut = "";
-								}
-							}
-							// Finally send the last bit of info to the channel
-							instance.sendMessage(channel, newMessageOut);
-						} else {
-							instance.sendMessage(channel, outMessage);
-						}
-						
-						break;
-				}
-
+				commandStrings.executeCommand(channel, sender, login, hostname, message, getSenderRank(sender), additionalParams);
 			}
 			// AMA
 			else if(getSenderRank(sender) >= amas.getPermissionLevel() &&
@@ -259,81 +150,7 @@ public class Commands {
 			// Counters
 			else if(getSenderRank(sender) >= 1 &&
 						coreCommand.startsWith("counter")) {
-				Iterator<Counter> cntrIter = this.counters.counters.iterator();
-				Counter cntr;
-				
-				switch(args[1]) {
-					case "new":
-						if(getSenderRank(sender) >= 2) {
-							if(args.length >= 3) {
-								this.counters.addCounter(args[2], Integer.parseInt(args[3]));
-								instance.sendMessage(channel, "Added new counter called " + args[2] + " with value of " + args[3]);
-							} else {
-								this.counters.addCounter(args[2], 0);
-								instance.sendMessage(channel, "Added new counter called " + args[2] + " with value of 0");
-							}
-						}
-						break;
-					case "delete":
-					case "remove":
-						if(getSenderRank(sender) >= 2)
-							this.counters.removeCounter(args[2]);
-						break;
-					case "+":
-					case "add":
-						while(cntrIter.hasNext()) {
-							cntr = cntrIter.next();
-							if(cntr.name.equalsIgnoreCase(args[2])) {
-								if(args.length >= 3) {
-									cntr.addValue(Integer.parseInt(args[3]));
-									instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
-								} else {
-									cntr.addValue(1);
-									instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
-								}
-							}
-						}
-						break;
-					case "-":
-					case "sub":
-						while(cntrIter.hasNext()) {
-							cntr = cntrIter.next();
-							if(cntr.name.equalsIgnoreCase(args[2])) {
-								cntr.subtractValue(Integer.parseInt(args[3]));
-								instance.sendMessage(channel, "Decremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
-							}
-						}
-						break;
-					case "*":
-					case "mult":
-						while(cntrIter.hasNext()) {
-							cntr = cntrIter.next();
-							if(cntr.name.equalsIgnoreCase(args[2])) {
-								cntr.multiplyValue(Integer.parseInt(args[3]));
-								instance.sendMessage(channel, "Multiplied " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
-							}
-						}
-						break;
-					case "/":
-					case "divide":
-						while(cntrIter.hasNext()) {
-							cntr = cntrIter.next();
-							if(cntr.name.equalsIgnoreCase(args[2])) {
-								cntr.divideValue(Integer.parseInt(args[3]));
-								instance.sendMessage(channel, "Divided " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
-							}
-						}
-						break;
-					case "=":
-					case "get":
-						while(cntrIter.hasNext()) {
-							cntr = cntrIter.next();
-							if(cntr.name.equalsIgnoreCase(args[2])) {
-								instance.sendMessage(channel, "Counter " + cntr.name + " is set to " + cntr.value);
-							}
-						}
-				}
-				this.counters.saveCounters();
+				counters.executeCommand(channel, sender, login, hostname, message, getSenderRank(sender), additionalParams);
 			}
 			// Custom String Commands
 			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
@@ -376,6 +193,16 @@ public class Commands {
 		} else {
 			return 0;
 		}
+	}
+	
+	public ArrayList<String> getSenderRanks() {
+		ArrayList<String> strings = null;
+		try {
+			strings = (ArrayList<String>) cfgRanks.getConfigContents();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return strings;
 	}
 	
 	public void setSenderRank(String target, int rank) {

@@ -114,21 +114,6 @@ public class Kdkbot extends PircBot {
 	 * Event handler for messages received
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
-    	// Temp Section
-    	/* if(channel.equalsIgnoreCase("#kalbintion")) {
-	    	String args = message.substring(("!raid ").length(), message.length());
-	    	BOT.sendMessage(channel, "Go raid http://www.twitch.tv/" + args);
-    	} */
-    	/* if (message.startsWith("!multi")) {
-    		String[] args = message.split(" ");
-    		String out = "http://multitwitch.tv/";
-    		for(int i = 1; i < args.length; i++) {
-    			out += args[i] + "/";
-    		}
-    		BOT.sendMessage(channel, out);
-    	} else if (message.equalsIgnoreCase("!mumble get")) {
-    		BOT.sendMessage(channel, "You can download mumble @ http://wiki.mumble.info/wiki/Main_Page");
-    	} */
     	// Master Commands
     	if(sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("||leavechan")) {

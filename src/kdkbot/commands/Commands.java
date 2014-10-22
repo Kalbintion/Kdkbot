@@ -171,22 +171,43 @@ public class Commands {
 		}
 	}
 	
+	/**
+	 * Sets the permission file's path for this command object
+	 * @param filePath The path to the file 
+	 */
 	public void setPermissionPath(Path filePath) {
 		this.permissionPath = filePath;
 	}
 	
+	/**
+	 * Gets the permission file's path for this command object
+	 * @return The path to the file
+	 */
 	public Path getPermissionPath() {
 		return this.permissionPath;
 	}
 	
+	/**
+	 * Sets the command list file's path for this command object
+	 * @param filePath The command list path object to use
+	 */
 	public void setCommandListPath(Path filePath) {
 		this.commandListPath = filePath;
 	}
 	
+	/**
+	 * Gets the command list file's path for this command object
+	 * @return The command list path object
+	 */
 	public Path getCommandListPath() {
 		return this.commandListPath;
 	}
 	
+	/**
+	 * Gets a particular users rank for this channel.
+	 * @param sender The sender to lookup
+	 * @return An integer value representing the users rank for this channel.
+	 */
 	public int getSenderRank(String sender) {
 		if(this.senderRanks.containsKey(sender.toLowerCase())) {
 			return this.senderRanks.get(sender.toLowerCase());
@@ -195,6 +216,10 @@ public class Commands {
 		}
 	}
 	
+	/**
+	 * Gets all of this channels ranks
+	 * @return An Array List of users and their ranks
+	 */
 	public ArrayList<String> getSenderRanks() {
 		ArrayList<String> strings = null;
 		try {
@@ -205,11 +230,19 @@ public class Commands {
 		return strings;
 	}
 	
+	/**
+	 * Sets a particular users rank for this channel
+	 * @param target The users name to set a rank to
+	 * @param rank The rank to set the target to
+	 */
 	public void setSenderRank(String target, int rank) {
 		senderRanks.put(target.toLowerCase(), rank);
 		this.saveSenderRanks(true);
 	}
 	
+	/**
+	 * Loads the channels ranks for users.
+	 */
 	public void loadSenderRanks() {
 		try {
 			List<String> strings = cfgRanks.getConfigContents();
@@ -223,10 +256,17 @@ public class Commands {
 		}
 	}
 	
+	/**
+	 * Saves the channels ranks for users.
+	 */
 	public void saveSenderRanks() {
 		cfgRanks.saveSettings();
 	}
 	
+	/**
+	 * 
+	 * @param sendReferenceMap
+	 */
 	public void saveSenderRanks(boolean sendReferenceMap) {
 		cfgRanks.saveSettings(this.senderRanks);
 	}

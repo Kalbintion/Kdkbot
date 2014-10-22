@@ -2,6 +2,7 @@ package kdkbot.commands.strings;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,8 +105,51 @@ public class StringCommand extends Command {
 			}
 			
 			message = message.replace("%CNTR:" + cntrID + "%", Integer.toString(cntr.value));
-		}
+		}		
+		
+		// Random Number Generator Variables
+		Random rnd = new Random();
+		
+		// Basic replacement
+		message = message.replace("%RND%", Integer.toString(rnd.nextInt()));
+		
+		// Advanced replacement (specifying max value)
+		Pattern PATTERN_RND_MAX_REPLACE = Pattern.compile("%RND:\\d*?%");
+		System.out.println("[DBG] [STRCMD] [PARSE] " + PATTERN_RND_MAX_REPLACE.toString());
+		Matcher pattern_rnd_max_matches = PATTERN_RND_MAX_REPLACE.matcher(message);
+		System.out.println("[DBG] [STRCMD] [PARSE] Post Matcher RegEx: " + pattern_rnd_max_matches.toString());
+		
+		while(pattern_rnd_max_matches.find()) {
+			String result = pattern_rnd_max_matches.group();
+			System.out.println("[DBG] [STRCMD] [PARSE] " + result);
+
+			String argValues = result.substring("%RND:".length(), result.length()-1);
 			
+			int maxValue = Integer.parseInt(argValues);
+
+			message = message.replace(result, Integer.toString(rnd.nextInt(maxValue)));
+		}
+		
+		// Advanced replacement (specifying min and max values)
+		Pattern PATTERN_RND_MIN_MAX_REPLACE = Pattern.compile("%RND:\\d*?,\\d*?%");
+		System.out.println("[DBG] [STRCMD] [PARSE] " + PATTERN_RND_MIN_MAX_REPLACE.toString());
+		Matcher pattern_rnd_min_max_matches = PATTERN_RND_MIN_MAX_REPLACE.matcher(message);
+		System.out.println("[DBG] [STRCMD] [PARSE] Post Matcher RegEx: " + pattern_rnd_min_max_matches.toString());
+		
+		
+		while(pattern_rnd_min_max_matches.find()) {
+			String result = pattern_rnd_min_max_matches.group();
+			System.out.println("[DBG] [STRCMD] [PARSE] " + result);
+
+			String argValues = result.substring("%RND:".length(), result.length()-1);
+			String[] argParts = argValues.split(",");
+			
+			int minValue = Integer.parseInt(argParts[0]);
+			int maxValue = Integer.parseInt(argParts[1]);
+
+			message = message.replace(result, Integer.toString(rnd.nextInt(maxValue - minValue + 1) + minValue));
+		}
+		
 		return message;
 	}
 }

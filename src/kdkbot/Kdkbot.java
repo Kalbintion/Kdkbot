@@ -32,6 +32,7 @@ public class Kdkbot extends PircBot {
 	private boolean _verbose = false;
 	private boolean _logChat = false;
 	private Pattern logIgnores;
+	private Log logger;
 	
     /**
      * Initialization of the basic bot
@@ -40,6 +41,11 @@ public class Kdkbot extends PircBot {
 		// Setup log system
 		this._logChat = Boolean.parseBoolean(botCfg.getSetting("logChat"));
 		logIgnores = Pattern.compile(botCfg.getSetting("logIgnores"));
+		
+		// Setup this instances chat logger
+		if(_logChat) {
+			this.logger = new Log();
+		}
 		
 		// Setup this bot
 		BOT = this;
@@ -85,28 +91,7 @@ public class Kdkbot extends PircBot {
         
     	// Ensure we're logging chat, and if we are, ensure there isnt a line that needs to be ignored
     	if(this._logChat && !this.logIgnores.matcher(line).find()) {
-    		// Location To Store Logs
-    		String logPath = "./logs/";
-    		
-    		// Log contents to a file
-    		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd");
-    		Date date = new Date();
-    		String logFileName = dateFormat.format(date) + ".log";
-    		
-    		// Compile log path
-    		Path path = Paths.get(logPath + logFileName);
-    		
-    		// Open File
-    		PrintWriter out;
-			try {
-				out = new PrintWriter(new BufferedWriter(new FileWriter(path.toAbsolutePath().toString(), true)));
-				out.println(System.currentTimeMillis() + " " + line);
-	    		out.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		
+    		logger.logln(System.currentTimeMillis() + " " + line);
     	}
     }
     
@@ -119,6 +104,14 @@ public class Kdkbot extends PircBot {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			BOT.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
     			BOT.partChannel(channel, "By order of the king!");
+    		} else if(message.startsWith("||stop")) {
+    			Iterator<Channel> chanIter = BOT.CHANS.iterator();
+    			while(chanIter.hasNext()) {
+    				Channel chan = chanIter.next();
+    				BOT.sendMessage(chan.getChannel(), "I am shutting down.");
+    			}
+    			BOT.disconnect();
+    			System.exit(0);
     		} else if(message.startsWith("||echo " )) {
     			String messageToSend = message.substring("||echo ".length());
     			BOT.sendMessage(channel, messageToSend);

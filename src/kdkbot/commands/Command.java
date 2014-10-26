@@ -9,6 +9,7 @@ public abstract class Command {
 	private String trigger;
 	private CommandPermissionLevel cpl;
 	private boolean isAvailable;
+	private String helpMessage;
 	
 	/**
 	 * Initializes a new command with nothing defaulted
@@ -108,5 +109,13 @@ public abstract class Command {
 	 */
 	public boolean getAvailability() {
 		return this.isAvailable;
+	}
+	
+	/**
+	 * Gets this commands help message, if one exists.
+	 * @return The message string for using this particular command.
+	 */
+	public String getHelpMessage() {
+		return this.helpMessage;
 	}
 }

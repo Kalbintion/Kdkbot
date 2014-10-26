@@ -135,8 +135,7 @@ public class StringCommand extends Command {
 		System.out.println("[DBG] [STRCMD] [PARSE] " + PATTERN_RND_MIN_MAX_REPLACE.toString());
 		Matcher pattern_rnd_min_max_matches = PATTERN_RND_MIN_MAX_REPLACE.matcher(message);
 		System.out.println("[DBG] [STRCMD] [PARSE] Post Matcher RegEx: " + pattern_rnd_min_max_matches.toString());
-		
-		
+				
 		while(pattern_rnd_min_max_matches.find()) {
 			String result = pattern_rnd_min_max_matches.group();
 			System.out.println("[DBG] [STRCMD] [PARSE] " + result);

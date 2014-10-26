@@ -114,6 +114,16 @@ public class Commands {
 						break;
 				}
 			}
+			// Help
+			else if(getSenderRank(sender) >= 1 &&
+						coreCommand.startsWith("help")) {
+				if(args.length <= 1) {
+					// Send link to channel for wiki
+					instance.sendMessage(channel, "You can see standard commands and get bot help @ https://github.com/kalbintion/kdkbot/wiki");
+				} else {
+					// Get information for command help
+				}
+			}
 			// Quotes
 			else if (getSenderRank(sender) >= quotes.getPermissionLevel() &&
 						quotes.getAvailability() &&

@@ -105,7 +105,7 @@ public class Config {
 			BufferedWriter write = new BufferedWriter(
 					new OutputStreamWriter(
 							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
-						StandardCharsets.US_ASCII));
+						StandardCharsets.UTF_8));
 			
 			while(hashMapIter.hasNext()) {
 				Map.Entry pairs = (Map.Entry)hashMapIter.next();
@@ -130,7 +130,7 @@ public class Config {
 			BufferedWriter write = new BufferedWriter(
 					new OutputStreamWriter(
 							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
-						StandardCharsets.US_ASCII));
+						StandardCharsets.UTF_8));
 			
 			while(hashMapIter.hasNext()) {
 				Map.Entry pairs = (Map.Entry)hashMapIter.next();
@@ -155,7 +155,7 @@ public class Config {
 			BufferedWriter write = new BufferedWriter(
 					new OutputStreamWriter(
 							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
-						StandardCharsets.US_ASCII));
+						StandardCharsets.UTF_8));
 			
 			while(hashMapIter.hasNext()) {
 				write.write(hashMapIter.next() + "\r\n");
@@ -190,7 +190,7 @@ public class Config {
 	 */
 	public void loadConfigContents() throws Exception {
 		FileInputStream fis = new FileInputStream(this.filePath.toAbsolutePath().toString());
-		InputStreamReader isr = new InputStreamReader(fis);
+		InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
 		BufferedReader br = new BufferedReader(isr);
 		
 		String line;

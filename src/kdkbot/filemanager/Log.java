@@ -78,7 +78,7 @@ public class Log {
 		try {
 			out = new BufferedWriter(
 					new OutputStreamWriter(
-							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
+							new FileOutputStream(this.filePath.toAbsolutePath().toString(), true),
 						StandardCharsets.UTF_8));
 			out.write(line + "\r\n");
     		out.close();
@@ -96,7 +96,7 @@ public class Log {
 		try {
 			out = new BufferedWriter(
 					new OutputStreamWriter(
-							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
+							new FileOutputStream(this.filePath.toAbsolutePath().toString(), true),
 						StandardCharsets.UTF_8));
 			out.write(text);
 			out.close();

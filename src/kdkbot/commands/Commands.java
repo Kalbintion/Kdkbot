@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.*;
 
 import org.jibble.pircbot.User;
@@ -161,6 +162,14 @@ public class Commands {
 			else if(getSenderRank(sender) >= 1 &&
 						coreCommand.startsWith("counter")) {
 				counters.executeCommand(channel, sender, login, hostname, message, getSenderRank(sender), additionalParams);
+			}
+			// Magic 8-Ball / Conch
+			else if(getSenderRank(sender) >= 1 &&
+						(coreCommand.equalsIgnoreCase("conch") ||
+						 coreCommand.equalsIgnoreCase("8ball"))) {
+				Random conchRnd = new Random();
+				String[] conchResponses = {"It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely on it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy, try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"};
+				instance.sendMessage(channel, conchResponses[conchRnd.nextInt(conchResponses.length)]);
 			}
 			// Custom String Commands
 			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();

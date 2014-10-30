@@ -178,9 +178,9 @@ public class StringCommands {
 		while(strCmds.hasNext()) {
 			StringCommand strCmd = strCmds.next();
 			if((permLevel == GetLevels.INCLUDE_ALL) ||
-					(strCmd.getPermissionLevel() == senderLevel && permLevel == GetLevels.INCLUDE_EQUALS) ||
-					(strCmd.getPermissionLevel() <= senderLevel && permLevel == GetLevels.INCLUDE_LOWER) ||
-					(strCmd.getPermissionLevel() >= senderLevel && permLevel == GetLevels.INCLUDE_HIGHER)
+					(permLevel == GetLevels.INCLUDE_EQUALS && strCmd.getPermissionLevel() == senderLevel) ||
+					(permLevel == GetLevels.INCLUDE_LOWER && strCmd.getPermissionLevel() <= senderLevel) ||
+					(permLevel == GetLevels.INCLUDE_HIGHER && strCmd.getPermissionLevel() >= senderLevel)
 					) {
 				hs.add(strCmd.getTrigger());
 			}

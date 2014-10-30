@@ -15,6 +15,13 @@ public class StringCommands {
 	private Kdkbot instance;
 	private Config config;
 	
+	public enum GetLevels {
+		INCLUDE_LOWER,
+		INCLUDE_HIGHER,
+		INCLUDE_EQUALS,
+		INCLUDE_ALL;
+	}
+	
 	public StringCommands(Kdkbot instance, String channel) {
 		try {
 			this.instance = instance;
@@ -113,92 +120,70 @@ public class StringCommands {
 				}
 			case "list":
 				// commands list <rank>
-				String outMessage = "Commands for " + channel + " ";
-				// Hardcoded commands - need a better situation here
-				String[] additionalCommands = {"", "ama, ama next, ama get, counter add, counter sub, counter mult, counter divide, counter get, commands list, quote get, ", "ama add, counter new, counter delete, multi, ", "commands new, commands edit, commands remove, raid, quote add, perm get, perm set, ", "", ""};
+				ArrayList<String> commands = new ArrayList<String>();
 				
+				// Output message standard
+				StringBuilder outMessage = new StringBuilder(400);
+				outMessage.append("Commands for " + channel + " ");
+				
+				// Hardcoded commands - need a better situation here
+				// TODO: Implement better solution
+				String[] additionalCommands = {"", "ama, counter, commands list, quote get, ", "ama, counter, multi, ", "commands, raid, quote, perm, perm, ", "", ""};
+								
+				// Are we expecting a particular rank to look at? If so, grab those, otherwise, get commands user can use
 				if(args.length == 3) {
 					// We are expecting a rank to list for
-					outMessage += " @ rank " + args[2] +": ";
-					
-					int expectedRank = 0;
+					outMessage.append(" @ rank " + args[2] + ": ");
 					if(args[2] == "*") {
-						// Show all - Using expectedRank ID -1000
-						expectedRank = -1000;
+						// Doesn't matter what rank we send with this, as it'll grab all commands.
+						commands = this.getListOfCommands(0, GetLevels.INCLUDE_ALL);
 					} else {
-						// Grab expected rank
-						expectedRank = Integer.parseInt(args[2]);
+						commands = this.getListOfCommands(Integer.parseInt(args[2]), GetLevels.INCLUDE_EQUALS);
 					}
-					
-					if(expectedRank != -1000) {
-						outMessage += additionalCommands[expectedRank];
-					}
-					// Append the rest of the commands for this channel to the list
-					Iterator<StringCommand> strCmdIter = this.commands.iterator();
-					while(strCmdIter.hasNext()) {
-						StringCommand stringNext = strCmdIter.next();
-						// Verify user has access to this command
-						if(stringNext.getPermissionLevel() == expectedRank) {
-							// System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
-							outMessage += stringNext.getTrigger() + ", ";
-						} else if(expectedRank == -100) {
-							outMessage += stringNext.getTrigger() + ", ";
-						}
-					}
-					
 				} else {
-					outMessage += " available to user " + sender + ": ";
+					outMessage.append(" available to " + sender +": ");
 					// List commands based on users rank
-					int userRank = senderRank;
-					while(userRank > 0 ) {
-						outMessage += additionalCommands[userRank--];
+					int senderRankTemp = senderRank;
+					while(senderRankTemp > 0 ) {
+						outMessage.append(additionalCommands[senderRankTemp--]);
 					}
-					// Append the rest of the commands for this channel to the list
-					Iterator<StringCommand> strCmdIter = this.commands.iterator();
-					while(strCmdIter.hasNext()) {
-						StringCommand stringNext = strCmdIter.next();
-						// Verify user has access to this command
-						if(senderRank >= stringNext.getPermissionLevel() &&
-								stringNext.getAvailability()) {
-							Pattern patternCheck = Pattern.compile(stringNext.getTrigger() + ", ");
-							if(patternCheck.matcher(outMessage).find()) {
-								
-							} else {
-								outMessage += stringNext.getTrigger() + ", ";
-							}
-							
-						}
-					}
+					commands = this.getListOfCommands(senderRank, GetLevels.INCLUDE_LOWER);
 				}
 	
-				// Trim off last two characters
-				outMessage = outMessage.substring(0, outMessage.length() - 2);
-				
-				System.out.println("[DBG] [CMDS] [LIST] " + outMessage);
-				// Finally we should have compiled a list of commands, send to chat
-				if(outMessage.length() >= 400) {
-					System.out.println("[DBG] [CMDS] [LIST] Detected >400 outgoing message");
-					// outgoing message is too long, split it up into multiple messages
-					int offset = 0;
-					int endset = offset + 400;
-					String[] items = outMessage.split(", ");
-					String newMessageOut = "";
-					for(int i = 0; i < items.length; i++) {
-						System.out.println("[DBG] [CMDS] [LIST] On item " + i + " of " + items.length);
-						newMessageOut += items[i] + ", ";
-						if(newMessageOut.length() >= 400) {
-							System.out.println("[DBG] [CMDS] [LIST] Outputting a new message: " + newMessageOut);
-							instance.sendMessage(channel, newMessageOut);
-							newMessageOut = "";
-						}
+				// Loop over command list and add it to the outMessage
+				Iterator<String> commandIter = commands.iterator();
+				while(commandIter.hasNext()) {
+					String nextCommand = commandIter.next();
+					if(outMessage.length() + nextCommand.length() > 400) {
+						// Length too long, send message and reset string
+						instance.sendMessage(channel, outMessage.toString());
+						outMessage = new StringBuilder(400);
+					} else {
+						outMessage.append(nextCommand + ", ");
 					}
-					// Finally send the last bit of info to the channel
-					instance.sendMessage(channel, newMessageOut);
-				} else {
-					instance.sendMessage(channel, outMessage);
 				}
+				
+				// Trim off last two characters and 
+				// Finally send the last bit of info to the channel
+				instance.sendMessage(channel, outMessage.substring(0, outMessage.length() - 2));
 				
 				break;
 		}
+	}
+	
+	public ArrayList<String> getListOfCommands(int senderLevel, GetLevels permLevel) {
+		ArrayList<String> listOfCommands = new ArrayList<String>();
+		Iterator<StringCommand> strCmds = this.commands.iterator();
+		while(strCmds.hasNext()) {
+			StringCommand strCmd = strCmds.next();
+			if((permLevel == GetLevels.INCLUDE_ALL) ||
+					(strCmd.getPermissionLevel() == senderLevel && permLevel == GetLevels.INCLUDE_EQUALS) ||
+					(strCmd.getPermissionLevel() <= senderLevel && permLevel == GetLevels.INCLUDE_LOWER) ||
+					(strCmd.getPermissionLevel() >= senderLevel && permLevel == GetLevels.INCLUDE_HIGHER)
+					) {
+				listOfCommands.add(strCmd.getTrigger());
+			}
+		}
+		return listOfCommands;
 	}
 }

@@ -2,6 +2,7 @@ package kdkbot.commands.strings;
 
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -134,7 +135,7 @@ public class StringCommands {
 				if(args.length == 3) {
 					// We are expecting a rank to list for
 					outMessage.append(" @ rank " + args[2] + ": ");
-					if(args[2] == "*") {
+					if(args[2].equalsIgnoreCase("*")) {
 						// Doesn't matter what rank we send with this, as it'll grab all commands.
 						commands = this.getListOfCommands(0, GetLevels.INCLUDE_ALL);
 					} else {
@@ -172,7 +173,7 @@ public class StringCommands {
 	}
 	
 	public ArrayList<String> getListOfCommands(int senderLevel, GetLevels permLevel) {
-		ArrayList<String> listOfCommands = new ArrayList<String>();
+		HashSet hs = new HashSet();
 		Iterator<StringCommand> strCmds = this.commands.iterator();
 		while(strCmds.hasNext()) {
 			StringCommand strCmd = strCmds.next();
@@ -181,9 +182,12 @@ public class StringCommands {
 					(strCmd.getPermissionLevel() <= senderLevel && permLevel == GetLevels.INCLUDE_LOWER) ||
 					(strCmd.getPermissionLevel() >= senderLevel && permLevel == GetLevels.INCLUDE_HIGHER)
 					) {
-				listOfCommands.add(strCmd.getTrigger());
+				hs.add(strCmd.getTrigger());
 			}
 		}
+		
+		ArrayList<String> listOfCommands = new ArrayList<String>();
+		listOfCommands.addAll(hs);
 		return listOfCommands;
 	}
 }

@@ -49,9 +49,23 @@ public class StringCommands {
 		}
 	}
 	
-	public void addCommand(String trigger, String message, String level) {	
+	public String addCommand(String trigger, String message, String level) {	
 		commands.add(new StringCommand(this.instance, trigger, message, Integer.parseInt(level), true));
 		this.saveCommands();
+		return "Added new command " + trigger;
+	}
+	
+	public String removeCommand(String trigger) {
+		Iterator<StringCommand> strIter = commands.iterator();
+		StringCommand strCmd;
+		while(strIter.hasNext()) {
+			strCmd = strIter.next();
+			if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
+				commands.remove(strCmd);
+				return "Removed command " + trigger;
+			}
+		}
+		return "Couldn't find the command " + trigger;
 	}
 	
 	public void saveCommands() {
@@ -80,7 +94,7 @@ public class StringCommands {
 					for(int i = 0 ; i < csArgs.length; i++) {
 						System.out.println("[DBG] [CMD] [STRCMD] csArgs[" + i + "] is " + csArgs[i]);
 					}
-					addCommand(csArgs[2], csArgs[4], csArgs[3]);
+					instance.sendMessage(channel, addCommand(csArgs[2], csArgs[4], csArgs[3]));
 				}
 				break;
 			case "edit":
@@ -92,8 +106,13 @@ public class StringCommands {
 					}
 				}
 				break;
+			case "remove":
+				if(senderRank >= 3) {
+					instance.sendMessage(channel, removeCommand(args[2]));
+					this.saveCommands();
+				}
 			case "list":
-				// |commands list <rank>
+				// commands list <rank>
 				String outMessage = "Commands for " + channel + " ";
 				// Hardcoded commands - need a better situation here
 				String[] additionalCommands = {"", "ama, ama next, ama get, counter add, counter sub, counter mult, counter divide, counter get, commands list, quote get, ", "ama add, counter new, counter delete, multi, ", "commands new, commands edit, commands remove, raid, quote add, perm get, perm set, ", "", ""};

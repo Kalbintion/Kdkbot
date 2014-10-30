@@ -102,8 +102,16 @@ public class Kdkbot extends PircBot {
     	// Master Commands
     	if(sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
+    			// Leave channel
     			BOT.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
     			BOT.partChannel(channel, "By order of the king!");
+    			
+    			// Remove it from setting list
+    			String prevChanSetting = botCfg.getSetting("channels");
+    			// Remove it from the setting
+    			prevChanSetting = prevChanSetting.replace(channel, "");
+    			// Remove duplicated commas that can result from removing from channel
+    			prevChanSetting = prevChanSetting.replace(",,", ",");
     		} else if(message.startsWith("||stop")) {
     			Iterator<Channel> chanIter = BOT.CHANS.iterator();
     			while(chanIter.hasNext()) {
@@ -116,11 +124,20 @@ public class Kdkbot extends PircBot {
     			String messageToSend = message.substring("||echo ".length());
     			BOT.sendMessage(channel, messageToSend);
     		} else if(message.startsWith("||joinchan ")) {
+    			String[] args = message.split(" ");
+    			
+    			// Join channel
     			String channelToJoin = message.substring("||joinchan ".length());
     			BOT.sendMessage(channel, "Joining channel " + channelToJoin);
     			Channel channelToAdd = new Channel(this, channelToJoin);
     			CHANS.add(channelToAdd);
-    			BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
+    			
+    			if(!(args.length < 3) && args[2].equalsIgnoreCase("false")) {
+    				BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
+    			}
+    			
+    			// Add channel to settings cfg
+    			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channelToJoin);
     		} else if(message.startsWith("||ignoreuser ")) {
     			String userToIgnore = message.substring("||ignoreuser ".length());
     			msgIgnoreList.add(userToIgnore);

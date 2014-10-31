@@ -46,14 +46,14 @@ public class Commands {
 	public Commands(Kdkbot instance, String channel) {
 		this.instance = instance;
 		try {
-			// System.out.println("[DBG] [CMDS] [INIT] Attempting to load config ranks.");
+			instance.dbg.writeln(this, "[DBG] [CMDS] [INIT] Attempting to load config ranks.");
 			cfgRanks = new Config("./cfg/perms/" + channel + ".cfg");
 			List<String> cfgContents = cfgRanks.getConfigContents();
 			Iterator<String> iter = cfgContents.iterator();
 			while(iter.hasNext()) {
-				// System.out.println("[DBG] [CMDS] [INIT] Parsing next line of cfgArgs.");
+				instance.dbg.writeln(this, "[DBG] [CMDS] [INIT] Parsing next line of cfgArgs.");
 				String cfgArgs[] = iter.next().split("=");
-				// System.out.println("[DBG] [CMDS] [INIT] Size of cfgArgs is " + cfgArgs.length + " a value of 2 is expected.");
+				instance.dbg.writeln(this, "[DBG] [CMDS] [INIT] Size of cfgArgs is " + cfgArgs.length + " a value of 2 is expected.");
 				try {
 					senderRanks.put(cfgArgs[0], Integer.parseInt(cfgArgs[1]));
 				} catch(NumberFormatException e) {
@@ -81,14 +81,14 @@ public class Commands {
 	}
 	
 	public void commandHandler(String channel, String sender, String login, String hostname, String message) {
-		// System.out.println("[DBG] [CMD] [HND] Attempting to parse last message for channel " + channel);
+		instance.dbg.writeln(this, "[DBG] [CMD] [HND] Attempting to parse last message for channel " + channel);
 		if(message.startsWith(commandPrefix)) {
-			// System.out.println("DBG: Previous line detected as a command");
+			instance.dbg.writeln(this, "DBG: Previous line detected as a command");
 			String args[] = message.split(" ");
 			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
 			
-			// System.out.println("[DBG] [CMD] [HND] Core Command detected as '" + coreCommand + "'");
-			// System.out.println("[DBG] [CMD] [HND] Senders level detected as " + getSenderRank(sender) + " for value " + sender);
+			instance.dbg.writeln(this, "[DBG] [CMD] [HND] Core Command detected as '" + coreCommand + "'");
+			instance.dbg.writeln(this, "[DBG] [CMD] [HND] Senders level detected as " + getSenderRank(sender) + " for value " + sender);
 			
 			// Enforce senders name to be lowercased - prevents case sensitive issues later on
 			sender = sender.toLowerCase();
@@ -104,7 +104,7 @@ public class Commands {
 			// Permission Ranks
 			else if (getSenderRank(sender) >= 3 &&
 						coreCommand.equalsIgnoreCase("perm")) {
-				// System.out.println("DBG: Detected command perm, checking for sub-command.");
+				instance.dbg.writeln(this, "DBG: Detected command perm, checking for sub-command.");
 				switch(args[1]) {
 					case "set":
 						this.setSenderRank(args[2].toLowerCase(), Integer.parseInt(args[3]));
@@ -155,7 +155,7 @@ public class Commands {
 			else if(getSenderRank(sender) >= amas.getPermissionLevel() &&
 						coreCommand.equalsIgnoreCase(amas.getTrigger()) &&
 						amas.getAvailability()) {
-				System.out.println("[DBG] [CMDHND] [AMA] Sending message to AMA handler.");
+				instance.dbg.writeln(this, "[DBG] [CMDHND] [AMA] Sending message to AMA handler.");
 				amas.executeCommand(channel, sender, login, hostname, message, additionalParams);
 			}
 			// Counters
@@ -181,16 +181,16 @@ public class Commands {
 			// Custom String Commands
 			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
 			while(stringIter.hasNext()) {
-				// System.out.println("[DBG] [CMDS] [CHK] Testing next iteration of custom string commands");
+				instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Testing next iteration of custom string commands");
 				StringCommand stringNext = stringIter.next();
-				// System.out.println("[DBG] [CMDS] [CHK] Testing coreCommand '" + coreCommand + "' against '" + stringNext.getTrigger() + "'");
+				instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Testing coreCommand '" + coreCommand + "' against '" + stringNext.getTrigger() + "'");
 				// Verify user has access to this command
-				// System.out.println("[DBG] [CMDS] [CHK] Current commands level: " + stringNext.cpl.getLevel());
-				// System.out.println("[DBG] [CMDS] [CHK] Current command is available: " + stringNext.isAvailable);
+				instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Current commands level: " + stringNext.getPermissionLevel());
+				instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Current command is available: " + stringNext.getAvailability());
 				if(getSenderRank(sender) >= stringNext.getPermissionLevel() &&
 						coreCommand.equalsIgnoreCase(stringNext.getTrigger()) &&
 						stringNext.getAvailability()) {
-					// System.out.println("[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
+					instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
 					stringNext.executeCommand(channel, sender, login, hostname, message, additionalParams);
 				}
 			}

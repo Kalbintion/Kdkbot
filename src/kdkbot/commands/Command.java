@@ -17,6 +17,7 @@ public abstract class Command {
 	public Command() {
 		this.trigger = "";
 		this.cpl = new CommandPermissionLevel(0);
+		
 	}
 	
 	/**

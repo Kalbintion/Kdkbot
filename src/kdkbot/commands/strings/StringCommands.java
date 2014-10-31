@@ -32,6 +32,7 @@ public class StringCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		instance.dbg.writeln(this, "Test");
 	}
 	
 	public void loadCommands() {

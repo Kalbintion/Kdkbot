@@ -33,6 +33,7 @@ public class Kdkbot extends PircBot {
 	private boolean _logChat = false;
 	private Pattern logIgnores;
 	private Log logger;
+	public Debugger dbg = new Debugger(true);
 	
     /**
      * Initialization of the basic bot
@@ -41,6 +42,8 @@ public class Kdkbot extends PircBot {
 		// Setup log system
 		this._logChat = Boolean.parseBoolean(botCfg.getSetting("logChat"));
 		logIgnores = Pattern.compile(botCfg.getSetting("logIgnores"));
+		
+		dbg.writeln(this, "test");
 		
 		// Setup this instances chat logger
 		if(_logChat) {
@@ -178,8 +181,6 @@ public class Kdkbot extends PircBot {
 						BOT.sendMessage(channel, "Quote list size: " + quotes.size());
     				}
     			}
-    		} else if(message.equalsIgnoreCase("||listallcustomstrings")) {
-    			
     		} else if(message.equalsIgnoreCase("||listallcustomstringssize")) {
     			Iterator<Channel> chanIter = CHANS.iterator();
     			while(chanIter.hasNext()) {

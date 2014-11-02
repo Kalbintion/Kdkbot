@@ -37,19 +37,19 @@ public class StringCommands {
 	
 	public void loadCommands() {
 		try {
-			// System.out.println("[DBG] [STRCMD] [LOAD] Starting load process...");
+			instance.dbg.writeln(this, "Starting load process...");
 			List<String> strings = config.getConfigContents();
-			// System.out.println("[DBG] [STRCMD] [LOAD] Loaded contents. Size: " + strings.size());
+			instance.dbg.writeln(this, "Loaded contents. Size: " + strings.size());
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {
 				String str = string.next();
-				// System.out.println("[DBG] [STRCMD] [LOAD] Parsing next string: " + str);
+				instance.dbg.writeln(this, "Parsing next string: " + str);
 				String[] args = str.split("\\|");
-				// System.out.println("[DBG] [STRCMD] [LOAD] Size of args: " + args.length);
-				// System.out.println("[DBG] [STRCMD] [LOAD] args[0]: " + Integer.parseInt(args[0]));
-				// System.out.println("[DBG] [STRCMD] [LOAD] args[1]: " + Boolean.parseBoolean(args[1]));
+				instance.dbg.writeln(this, "Size of args: " + args.length);
+				instance.dbg.writeln(this, "args[0]: " + Integer.parseInt(args[0]));
+				instance.dbg.writeln(this, "args[1]: " + Boolean.parseBoolean(args[1]));
 				for(int i = 0; i < args.length; i++) {
-					// System.out.println("[DBG] [STRCMD] [LOAD] args[" + i + "] is " + args[i]);
+					instance.dbg.writeln(this, "args[" + i + "] is " + args[i]);
 				}
 				commands.add(new StringCommand(this.instance, args[2], args[3], Integer.parseInt(args[0]), Boolean.parseBoolean(args[1])));
 			}
@@ -99,9 +99,9 @@ public class StringCommands {
 			case "new":
 				if(senderRank >= 3 ) {
 					String[] csArgs = message.split(" ", 5);
-					System.out.println("[DBG] [CMD] [STRCMD] csArgs size: " + csArgs.length);
+					instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
 					for(int i = 0 ; i < csArgs.length; i++) {
-						System.out.println("[DBG] [CMD] [STRCMD] csArgs[" + i + "] is " + csArgs[i]);
+						instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 					}
 					instance.sendMessage(channel, addCommand(csArgs[2], csArgs[4], csArgs[3]));
 				}
@@ -109,9 +109,9 @@ public class StringCommands {
 			case "edit":
 				if(senderRank >= 3) {
 					String[] csArgs = message.split(" ", 5);
-					System.out.println("[DBG] [CMD] [STRCMD] csArgs size: " + csArgs.length);
+					instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
 					for(int i = 0 ; i < csArgs.length; i++) {
-						System.out.println("[DBG] [CMD] [STRCMD] csArgs[" + i + "] is " + csArgs[i]);
+						instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 					}
 				}
 				break;

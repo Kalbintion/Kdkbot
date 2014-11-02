@@ -29,7 +29,7 @@ public class StringCommand extends Command {
 	}
 	
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
-		// System.out.println("[DBG] [STRCMD] [EXEC] Attempting to execute command " + this.getTrigger() + " to channel " + channel);
+		this.getBotInstance().dbg.writeln(this, "Attempting to execute command " + this.getTrigger() + " to channel " + channel);
 		this.getBotInstance().sendMessage(channel, parseMessage(this.messageToSend, channel, sender, login, hostname, message, additionalParams));
 	}
 	
@@ -54,20 +54,20 @@ public class StringCommand extends Command {
 		
 		// Arg specificity
 		Pattern PATTERN_ARGS_REPLACE = Pattern.compile("%ARGS:\\d*%");
-		// System.out.println("[DBG] [STRCMD] [PARSE] " + PATTERN_ARGS_REPLACE.toString());
+		this.getBotInstance().dbg.writeln(this, "" + PATTERN_ARGS_REPLACE.toString());
 		Matcher pattern_args_matches = PATTERN_ARGS_REPLACE.matcher(message);
-		// System.out.println("[DBG] [STRCMD] [PARSE] " + message);
-		// System.out.println("[DBG] [STRCMD] [PARSE] Post Matcher RegEx: " + pattern_args_matches.toString());
+		this.getBotInstance().dbg.writeln(this, "" + message);
+		this.getBotInstance().dbg.writeln(this, "Post Matcher RegEx: " + pattern_args_matches.toString());
 		while(pattern_args_matches.find()) {
 			String result = pattern_args_matches.group();
-			System.out.println("[DBG] [STRCMD] [PARSE] " + result);
+			System.out.println("" + result);
 			
 			String argID = result.substring("%ARGS:".length(), result.length()-1);
 			int argIDInt = Integer.parseInt(argID);
 			
-			System.out.println("[DBG] [STRCMD] [PARSE] args[" + argID + "] = " + args[argIDInt]);
+			System.out.println("args[" + argID + "] = " + args[argIDInt]);
 			if(args[argIDInt].startsWith("/")) {
-				System.out.println("[DBG] [STRCMD] [PARSE] Detected a / for " + argID);
+				System.out.println("Detected a / for " + argID);
 				args[argIDInt] = args[argIDInt].substring(1);
 			}
 			message = message.replace("%ARGS:" + argID + "%", args[argIDInt]);
@@ -75,16 +75,16 @@ public class StringCommand extends Command {
 		
 		// Counter specificity
 		Pattern PATTERN_CNTR_REPLACE = Pattern.compile("%CNTR:.*?%");
-		System.out.println("[DBG] [STRCMD] [PARSE] " + PATTERN_CNTR_REPLACE.toString());
+		System.out.println("" + PATTERN_CNTR_REPLACE.toString());
 		Matcher pattern_cntr_matches = PATTERN_CNTR_REPLACE.matcher(message);
-		System.out.println("[DBG] [STRCMD] [PARSE] " + message);
-		System.out.println("[DBG] [STRCMD] [PARSE] Post Matcher RegEx: " + pattern_cntr_matches.toString());
+		System.out.println("" + message);
+		System.out.println("Post Matcher RegEx: " + pattern_cntr_matches.toString());
 		while(pattern_cntr_matches.find()) {
 			String result = pattern_cntr_matches.group();
-			System.out.println("[DBG] [STRCMD] [PARSE] " + result);
+			System.out.println("" + result);
 			
 			String cntrID = result.substring("%CNTR:".length(), result.length()-1);
-			System.out.println("[DBG] [STRCMD] [PARSE] " + cntrID);
+			System.out.println("" + cntrID);
 			
 			Iterator<Channel> chanIter = this.getBotInstance().CHANS.iterator();
 			Channel chan = null;
@@ -115,13 +115,13 @@ public class StringCommand extends Command {
 		
 		// Advanced replacement (specifying max value)
 		Pattern PATTERN_RND_MAX_REPLACE = Pattern.compile("%RND:\\d*?%");
-		System.out.println("[DBG] [STRCMD] [PARSE] " + PATTERN_RND_MAX_REPLACE.toString());
+		System.out.println("" + PATTERN_RND_MAX_REPLACE.toString());
 		Matcher pattern_rnd_max_matches = PATTERN_RND_MAX_REPLACE.matcher(message);
-		System.out.println("[DBG] [STRCMD] [PARSE] Post Matcher RegEx: " + pattern_rnd_max_matches.toString());
+		System.out.println("Post Matcher RegEx: " + pattern_rnd_max_matches.toString());
 		
 		while(pattern_rnd_max_matches.find()) {
 			String result = pattern_rnd_max_matches.group();
-			System.out.println("[DBG] [STRCMD] [PARSE] " + result);
+			System.out.println("" + result);
 
 			String argValues = result.substring("%RND:".length(), result.length()-1);
 			
@@ -132,13 +132,13 @@ public class StringCommand extends Command {
 		
 		// Advanced replacement (specifying min and max values)
 		Pattern PATTERN_RND_MIN_MAX_REPLACE = Pattern.compile("%RND:\\d*?,\\d*?%");
-		System.out.println("[DBG] [STRCMD] [PARSE] " + PATTERN_RND_MIN_MAX_REPLACE.toString());
+		System.out.println("" + PATTERN_RND_MIN_MAX_REPLACE.toString());
 		Matcher pattern_rnd_min_max_matches = PATTERN_RND_MIN_MAX_REPLACE.matcher(message);
-		System.out.println("[DBG] [STRCMD] [PARSE] Post Matcher RegEx: " + pattern_rnd_min_max_matches.toString());
+		System.out.println("Post Matcher RegEx: " + pattern_rnd_min_max_matches.toString());
 				
 		while(pattern_rnd_min_max_matches.find()) {
 			String result = pattern_rnd_min_max_matches.group();
-			System.out.println("[DBG] [STRCMD] [PARSE] " + result);
+			System.out.println("" + result);
 
 			String argValues = result.substring("%RND:".length(), result.length()-1);
 			String[] argParts = argValues.split(",");

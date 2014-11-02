@@ -33,7 +33,7 @@ public class Kdkbot extends PircBot {
 	private boolean _logChat = false;
 	private Pattern logIgnores;
 	private Log logger;
-	public Debugger dbg = new Debugger(true);
+	public Debugger dbg = new Debugger(false);
 	
     /**
      * Initialization of the basic bot
@@ -42,9 +42,7 @@ public class Kdkbot extends PircBot {
 		// Setup log system
 		this._logChat = Boolean.parseBoolean(botCfg.getSetting("logChat"));
 		logIgnores = Pattern.compile(botCfg.getSetting("logIgnores"));
-		
-		dbg.writeln(this, "test");
-		
+				
 		// Setup this instances chat logger
 		if(_logChat) {
 			this.logger = new Log();
@@ -115,6 +113,12 @@ public class Kdkbot extends PircBot {
     			prevChanSetting = prevChanSetting.replace(channel, "");
     			// Remove duplicated commas that can result from removing from channel
     			prevChanSetting = prevChanSetting.replace(",,", ",");
+    		} else if(message.startsWith("||debug disable")) {
+    			dbg.disable();
+    			BOT.sendMessage(channel, "Disabled internal debug messages");
+    		} else if(message.startsWith("||debug enable")) {
+    			dbg.enable();
+    			BOT.sendMessage(channel, "Enabled internal debug messages");
     		} else if(message.startsWith("||stop")) {
     			Iterator<Channel> chanIter = BOT.CHANS.iterator();
     			while(chanIter.hasNext()) {

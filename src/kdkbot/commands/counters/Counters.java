@@ -26,17 +26,17 @@ public class Counters {
 	
 	public void loadCounters() {
 		try {
-			System.out.println("[DBG] [COUNT] [LOAD] Starting load process...");
+			instance.dbg.writeln(this, "Starting load process...");
 			List<String> strings = config.getConfigContents();
-			System.out.println("[DBG] [COUNT] [LOAD] Loaded contents. Size: " + strings.size());
+			instance.dbg.writeln(this, "Loaded contents. Size: " + strings.size());
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {
 				String str = string.next();
-				System.out.println("[DBG] [COUNT] [LOAD] Parsing next string: " + str);
+				instance.dbg.writeln(this, "Parsing next string: " + str);
 				String[] args = str.split("\\|");
-				System.out.println("[DBG] [COUNT] [LOAD] Size of args: " + args.length);
+				instance.dbg.writeln(this, "Size of args: " + args.length);
 				for(int i = 0; i < args.length; i++) {
-					System.out.println("[DBG] [COUNT] [LOAD] args[" + i + "] is " + args[i]);
+					instance.dbg.writeln(this, "args[" + i + "] is " + args[i]);
 				}
 				counters.add(new Counter(args[0], Integer.parseInt(args[1])));
 			}

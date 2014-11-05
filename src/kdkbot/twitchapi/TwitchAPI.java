@@ -1,7 +1,14 @@
 package kdkbot.twitchapi;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -10,30 +17,18 @@ import org.json.JSONObject;
 
 public class TwitchAPI {
 	private static final String URL_TWITCH = "https://api.twitch.tv/kraken";
-	private static final String URL_TEAMS = URL_TWITCH + "/teams";
-	private static final String URL_CHANNEL = URL_TWITCH + "/channel";
-	private static final String URL_USER = URL_TWITCH + "/user";
-	private static final String URL_INGEST = URL_TWITCH + "/ingests";
-	private static final String URL_STREAMS = URL_TWITCH + "/streams";
-	private static final String URL_SEARCH = URL_TWITCH + "/search";
-		
+	private static final String URL_CHANNEL = "https://api.twitch.tv/kraken/channels/%CHAN%/";
+	
 	private HashMap<String, String> headers;
 	private String clientID;
+	private String OAuth;
 	private String channel;
 	
-	public class RequestType {
-		public String GET_BLOCKS = "/users/:login/blocks";
-		public String PUT_BLOCKS = "/users/:user/blocks/:target";
-		public String DEL_BLOCKS = "/users/:user/blocks/:target";
-		public String CHANNELS = "/channels/";
-		public String TEAMS = "/teams";
-	}
-	
 	public TwitchAPI() {
-		this("");
+		this("", "");
 	}
 	
-	public TwitchAPI(String clientID) {
+	public TwitchAPI(String clientID, String OAuth) {
 		this.clientID = clientID;
 		
 		this.headers.put("Accept", "application/vnd.twitchtv.v2+json");
@@ -41,21 +36,8 @@ public class TwitchAPI {
 			this.headers.put("Client-ID", clientID);
 	}
 	
-	public JSONObject sendRequest(RequestType type, String channel) {
-		this.channel = channel;
-		return sendRequest(type);
-	}
-	
-	public JSONObject sendRequest(RequestType type) {
-		URLConnection conn;
-		try {
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		
-		return new JSONObject();
+	public void setOAuth(String OAuth) {
+		this.OAuth = OAuth;
 	}
 	
 	public void addHeader(String name, String value) {
@@ -64,5 +46,60 @@ public class TwitchAPI {
 	
 	public void removeHeader(String name) {
 		this.headers.remove(name);
+	}
+	
+	public void updateGame(String channel, String game) {
+		try {
+			URL url = new URL(URL_CHANNEL.replace("%CHAN%", channel));
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("PUT");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateTitle(String channel, String title) {
+		try {
+			URL url = new URL(URL_CHANNEL.replace("%CHAN%", channel));
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("PUT");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getGame(String channel) {
+		try {
+			URL url = new URL(URL_CHANNEL.replace("%CHAN%", channel));
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("GET");
+			Iterator headerIter = headers.entrySet().iterator();
+			while(headerIter.hasNext()) {
+				Map.Entry pairs = (Map.Entry) headerIter.next();
+				conn.addRequestProperty(pairs.getKey().toString(), pairs.getValue().toString());
+			}
+			BufferedReader connReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			StringBuilder connBuilder = new StringBuilder();
+			String line;
+			
+			while((line = connReader.readLine()) != null) {
+				connBuilder.append(line + "\n");
+			}
+			
+			connReader.close();
+			
+			return connBuilder.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "";
+	}
+	
+	public String getTitle(String channel) {
+		return "";
 	}
 }

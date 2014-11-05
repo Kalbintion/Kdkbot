@@ -130,6 +130,9 @@ public class Kdkbot extends PircBot {
     		} else if(message.startsWith("||echo " )) {
     			String messageToSend = message.substring("||echo ".length());
     			BOT.sendMessage(channel, messageToSend);
+    		} else if(message.startsWith("||echoto ")) {
+    			String messageArgs[] = message.split(" ", 3);
+    			BOT.sendMessage(messageArgs[1], messageArgs[2]);
     		} else if(message.startsWith("||joinchan ")) {
     			String[] args = message.split(" ");
     			

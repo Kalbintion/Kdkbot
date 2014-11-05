@@ -2,11 +2,13 @@ package kdkbot.channel;
 
 import kdkbot.*;
 import kdkbot.commands.*;
+import kdkbot.economy.Economy;
 
 public class Channel {
 	private static Kdkbot KDKBOT;
 	public Commands commands;
 	private String channel;
+	private Economy economy;
 	
 	public Channel() {
 		// Do nothing
@@ -22,6 +24,8 @@ public class Channel {
 		this.channel = channel;
 		this.commands = new Commands(instance, channel);
 		this.commands.loadSenderRanks();
+		this.economy = new Economy(instance, channel);
+		this.economy.loadEconomy();
 		this.joinChannel();
 	}
 	

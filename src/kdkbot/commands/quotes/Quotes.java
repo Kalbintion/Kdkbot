@@ -27,6 +27,7 @@ public class Quotes extends Command {
 		this.setTrigger("quote");
 		this.setAvailability(true);
 		this.setBotInstance(instance);
+		this.setPermissionLevel(1);
 		this.channel = channel;
 		try {
 			this.cfg = new Config("./cfg/quotes/" + channel + ".cfg", false);

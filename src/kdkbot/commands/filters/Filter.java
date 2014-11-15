@@ -6,7 +6,6 @@ public class Filter {
 	public Pattern toFind;
 	public int action;
 	
-	
 	/**
 	 * Creates a new filter with a given String object
 	 * @param toFind The string REGEX pattern to use.

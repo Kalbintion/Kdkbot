@@ -1,5 +1,7 @@
 package kdkbot.channel;
 
+import java.util.ArrayList;
+
 import kdkbot.*;
 import kdkbot.commands.*;
 import kdkbot.economy.Economy;
@@ -9,6 +11,8 @@ public class Channel {
 	public Commands commands;
 	private String channel;
 	private Economy economy;
+	private boolean repeatMessages;
+	private ArrayList<String> repeatMessagesChannelList;
 	
 	public Channel() {
 		// Do nothing
@@ -25,7 +29,6 @@ public class Channel {
 		this.commands = new Commands(instance, channel);
 		this.commands.loadSenderRanks();
 		this.economy = new Economy(instance, channel);
-		this.economy.loadEconomy();
 		this.joinChannel();
 	}
 	

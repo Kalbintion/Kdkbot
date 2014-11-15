@@ -15,13 +15,18 @@ public class Economy {
 	private String channel;	
 	private String currencyName;
 	private String currencySymbol;
-	private int currenyLocation;
+	private CurrencyLocation currencyLocation;
+	private CurrencyLabelType currencyLabelType;
 	private Config cfg;
 	private Config users;
 	private HashMap<String, Double> amounts;
 	
 	public enum CurrencyLocation {
 		PREFIX, SUFFIX;
+	}
+	
+	public enum CurrencyLabelType {
+		SYMBOL, NAME;
 	}
 	
 	public Economy(Kdkbot instance, String channel) {
@@ -73,5 +78,17 @@ public class Economy {
 	
 	public void setUserAmount(String sender, double amount) {
 		users.setSetting(sender, Double.toString(amount));
+	}
+	
+	public String compileCurrency(double amount) {
+		return compileCurrency(Double.toString(amount));
+	}
+	
+	public String compileCurrency(String amount) {
+		if(this.currencyLocation == CurrencyLocation.PREFIX) {
+			return this.currencySymbol + amount;
+		} else {
+			return amount + this.currencySymbol;
+		}
 	}
 }

@@ -35,6 +35,8 @@ public class Kdkbot extends PircBot {
 	private Log logger;
 	public Debugger dbg = new Debugger(false);
 	
+	private HashMap<String, String> messageDuplicatorList;
+	
     /**
      * Initialization of the basic bot
      */
@@ -55,7 +57,8 @@ public class Kdkbot extends PircBot {
 		this._verbose = Boolean.parseBoolean(botCfg.getSetting("verbose"));
 		BOT.setVerbose(_verbose);
 		BOT.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
-
+		messageDuplicatorList = new HashMap<String, String>();
+		
 		// Get channels
 		String[] cfgChannels = botCfg.getSetting("channels").split(",");
 		
@@ -64,7 +67,7 @@ public class Kdkbot extends PircBot {
 			CHANS.add(new Channel(BOT, cfgChannels[i]));
 		}
 	}
-	
+
 	/**
 	 * Event handler for disconnecting from a server
 	 */
@@ -72,6 +75,11 @@ public class Kdkbot extends PircBot {
 	public void onDisconnect() {
 		try {
 			this.reconnect();
+			Iterator<Channel> chanIter = CHANS.iterator();
+			while(chanIter.hasNext()) {
+				Channel chan = chanIter.next();
+				chan.joinChannel();
+			}
 		} catch (NickAlreadyInUseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -96,10 +104,24 @@ public class Kdkbot extends PircBot {
     	}
     }
     
+    /**
+     * Event handler for action messages received
+     */
+    public void onAction(String sender, String login, String hostname, String target, String action) {
+    	if(messageDuplicatorList.get(target) != null) {
+    		BOT.sendMessage(messageDuplicatorList.get(target), "*" + sender + " " + action  + "*");
+    	}
+    }
+    
 	/**
 	 * Event handler for messages received
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
+    	// Message Duplicator
+    	if(messageDuplicatorList.get(channel) != null) {
+    		BOT.sendMessage(messageDuplicatorList.get(channel), sender + ": " + message);
+    	}
+    	
     	// Master Commands
     	if(sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
@@ -116,6 +138,11 @@ public class Kdkbot extends PircBot {
     		} else if(message.startsWith("||debug disable")) {
     			dbg.disable();
     			BOT.sendMessage(channel, "Disabled internal debug messages");
+    		} else if(message.startsWith("||msgdupe ")) {
+    			String[] chanArgs = message.split(" ");
+    			messageDuplicatorList.put(chanArgs[1], chanArgs[2]);
+    			BOT.sendMessage(chanArgs[1], "Now sending all messages from this channel to " + chanArgs[2]);
+    			BOT.sendMessage(chanArgs[2], "Now receiving all messages from " + chanArgs[1]);
     		} else if(message.startsWith("||debug enable")) {
     			dbg.enable();
     			BOT.sendMessage(channel, "Enabled internal debug messages");

@@ -113,6 +113,33 @@ public class StringCommands {
 					for(int i = 0 ; i < csArgs.length; i++) {
 						instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 					}
+					
+					String trigger = csArgs[2]; // command trigger
+					String type = csArgs[3]; // command edit method
+					String toValue = csArgs[4];
+					
+					Iterator<StringCommand> strCmdIter = commands.iterator();
+					while(strCmdIter.hasNext()) {
+						StringCommand strCmd = strCmdIter.next();
+						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
+							if(senderRank >= strCmd.getPermissionLevel()) {
+								if(type.equalsIgnoreCase("trigger")) {
+									instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
+									strCmd.setTrigger(toValue);
+								} else if(type.equalsIgnoreCase("level")) {
+									instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
+									strCmd.setPermissionLevel(Integer.parseInt(toValue));
+								} else if(type.equalsIgnoreCase("message")) {
+									instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s message.");
+									strCmd.messageToSend = toValue;
+								}
+							} else {
+								instance.sendMessage(channel, sender + ", you do not have the required permission to change this command.");
+							}
+							break;
+						}
+					}
+					this.saveCommands();
 				}
 				break;
 			case "remove":
@@ -120,6 +147,7 @@ public class StringCommands {
 					instance.sendMessage(channel, removeCommand(args[2]));
 					this.saveCommands();
 				}
+				break;
 			case "list":
 				// commands list <rank>
 				ArrayList<String> commands = new ArrayList<String>();

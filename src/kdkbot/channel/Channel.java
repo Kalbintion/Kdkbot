@@ -12,7 +12,7 @@ public class Channel {
 	private String channel;
 	private Economy economy;
 	private boolean repeatMessages;
-	private ArrayList<String> repeatMessagesChannelList;
+	private ArrayList<Forwarder> forwarders;
 	
 	public Channel() {
 		// Do nothing

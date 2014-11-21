@@ -106,6 +106,33 @@ public class StringCommands {
 					instance.sendMessage(channel, addCommand(csArgs[2], csArgs[4], csArgs[3]));
 				}
 				break;
+			case "view":
+				if(senderRank >= 3) {
+					String[] csArgs = message.split(" ", 4);
+					instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+					for(int i = 0 ; i < csArgs.length; i++) {
+						instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+					}
+					
+					String trigger = csArgs[2];
+					String type = csArgs[3];
+					
+					Iterator<StringCommand> strCmdIter = commands.iterator();
+					while(strCmdIter.hasNext()) {
+						StringCommand strCmd = strCmdIter.next();
+						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
+							if(type.equalsIgnoreCase("available")) {
+								instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s availability is set to " + strCmd.getAvailability());
+							} else if(type.equalsIgnoreCase("level")) {
+								instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s permission level is set to " + strCmd.getPermissionLevel());
+							} else if(type.equalsIgnoreCase("message")) {
+								instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s message is set to: " + strCmd.messageToSend);
+							}
+							break;
+						}
+					}
+				}
+				break;
 			case "edit":
 				if(senderRank >= 3) {
 					String[] csArgs = message.split(" ", 5);
@@ -132,6 +159,14 @@ public class StringCommands {
 								} else if(type.equalsIgnoreCase("message")) {
 									instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s message.");
 									strCmd.messageToSend = toValue;
+								} else if(type.equalsIgnoreCase("available")) {
+									try {
+										boolean bool = Boolean.parseBoolean(csArgs[4]);
+										instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
+										strCmd.setAvailability(bool);
+									} catch(Exception e) {
+										instance.sendMessage(channel, "Unable to discern " + csArgs[4] + " as a true/false value.");
+									}
 								}
 							} else {
 								instance.sendMessage(channel, sender + ", you do not have the required permission to change this command.");

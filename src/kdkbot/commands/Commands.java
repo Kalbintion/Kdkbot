@@ -14,10 +14,10 @@ import java.util.regex.*;
 import org.jibble.pircbot.User;
 
 import kdkbot.Kdkbot;
+import kdkbot.channel.Channel;
 import kdkbot.commands.*;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.ama.AMA;
-import kdkbot.commands.channel.*;
 import kdkbot.commands.counters.*;
 import kdkbot.commands.strings.*;
 import kdkbot.filemanager.Config;
@@ -25,6 +25,7 @@ import kdkbot.filemanager.Config;
 public class Commands {
 	// Necessary variable for instance referencing
 	public Kdkbot instance;
+	public Channel chan;
 	
 	// Path & Config locations (set by Commands() init)
 	public Path permissionPath;
@@ -35,7 +36,6 @@ public class Commands {
 	public String commandPrefix = "|";
 	
 	// Sub-system commands managers
-	public Update channelUpdater;
 	public Quotes quotes;
 	public StringCommands commandStrings;
 	public Counters counters;
@@ -73,8 +73,6 @@ public class Commands {
 			this.amas = new AMA(this.instance, channel);
 			this.amas.loadQuestions();
 			
-			this.channelUpdater = new Update();
-			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -94,15 +92,8 @@ public class Commands {
 			sender = sender.toLowerCase();
 			ArrayList<String> additionalParams = new ArrayList<String>();
 			
-			// Channel
-			if(getSenderRank(sender) >= channelUpdater.getPermissionLevel() &&
-					channelUpdater.getAvailability() &&
-					channelUpdater.getTrigger().equalsIgnoreCase(coreCommand)) {
-				additionalParams.add(instance.botCfg.getSetting("oauth"));
-				channelUpdater.executeCommand(channel, sender, login, hostname, message, additionalParams);
-			}
 			// Permission Ranks
-			else if (getSenderRank(sender) >= 3 &&
+			if (getSenderRank(sender) >= 3 &&
 						coreCommand.equalsIgnoreCase("perm")) {
 				instance.dbg.writeln(this, "DBG: Detected command perm, checking for sub-command.");
 				switch(args[1]) {
@@ -177,6 +168,10 @@ public class Commands {
 				Random coinRnd = new Random();
 				String[] coinResponses = {"Heads", "Tails"};
 				instance.sendMessage(channel, coinResponses[coinRnd.nextInt(coinResponses.length)]);
+			}
+			else if(getSenderRank(sender) >= 5 &&
+						coreCommand.equalsIgnoreCase("fwd")) {
+			
 			}
 			// Custom String Commands
 			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();

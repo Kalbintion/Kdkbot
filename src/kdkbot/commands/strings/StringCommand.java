@@ -86,7 +86,7 @@ public class StringCommand extends Command {
 			String cntrID = result.substring("%CNTR:".length(), result.length()-1);
 			System.out.println("" + cntrID);
 			
-			Channel chan = this.getBotInstance().CHANS_NEW.get(channel);
+			Channel chan = this.getBotInstance().CHANS.get(channel);
 			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
 			Counter cntr = null;
 			while(cntrIter.hasNext()) {

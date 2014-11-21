@@ -27,7 +27,7 @@ public class Kdkbot extends PircBot {
 	private String version = "0.1.0.18";
 	public static Kdkbot BOT;
 	// public static ArrayList<Channel> CHANS = new ArrayList<Channel>();
-	public static HashMap<String, Channel> CHANS_NEW = new HashMap<String, Channel>();
+	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
 	public ArrayList<String> msgIgnoreList = new ArrayList<String>();
@@ -66,7 +66,7 @@ public class Kdkbot extends PircBot {
 		
 		// Join channels
 		for(int i = 0; i < cfgChannels.length; i++) {
-			CHANS_NEW.put(cfgChannels[i], new Channel(BOT, cfgChannels[i]));
+			CHANS.put(cfgChannels[i], new Channel(BOT, cfgChannels[i]));
 			// CHANS.add(new Channel(BOT, cfgChannels[i]));
 		}
 	}
@@ -79,7 +79,7 @@ public class Kdkbot extends PircBot {
 		try {
 			this.reconnect();
 			// Iterator<Channel> chanIter = CHANS.iterator();
-			Iterator chanIter = CHANS_NEW.entrySet().iterator();
+			Iterator chanIter = CHANS.entrySet().iterator();
 			
 			while(chanIter.hasNext()) {
 				Map.Entry<String, Channel> chan = (Map.Entry) chanIter.next();
@@ -167,7 +167,7 @@ public class Kdkbot extends PircBot {
     			String channelToJoin = message.substring("||joinchan ".length());
     			BOT.sendMessage(channel, "Joining channel " + channelToJoin);
     			Channel channelToAdd = new Channel(this, channelToJoin);
-    			CHANS_NEW.put(channelToJoin, channelToAdd);
+    			CHANS.put(channelToJoin, channelToAdd);
     			
     			if(!(args.length < 3) && args[2].equalsIgnoreCase("false")) {
     				BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
@@ -194,9 +194,12 @@ public class Kdkbot extends PircBot {
     	
     	if(!this.msgIgnoreList.contains(sender)) {
 	    	// Send info off to correct channel
-	    	Channel curChan = CHANS_NEW.get(channel);
+	    	Channel curChan = getChannel(channel);
     		curChan.commands.commandHandler(channel, sender, login, hostname, message);
     	}
 	}
     
+    public Channel getChannel(String channel) {
+    	return this.CHANS.get(channel);
+    }
 }

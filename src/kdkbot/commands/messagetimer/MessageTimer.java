@@ -46,14 +46,7 @@ public class MessageTimer extends TimerTask {
 		String unparsedString = this.message;
 		
 		// Get channel instance
-		Channel chan = null;
-		Iterator<Channel> chanIter = instance.CHANS.iterator();
-		while(chanIter.hasNext()) {
-			chan = chanIter.next();
-			if(chan.getChannel().equalsIgnoreCase(this.channel)) {
-				break;
-			}
-		}
+		Channel chan = instance.CHANS_NEW.get(channel);
 		
 		if(chan == null) {
 			return "Error: Could not find channel " + channel;

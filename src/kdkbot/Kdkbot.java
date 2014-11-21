@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.jibble.pircbot.*;
@@ -25,7 +26,8 @@ import kdkbot.filemanager.*;
 public class Kdkbot extends PircBot {
 	private String version = "0.1.0.18";
 	public static Kdkbot BOT;
-	public static ArrayList<Channel> CHANS = new ArrayList<Channel>();
+	// public static ArrayList<Channel> CHANS = new ArrayList<Channel>();
+	public static HashMap<String, Channel> CHANS_NEW = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
 	public ArrayList<String> msgIgnoreList = new ArrayList<String>();
@@ -64,7 +66,8 @@ public class Kdkbot extends PircBot {
 		
 		// Join channels
 		for(int i = 0; i < cfgChannels.length; i++) {
-			CHANS.add(new Channel(BOT, cfgChannels[i]));
+			CHANS_NEW.put(cfgChannels[i], new Channel(BOT, cfgChannels[i]));
+			// CHANS.add(new Channel(BOT, cfgChannels[i]));
 		}
 	}
 
@@ -75,10 +78,12 @@ public class Kdkbot extends PircBot {
 	public void onDisconnect() {
 		try {
 			this.reconnect();
-			Iterator<Channel> chanIter = CHANS.iterator();
+			// Iterator<Channel> chanIter = CHANS.iterator();
+			Iterator chanIter = CHANS_NEW.entrySet().iterator();
+			
 			while(chanIter.hasNext()) {
-				Channel chan = chanIter.next();
-				chan.joinChannel();
+				Map.Entry<String, Channel> chan = (Map.Entry) chanIter.next();
+				chan.getValue().joinChannel();
 			}
 		} catch (NickAlreadyInUseException e) {
 			e.printStackTrace();
@@ -147,11 +152,6 @@ public class Kdkbot extends PircBot {
     			dbg.enable();
     			BOT.sendMessage(channel, "Enabled internal debug messages");
     		} else if(message.startsWith("||stop")) {
-    			Iterator<Channel> chanIter = BOT.CHANS.iterator();
-    			while(chanIter.hasNext()) {
-    				Channel chan = chanIter.next();
-    				BOT.sendMessage(chan.getChannel(), "I am shutting down.");
-    			}
     			BOT.disconnect();
     			System.exit(0);
     		} else if(message.startsWith("||echo " )) {
@@ -167,7 +167,7 @@ public class Kdkbot extends PircBot {
     			String channelToJoin = message.substring("||joinchan ".length());
     			BOT.sendMessage(channel, "Joining channel " + channelToJoin);
     			Channel channelToAdd = new Channel(this, channelToJoin);
-    			CHANS.add(channelToAdd);
+    			CHANS_NEW.put(channelToJoin, channelToAdd);
     			
     			if(!(args.length < 3) && args[2].equalsIgnoreCase("false")) {
     				BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
@@ -185,57 +185,17 @@ public class Kdkbot extends PircBot {
     			} else {
     				BOT.sendMessage(channel, userToFind + " is able to globally use the bot.");
     			}
-    		} else if(message.startsWith("||color")) {
+    		} else if(message.startsWith("||color ")) {
     			String colorArgs[] = message.split(" ");
     			BOT.sendMessage(channel, "/color " + colorArgs[1]);
     			BOT.sendMessage(channel, "Changed color to " + colorArgs[1]);
-    		} else if(message.equalsIgnoreCase("||listallperms")) {
-    			Iterator<Channel> chan = CHANS.iterator();
-    			while(chan.hasNext()) {
-    				Channel curChan = chan.next();
-    				try {
-	    				List<String> cfgContents = curChan.commands.cfgRanks.getConfigContents();
-	    				Iterator<String> cfgContentsIter = cfgContents.iterator();
-	    				String outMsg = curChan.getChannel() + "=";
-	    				while(cfgContentsIter.hasNext()) {
-	    					outMsg += cfgContentsIter.next() + " && ";
-	    				}
-	    				
-	    				this.sendMessage(channel, outMsg);
-    				} catch(Exception e) {
-    					e.printStackTrace();
-    				}
-    			}
-    		} else if(message.equalsIgnoreCase("||listquotessize")) {
-    			Iterator<Channel> chanIter = CHANS.iterator();
-    			while(chanIter.hasNext()) {
-    				Channel chan = chanIter.next();
-    				if(chan.getChannel().equalsIgnoreCase(channel)) {
-    					HashMap<String, String> quotes = chan.commands.quotes.quotes;
-						BOT.sendMessage(channel, "Quote list size: " + quotes.size());
-    				}
-    			}
-    		} else if(message.equalsIgnoreCase("||listallcustomstringssize")) {
-    			Iterator<Channel> chanIter = CHANS.iterator();
-    			while(chanIter.hasNext()) {
-    				Channel chan = chanIter.next();
-    				if(chan.getChannel().equalsIgnoreCase(channel)) {
-						BOT.sendMessage(channel, "Custom Strings list size: " + chan.commands.commandStrings.commands.size());
-    				}
-    			}
     		}
     	}
     	
     	if(!this.msgIgnoreList.contains(sender)) {
 	    	// Send info off to correct channel
-	    	Iterator<Channel> iter = CHANS.iterator();
-	    	while(iter.hasNext()) {
-	    		Channel curChan = iter.next();
-	    		if(curChan.getChannel().equalsIgnoreCase(channel)) {
-	    			curChan.commands.commandHandler(channel, sender, login, hostname, message);
-	    			break;
-	    		}
-	    	}
+	    	Channel curChan = CHANS_NEW.get(channel);
+    		curChan.commands.commandHandler(channel, sender, login, hostname, message);
     	}
 	}
     

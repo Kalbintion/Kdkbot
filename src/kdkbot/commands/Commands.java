@@ -125,7 +125,7 @@ public class Commands {
 			}
 			// Raid
 			else if (getSenderRank(sender) >= 3 &&
-						coreCommand.startsWith("raid")) {
+						coreCommand.equalsIgnoreCase("raid")) {
 				instance.sendMessage(channel, "Raid http://www.twitch.tv/" + args[1]);
 			}
 			// Multitwitch

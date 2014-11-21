@@ -166,8 +166,7 @@ public class Kdkbot extends PircBot {
     			// Join channel
     			String channelToJoin = message.substring("||joinchan ".length());
     			BOT.sendMessage(channel, "Joining channel " + channelToJoin);
-    			Channel channelToAdd = new Channel(this, channelToJoin);
-    			CHANS.put(channelToJoin, channelToAdd);
+    			CHANS.put(channelToJoin, new Channel(this, channelToJoin));
     			
     			if(!(args.length < 3) && args[2].equalsIgnoreCase("false")) {
     				BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");

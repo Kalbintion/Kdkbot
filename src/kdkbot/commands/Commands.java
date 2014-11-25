@@ -106,9 +106,14 @@ public class Commands {
 						break;
 				}
 			}
+			// Channel
+			else if(getSenderRank(sender) >= 5 &&
+						coreCommand.equalsIgnoreCase("chan")) {
+				
+			}
 			// Help
 			else if(getSenderRank(sender) >= 1 &&
-						coreCommand.startsWith("help")) {
+						coreCommand.equalsIgnoreCase("help")) {
 				if(args.length <= 1) {
 					// Send link to channel for wiki
 					instance.sendMessage(channel, "You can see standard commands and get bot help @ https://github.com/kalbintion/kdkbot/wiki");
@@ -119,7 +124,7 @@ public class Commands {
 			// Quotes
 			else if (getSenderRank(sender) >= quotes.getPermissionLevel() &&
 						quotes.getAvailability() &&
-						quotes.getTrigger().startsWith(coreCommand)) {
+						quotes.getTrigger().equalsIgnoreCase(coreCommand)) {
 				additionalParams.add("sender_rank=" + getSenderRank(sender));
 				quotes.executeCommand(channel, sender, login, hostname, message, additionalParams);
 			}
@@ -130,7 +135,7 @@ public class Commands {
 			}
 			// Multitwitch
 			else if (getSenderRank(sender) >= 2 &&
-						coreCommand.startsWith("multi")) {
+						coreCommand.equalsIgnoreCase("multi")) {
 				String multiOut = "";
 				for(int i = 1; i < args.length; i++) {
 					multiOut += args[i] + "/";
@@ -139,7 +144,7 @@ public class Commands {
 			}
 			// Custom Commands
 			else if(getSenderRank(sender) >= 1 &&
-						coreCommand.startsWith("commands")) {
+						coreCommand.equalsIgnoreCase("commands")) {
 				commandStrings.executeCommand(channel, sender, login, hostname, message, getSenderRank(sender), additionalParams);
 			}
 			// AMA
@@ -151,7 +156,7 @@ public class Commands {
 			}
 			// Counters
 			else if(getSenderRank(sender) >= 1 &&
-						coreCommand.startsWith("counter")) {
+						coreCommand.equalsIgnoreCase("counter")) {
 				counters.executeCommand(channel, sender, login, hostname, message, getSenderRank(sender), additionalParams);
 			}
 			// Magic 8-Ball / Conch

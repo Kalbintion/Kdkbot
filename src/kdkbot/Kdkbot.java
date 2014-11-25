@@ -188,6 +188,11 @@ public class Kdkbot extends PircBot {
     			String colorArgs[] = message.split(" ");
     			BOT.sendMessage(channel, "/color " + colorArgs[1]);
     			BOT.sendMessage(channel, "Changed color to " + colorArgs[1]);
+    		} else if(message.equalsIgnoreCase("||initchan")) {
+    			Channel chan = getChannel(channel);
+    			chan.commands.setSenderRank("kalbintion", 5);
+    			chan.commands.setSenderRank(channel.substring(1), 5);
+    			BOT.sendMessage(channel, "Initialized channel by giving user " + channel.substring(1) + " and Kalbintion permission level 5");
     		}
     	}
     	

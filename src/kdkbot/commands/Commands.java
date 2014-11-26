@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.*;
 
@@ -84,6 +85,7 @@ public class Commands {
 			instance.dbg.writeln(this, "Previous line detected as a command");
 			String args[] = message.split(" ");
 			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
+			String coreMessage = message.substring(args[0].length());
 			
 			instance.dbg.writeln(this, "Core Command detected as '" + coreCommand + "'");
 			instance.dbg.writeln(this, "Senders level detected as " + getSenderRank(sender) + " for value " + sender);
@@ -106,10 +108,49 @@ public class Commands {
 						break;
 				}
 			}
-			// Channel
+			// Channel - Game
 			else if(getSenderRank(sender) >= 5 &&
-						coreCommand.equalsIgnoreCase("chan")) {
-				
+						coreCommand.equalsIgnoreCase("game")) {
+				instance.twitch.setChannelProperty(channel, "game", coreMessage);
+				instance.sendMessage(channel, "Sent update message for game to: " + coreMessage);
+			}
+			// Channel - Status (Title)
+			else if(getSenderRank(sender) >= 5 &&
+						coreCommand.equalsIgnoreCase("title")) {
+				instance.twitch.setChannelProperty(channel, "status", coreMessage);
+				instance.sendMessage(channel, "Sent update message for title to: " + coreMessage);
+			}
+			// Twitch API Testing
+			else if(getSenderRank(sender) >= 6 &&
+						coreCommand.equalsIgnoreCase("twitchapi")) {
+				switch(args[1]) {
+					case "header":
+						switch(args[2]) {
+							case "list":
+								String outputMessage = "";
+								Iterator headerIter = this.instance.twitch.getHeaders().entrySet().iterator();
+								while(headerIter.hasNext()) {
+									Map.Entry pairs = (Map.Entry)headerIter.next();
+									outputMessage += pairs.getKey() + "=" + pairs.getValue() + ", ";
+								}
+								instance.sendMessage(channel, outputMessage);
+								break;
+							case "add":
+								instance.twitch.addHeader(args[2], args[3]);
+								instance.sendMessage(channel, "Added header named '" + args[2] + "' with value '" + args[3] +"'");
+						}
+					break;
+					case "get":
+						instance.sendMessage(channel, instance.twitch.getChannelProperty(channel, args[2]).getAsString());
+						break;
+					case "set":
+						String[] setArgs = message.split(" ", 4);
+						instance.sendMessage(channel, instance.twitch.setChannelProperty(channel, setArgs[2], setArgs[3]));
+						break;
+					case "raw":
+						String[] rawArgs = message.split(" ", 5);
+						instance.sendMessage(channel, instance.twitch.sendRawData(rawArgs[2], rawArgs[3], rawArgs[4]).toString());
+				}
 			}
 			// Help
 			else if(getSenderRank(sender) >= 1 &&

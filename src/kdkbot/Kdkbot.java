@@ -22,6 +22,7 @@ import org.jibble.pircbot.*;
 
 import kdkbot.channel.*;
 import kdkbot.filemanager.*;
+import kdkbot.twitchapi.TwitchAPI;
 
 public class Kdkbot extends PircBot {
 	private String version = "0.1.0.18";
@@ -36,6 +37,7 @@ public class Kdkbot extends PircBot {
 	private Pattern logIgnores;
 	private Log logger;
 	public Debugger dbg = new Debugger(false);
+	public TwitchAPI twitch;
 	
 	private HashMap<String, String> messageDuplicatorList;
 	
@@ -60,6 +62,8 @@ public class Kdkbot extends PircBot {
 		BOT.setVerbose(_verbose);
 		BOT.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
 		messageDuplicatorList = new HashMap<String, String>();
+		
+		this.twitch = new TwitchAPI(botCfg.getSetting("clientId"), botCfg.getSetting("access_code"));
 		
 		// Get channels
 		String[] cfgChannels = botCfg.getSetting("channels").split(",");
@@ -140,6 +144,8 @@ public class Kdkbot extends PircBot {
     			prevChanSetting = prevChanSetting.replace(channel, "");
     			// Remove duplicated commas that can result from removing from channel
     			prevChanSetting = prevChanSetting.replace(",,", ",");
+    			
+    			botCfg.saveSettings();
     		} else if(message.startsWith("||debug disable")) {
     			dbg.disable();
     			BOT.sendMessage(channel, "Disabled internal debug messages");
@@ -174,16 +180,6 @@ public class Kdkbot extends PircBot {
     			
     			// Add channel to settings cfg
     			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channelToJoin);
-    		} else if(message.startsWith("||ignoreuser ")) {
-    			String userToIgnore = message.substring("||ignoreuser ".length());
-    			msgIgnoreList.add(userToIgnore);
-    		} else if(message.startsWith("||userignored ")) {
-    			String userToFind = message.substring("||userignored ".length());
-    			if(msgIgnoreList.contains(userToFind)) {
-    				BOT.sendMessage(channel, userToFind + " is unable to globally use the bot.");
-    			} else {
-    				BOT.sendMessage(channel, userToFind + " is able to globally use the bot.");
-    			}
     		} else if(message.startsWith("||color ")) {
     			String colorArgs[] = message.split(" ");
     			BOT.sendMessage(channel, "/color " + colorArgs[1]);

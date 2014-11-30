@@ -204,7 +204,18 @@ public class TwitchAPI {
 		return channel.replace("#", "");
 	}
 	
+	/**
+	 * Checks to see if a given channel is currently streaming
+	 * @param channel The channel to look-up
+	 * @return True if the channel is streaming, false otherwise
+	 */
 	public boolean isChannelStreaming(String channel) {
+		JsonObject res = getRawData(URL_STREAMS.replace("%CHAN%", channel), "GET");
+		if(res.has("stream")) {
+			if(res.get("stream") != null) {
+				return true;
+			}
+		}
 		return false;
 	}
 }

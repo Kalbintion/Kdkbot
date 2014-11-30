@@ -29,7 +29,7 @@ public class AMA extends Command {
 		this.curIndex = 0;
 		this.questions = new ArrayList<String>();
 		try {
-			this.cfg = new Config("./cfg/ama/" + channel + ".cfg", false);
+			this.cfg = new Config("./cfg/" + channel + "/ama.cfg", false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

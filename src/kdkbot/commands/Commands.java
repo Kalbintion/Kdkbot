@@ -29,9 +29,7 @@ public class Commands {
 	public Channel chan;
 	
 	// Path & Config locations (set by Commands() init)
-	public Path permissionPath;
-	public Path commandListPath;
-	public Config cfgRanks;
+	public Config cfgPerms;
 	
 	// Command prefix of this particular command set
 	public String commandPrefix = "|";
@@ -48,8 +46,8 @@ public class Commands {
 		this.instance = instance;
 		try {
 			instance.dbg.writeln(this, "Attempting to load config ranks.");
-			cfgRanks = new Config("./cfg/perms/" + channel + ".cfg");
-			List<String> cfgContents = cfgRanks.getConfigContents();
+			cfgPerms = new Config("./cfg/" + channel + "/perms.cfg");
+			List<String> cfgContents = cfgPerms.getConfigContents();
 			Iterator<String> iter = cfgContents.iterator();
 			while(iter.hasNext()) {
 				instance.dbg.writeln(this, "Parsing next line of cfgArgs.");
@@ -85,7 +83,9 @@ public class Commands {
 			instance.dbg.writeln(this, "Previous line detected as a command");
 			String args[] = message.split(" ");
 			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
-			String coreMessage = message.substring(args[0].length());
+			String coreMessage = "";
+			if(args.length > 1)
+				coreMessage = message.substring(args[0].length() + 1);
 			
 			instance.dbg.writeln(this, "Core Command detected as '" + coreCommand + "'");
 			instance.dbg.writeln(this, "Senders level detected as " + getSenderRank(sender) + " for value " + sender);
@@ -238,39 +238,7 @@ public class Commands {
 			}
 		}
 	}
-	
-	/**
-	 * Sets the permission file's path for this command object
-	 * @param filePath The path to the file 
-	 */
-	public void setPermissionPath(Path filePath) {
-		this.permissionPath = filePath;
-	}
-	
-	/**
-	 * Gets the permission file's path for this command object
-	 * @return The path to the file
-	 */
-	public Path getPermissionPath() {
-		return this.permissionPath;
-	}
-	
-	/**
-	 * Sets the command list file's path for this command object
-	 * @param filePath The command list path object to use
-	 */
-	public void setCommandListPath(Path filePath) {
-		this.commandListPath = filePath;
-	}
-	
-	/**
-	 * Gets the command list file's path for this command object
-	 * @return The command list path object
-	 */
-	public Path getCommandListPath() {
-		return this.commandListPath;
-	}
-	
+		
 	/**
 	 * Gets a particular users rank for this channel.
 	 * @param sender The sender to lookup
@@ -291,7 +259,7 @@ public class Commands {
 	public ArrayList<String> getSenderRanks() {
 		ArrayList<String> strings = null;
 		try {
-			strings = (ArrayList<String>) cfgRanks.getConfigContents();
+			strings = (ArrayList<String>) cfgPerms.getConfigContents();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -313,7 +281,7 @@ public class Commands {
 	 */
 	public void loadSenderRanks() {
 		try {
-			List<String> strings = cfgRanks.getConfigContents();
+			List<String> strings = cfgPerms.getConfigContents();
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {
 				String[] args = string.next().split("=");
@@ -328,7 +296,7 @@ public class Commands {
 	 * Saves the channels ranks for users.
 	 */
 	public void saveSenderRanks() {
-		cfgRanks.saveSettings();
+		cfgPerms.saveSettings();
 	}
 	
 	/**
@@ -336,6 +304,6 @@ public class Commands {
 	 * @param sendReferenceMap
 	 */
 	public void saveSenderRanks(boolean sendReferenceMap) {
-		cfgRanks.saveSettings(this.senderRanks);
+		cfgPerms.saveSettings(this.senderRanks);
 	}
 }

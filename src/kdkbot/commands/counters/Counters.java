@@ -17,7 +17,7 @@ public class Counters {
 		try {
 			this.instance = instance;
 			this.channel = channel;
-			this.config = new Config("./cfg/counter/" + channel + ".cfg", false);
+			this.config = new Config("./cfg/" + channel + "/.cfg", false);
 			this.counters = new ArrayList<Counter>();
 		} catch (Exception e) {
 			e.printStackTrace();

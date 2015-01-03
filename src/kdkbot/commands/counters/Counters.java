@@ -17,7 +17,7 @@ public class Counters {
 		try {
 			this.instance = instance;
 			this.channel = channel;
-			this.config = new Config("./cfg/" + channel + "/.cfg", false);
+			this.config = new Config("./cfg/" + channel + "/counters.cfg", false);
 			this.counters = new ArrayList<Counter>();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -151,6 +151,16 @@ public class Counters {
 						instance.sendMessage(channel, "Counter " + cntr.name + " is set to " + cntr.value);
 					}
 				}
+				break;
+			case "list":
+				String out = "";
+				while(cntrIter.hasNext()) {
+					cntr = cntrIter.next();
+					out += cntr.name +"=" + cntr.value + " ";
+				}
+				instance.sendMessage(channel, out);
+				break;
+			
 		}
 		this.saveCounters();
 	}

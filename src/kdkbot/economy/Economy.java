@@ -36,12 +36,12 @@ public class Economy {
 			this.channel = channel;
 			
 			// Initialize config file
-			this.cfg = new Config("./economy/" + channel + ".cfg");
+			this.cfg = new Config("./cfg/" + channel + "/economy.cfg");
 			this.currencyName = cfg.getSetting("name");
 			this.currencySymbol = cfg.getSetting("symbol");
 			
 			// Initialize users config file
-			this.users = new Config("./economy/" + channel + "_users.cfg");
+			this.users = new Config("./cfg/" + channel + "/economy_users.cfg");
 			
 			// Get amounts
 			this.amounts = new HashMap<String, Double>();

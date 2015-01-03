@@ -80,6 +80,10 @@ public class Quotes extends Command {
 				int quoteNum = rnd.nextInt(this.quotes.size() + 1);
 				this.getBotInstance().sendMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
 				break;
+			case "count":
+			case "amount":
+				this.getBotInstance().sendMessage(channel, "There are " + quotes.size() + " quotes.");
+				break;
 		}
 	}
 

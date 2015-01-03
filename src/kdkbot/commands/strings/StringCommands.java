@@ -27,7 +27,7 @@ public class StringCommands {
 		try {
 			this.instance = instance;
 			this.channel = channel;
-			this.config = new Config("./cfg/" + channel + "cmds.cfg", false);
+			this.config = new Config("./cfg/" + channel + "/cmds.cfg", false);
 			this.commands = new ArrayList<StringCommand>();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,144 +95,146 @@ public class StringCommands {
 	
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, int senderRank, ArrayList<String> additionalParams) {
 		String[] args = message.split(" ");
-		switch(args[1]) {
-			case "new":
-				if(senderRank >= 3 ) {
-					String[] csArgs = message.split(" ", 5);
-					instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
-					for(int i = 0 ; i < csArgs.length; i++) {
-						instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
-					}
-					instance.sendMessage(channel, addCommand(csArgs[2], csArgs[4], csArgs[3]));
-				}
-				break;
-			case "view":
-				if(senderRank >= 3) {
-					String[] csArgs = message.split(" ", 4);
-					instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
-					for(int i = 0 ; i < csArgs.length; i++) {
-						instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
-					}
-					
-					String trigger = csArgs[2];
-					String type = csArgs[3];
-					
-					Iterator<StringCommand> strCmdIter = commands.iterator();
-					while(strCmdIter.hasNext()) {
-						StringCommand strCmd = strCmdIter.next();
-						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
-							if(type.equalsIgnoreCase("available")) {
-								instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s availability is set to " + strCmd.getAvailability());
-							} else if(type.equalsIgnoreCase("level")) {
-								instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s permission level is set to " + strCmd.getPermissionLevel());
-							} else if(type.equalsIgnoreCase("message")) {
-								instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s message is set to: " + strCmd.messageToSend);
-							}
-							break;
+		if(args.length > 1) {
+			switch(args[1]) {
+				case "new":
+					if(senderRank >= 3 ) {
+						String[] csArgs = message.split(" ", 5);
+						instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+						for(int i = 0 ; i < csArgs.length; i++) {
+							instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 						}
+						instance.sendMessage(channel, addCommand(csArgs[2], csArgs[4], csArgs[3]));
 					}
-				}
-				break;
-			case "edit":
-				if(senderRank >= 3) {
-					String[] csArgs = message.split(" ", 5);
-					instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
-					for(int i = 0 ; i < csArgs.length; i++) {
-						instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
-					}
-					
-					String trigger = csArgs[2]; // command trigger
-					String type = csArgs[3]; // command edit method
-					String toValue = csArgs[4];
-					
-					Iterator<StringCommand> strCmdIter = commands.iterator();
-					while(strCmdIter.hasNext()) {
-						StringCommand strCmd = strCmdIter.next();
-						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
-							if(senderRank >= strCmd.getPermissionLevel()) {
-								if(type.equalsIgnoreCase("trigger")) {
-									instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
-									strCmd.setTrigger(toValue);
+					break;
+				case "view":
+					if(senderRank >= 3) {
+						String[] csArgs = message.split(" ", 4);
+						instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+						for(int i = 0 ; i < csArgs.length; i++) {
+							instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+						}
+						
+						String trigger = csArgs[2];
+						String type = csArgs[3];
+						
+						Iterator<StringCommand> strCmdIter = commands.iterator();
+						while(strCmdIter.hasNext()) {
+							StringCommand strCmd = strCmdIter.next();
+							if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
+								if(type.equalsIgnoreCase("available")) {
+									instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s availability is set to " + strCmd.getAvailability());
 								} else if(type.equalsIgnoreCase("level")) {
-									instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
-									strCmd.setPermissionLevel(Integer.parseInt(toValue));
+									instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s permission level is set to " + strCmd.getPermissionLevel());
 								} else if(type.equalsIgnoreCase("message")) {
-									instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s message.");
-									strCmd.messageToSend = toValue;
-								} else if(type.equalsIgnoreCase("available")) {
-									try {
-										boolean bool = Boolean.parseBoolean(csArgs[4]);
-										instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
-										strCmd.setAvailability(bool);
-									} catch(Exception e) {
-										instance.sendMessage(channel, "Unable to discern " + csArgs[4] + " as a true/false value.");
-									}
+									instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s message is set to: " + strCmd.messageToSend);
 								}
-							} else {
-								instance.sendMessage(channel, sender + ", you do not have the required permission to change this command.");
+								break;
 							}
-							break;
 						}
 					}
-					this.saveCommands();
-				}
-				break;
-			case "remove":
-				if(senderRank >= 3) {
-					instance.sendMessage(channel, removeCommand(args[2]));
-					this.saveCommands();
-				}
-				break;
-			case "list":
-				// commands list <rank>
-				ArrayList<String> commands = new ArrayList<String>();
-				
-				// Output message standard
-				StringBuilder outMessage = new StringBuilder(400);
-				outMessage.append("Commands for " + channel + " ");
-				
-				// Hardcoded commands - need a better situation here
-				// TODO: Implement better solution
-				String[] additionalCommands = {"", "ama, counter, commands list, quote get, ", "ama, counter, multi, ", "commands, raid, quote, perm, perm, ", "", ""};
-								
-				// Are we expecting a particular rank to look at? If so, grab those, otherwise, get commands user can use
-				if(args.length == 3) {
-					// We are expecting a rank to list for
-					outMessage.append(" @ rank " + args[2] + ": ");
-					if(args[2].equalsIgnoreCase("*")) {
-						// Doesn't matter what rank we send with this, as it'll grab all commands.
-						commands = this.getListOfCommands(0, GetLevels.INCLUDE_ALL);
+					break;
+				case "edit":
+					if(senderRank >= 3) {
+						String[] csArgs = message.split(" ", 5);
+						instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+						for(int i = 0 ; i < csArgs.length; i++) {
+							instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+						}
+						
+						String trigger = csArgs[2]; // command trigger
+						String type = csArgs[3]; // command edit method
+						String toValue = csArgs[4];
+						
+						Iterator<StringCommand> strCmdIter = commands.iterator();
+						while(strCmdIter.hasNext()) {
+							StringCommand strCmd = strCmdIter.next();
+							if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
+								if(senderRank >= strCmd.getPermissionLevel()) {
+									if(type.equalsIgnoreCase("trigger")) {
+										instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
+										strCmd.setTrigger(toValue);
+									} else if(type.equalsIgnoreCase("level")) {
+										instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
+										strCmd.setPermissionLevel(Integer.parseInt(toValue));
+									} else if(type.equalsIgnoreCase("message")) {
+										instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s message.");
+										strCmd.messageToSend = toValue;
+									} else if(type.equalsIgnoreCase("available")) {
+										try {
+											boolean bool = Boolean.parseBoolean(csArgs[4]);
+											instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
+											strCmd.setAvailability(bool);
+										} catch(Exception e) {
+											instance.sendMessage(channel, "Unable to discern " + csArgs[4] + " as a true/false value.");
+										}
+									}
+								} else {
+									instance.sendMessage(channel, sender + ", you do not have the required permission to change this command.");
+								}
+								break;
+							}
+						}
+						this.saveCommands();
+					}
+					break;
+				case "remove":
+					if(senderRank >= 3) {
+						instance.sendMessage(channel, removeCommand(args[2]));
+						this.saveCommands();
+					}
+					break;
+				case "list":
+					// commands list <rank>
+					ArrayList<String> commands = new ArrayList<String>();
+					
+					// Output message standard
+					StringBuilder outMessage = new StringBuilder(400);
+					outMessage.append("Commands for " + channel + " ");
+					
+					// Hardcoded commands - need a better situation here
+					// TODO: Implement better solution
+					String[] additionalCommands = {"", "ama, counter, commands list, quote get, ", "ama, counter, multi, ", "commands, raid, quote, perm, perm, ", "", ""};
+									
+					// Are we expecting a particular rank to look at? If so, grab those, otherwise, get commands user can use
+					if(args.length == 3) {
+						// We are expecting a rank to list for
+						outMessage.append(" @ rank " + args[2] + ": ");
+						if(args[2].equalsIgnoreCase("*")) {
+							// Doesn't matter what rank we send with this, as it'll grab all commands.
+							commands = this.getListOfCommands(0, GetLevels.INCLUDE_ALL);
+						} else {
+							commands = this.getListOfCommands(Integer.parseInt(args[2]), GetLevels.INCLUDE_EQUALS);
+						}
 					} else {
-						commands = this.getListOfCommands(Integer.parseInt(args[2]), GetLevels.INCLUDE_EQUALS);
+						outMessage.append(" available to " + sender +": ");
+						// List commands based on users rank
+						int senderRankTemp = senderRank;
+						while(senderRankTemp > 0 ) {
+							outMessage.append(additionalCommands[senderRankTemp--]);
+						}
+						commands = this.getListOfCommands(senderRank, GetLevels.INCLUDE_LOWER);
 					}
-				} else {
-					outMessage.append(" available to " + sender +": ");
-					// List commands based on users rank
-					int senderRankTemp = senderRank;
-					while(senderRankTemp > 0 ) {
-						outMessage.append(additionalCommands[senderRankTemp--]);
+		
+					// Loop over command list and add it to the outMessage
+					Iterator<String> commandIter = commands.iterator();
+					while(commandIter.hasNext()) {
+						String nextCommand = commandIter.next();
+						if(outMessage.length() + nextCommand.length() > 400) {
+							// Length too long, send message and reset string
+							instance.sendMessage(channel, outMessage.toString());
+							outMessage = new StringBuilder(400);
+						} else {
+							outMessage.append(nextCommand + ", ");
+						}
 					}
-					commands = this.getListOfCommands(senderRank, GetLevels.INCLUDE_LOWER);
-				}
-	
-				// Loop over command list and add it to the outMessage
-				Iterator<String> commandIter = commands.iterator();
-				while(commandIter.hasNext()) {
-					String nextCommand = commandIter.next();
-					if(outMessage.length() + nextCommand.length() > 400) {
-						// Length too long, send message and reset string
-						instance.sendMessage(channel, outMessage.toString());
-						outMessage = new StringBuilder(400);
-					} else {
-						outMessage.append(nextCommand + ", ");
-					}
-				}
-				
-				// Trim off last two characters and 
-				// Finally send the last bit of info to the channel
-				instance.sendMessage(channel, outMessage.substring(0, outMessage.length() - 2));
-				
-				break;
+					
+					// Trim off last two characters and 
+					// Finally send the last bit of info to the channel
+					instance.sendMessage(channel, outMessage.substring(0, outMessage.length() - 2));
+					
+					break;
+			}
 		}
 	}
 	

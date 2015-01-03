@@ -27,27 +27,31 @@ public class Config {
 	 * 
 	 * @param filePath The path to the file that this config file belongs to
 	 */
-	public Config(Path filePath) throws Exception {
-		this.filePath = filePath;
-		verifyExists();
-		loadConfigContents();
+	public Config(Path filePath) {
+		this(filePath, false);
 	}
 	
 	/**
 	 * 
 	 * @param filePath
 	 */
-	public Config(String filePath) throws Exception {
-		this.filePath = Paths.get(filePath);
-		verifyExists();
-		loadConfigContents();
+	public Config(String filePath) {
+		this(Paths.get(filePath));
 	}
 	
-	public Config(String filePath, boolean loadContents) throws Exception {
-		this.filePath = Paths.get(filePath);
-		verifyExists();
-		if(loadContents) {
-			loadConfigContents();
+	public Config(String filePath, boolean loadContents) {
+		this(Paths.get(filePath), loadContents);
+	}
+	
+	public Config(Path filePath, boolean loadContents) {
+		this.filePath = filePath;
+		try {
+			verifyExists();
+			if(loadContents) {
+				loadConfigContents();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

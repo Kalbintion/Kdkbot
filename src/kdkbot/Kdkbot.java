@@ -39,7 +39,7 @@ public class Kdkbot extends PircBot {
 	public Debugger dbg = new Debugger(false);
 	public TwitchAPI twitch;
 	
-	private HashMap<String, String> messageDuplicatorList;
+	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
     /**
      * Initialization of the basic bot
@@ -61,7 +61,7 @@ public class Kdkbot extends PircBot {
 		this._verbose = Boolean.parseBoolean(botCfg.getSetting("verbose"));
 		BOT.setVerbose(_verbose);
 		BOT.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
-		messageDuplicatorList = new HashMap<String, String>();
+		messageDuplicatorList = new HashMap<String, ArrayList<String>>();
 		
 		this.twitch = new TwitchAPI(botCfg.getSetting("clientId"), botCfg.getSetting("access_code"));
 		
@@ -118,7 +118,10 @@ public class Kdkbot extends PircBot {
      */
     public void onAction(String sender, String login, String hostname, String target, String action) {
     	if(messageDuplicatorList.get(target) != null) {
-    		BOT.sendMessage(messageDuplicatorList.get(target), "*" + sender + " " + action  + "*");
+    		Iterator<String> msgDupeIter = messageDuplicatorList.get(target).iterator();
+    		while(msgDupeIter.hasNext()) {
+    			BOT.sendMessage(msgDupeIter.next(), "*" + sender + " " + action  + "*");
+    		}
     	}
     }
     
@@ -127,11 +130,23 @@ public class Kdkbot extends PircBot {
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
     	// Message Duplicator
-    	if(messageDuplicatorList.get(channel) != null) {
-    		BOT.sendMessage(messageDuplicatorList.get(channel), sender + ": " + message);
+    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot")) {
+    		Iterator<String> msgDupeIter = messageDuplicatorList.get(channel).iterator();
+    		while(msgDupeIter.hasNext()) {
+        		BOT.sendMessage(msgDupeIter.next(), sender + ": " + message);
+    		}
     	}
     	
     	// Master Commands
+    	if(sender.equalsIgnoreCase("taitfox") || sender.equalsIgnoreCase("kalbintion")) {
+    		if(message.equalsIgnoreCase("||msgbreakall")) {
+    			messageDuplicatorList.clear();
+    			BOT.sendMessage(channel, "Breaking all message dupe systems!");
+    		} else if(message.equalsIgnoreCase("||msgbreak ")) {
+    			
+    		}
+    	}
+    	
     	if(sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			// Leave channel
@@ -151,9 +166,20 @@ public class Kdkbot extends PircBot {
     			BOT.sendMessage(channel, "Disabled internal debug messages");
     		} else if(message.startsWith("||msgdupe ")) {
     			String[] chanArgs = message.split(" ");
-    			messageDuplicatorList.put(chanArgs[1], chanArgs[2]);
+    			if(messageDuplicatorList.get(chanArgs[1]) == null) {
+    				messageDuplicatorList.put(chanArgs[1], new ArrayList<String>());
+    			}
+    			messageDuplicatorList.get(chanArgs[1]).add(chanArgs[2]);
     			BOT.sendMessage(chanArgs[1], "Now sending all messages from this channel to " + chanArgs[2]);
     			BOT.sendMessage(chanArgs[2], "Now receiving all messages from " + chanArgs[1]);
+    		} else if(message.startsWith("||msgdupeto ")) {
+    			String[] chanArgs = message.split(" ");
+    			if(messageDuplicatorList.get(channel) == null) {
+    				messageDuplicatorList.put(channel, new ArrayList<String>());
+    			}
+    			messageDuplicatorList.get(channel).add(chanArgs[1]);
+    			BOT.sendMessage(channel, "Now sending all messages from this channel to " + chanArgs[1]);
+    			BOT.sendMessage(chanArgs[1], "Now receiving all messages from " + channel);
     		} else if(message.startsWith("||debug enable")) {
     			dbg.enable();
     			BOT.sendMessage(channel, "Enabled internal debug messages");
@@ -166,6 +192,14 @@ public class Kdkbot extends PircBot {
     		} else if(message.startsWith("||echoto ")) {
     			String messageArgs[] = message.split(" ", 3);
     			BOT.sendMessage(messageArgs[1], messageArgs[2]);
+    		} else if(message.startsWith("||echotoall ")) {
+    			String messageArgs[] = message.split(" ", 2);
+    			Iterator chanIter = CHANS.entrySet().iterator();
+    			while(chanIter.hasNext()) {
+    				Map.Entry pairs = (Map.Entry) chanIter.next();
+    				BOT.sendMessage(pairs.getKey().toString(), messageArgs[1]);
+    			}
+    			
     		} else if(message.startsWith("||joinchan ")) {
     			String[] args = message.split(" ");
     			

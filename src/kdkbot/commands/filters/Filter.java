@@ -5,13 +5,14 @@ import java.util.regex.Pattern;
 public class Filter {
 	public Pattern toFind;
 	public int action;
+	public String actionInfo;
 	
 	/**
 	 * Creates a new filter with a given String object
 	 * @param toFind The string REGEX pattern to use.
 	 */
 	public Filter(String toFind) {
-		this.toFind.compile(toFind);
+		this(Pattern.compile(toFind));
 	}
 	
 	/**
@@ -19,7 +20,17 @@ public class Filter {
 	 * @param toFind The pattern regex object to use.
 	 */
 	public Filter(Pattern toFind) {
+		this(toFind, 0, "");
+	}
+	
+	public Filter(Pattern toFind, int action, String actionInfo) {
 		this.toFind = toFind;
+		this.action = action;
+		this.actionInfo = actionInfo;
+	}
+	
+	public Filter(String toFind, String action, String actionInfo) {
+		this(Pattern.compile(toFind), Integer.parseInt(action), actionInfo);
 	}
 	
 	/**
@@ -38,5 +49,10 @@ public class Filter {
 	 */
 	public boolean contains(String message) {
 		return toFind.matcher(message).find();
+	}
+	
+	@Override
+	public String toString() {
+		return toFind.toString() + "=" + action + "=" + actionInfo;
 	}
 }

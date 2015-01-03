@@ -16,10 +16,13 @@ import org.jibble.pircbot.User;
 
 import kdkbot.Kdkbot;
 import kdkbot.channel.Channel;
+import kdkbot.channel.Forwarder;
 import kdkbot.commands.*;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
+import kdkbot.commands.filters.Filter;
+import kdkbot.commands.filters.Filters;
 import kdkbot.commands.strings.*;
 import kdkbot.filemanager.Config;
 
@@ -39,6 +42,7 @@ public class Commands {
 	public StringCommands commandStrings;
 	public Counters counters;
 	public AMA amas;
+	public Filters filters;
 	
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
@@ -72,6 +76,9 @@ public class Commands {
 			this.amas = new AMA(this.instance, channel);
 			this.amas.loadQuestions();
 			
+			this.filters = new Filters(channel);
+			this.filters.loadFilters();
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -79,7 +86,35 @@ public class Commands {
 	
 	public void commandHandler(String channel, String sender, String login, String hostname, String message) {
 		instance.dbg.writeln(this, "Attempting to parse last message for channel " + channel);
-		if(message.startsWith(commandPrefix)) {
+		
+		// Begin filtering first before checking for command validity
+		ArrayList<Filter> filters = this.filters.getFilters();
+		Iterator<Filter> fIter = filters.iterator();
+		while(fIter.hasNext()) {
+			Filter filter = fIter.next();
+			if(filter.contains(message)) {
+				switch(filter.action) {
+					case 1:
+						instance.sendMessage(channel, "/timeout " + sender + " 1");
+						break;
+					case 2:
+						instance.sendMessage(channel, "/timeout " + sender);
+						break;
+					case 3:
+						instance.sendMessage(channel, "/ban " + sender);
+						break;
+					case 4:
+						instance.sendMessage(channel, sender + ": " + filter.actionInfo);
+						break;
+				}
+			}
+		}
+		// Notice of correct prefix
+		if ((channel.equalsIgnoreCase("#kalbintion") || channel.equalsIgnoreCase("kalbintion")) && message.startsWith("!") || message.startsWith("+")) {
+			instance.sendMessage(channel, sender +": The correct command prefix for this channel is " + this.commandPrefix);
+		}
+		// Start command checking
+		else if(message.startsWith(commandPrefix)) {
 			instance.dbg.writeln(this, "Previous line detected as a command");
 			String args[] = message.split(" ");
 			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
@@ -94,6 +129,7 @@ public class Commands {
 			sender = sender.toLowerCase();
 			ArrayList<String> additionalParams = new ArrayList<String>();
 			
+
 			// Permission Ranks
 			if (getSenderRank(sender) >= 3 &&
 						coreCommand.equalsIgnoreCase("perm")) {
@@ -108,6 +144,13 @@ public class Commands {
 						break;
 				}
 			}
+			// Forwarders
+			else if(getSenderRank(sender) >= 5 &&
+						(coreCommand.equalsIgnoreCase("fwd")
+					  || coreCommand.equalsIgnoreCase("forward"))) {
+				String toChan = args[1];
+				this.chan.forwarders.add(new Forwarder(toChan));
+			}
 			// Channel - Game
 			else if(getSenderRank(sender) >= 5 &&
 						coreCommand.equalsIgnoreCase("game")) {
@@ -119,6 +162,11 @@ public class Commands {
 						coreCommand.equalsIgnoreCase("title")) {
 				instance.twitch.setChannelProperty(channel, "status", coreMessage);
 				instance.sendMessage(channel, "Sent update message for title to: " + coreMessage);
+			}
+			// Filters
+			else if(getSenderRank(sender) >= 3 &&
+						coreCommand.equalsIgnoreCase("filters")) {
+				// filters.executeCommand(channel, sender, login, hostname, message, additionalParams)
 			}
 			// Twitch API Testing
 			else if(getSenderRank(sender) >= 6 &&
@@ -233,7 +281,6 @@ public class Commands {
 						stringNext.getAvailability()) {
 					instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
 					stringNext.executeCommand(channel, sender, login, hostname, message, additionalParams);
-					break;
 				}
 			}
 		}

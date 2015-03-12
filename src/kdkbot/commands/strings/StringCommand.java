@@ -60,14 +60,14 @@ public class StringCommand extends Command {
 		this.getBotInstance().dbg.writeln(this, "Post Matcher RegEx: " + pattern_args_matches.toString());
 		while(pattern_args_matches.find()) {
 			String result = pattern_args_matches.group();
-			System.out.println("" + result);
+			// System.out.println("" + result);
 			
 			String argID = result.substring("%ARGS:".length(), result.length()-1);
 			int argIDInt = Integer.parseInt(argID);
 			
-			System.out.println("args[" + argID + "] = " + args[argIDInt]);
+			// System.out.println("args[" + argID + "] = " + args[argIDInt]);
 			if(args[argIDInt].startsWith("/")) {
-				System.out.println("Detected a / for " + argID);
+				// System.out.println("Detected a / for " + argID);
 				args[argIDInt] = args[argIDInt].substring(1);
 			}
 			message = message.replace("%ARGS:" + argID + "%", args[argIDInt]);

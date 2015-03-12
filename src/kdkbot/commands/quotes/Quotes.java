@@ -30,7 +30,7 @@ public class Quotes extends Command {
 		this.setPermissionLevel(1);
 		this.channel = channel;
 		try {
-			this.cfg = new Config("./cfg/" + channel + "/quotes.cfg", false);
+			this.cfg = new Config("./cfg/" + channel + "/quotes.cfg");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

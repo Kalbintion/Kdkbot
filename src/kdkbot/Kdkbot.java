@@ -25,7 +25,7 @@ import kdkbot.filemanager.*;
 import kdkbot.twitchapi.TwitchAPI;
 
 public class Kdkbot extends PircBot {
-	private String version = "0.1.0.18";
+	private String version = "0.1.0.20";
 	public static Kdkbot BOT;
 	// public static ArrayList<Channel> CHANS = new ArrayList<Channel>();
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
@@ -46,6 +46,7 @@ public class Kdkbot extends PircBot {
      */
 	public Kdkbot() throws Exception {
 		// Setup log system
+		botCfg.loadConfigContents();
 		this._logChat = Boolean.parseBoolean(botCfg.getSetting("logChat"));
 		logIgnores = Pattern.compile(botCfg.getSetting("logIgnores"));
 				

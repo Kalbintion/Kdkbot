@@ -24,35 +24,19 @@ public class Config {
 	private HashMap<String, String> values = new HashMap<String, String>();
 	
 	/**
-	 * 
+	 * A new config instance with a given Path to the file.
 	 * @param filePath The path to the file that this config file belongs to
 	 */
 	public Config(Path filePath) {
-		this(filePath, false);
+		this.filePath = filePath;
 	}
 	
 	/**
-	 * 
+	 * A new config instance with a given String to the file.
 	 * @param filePath
 	 */
 	public Config(String filePath) {
 		this(Paths.get(filePath));
-	}
-	
-	public Config(String filePath, boolean loadContents) {
-		this(Paths.get(filePath), loadContents);
-	}
-	
-	public Config(Path filePath, boolean loadContents) {
-		this.filePath = filePath;
-		try {
-			verifyExists();
-			if(loadContents) {
-				loadConfigContents();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	/**

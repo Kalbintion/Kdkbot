@@ -33,6 +33,10 @@ public class Filter {
 		this(Pattern.compile(toFind), Integer.parseInt(action), actionInfo);
 	}
 	
+	public Filter(String toFind, int action) {
+		this(Pattern.compile(toFind), action, "");
+	}
+	
 	/**
 	 * Determines if this filters regex pattern is equal to the message
 	 * @param message The message to check this filter against
@@ -53,6 +57,6 @@ public class Filter {
 	
 	@Override
 	public String toString() {
-		return toFind.toString() + "=" + action + "=" + actionInfo;
+		return toFind.toString() + "||" + action + "||" + actionInfo;
 	}
 }

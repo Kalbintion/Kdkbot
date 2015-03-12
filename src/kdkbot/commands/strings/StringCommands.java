@@ -27,7 +27,7 @@ public class StringCommands {
 		try {
 			this.instance = instance;
 			this.channel = channel;
-			this.config = new Config("./cfg/" + channel + "/cmds.cfg", false);
+			this.config = new Config("./cfg/" + channel + "/cmds.cfg");
 			this.commands = new ArrayList<StringCommand>();
 		} catch (Exception e) {
 			e.printStackTrace();

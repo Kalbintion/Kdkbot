@@ -34,7 +34,7 @@ public class UrbanAPI {
 		this.headers.put("Authorization", "OAuth " + OAuth);
 		if(!clientID.isEmpty())
 			this.headers.put("Client-ID", clientID);
-	}
+	} 
 	
 	public void setOAuth(String OAuth) {
 		this.OAuth = OAuth;

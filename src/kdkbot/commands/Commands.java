@@ -76,7 +76,7 @@ public class Commands {
 			this.amas = new AMA(this.instance, channel);
 			this.amas.loadQuestions();
 			
-			this.filters = new Filters(channel);
+			this.filters = new Filters(this.instance, channel);
 			this.filters.loadFilters();
 			
 		} catch(Exception e) {
@@ -88,33 +88,31 @@ public class Commands {
 		instance.dbg.writeln(this, "Attempting to parse last message for channel " + channel);
 		
 		// Begin filtering first before checking for command validity
-		ArrayList<Filter> filters = this.filters.getFilters();
-		Iterator<Filter> fIter = filters.iterator();
+		ArrayList<Filter> fList = this.filters.getFilters();
+		Iterator<Filter> fIter = fList.iterator();
+		instance.dbg.writeln(this, "Filter count: " + fList.size());
 		while(fIter.hasNext()) {
 			Filter filter = fIter.next();
 			if(filter.contains(message)) {
 				switch(filter.action) {
 					case 1:
 						instance.sendMessage(channel, "/timeout " + sender + " 1");
-						break;
+						return;
 					case 2:
 						instance.sendMessage(channel, "/timeout " + sender);
-						break;
+						return;
 					case 3:
 						instance.sendMessage(channel, "/ban " + sender);
-						break;
+						return;
 					case 4:
 						instance.sendMessage(channel, sender + ": " + filter.actionInfo);
-						break;
+						return;
 				}
 			}
 		}
-		// Notice of correct prefix
-		if ((channel.equalsIgnoreCase("#kalbintion") || channel.equalsIgnoreCase("kalbintion")) && message.startsWith("!") || message.startsWith("+")) {
-			instance.sendMessage(channel, sender +": The correct command prefix for this channel is " + this.commandPrefix);
-		}
+
 		// Start command checking
-		else if(message.startsWith(commandPrefix)) {
+		if(message.startsWith(commandPrefix)) {
 			instance.dbg.writeln(this, "Previous line detected as a command");
 			String args[] = message.split(" ");
 			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
@@ -266,6 +264,9 @@ public class Commands {
 			else if(getSenderRank(sender) >= 5 &&
 						coreCommand.equalsIgnoreCase("fwd")) {
 			
+			} else if(getSenderRank(sender) >= 3 &&
+						coreCommand.equalsIgnoreCase("filter")) {
+				filters.executeCommand(channel, sender, login, hostname, message, additionalParams);
 			}
 			// Custom String Commands
 			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();

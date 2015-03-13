@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import kdkbot.Kdkbot;
+import kdkbot.MessageInfo;
 import kdkbot.filemanager.Config;
 
 public class Counters {
@@ -75,15 +76,15 @@ public class Counters {
 		}
 	}
 	
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, int senderRank, ArrayList<String> additionalParams) {
-		String[] args = message.split(" ");
+	public void executeCommand(MessageInfo info) {
+		String[] args = info.message.split(" ");
 		
 		Iterator<Counter> cntrIter = this.counters.iterator();
 		Counter cntr;
 		
 		switch(args[1]) {
 			case "new":
-				if(senderRank >= 2) {
+				if(info.senderLevel >= 2) {
 					if(args.length >= 3) {
 						this.addCounter(args[2], Integer.parseInt(args[3]));
 						instance.sendMessage(channel, "Added new counter called " + args[2] + " with value of " + args[3]);
@@ -95,7 +96,7 @@ public class Counters {
 				break;
 			case "delete":
 			case "remove":
-				if(senderRank >= 2)
+				if(info.senderLevel >= 2)
 					this.removeCounter(args[2]);
 				break;
 			case "+":

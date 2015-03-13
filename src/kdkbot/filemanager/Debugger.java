@@ -2,6 +2,7 @@ package kdkbot.filemanager;
 
 public class Debugger {
 	private boolean isEnabled;
+	private Log logger = new Log();
 	
 	public Debugger() {
 		isEnabled = false;
@@ -20,8 +21,10 @@ public class Debugger {
 	}
 	
 	public void writeln(Object obj, String message) {
-		if(this.isEnabled) 
+		if(this.isEnabled) {
 			System.out.println(System.currentTimeMillis() + " [DBG] " + parseClassName(obj) + ": " + message);
+			logger.logln(System.currentTimeMillis() + " [DBG] " + parseClassName(obj) + ": " + message);
+		}
 	}
 	
 	private String parseClassName(Object obj) {

@@ -1,6 +1,7 @@
 package kdkbot.commands.ama;
 
 import kdkbot.Kdkbot;
+import kdkbot.MessageInfo;
 import kdkbot.commands.*;
 import kdkbot.filemanager.Config;
 
@@ -35,8 +36,8 @@ public class AMA extends Command {
 		}
 	}
 	
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
-		String[] args = message.split(" ");
+	public void executeCommand(MessageInfo info) {
+		String[] args = info.message.split(" ");
 		
 		// System.out.println("[DBG] [questions] [EXEC] Args[1] is " + args[1]);
 		
@@ -57,7 +58,7 @@ public class AMA extends Command {
 				}
 				break;
 			case "add":
-				questions.add(message.substring("ama add ".length()));
+				questions.add(info.message.substring("ama add ".length()));
 				this.getBotInstance().sendMessage(channel, "Question added.");
 				saveQuestions();
 				break;

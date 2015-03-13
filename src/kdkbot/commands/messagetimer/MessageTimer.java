@@ -62,7 +62,7 @@ public class MessageTimer extends TimerTask {
 			while(strCmdIter.hasNext()) {
 				strCmd = strCmdIter.next();
 				if(strCmd.getTrigger().equalsIgnoreCase(strCmdToGet)) {
-					unparsedString = unparsedString.replace(result, strCmd.parseMessage(strCmd.getMessage(), this.channel, "", "", "", "", null));
+					// unparsedString = unparsedString.replace(result, strCmd.parseMessage(strCmd.getMessage(), this.channel, "", "", "", "", null));
 				}
 			}
 		}

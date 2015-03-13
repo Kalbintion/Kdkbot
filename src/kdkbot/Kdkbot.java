@@ -26,7 +26,7 @@ import kdkbot.twitchapi.TwitchAPI;
 
 public class Kdkbot extends PircBot {
 	private String version = "0.1.0.20";
-	public static Kdkbot BOT;
+	// public static Kdkbot BOT;
 	// public static ArrayList<Channel> CHANS = new ArrayList<Channel>();
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
@@ -56,12 +56,11 @@ public class Kdkbot extends PircBot {
 		}
 		
 		// Setup this bot
-		BOT = this;
-		BOT.setEncoding("UTF-8");
-		BOT.setName(botCfg.getSetting("nick"));
+		this.setEncoding("UTF-8");
+		this.setName(botCfg.getSetting("nick"));
 		this._verbose = Boolean.parseBoolean(botCfg.getSetting("verbose"));
-		BOT.setVerbose(_verbose);
-		BOT.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
+		this.setVerbose(_verbose);
+		this.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
 		messageDuplicatorList = new HashMap<String, ArrayList<String>>();
 		
 		this.twitch = new TwitchAPI(botCfg.getSetting("clientId"), botCfg.getSetting("access_code"));
@@ -71,8 +70,9 @@ public class Kdkbot extends PircBot {
 		
 		// Join channels
 		for(int i = 0; i < cfgChannels.length; i++) {
-			CHANS.put(cfgChannels[i], new Channel(BOT, cfgChannels[i]));
-			// CHANS.add(new Channel(BOT, cfgChannels[i]));
+			CHANS.put(cfgChannels[i], new Channel(this, cfgChannels[i]));
+			dbg.writeln(this, "Added new channel object for channel: " + cfgChannels[i]);
+			dbg.writeln(this, "Channel object: " + getChannel(cfgChannels[i]));
 		}
 	}
 
@@ -121,7 +121,7 @@ public class Kdkbot extends PircBot {
     	if(messageDuplicatorList.get(target) != null) {
     		Iterator<String> msgDupeIter = messageDuplicatorList.get(target).iterator();
     		while(msgDupeIter.hasNext()) {
-    			BOT.sendMessage(msgDupeIter.next(), "*" + sender + " " + action  + "*");
+    			this.sendMessage(msgDupeIter.next(), "*" + sender + " " + action  + "*");
     		}
     	}
     }
@@ -134,7 +134,7 @@ public class Kdkbot extends PircBot {
     	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot")) {
     		Iterator<String> msgDupeIter = messageDuplicatorList.get(channel).iterator();
     		while(msgDupeIter.hasNext()) {
-        		BOT.sendMessage(msgDupeIter.next(), sender + ": " + message);
+        		this.sendMessage(msgDupeIter.next(), sender + ": " + message);
     		}
     	}
     	
@@ -142,7 +142,7 @@ public class Kdkbot extends PircBot {
     	if(sender.equalsIgnoreCase("taitfox") || sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("||msgbreakall")) {
     			messageDuplicatorList.clear();
-    			BOT.sendMessage(channel, "Breaking all message dupe systems!");
+    			this.sendMessage(channel, "Breaking all message dupe systems!");
     		} else if(message.equalsIgnoreCase("||msgbreak ")) {
     			
     		}
@@ -151,8 +151,8 @@ public class Kdkbot extends PircBot {
     	if(sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			// Leave channel
-    			BOT.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
-    			BOT.partChannel(channel, "By order of the king!");
+    			this.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
+    			this.partChannel(channel, "By order of the king!");
     			
     			// Remove it from setting list
     			String prevChanSetting = botCfg.getSetting("channels");
@@ -164,41 +164,41 @@ public class Kdkbot extends PircBot {
     			botCfg.saveSettings();
     		} else if(message.startsWith("||debug disable")) {
     			dbg.disable();
-    			BOT.sendMessage(channel, "Disabled internal debug messages");
+    			this.sendMessage(channel, "Disabled internal debug messages");
     		} else if(message.startsWith("||msgdupe ")) {
     			String[] chanArgs = message.split(" ");
     			if(messageDuplicatorList.get(chanArgs[1]) == null) {
     				messageDuplicatorList.put(chanArgs[1], new ArrayList<String>());
     			}
     			messageDuplicatorList.get(chanArgs[1]).add(chanArgs[2]);
-    			BOT.sendMessage(chanArgs[1], "Now sending all messages from this channel to " + chanArgs[2]);
-    			BOT.sendMessage(chanArgs[2], "Now receiving all messages from " + chanArgs[1]);
+    			this.sendMessage(chanArgs[1], "Now sending all messages from this channel to " + chanArgs[2]);
+    			this.sendMessage(chanArgs[2], "Now receiving all messages from " + chanArgs[1]);
     		} else if(message.startsWith("||msgdupeto ")) {
     			String[] chanArgs = message.split(" ");
     			if(messageDuplicatorList.get(channel) == null) {
     				messageDuplicatorList.put(channel, new ArrayList<String>());
     			}
     			messageDuplicatorList.get(channel).add(chanArgs[1]);
-    			BOT.sendMessage(channel, "Now sending all messages from this channel to " + chanArgs[1]);
-    			BOT.sendMessage(chanArgs[1], "Now receiving all messages from " + channel);
+    			this.sendMessage(channel, "Now sending all messages from this channel to " + chanArgs[1]);
+    			this.sendMessage(chanArgs[1], "Now receiving all messages from " + channel);
     		} else if(message.startsWith("||debug enable")) {
     			dbg.enable();
-    			BOT.sendMessage(channel, "Enabled internal debug messages");
+    			this.sendMessage(channel, "Enabled internal debug messages");
     		} else if(message.startsWith("||stop")) {
-    			BOT.disconnect();
+    			this.disconnect();
     			System.exit(0);
     		} else if(message.startsWith("||echo " )) {
     			String messageToSend = message.substring("||echo ".length());
-    			BOT.sendMessage(channel, messageToSend);
+    			this.sendMessage(channel, messageToSend);
     		} else if(message.startsWith("||echoto ")) {
     			String messageArgs[] = message.split(" ", 3);
-    			BOT.sendMessage(messageArgs[1], messageArgs[2]);
+    			this.sendMessage(messageArgs[1], messageArgs[2]);
     		} else if(message.startsWith("||echotoall ")) {
     			String messageArgs[] = message.split(" ", 2);
     			Iterator chanIter = CHANS.entrySet().iterator();
     			while(chanIter.hasNext()) {
     				Map.Entry pairs = (Map.Entry) chanIter.next();
-    				BOT.sendMessage(pairs.getKey().toString(), messageArgs[1]);
+    				this.sendMessage(pairs.getKey().toString(), messageArgs[1]);
     			}
     			
     		} else if(message.startsWith("||joinchan ")) {
@@ -206,35 +206,39 @@ public class Kdkbot extends PircBot {
     			
     			// Join channel
     			String channelToJoin = message.substring("||joinchan ".length());
-    			BOT.sendMessage(channel, "Joining channel " + channelToJoin);
+    			this.sendMessage(channel, "Joining channel " + channelToJoin);
     			CHANS.put(channelToJoin, new Channel(this, channelToJoin));
     			
     			if(!(args.length < 3) && args[2].equalsIgnoreCase("false")) {
-    				BOT.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
+    				this.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
     			}
     			
     			// Add channel to settings cfg
     			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channelToJoin);
     		} else if(message.startsWith("||color ")) {
     			String colorArgs[] = message.split(" ");
-    			BOT.sendMessage(channel, "/color " + colorArgs[1]);
-    			BOT.sendMessage(channel, "Changed color to " + colorArgs[1]);
+    			this.sendMessage(channel, "/color " + colorArgs[1]);
+    			this.sendMessage(channel, "Changed color to " + colorArgs[1]);
     		} else if(message.equalsIgnoreCase("||initchan")) {
     			Channel chan = getChannel(channel);
-    			chan.commands.setSenderRank("kalbintion", 5);
-    			chan.commands.setSenderRank(channel.substring(1), 5);
-    			BOT.sendMessage(channel, "Initialized channel by giving user " + channel.substring(1) + " and Kalbintion permission level 5");
+    			chan.setSenderRank("kalbintion", 5);
+    			chan.setSenderRank(channel.substring(1), 5);
+    			this.sendMessage(channel, "Initialized channel by giving user " + channel.substring(1) + " and Kalbintion permission level 5");
     		}
     	}
     	
     	if(!this.msgIgnoreList.contains(sender)) {
 	    	// Send info off to correct channel
+    		
 	    	Channel curChan = getChannel(channel);
-    		curChan.commands.commandHandler(channel, sender, login, hostname, message);
+	    	MessageInfo msgInfo = new MessageInfo(channel, sender, message, login, hostname,  curChan.getSenderRank(sender));
+    		curChan.commands.commandHandler(msgInfo);
     	}
 	}
     
     public Channel getChannel(String channel) {
+    	dbg.writeln(this, "Requested for channel object for channel " + channel);
+
     	return this.CHANS.get(channel);
     }
 }

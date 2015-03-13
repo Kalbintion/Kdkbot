@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import kdkbot.Kdkbot;
+import kdkbot.MessageInfo;
 import kdkbot.filemanager.Config;
 
 public class Filters {
@@ -66,13 +67,13 @@ public class Filters {
 		return this.filters;
 	}
 	
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
-		String[] args = message.split(" ");
+	public void executeCommand(MessageInfo info) {
+		String[] args = info.message.split(" ");
 		
 		switch(args[1]) {
 			case "new":
 					// |filter new <type> <find_regex>
-					String[] parts = message.split(" ", 4);
+					String[] parts = info.message.split(" ", 4);
 					String newAdditionalInfo = "";
 					switch(parts[2]) {
 						case "none":
@@ -102,14 +103,14 @@ public class Filters {
 				break;
 			case "remove":
 				// |filter remove <index>
-				parts = message.split(" ", 3);
+				parts = info.message.split(" ", 3);
 				this.filters.remove(Integer.parseInt(parts[2]) - 1);
 				instance.sendMessage(this.channel, "Removed filter #" + parts[2]);
 				saveFilters();
 				break;
 			case "view":
 					// |filter view <number> <value>
-				parts = message.split(" ", 4);
+				parts = info.message.split(" ", 4);
 				switch(parts[3]) {
 					case "type":
 						instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).action);
@@ -124,7 +125,7 @@ public class Filters {
 				break;
 			case "edit":
 					// |filter edit <number> <value> <new_value>
-				parts = message.split(" ", 5);
+				parts = info.message.split(" ", 5);
 				switch(parts[3]) {
 					case "type":
 						filters.get(Integer.parseInt(parts[2]) - 1).action = Integer.parseInt(parts[4]);

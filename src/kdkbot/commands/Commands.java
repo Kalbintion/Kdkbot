@@ -15,6 +15,7 @@ import java.util.regex.*;
 import org.jibble.pircbot.User;
 
 import kdkbot.Kdkbot;
+import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
 import kdkbot.channel.Forwarder;
 import kdkbot.commands.*;
@@ -31,9 +32,6 @@ public class Commands {
 	public Kdkbot instance;
 	public Channel chan;
 	
-	// Path & Config locations (set by Commands() init)
-	public Config cfgPerms;
-	
 	// Command prefix of this particular command set
 	public String commandPrefix = "|";
 	
@@ -44,26 +42,10 @@ public class Commands {
 	public AMA amas;
 	public Filters filters;
 	
-	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
-	
-	public Commands(Kdkbot instance, String channel) {
+	public Commands(Kdkbot instance, String channel, Channel chanInst) {
 		this.instance = instance;
-		try {
-			instance.dbg.writeln(this, "Attempting to load config ranks.");
-			cfgPerms = new Config("./cfg/" + channel + "/perms.cfg");
-			List<String> cfgContents = cfgPerms.getConfigContents();
-			Iterator<String> iter = cfgContents.iterator();
-			while(iter.hasNext()) {
-				instance.dbg.writeln(this, "Parsing next line of cfgArgs.");
-				String cfgArgs[] = iter.next().split("=");
-				instance.dbg.writeln(this, "Size of cfgArgs is " + cfgArgs.length + " a value of 2 is expected.");
-				try {
-					senderRanks.put(cfgArgs[0], Integer.parseInt(cfgArgs[1]));
-				} catch(NumberFormatException e) {
-					e.printStackTrace();
-				}
-			}
-			
+		this.chan = chanInst;
+		try {			
 			this.commandStrings = new StringCommands(this.instance, channel);
 			this.commandStrings.loadCommands();
 			
@@ -84,8 +66,8 @@ public class Commands {
 		}
 	}
 	
-	public void commandHandler(String channel, String sender, String login, String hostname, String message) {
-		instance.dbg.writeln(this, "Attempting to parse last message for channel " + channel);
+	public void commandHandler(MessageInfo info) {
+		instance.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
 		
 		// Begin filtering first before checking for command validity
 		ArrayList<Filter> fList = this.filters.getFilters();
@@ -93,81 +75,86 @@ public class Commands {
 		instance.dbg.writeln(this, "Filter count: " + fList.size());
 		while(fIter.hasNext()) {
 			Filter filter = fIter.next();
-			if(filter.contains(message)) {
+			if(filter.contains(info.message)) {
 				switch(filter.action) {
 					case 1:
-						instance.sendMessage(channel, "/timeout " + sender + " 1");
-						return;
+						instance.dbg.writeln(this, "Attempting to purge user due to filter");
+						instance.sendMessage(info.channel, "/timeout " + info.sender + " 1");
+						break;
 					case 2:
-						instance.sendMessage(channel, "/timeout " + sender);
-						return;
+						instance.dbg.writeln(this, "Attempting to timeout user due to filter");
+						instance.sendMessage(info.channel, "/timeout " + info.sender);
+						break;
 					case 3:
-						instance.sendMessage(channel, "/ban " + sender);
-						return;
+						instance.dbg.writeln(this, "Attempting to ban user due to filter");
+						instance.sendMessage(info.channel, "/ban " + info.sender);
+						break;
 					case 4:
-						instance.sendMessage(channel, sender + ": " + filter.actionInfo);
-						return;
+						instance.dbg.writeln(this, "Attempting to respond to user due to filter");
+						instance.sendMessage(info.channel, info.sender + ": " + filter.actionInfo);
+						break;
 				}
 			}
 		}
 
+		instance.dbg.writeln(this, "Got past filter section.");
+		
 		// Start command checking
-		if(message.startsWith(commandPrefix)) {
+		if(info.message.startsWith(commandPrefix)) {
 			instance.dbg.writeln(this, "Previous line detected as a command");
-			String args[] = message.split(" ");
+			String args[] = info.message.split(" ");
 			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
 			String coreMessage = "";
 			if(args.length > 1)
-				coreMessage = message.substring(args[0].length() + 1);
+				coreMessage = info.message.substring(args[0].length() + 1);
 			
 			instance.dbg.writeln(this, "Core Command detected as '" + coreCommand + "'");
-			instance.dbg.writeln(this, "Senders level detected as " + getSenderRank(sender) + " for value " + sender);
+			instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for value " + info.sender);
 			
 			// Enforce senders name to be lowercased - prevents case sensitive issues later on
-			sender = sender.toLowerCase();
+			info.sender = info.sender.toLowerCase();
 			ArrayList<String> additionalParams = new ArrayList<String>();
 			
 
 			// Permission Ranks
-			if (getSenderRank(sender) >= 3 &&
+			if (info.senderLevel >= 3 &&
 						coreCommand.equalsIgnoreCase("perm")) {
 				instance.dbg.writeln(this, "DBG: Detected command perm, checking for sub-command.");
 				switch(args[1]) {
 					case "set":
-						this.setSenderRank(args[2].toLowerCase(), Integer.parseInt(args[3]));
-						instance.sendMessage(channel, "Set " + args[2] + " to level " + args[3] + " permission.");
+						instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
 						break;
 					case "get":
-						instance.sendMessage(channel, "The user " + args[2] + " is set to " + this.getSenderRank(args[2]));
+						instance.sendMessage(info.channel, "The user " + args[2] + " is set to " + chan.getSenderRank(args[2]));
 						break;
 				}
 			}
 			// Forwarders
-			else if(getSenderRank(sender) >= 5 &&
+			else if(info.senderLevel >= 5 &&
 						(coreCommand.equalsIgnoreCase("fwd")
 					  || coreCommand.equalsIgnoreCase("forward"))) {
 				String toChan = args[1];
 				this.chan.forwarders.add(new Forwarder(toChan));
 			}
 			// Channel - Game
-			else if(getSenderRank(sender) >= 5 &&
+			else if(info.senderLevel >= 5 &&
 						coreCommand.equalsIgnoreCase("game")) {
-				instance.twitch.setChannelProperty(channel, "game", coreMessage);
-				instance.sendMessage(channel, "Sent update message for game to: " + coreMessage);
+				instance.twitch.setChannelProperty(info.channel, "game", coreMessage);
+				instance.sendMessage(info.channel, "Sent update message for game to: " + coreMessage);
 			}
 			// Channel - Status (Title)
-			else if(getSenderRank(sender) >= 5 &&
+			else if(info.senderLevel >= 5 &&
 						coreCommand.equalsIgnoreCase("title")) {
-				instance.twitch.setChannelProperty(channel, "status", coreMessage);
-				instance.sendMessage(channel, "Sent update message for title to: " + coreMessage);
+				instance.twitch.setChannelProperty(info.channel, "status", coreMessage);
+				instance.sendMessage(info.channel, "Sent update message for title to: " + coreMessage);
 			}
 			// Filters
-			else if(getSenderRank(sender) >= 3 &&
+			else if(info.senderLevel >= 3 &&
 						coreCommand.equalsIgnoreCase("filters")) {
 				// filters.executeCommand(channel, sender, login, hostname, message, additionalParams)
 			}
 			// Twitch API Testing
-			else if(getSenderRank(sender) >= 6 &&
+			else if(info.senderLevel >= 6 &&
 						coreCommand.equalsIgnoreCase("twitchapi")) {
 				switch(args[1]) {
 					case "header":
@@ -179,94 +166,92 @@ public class Commands {
 									Map.Entry pairs = (Map.Entry)headerIter.next();
 									outputMessage += pairs.getKey() + "=" + pairs.getValue() + ", ";
 								}
-								instance.sendMessage(channel, outputMessage);
+								instance.sendMessage(info.channel, outputMessage);
 								break;
 							case "add":
 								instance.twitch.addHeader(args[2], args[3]);
-								instance.sendMessage(channel, "Added header named '" + args[2] + "' with value '" + args[3] +"'");
+								instance.sendMessage(info.channel, "Added header named '" + args[2] + "' with value '" + args[3] +"'");
 						}
 					break;
 					case "get":
-						instance.sendMessage(channel, instance.twitch.getChannelProperty(channel, args[2]).getAsString());
+						instance.sendMessage(info.channel, instance.twitch.getChannelProperty(info.channel, args[2]).getAsString());
 						break;
 					case "set":
-						String[] setArgs = message.split(" ", 4);
-						instance.sendMessage(channel, instance.twitch.setChannelProperty(channel, setArgs[2], setArgs[3]));
+						String[] setArgs = info.message.split(" ", 4);
+						instance.sendMessage(info.channel, instance.twitch.setChannelProperty(info.channel, setArgs[2], setArgs[3]));
 						break;
 					case "raw":
-						String[] rawArgs = message.split(" ", 5);
-						instance.sendMessage(channel, instance.twitch.sendRawData(rawArgs[2], rawArgs[3], rawArgs[4]).toString());
+						String[] rawArgs = info.message.split(" ", 5);
+						instance.sendMessage(info.channel, instance.twitch.sendRawData(rawArgs[2], rawArgs[3], rawArgs[4]).toString());
 				}
 			}
 			// Help
-			else if(getSenderRank(sender) >= 1 &&
+			else if(info.senderLevel >= 1 &&
 						coreCommand.equalsIgnoreCase("help")) {
 				if(args.length <= 1) {
 					// Send link to channel for wiki
-					instance.sendMessage(channel, "You can see standard commands and get bot help @ https://github.com/kalbintion/kdkbot/wiki");
+					instance.sendMessage(info.channel, "You can see standard commands and get bot help @ https://github.com/kalbintion/kdkbot/wiki");
 				} else {
 					// Get information for command help
 				}
 			}
 			// Quotes
-			else if (getSenderRank(sender) >= quotes.getPermissionLevel() &&
+			else if (info.senderLevel >= quotes.getPermissionLevel() &&
 						quotes.getAvailability() &&
 						quotes.getTrigger().equalsIgnoreCase(coreCommand)) {
-				additionalParams.add("sender_rank=" + getSenderRank(sender));
-				quotes.executeCommand(channel, sender, login, hostname, message, additionalParams);
+				quotes.executeCommand(info);
 			}
 			// Raid
-			else if (getSenderRank(sender) >= 3 &&
+			else if (info.senderLevel >= 3 &&
 						coreCommand.equalsIgnoreCase("raid")) {
-				instance.sendMessage(channel, "Raid http://www.twitch.tv/" + args[1]);
+				instance.sendMessage(info.channel, "Raid http://www.twitch.tv/" + args[1]);
 			}
 			// Multitwitch
-			else if (getSenderRank(sender) >= 2 &&
+			else if (info.senderLevel >= 2 &&
 						coreCommand.equalsIgnoreCase("multi")) {
 				String multiOut = "";
 				for(int i = 1; i < args.length; i++) {
 					multiOut += args[i] + "/";
 				}
-				instance.sendMessage(channel, "http://www.multitwitch.tv/" + multiOut);
+				instance.sendMessage(info.channel, "http://www.multitwitch.tv/" + multiOut);
 			}
 			// Custom Commands
-			else if(getSenderRank(sender) >= 1 &&
+			else if(info.senderLevel >= 1 &&
 						coreCommand.equalsIgnoreCase("commands")) {
-				commandStrings.executeCommand(channel, sender, login, hostname, message, getSenderRank(sender), additionalParams);
+				commandStrings.executeCommand(info);
 			}
 			// AMA
-			else if(getSenderRank(sender) >= amas.getPermissionLevel() &&
+			else if(info.senderLevel >= amas.getPermissionLevel() &&
 						coreCommand.equalsIgnoreCase(amas.getTrigger()) &&
 						amas.getAvailability()) {
 				instance.dbg.writeln(this, "Sending message to AMA handler.");
-				amas.executeCommand(channel, sender, login, hostname, message, additionalParams);
+				amas.executeCommand(info);
 			}
 			// Counters
-			else if(getSenderRank(sender) >= 1 &&
+			else if(info.senderLevel >= 1 &&
 						coreCommand.equalsIgnoreCase("counter")) {
-				counters.executeCommand(channel, sender, login, hostname, message, getSenderRank(sender), additionalParams);
+				counters.executeCommand(info);
 			}
 			// Magic 8-Ball / Conch
-			else if(getSenderRank(sender) >= 1 &&
+			else if(info.senderLevel >= 1 &&
 						(coreCommand.equalsIgnoreCase("conch") ||
 						 coreCommand.equalsIgnoreCase("8ball"))) {
 				Random conchRnd = new Random();
 				String[] conchResponses = {"It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely on it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy, try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"};
-				instance.sendMessage(channel, conchResponses[conchRnd.nextInt(conchResponses.length)]);
+				instance.sendMessage(info.channel, conchResponses[conchRnd.nextInt(conchResponses.length)]);
 			}
 			// Coin Flip
-			else if(getSenderRank(sender) >= 1 &&
+			else if(info.senderLevel >= 1 &&
 						coreCommand.equalsIgnoreCase("coin")) {
 				Random coinRnd = new Random();
 				String[] coinResponses = {"Heads", "Tails"};
-				instance.sendMessage(channel, coinResponses[coinRnd.nextInt(coinResponses.length)]);
-			}
-			else if(getSenderRank(sender) >= 5 &&
+				instance.sendMessage(info.channel, coinResponses[coinRnd.nextInt(coinResponses.length)]);
+			} else if(info.senderLevel >= 5 &&
 						coreCommand.equalsIgnoreCase("fwd")) {
 			
-			} else if(getSenderRank(sender) >= 3 &&
+			} else if(info.senderLevel >= 3 &&
 						coreCommand.equalsIgnoreCase("filter")) {
-				filters.executeCommand(channel, sender, login, hostname, message, additionalParams);
+				filters.executeCommand(info);
 			}
 			// Custom String Commands
 			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
@@ -277,81 +262,13 @@ public class Commands {
 				// Verify user has access to this command
 				instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Current commands level: " + stringNext.getPermissionLevel());
 				instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Current command is available: " + stringNext.getAvailability());
-				if(getSenderRank(sender) >= stringNext.getPermissionLevel() &&
+				if(info.senderLevel >= stringNext.getPermissionLevel() &&
 						coreCommand.equalsIgnoreCase(stringNext.getTrigger()) &&
 						stringNext.getAvailability()) {
-					instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Found usable command for " + sender + " under trigger " + stringNext.getTrigger());
-					stringNext.executeCommand(channel, sender, login, hostname, message, additionalParams);
+					instance.dbg.writeln(this, "[DBG] [CMDS] [CHK] Found usable command for " + info.sender + " under trigger " + stringNext.getTrigger());
+					stringNext.executeCommand(info);
 				}
 			}
 		}
-	}
-		
-	/**
-	 * Gets a particular users rank for this channel.
-	 * @param sender The sender to lookup
-	 * @return An integer value representing the users rank for this channel.
-	 */
-	public int getSenderRank(String sender) {
-		if(this.senderRanks.containsKey(sender.toLowerCase())) {
-			return this.senderRanks.get(sender.toLowerCase());
-		} else {
-			return 0;
-		}
-	}
-	
-	/**
-	 * Gets all of this channels ranks
-	 * @return An Array List of users and their ranks
-	 */
-	public ArrayList<String> getSenderRanks() {
-		ArrayList<String> strings = null;
-		try {
-			strings = (ArrayList<String>) cfgPerms.getConfigContents();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return strings;
-	}
-	
-	/**
-	 * Sets a particular users rank for this channel
-	 * @param target The users name to set a rank to
-	 * @param rank The rank to set the target to
-	 */
-	public void setSenderRank(String target, int rank) {
-		senderRanks.put(target.toLowerCase(), rank);
-		this.saveSenderRanks(true);
-	}
-	
-	/**
-	 * Loads the channels ranks for users.
-	 */
-	public void loadSenderRanks() {
-		try {
-			List<String> strings = cfgPerms.getConfigContents();
-			Iterator<String> string = strings.iterator();
-			while(string.hasNext()) {
-				String[] args = string.next().split("=");
-				this.senderRanks.put(args[0], Integer.parseInt(args[1]));
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Saves the channels ranks for users.
-	 */
-	public void saveSenderRanks() {
-		cfgPerms.saveSettings();
-	}
-	
-	/**
-	 * 
-	 * @param sendReferenceMap
-	 */
-	public void saveSenderRanks(boolean sendReferenceMap) {
-		cfgPerms.saveSettings(this.senderRanks);
 	}
 }

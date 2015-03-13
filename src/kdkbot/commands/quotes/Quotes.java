@@ -1,6 +1,7 @@
 package kdkbot.commands.quotes;
 
 import kdkbot.Kdkbot;
+import kdkbot.MessageInfo;
 import kdkbot.commands.*;
 import kdkbot.filemanager.Config;
 
@@ -36,16 +37,13 @@ public class Quotes extends Command {
 		}
 	}
 	
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
-		String[] args = message.split(" ");
+	public void executeCommand(MessageInfo info) {
+		String[] args = info.message.split(" ");
 		String subCmd = "";
 		
 		// System.out.println("[DBG] [QUOTES] [EXEC] Args[1] is " + args[1]);
 		
-		if(args.length == 1)
-			subCmd = "random";
-		else
-			subCmd = args[1];
+		if(args.length == 1) { subCmd = "random"; }	else { subCmd = args[1]; }
 		
 		switch(subCmd) {
 			case "get":
@@ -59,13 +57,13 @@ public class Quotes extends Command {
 					}
 					
 				} catch(NumberFormatException e) {
-					this.getBotInstance().sendMessage(channel, sender + ": That is not a number, therefore I cannot find the quote.");
+					this.getBotInstance().sendMessage(channel, info.sender + ": That is not a number, therefore I cannot find the quote.");
 				} catch(IndexOutOfBoundsException e) {
-					this.getBotInstance().sendMessage(channel, sender + ": The requested quote cannot be found.");
+					this.getBotInstance().sendMessage(channel, info.sender + ": The requested quote cannot be found.");
 				}
 				break;
 			case "add":
-				quotes.put(Integer.toString(++lastIndex), message.substring("quote add ".length()));
+				quotes.put(Integer.toString(++lastIndex), info.message.substring("quote add ".length()));
 				this.getBotInstance().sendMessage(channel, "Quote #" + lastIndex + " added.");
 				saveQuotes();
 				break;
@@ -83,6 +81,7 @@ public class Quotes extends Command {
 				this.getBotInstance().sendMessage(channel, "Manually reloaded quote list for this channel.");
 			case "count":
 			case "amount":
+			case "total":
 				this.getBotInstance().sendMessage(channel, "There are " + quotes.size() + " quotes.");
 				break;
 			case "random":

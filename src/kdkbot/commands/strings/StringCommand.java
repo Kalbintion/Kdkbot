@@ -28,36 +28,34 @@ public class StringCommand extends Command {
 		this.setAvailability(active);
 	}
 	
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
-		this.getBotInstance().dbg.writeln(this, "Attempting to execute command " + this.getTrigger() + " to channel " + channel);
-		this.getBotInstance().sendMessage(channel, parseMessage(this.messageToSend, channel, sender, login, hostname, message, additionalParams));
+	public void executeCommand(MessageInfo info) {
+		this.getBotInstance().dbg.writeln(this, "Attempting to execute command " + this.getTrigger() + " to channel " + info.channel);
+		this.getBotInstance().sendMessage(info.channel, parseMessage(info, this.messageToSend));
 	}
 	
 	public String getMessage() {
 		return this.messageToSend;
 	}
 	
-	public String parseMessage(String message, String channel, String sender, String login, String hostname, String sentMessage, ArrayList<String> additionalParams) {
-		String args[] = sentMessage.split(" ");
+	public String parseMessage(MessageInfo info, String msgToParse) {
+		String args[] = info.message.split(" ");
 		// Static message replacements
-		message = message.replace("%USER%", sender);
-		message = message.replace("%CHAN%", channel);
-		message = message.replace("%LOGIN%", login);
-		message = message.replace("%HOSTNAME%", hostname);
-		if(args[0].length() + 1 < sentMessage.length()) {
-			if(sentMessage.substring(args[0].length() + 1).startsWith("/")) {
-				message = message.replace("%ARGS%", sentMessage.substring(args[0].length() + 2));
+		msgToParse = msgToParse.replace("%USER%", info.sender);
+		msgToParse = msgToParse.replace("%CHAN%", info.channel);
+		msgToParse = msgToParse.replace("%LOGIN%", info.login);
+		msgToParse = msgToParse.replace("%HOSTNAME%", info.hostname);
+		if(args[0].length() + 1 < info.message.length()) {
+			if(info.message.substring(args[0].length() + 1).startsWith("/")) {
+				msgToParse = msgToParse.replace("%ARGS%", info.message.substring(args[0].length() + 2));
 			} else {
-				message = message.replace("%ARGS%", sentMessage.substring(args[0].length() + 1));
+				msgToParse = msgToParse.replace("%ARGS%", info.message.substring(args[0].length() + 1));
 			}
 		}
 		
 		// Arg specificity
-		Pattern PATTERN_ARGS_REPLACE = Pattern.compile("%ARGS:\\d*%");
-		this.getBotInstance().dbg.writeln(this, "" + PATTERN_ARGS_REPLACE.toString());
-		Matcher pattern_args_matches = PATTERN_ARGS_REPLACE.matcher(message);
-		this.getBotInstance().dbg.writeln(this, "" + message);
-		this.getBotInstance().dbg.writeln(this, "Post Matcher RegEx: " + pattern_args_matches.toString());
+		Pattern PATTERN_ARGS_REPLACE = Pattern.compile("%ARGS:\\d*?%");
+		Matcher pattern_args_matches = PATTERN_ARGS_REPLACE.matcher(msgToParse);
+
 		while(pattern_args_matches.find()) {
 			String result = pattern_args_matches.group();
 			// System.out.println("" + result);
@@ -70,14 +68,14 @@ public class StringCommand extends Command {
 				// System.out.println("Detected a / for " + argID);
 				args[argIDInt] = args[argIDInt].substring(1);
 			}
-			message = message.replace("%ARGS:" + argID + "%", args[argIDInt]);
+			msgToParse = msgToParse.replace("%ARGS:" + argID + "%", args[argIDInt]);
 		}
 		
 		// Counter specificity
 		Pattern PATTERN_CNTR_REPLACE = Pattern.compile("%CNTR:.*?%");
 		System.out.println("" + PATTERN_CNTR_REPLACE.toString());
-		Matcher pattern_cntr_matches = PATTERN_CNTR_REPLACE.matcher(message);
-		System.out.println("" + message);
+		Matcher pattern_cntr_matches = PATTERN_CNTR_REPLACE.matcher(msgToParse);
+		System.out.println("" + msgToParse);
 		System.out.println("Post Matcher RegEx: " + pattern_cntr_matches.toString());
 		while(pattern_cntr_matches.find()) {
 			String result = pattern_cntr_matches.group();
@@ -86,7 +84,7 @@ public class StringCommand extends Command {
 			String cntrID = result.substring("%CNTR:".length(), result.length()-1);
 			System.out.println("" + cntrID);
 			
-			Channel chan = this.getBotInstance().getChannel(channel);
+			Channel chan = this.getBotInstance().getChannel(info.channel);
 			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
 			Counter cntr = null;
 			while(cntrIter.hasNext()) {
@@ -96,19 +94,19 @@ public class StringCommand extends Command {
 				}
 			}
 			
-			message = message.replace("%CNTR:" + cntrID + "%", Integer.toString(cntr.value));
+			msgToParse = msgToParse.replace("%CNTR:" + cntrID + "%", Integer.toString(cntr.value));
 		}		
 		
 		// Random Number Generator Variables
 		Random rnd = new Random();
 		
 		// Basic replacement
-		message = message.replace("%RND%", Integer.toString(rnd.nextInt()));
+		msgToParse = msgToParse.replace("%RND%", Integer.toString(rnd.nextInt()));
 		
 		// Advanced replacement (specifying max value)
 		Pattern PATTERN_RND_MAX_REPLACE = Pattern.compile("%RND:\\d*?%");
 		System.out.println("" + PATTERN_RND_MAX_REPLACE.toString());
-		Matcher pattern_rnd_max_matches = PATTERN_RND_MAX_REPLACE.matcher(message);
+		Matcher pattern_rnd_max_matches = PATTERN_RND_MAX_REPLACE.matcher(msgToParse);
 		System.out.println("Post Matcher RegEx: " + pattern_rnd_max_matches.toString());
 		
 		while(pattern_rnd_max_matches.find()) {
@@ -119,13 +117,13 @@ public class StringCommand extends Command {
 			
 			int maxValue = Integer.parseInt(argValues);
 
-			message = message.replace(result, Integer.toString(rnd.nextInt(maxValue)));
+			msgToParse = msgToParse.replace(result, Integer.toString(rnd.nextInt(maxValue)));
 		}
 		
 		// Advanced replacement (specifying min and max values)
 		Pattern PATTERN_RND_MIN_MAX_REPLACE = Pattern.compile("%RND:\\d*?,\\d*?%");
 		System.out.println("" + PATTERN_RND_MIN_MAX_REPLACE.toString());
-		Matcher pattern_rnd_min_max_matches = PATTERN_RND_MIN_MAX_REPLACE.matcher(message);
+		Matcher pattern_rnd_min_max_matches = PATTERN_RND_MIN_MAX_REPLACE.matcher(msgToParse);
 		System.out.println("Post Matcher RegEx: " + pattern_rnd_min_max_matches.toString());
 				
 		while(pattern_rnd_min_max_matches.find()) {
@@ -138,9 +136,9 @@ public class StringCommand extends Command {
 			int minValue = Integer.parseInt(argParts[0]);
 			int maxValue = Integer.parseInt(argParts[1]);
 
-			message = message.replace(result, Integer.toString(rnd.nextInt(maxValue - minValue + 1) + minValue));
+			msgToParse = msgToParse.replace(result, Integer.toString(rnd.nextInt(maxValue - minValue + 1) + minValue));
 		}
 		
-		return message;
+		return msgToParse;
 	}
 }

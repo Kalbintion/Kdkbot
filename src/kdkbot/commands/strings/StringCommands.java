@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import kdkbot.Kdkbot;
+import kdkbot.MessageInfo;
 import kdkbot.filemanager.Config;
 
 public class StringCommands {
@@ -93,13 +94,13 @@ public class StringCommands {
 		}
 	}
 	
-	public void executeCommand(String channel, String sender, String login, String hostname, String message, int senderRank, ArrayList<String> additionalParams) {
-		String[] args = message.split(" ");
+	public void executeCommand(MessageInfo info) {
+		String[] args = info.message.split(" ");
 		if(args.length > 1) {
 			switch(args[1]) {
 				case "new":
-					if(senderRank >= 3 ) {
-						String[] csArgs = message.split(" ", 5);
+					if(info.senderLevel >= 3 ) {
+						String[] csArgs = info.message.split(" ", 5);
 						instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
 						for(int i = 0 ; i < csArgs.length; i++) {
 							instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
@@ -108,8 +109,8 @@ public class StringCommands {
 					}
 					break;
 				case "view":
-					if(senderRank >= 3) {
-						String[] csArgs = message.split(" ", 4);
+					if(info.senderLevel >= 3) {
+						String[] csArgs = info.message.split(" ", 4);
 						instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
 						for(int i = 0 ; i < csArgs.length; i++) {
 							instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
@@ -135,8 +136,8 @@ public class StringCommands {
 					}
 					break;
 				case "edit":
-					if(senderRank >= 3) {
-						String[] csArgs = message.split(" ", 5);
+					if(info.senderLevel >= 3) {
+						String[] csArgs = info.message.split(" ", 5);
 						instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
 						for(int i = 0 ; i < csArgs.length; i++) {
 							instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
@@ -150,27 +151,27 @@ public class StringCommands {
 						while(strCmdIter.hasNext()) {
 							StringCommand strCmd = strCmdIter.next();
 							if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
-								if(senderRank >= strCmd.getPermissionLevel()) {
+								if(info.senderLevel >= strCmd.getPermissionLevel()) {
 									if(type.equalsIgnoreCase("trigger")) {
-										instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
+										instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
 										strCmd.setTrigger(toValue);
 									} else if(type.equalsIgnoreCase("level")) {
-										instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
+										instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
 										strCmd.setPermissionLevel(Integer.parseInt(toValue));
 									} else if(type.equalsIgnoreCase("message")) {
-										instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s message.");
+										instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + "'s message.");
 										strCmd.messageToSend = toValue;
 									} else if(type.equalsIgnoreCase("available")) {
 										try {
 											boolean bool = Boolean.parseBoolean(csArgs[4]);
-											instance.sendMessage(channel, sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
+											instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
 											strCmd.setAvailability(bool);
 										} catch(Exception e) {
 											instance.sendMessage(channel, "Unable to discern " + csArgs[4] + " as a true/false value.");
 										}
 									}
 								} else {
-									instance.sendMessage(channel, sender + ", you do not have the required permission to change this command.");
+									instance.sendMessage(channel, info.sender + ", you do not have the required permission to change this command.");
 								}
 								break;
 							}
@@ -179,7 +180,7 @@ public class StringCommands {
 					}
 					break;
 				case "remove":
-					if(senderRank >= 3) {
+					if(info.senderLevel >= 3) {
 						instance.sendMessage(channel, removeCommand(args[2]));
 						this.saveCommands();
 					}
@@ -207,13 +208,13 @@ public class StringCommands {
 							commands = this.getListOfCommands(Integer.parseInt(args[2]), GetLevels.INCLUDE_EQUALS);
 						}
 					} else {
-						outMessage.append(" available to " + sender +": ");
+						outMessage.append(" available to " + info.sender +": ");
 						// List commands based on users rank
-						int senderRankTemp = senderRank;
+						int senderRankTemp = info.senderLevel;
 						while(senderRankTemp > 0 ) {
 							outMessage.append(additionalCommands[senderRankTemp--]);
 						}
-						commands = this.getListOfCommands(senderRank, GetLevels.INCLUDE_LOWER);
+						commands = this.getListOfCommands(info.senderLevel, GetLevels.INCLUDE_LOWER);
 					}
 		
 					// Loop over command list and add it to the outMessage

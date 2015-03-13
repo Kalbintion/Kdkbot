@@ -38,10 +38,16 @@ public class Quotes extends Command {
 	
 	public void executeCommand(String channel, String sender, String login, String hostname, String message, ArrayList<String> additionalParams) {
 		String[] args = message.split(" ");
+		String subCmd = "";
 		
 		// System.out.println("[DBG] [QUOTES] [EXEC] Args[1] is " + args[1]);
 		
-		switch(args[1]) {
+		if(args.length == 1)
+			subCmd = "random";
+		else
+			subCmd = args[1];
+		
+		switch(subCmd) {
 			case "get":
 				try {
 					// System.out.println("[DBG] [QUOTES] [EXEC] Args[2] is " + args[2]);
@@ -53,9 +59,9 @@ public class Quotes extends Command {
 					}
 					
 				} catch(NumberFormatException e) {
-					this.getBotInstance().sendMessage(channel, "That is not a number, therefore I cannot find the quote.");
+					this.getBotInstance().sendMessage(channel, sender + ": That is not a number, therefore I cannot find the quote.");
 				} catch(IndexOutOfBoundsException e) {
-					this.getBotInstance().sendMessage(channel, "The requested quote cannot be found.");
+					this.getBotInstance().sendMessage(channel, sender + ": The requested quote cannot be found.");
 				}
 				break;
 			case "add":
@@ -75,14 +81,14 @@ public class Quotes extends Command {
 				this.quotes = new HashMap<String, String>();
 				this.loadQuotes();
 				this.getBotInstance().sendMessage(channel, "Manually reloaded quote list for this channel.");
+			case "count":
+			case "amount":
+				this.getBotInstance().sendMessage(channel, "There are " + quotes.size() + " quotes.");
+				break;
 			case "random":
 				Random rnd = new Random();
 				int quoteNum = rnd.nextInt(this.quotes.size() + 1);
 				this.getBotInstance().sendMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
-				break;
-			case "count":
-			case "amount":
-				this.getBotInstance().sendMessage(channel, "There are " + quotes.size() + " quotes.");
 				break;
 		}
 	}

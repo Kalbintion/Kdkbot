@@ -18,4 +18,12 @@ public class MessageInfo {
 		this.hostname = hostname;
 		this.senderLevel = senderLevel;
 	}
+	
+	public String[] getSegments() {
+		return this.message.split(" ");
+	}
+	
+	public String[] getSegments(int limit) {
+		return this.message.split(" ", limit);
+	}
 }

@@ -25,9 +25,7 @@ import kdkbot.filemanager.*;
 import kdkbot.twitchapi.TwitchAPI;
 
 public class Kdkbot extends PircBot {
-	private String version = "0.1.0.20";
-	// public static Kdkbot BOT;
-	// public static ArrayList<Channel> CHANS = new ArrayList<Channel>();
+	private String version = "0.1.0.21";
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));

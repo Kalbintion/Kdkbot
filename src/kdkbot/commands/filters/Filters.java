@@ -49,7 +49,6 @@ public class Filters {
 		try {
 			List<String> sFilters = cfgFilters.getConfigContents();
 			Iterator<String> sIter = sFilters.iterator();
-			System.out.println("[FILTER LOADING] Established iterator. Size: " + sFilters.size());
 			filters.clear();
 			while(sIter.hasNext()) {
 				String sNxt = sIter.next();

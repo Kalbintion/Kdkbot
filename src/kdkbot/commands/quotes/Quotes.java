@@ -38,17 +38,14 @@ public class Quotes extends Command {
 	}
 	
 	public void executeCommand(MessageInfo info) {
-		String[] args = info.message.split(" ");
+		String[] args = info.getSegments();
 		String subCmd = "";
-		
-		// System.out.println("[DBG] [QUOTES] [EXEC] Args[1] is " + args[1]);
-		
+
 		if(args.length == 1) { subCmd = "random"; }	else { subCmd = args[1]; }
 		
 		switch(subCmd) {
 			case "get":
 				try {
-					// System.out.println("[DBG] [QUOTES] [EXEC] Args[2] is " + args[2]);
 					String quote = quotes.get(args[2]);
 					if(quote != null) {
 						this.getBotInstance().sendMessage(channel, "Quote #" + args[2] + ": " + quote);

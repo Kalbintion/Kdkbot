@@ -72,7 +72,7 @@ public class Filters {
 		switch(args[1]) {
 			case "new":
 					// |filter new <type> <find_regex>
-					String[] parts = info.message.split(" ", 4);
+					String[] parts = info.getSegments(4);
 					String newAdditionalInfo = "";
 					switch(parts[2]) {
 						case "none":
@@ -102,14 +102,14 @@ public class Filters {
 				break;
 			case "remove":
 				// |filter remove <index>
-				parts = info.message.split(" ", 3);
+				parts = info.getSegments(3);
 				this.filters.remove(Integer.parseInt(parts[2]) - 1);
 				instance.sendMessage(this.channel, "Removed filter #" + parts[2]);
 				saveFilters();
 				break;
 			case "view":
 					// |filter view <number> <value>
-				parts = info.message.split(" ", 4);
+				parts = info.getSegments(4);
 				switch(parts[3]) {
 					case "type":
 						instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).action);

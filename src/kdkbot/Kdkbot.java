@@ -22,10 +22,9 @@ import org.jibble.pircbot.*;
 
 import kdkbot.channel.*;
 import kdkbot.filemanager.*;
-import kdkbot.twitchapi.TwitchAPI;
 
 public class Kdkbot extends PircBot {
-	private String version = "0.1.0.21";
+	private String version = "0.1.0.22";
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
@@ -35,7 +34,6 @@ public class Kdkbot extends PircBot {
 	private Pattern logIgnores;
 	private Log logger;
 	public Debugger dbg = new Debugger(false);
-	public TwitchAPI twitch;
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
@@ -47,7 +45,7 @@ public class Kdkbot extends PircBot {
 		botCfg.loadConfigContents();
 		this._logChat = Boolean.parseBoolean(botCfg.getSetting("logChat"));
 		logIgnores = Pattern.compile(botCfg.getSetting("logIgnores"));
-				
+		
 		// Setup this instances chat logger
 		if(_logChat) {
 			this.logger = new Log();
@@ -60,9 +58,7 @@ public class Kdkbot extends PircBot {
 		this.setVerbose(_verbose);
 		this.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
 		messageDuplicatorList = new HashMap<String, ArrayList<String>>();
-		
-		this.twitch = new TwitchAPI(botCfg.getSetting("clientId"), botCfg.getSetting("access_code"));
-		
+
 		// Get channels
 		String[] cfgChannels = botCfg.getSetting("channels").split(",");
 		
@@ -149,8 +145,7 @@ public class Kdkbot extends PircBot {
     	if(sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			// Leave channel
-    			this.sendMessage(channel, "Leaving by the order of the king, Kalbintion!");
-    			this.partChannel(channel, "By order of the king!");
+    			this.partChannel(channel, "By order of " + sender + "!");
     			
     			// Remove it from setting list
     			String prevChanSetting = botCfg.getSetting("channels");

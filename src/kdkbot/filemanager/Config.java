@@ -183,10 +183,11 @@ public class Config {
 		
 		String line;
 		while((line = br.readLine()) != null) {
-			// System.out.println("[DBG] [CFG] [LCC] Loaded line: " + line);
 			String[] args = line.split("=");
-			// System.out.println("[DBG] [CFG] [LCC] Args size: " + args.length);
-			this.values.put(args[0], args[1]);
+			if(args.length == 1)
+				this.values.put(args[0], null);
+			else
+				this.values.put(args[0], args[1]);
 		}
 		
 		fis.close();
@@ -199,6 +200,7 @@ public class Config {
 	 * @return A list containing the key value pairs.
 	 */
 	public List<String> getConfigContents() throws Exception {
+		verifyExists();
 		List<String> lines = Files.readAllLines(this.filePath.toAbsolutePath(), StandardCharsets.UTF_8);
 
 		return lines;

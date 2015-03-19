@@ -102,24 +102,22 @@ public class Commands {
 		// Start command checking
 		if(info.message.startsWith(commandPrefix)) {
 			instance.dbg.writeln(this, "Previous line detected as a command");
-			String args[] = info.message.split(" ");
+			String args[] = info.getSegments();
 			String coreCommand = args[0].substring(commandPrefix.length()); // Snag the core command from the message
 			String coreMessage = "";
 			if(args.length > 1)
 				coreMessage = info.message.substring(args[0].length() + 1);
 			
 			instance.dbg.writeln(this, "Core Command detected as '" + coreCommand + "'");
-			instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for value " + info.sender);
+			instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
 			
 			// Enforce senders name to be lowercased - prevents case sensitive issues later on
 			info.sender = info.sender.toLowerCase();
 			ArrayList<String> additionalParams = new ArrayList<String>();
-			
 
 			// Permission Ranks
 			if (info.senderLevel >= 3 &&
 						coreCommand.equalsIgnoreCase("perm")) {
-				instance.dbg.writeln(this, "DBG: Detected command perm, checking for sub-command.");
 				switch(args[1]) {
 					case "set":
 						instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
@@ -136,54 +134,10 @@ public class Commands {
 				String toChan = args[1];
 				this.chan.forwarders.add(new Forwarder(toChan));
 			}
-			// Channel - Game
-			else if(info.senderLevel >= 5 &&
-						coreCommand.equalsIgnoreCase("game")) {
-				instance.twitch.setChannelProperty(info.channel, "game", coreMessage);
-				instance.sendMessage(info.channel, "Sent update message for game to: " + coreMessage);
-			}
-			// Channel - Status (Title)
-			else if(info.senderLevel >= 5 &&
-						coreCommand.equalsIgnoreCase("title")) {
-				instance.twitch.setChannelProperty(info.channel, "status", coreMessage);
-				instance.sendMessage(info.channel, "Sent update message for title to: " + coreMessage);
-			}
 			// Filters
 			else if(info.senderLevel >= 3 &&
 						coreCommand.equalsIgnoreCase("filters")) {
 				// filters.executeCommand(channel, sender, login, hostname, message, additionalParams)
-			}
-			// Twitch API Testing
-			else if(info.senderLevel >= 6 &&
-						coreCommand.equalsIgnoreCase("twitchapi")) {
-				switch(args[1]) {
-					case "header":
-						switch(args[2]) {
-							case "list":
-								String outputMessage = "";
-								Iterator headerIter = this.instance.twitch.getHeaders().entrySet().iterator();
-								while(headerIter.hasNext()) {
-									Map.Entry pairs = (Map.Entry)headerIter.next();
-									outputMessage += pairs.getKey() + "=" + pairs.getValue() + ", ";
-								}
-								instance.sendMessage(info.channel, outputMessage);
-								break;
-							case "add":
-								instance.twitch.addHeader(args[2], args[3]);
-								instance.sendMessage(info.channel, "Added header named '" + args[2] + "' with value '" + args[3] +"'");
-						}
-					break;
-					case "get":
-						instance.sendMessage(info.channel, instance.twitch.getChannelProperty(info.channel, args[2]).getAsString());
-						break;
-					case "set":
-						String[] setArgs = info.message.split(" ", 4);
-						instance.sendMessage(info.channel, instance.twitch.setChannelProperty(info.channel, setArgs[2], setArgs[3]));
-						break;
-					case "raw":
-						String[] rawArgs = info.message.split(" ", 5);
-						instance.sendMessage(info.channel, instance.twitch.sendRawData(rawArgs[2], rawArgs[3], rawArgs[4]).toString());
-				}
 			}
 			// Help
 			else if(info.senderLevel >= 1 &&

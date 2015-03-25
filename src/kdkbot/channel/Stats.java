@@ -9,7 +9,7 @@ import kdkbot.filemanager.Config;
 
 public class Stats {
 	public Config statsConfig;
-	public HashMap<String, UserStat> userStats;
+	public HashMap<String, UserStat> userStats = new HashMap<String, UserStat>();
 	public String channel;
 	
 	public Stats(String channel) {
@@ -21,6 +21,12 @@ public class Stats {
 			List<String> lines = statsConfig.getConfigContents();
 			Iterator<String> iter = lines.iterator();
 			while(iter.hasNext()) {
+				String[] lineValues = iter.next().split(":");
+				try {
+					UserStat userstat = new UserStat(Long.parseLong(lineValues[0]), Long.parseLong(lineValues[1]), Long.parseLong(lineValues[2]), Long.parseLong(lineValues[3]), Long.parseLong(lineValues[4]));
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 				
 			}
 		} catch (Exception e) {

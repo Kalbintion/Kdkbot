@@ -162,4 +162,8 @@ public class Channel {
 	public void saveSenderRanks(boolean sendReferenceMap) {
 		cfgPerms.saveSettings(this.senderRanks);
 	}
+	
+	public void messageHandler(MessageInfo info) {
+		
+	}
 }

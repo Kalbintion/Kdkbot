@@ -109,6 +109,24 @@ public class Kdkbot extends PircBot {
     }
     
     /**
+     * Event handler for join messages received
+     */
+    public void onJoin(String channel, String sender, String login, String hostname) {
+    	Channel curChan = CHANS.get(channel);
+    	MessageInfo info = new MessageInfo(channel, sender, "#JOIN", login, hostname, curChan.getSenderRank(sender));
+    	curChan.messageHandler(info);
+    }
+    
+    /**
+     * Event handler for part messages received
+     */
+    public void onPart(String channel, String sender, String login, String hostname) {
+    	Channel curChan = CHANS.get(channel);
+    	MessageInfo info = new MessageInfo(channel, sender, "#PART", login, hostname, curChan.getSenderRank(sender));
+    	curChan.messageHandler(info);
+    }
+    
+    /**
      * Event handler for action messages received
      */
     public void onAction(String sender, String login, String hostname, String target, String action) {
@@ -118,6 +136,7 @@ public class Kdkbot extends PircBot {
     			this.sendMessage(msgDupeIter.next(), "*" + sender + " " + action  + "*");
     		}
     	}
+    	CHANS.get(target).messageHandler(new MessageInfo(target, sender, action, login, hostname, CHANS.get(target).getSenderRank(sender)));
     }
     
 	/**
@@ -133,15 +152,6 @@ public class Kdkbot extends PircBot {
     	}
     	
     	// Master Commands
-    	if(sender.equalsIgnoreCase("taitfox") || sender.equalsIgnoreCase("kalbintion")) {
-    		if(message.equalsIgnoreCase("||msgbreakall")) {
-    			messageDuplicatorList.clear();
-    			this.sendMessage(channel, "Breaking all message dupe systems!");
-    		} else if(message.equalsIgnoreCase("||msgbreak ")) {
-    			
-    		}
-    	}
-    	
     	if(sender.equalsIgnoreCase("kalbintion")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			// Leave channel
@@ -172,8 +182,17 @@ public class Kdkbot extends PircBot {
     				messageDuplicatorList.put(channel, new ArrayList<String>());
     			}
     			messageDuplicatorList.get(channel).add(chanArgs[1]);
-    			this.sendMessage(channel, "Now sending all messages from this channel to " + chanArgs[1]);
-    			this.sendMessage(chanArgs[1], "Now receiving all messages from " + channel);
+    			
+    			if(messageDuplicatorList.get(chanArgs[1]) == null) {
+    				messageDuplicatorList.put(chanArgs[1], new ArrayList<String>());
+    			}
+    			messageDuplicatorList.get(chanArgs[1]).add(channel);
+    			
+    			this.sendMessage(channel, "Now sending & receiving all messages from this channel to " + chanArgs[1]);
+    			this.sendMessage(chanArgs[1], "Now sending & receiving all messages from " + channel);
+    		} else if(message.equalsIgnoreCase("||msgbreakall")) {
+        			messageDuplicatorList.clear();
+        			this.sendMessage(channel, "Breaking all message dupe systems!");
     		} else if(message.startsWith("||debug enable")) {
     			dbg.enable();
     			this.sendMessage(channel, "Enabled internal debug messages");
@@ -227,6 +246,8 @@ public class Kdkbot extends PircBot {
 	    	MessageInfo msgInfo = new MessageInfo(channel, sender, message, login, hostname,  curChan.getSenderRank(sender));
     		curChan.commands.commandHandler(msgInfo);
     	}
+    	
+    	CHANS.get(channel).messageHandler(new MessageInfo(channel, sender, message, login, hostname, CHANS.get(channel).getSenderRank(sender)));
 	}
     
     public Channel getChannel(String channel) {

@@ -120,6 +120,7 @@ public class Commands {
 						coreCommand.equalsIgnoreCase("perm")) {
 				switch(args[1]) {
 					case "set":
+						chan.setSenderRank(args[2], Integer.parseInt(args[3]));
 						instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
 						break;
 					case "get":

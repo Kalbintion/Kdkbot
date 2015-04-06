@@ -161,12 +161,9 @@ public class Config {
 	 */
 	public void verifyExists() throws Exception {
 		if(!Files.exists(this.filePath)) {
-			// System.out.println("[DBG] [CFG] [VERIFY] Doesn't exist: " + this.filePath.toString());
 			try {
-				// System.out.println("[DBG] [CFG] [VERIFY] Attempting to create.");
 				Files.createFile(this.filePath);
 			} catch (IOException e) {
-				// System.out.println("[DBG] [CFG] [VERIFY] Couldn't create, attempting to create directories first.");
 				Files.createDirectories(this.filePath.getParent());
 			}
 		}

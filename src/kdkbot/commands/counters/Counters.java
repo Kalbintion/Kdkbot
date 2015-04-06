@@ -104,12 +104,12 @@ public class Counters {
 				while(cntrIter.hasNext()) {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
-						if(args.length >= 3) {
+						if(args.length > 3) {
 							cntr.addValue(Integer.parseInt(args[3]));
 							instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
 						} else {
 							cntr.addValue(1);
-							instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+							instance.sendMessage(channel, "Incremented " + args[2] + " by 1. Value is now " + cntr.value);
 						}
 					}
 				}

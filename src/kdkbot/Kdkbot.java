@@ -1,11 +1,14 @@
 package kdkbot;
 
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -236,6 +239,17 @@ public class Kdkbot extends PircBot {
     			chan.setSenderRank("kalbintion", 5);
     			chan.setSenderRank(channel.substring(1), 5);
     			this.sendMessage(channel, "Initialized channel by giving user " + channel.substring(1) + " and Kalbintion permission level 5");
+    			
+    			try {
+    				
+        			FileInputStream cmdIn = new FileInputStream(FileSystems.getDefault().getPath("./cfg/default/cmds.cfg").toAbsolutePath().toString());
+        			FileOutputStream cmdOut = new FileOutputStream(FileSystems.getDefault().getPath("./cfg/" + channel + "/cmds.cfg").toAbsolutePath().toString());
+					cmdOut.getChannel().transferFrom(cmdIn.getChannel(), 0, cmdIn.getChannel().size());
+					cmdIn.close();
+	    			cmdOut.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
     		}
     	}
     	

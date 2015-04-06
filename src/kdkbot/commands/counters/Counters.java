@@ -82,11 +82,18 @@ public class Counters {
 		Iterator<Counter> cntrIter = this.counters.iterator();
 		Counter cntr;
 		
+		if(args.length == 1) return;
+		
+		int amount = 1;
+		if(args.length > 3) {
+			amount = Integer.parseInt(args[3]);
+		}
+		
 		switch(args[1]) {
 			case "new":
 				if(info.senderLevel >= 2) {
-					if(args.length >= 3) {
-						this.addCounter(args[2], Integer.parseInt(args[3]));
+					if(args.length > 3) {
+						this.addCounter(args[2], amount);
 						instance.sendMessage(channel, "Added new counter called " + args[2] + " with value of " + args[3]);
 					} else {
 						this.addCounter(args[2], 0);
@@ -104,13 +111,8 @@ public class Counters {
 				while(cntrIter.hasNext()) {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
-						if(args.length > 3) {
-							cntr.addValue(Integer.parseInt(args[3]));
-							instance.sendMessage(channel, "Incremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
-						} else {
-							cntr.addValue(1);
-							instance.sendMessage(channel, "Incremented " + args[2] + " by 1. Value is now " + cntr.value);
-						}
+						cntr.addValue(amount);
+						instance.sendMessage(channel, "Incremented " + args[2] + " by " + amount + ". Value is now " + cntr.value);
 					}
 				}
 				break;
@@ -119,8 +121,8 @@ public class Counters {
 				while(cntrIter.hasNext()) {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
-						cntr.subtractValue(Integer.parseInt(args[3]));
-						instance.sendMessage(channel, "Decremented " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+						cntr.subtractValue(amount);
+						instance.sendMessage(channel, "Decremented " + args[2] + " by " + amount + ". Value is now " + cntr.value);
 					}
 				}
 				break;
@@ -129,8 +131,8 @@ public class Counters {
 				while(cntrIter.hasNext()) {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
-						cntr.multiplyValue(Integer.parseInt(args[3]));
-						instance.sendMessage(channel, "Multiplied " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+						cntr.multiplyValue(amount);
+						instance.sendMessage(channel, "Multiplied " + args[2] + " by " + amount + ". Value is now " + cntr.value);
 					}
 				}
 				break;
@@ -139,8 +141,8 @@ public class Counters {
 				while(cntrIter.hasNext()) {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
-						cntr.divideValue(Integer.parseInt(args[3]));
-						instance.sendMessage(channel, "Divided " + args[2] + " by " + args[3] + ". Value is now " + cntr.value);
+						cntr.divideValue(amount);
+						instance.sendMessage(channel, "Divided " + args[2] + " by " + amount + ". Value is now " + cntr.value);
 					}
 				}
 				break;

@@ -77,7 +77,7 @@ public class Counters {
 	}
 	
 	public void executeCommand(MessageInfo info) {
-		String[] args = info.message.split(" ");
+		String[] args = info.getSegments();
 		
 		Iterator<Counter> cntrIter = this.counters.iterator();
 		Counter cntr;

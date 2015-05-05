@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 public class Quotes extends Command {
@@ -125,10 +126,10 @@ public class Quotes extends Command {
 		try {
 			List<String> toSave = new ArrayList<String>();
 			
-			Iterator hashMapIter = quotes.entrySet().iterator();
+			Iterator<Entry<String, String>> hashMapIter = quotes.entrySet().iterator();
 			
 			while(hashMapIter.hasNext()) {
-				Map.Entry pairs = (Map.Entry)hashMapIter.next();
+				Map.Entry<String, String> pairs = hashMapIter.next();
 				toSave.add(pairs.getKey() + ": " + pairs.getValue());
 			}
 			cfg.saveSettings(toSave);

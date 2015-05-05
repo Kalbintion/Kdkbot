@@ -3,6 +3,7 @@ package kdkbot.urbanapi;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -49,9 +50,9 @@ public class UrbanAPI {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod(method);
-			Iterator headerIter = headers.entrySet().iterator();
+			Iterator<Entry<String, String>> headerIter = headers.entrySet().iterator();
 			while(headerIter.hasNext()) {
-				Map.Entry pairs = (Map.Entry) headerIter.next();
+				Map.Entry<String, String> pairs = headerIter.next();
 				conn.setRequestProperty(pairs.getKey().toString(), pairs.getValue().toString());
 			}
 

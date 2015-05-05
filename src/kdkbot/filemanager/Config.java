@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Config {
 	private Path filePath;
@@ -85,7 +86,7 @@ public class Config {
 	public void saveSettings() {
 		HashMap<String, String> hash = this.values;
 		try {
-			Iterator hashMapIter = hash.entrySet().iterator();
+			Iterator<Entry<String, String>> hashMapIter = hash.entrySet().iterator();
 			
 			BufferedWriter write = new BufferedWriter(
 					new OutputStreamWriter(
@@ -93,7 +94,7 @@ public class Config {
 						StandardCharsets.UTF_8));
 			
 			while(hashMapIter.hasNext()) {
-				Map.Entry pairs = (Map.Entry)hashMapIter.next();
+				Map.Entry<String, String> pairs = hashMapIter.next();
 				write.write(pairs.getKey() + "=" + pairs.getValue() + "\r\n");
 			}
 			
@@ -110,7 +111,7 @@ public class Config {
 	 */
 	public void saveSettings(HashMap<String, Integer> hash) {
 		try {
-			Iterator hashMapIter = hash.entrySet().iterator();
+			Iterator<Entry<String, Integer>> hashMapIter = hash.entrySet().iterator();
 			
 			BufferedWriter write = new BufferedWriter(
 					new OutputStreamWriter(
@@ -118,7 +119,7 @@ public class Config {
 						StandardCharsets.UTF_8));
 			
 			while(hashMapIter.hasNext()) {
-				Map.Entry pairs = (Map.Entry)hashMapIter.next();
+				Map.Entry<String, Integer> pairs = hashMapIter.next();
 				write.write(pairs.getKey() + "=" + pairs.getValue() + "\r\n");
 			}
 			
@@ -135,7 +136,7 @@ public class Config {
 	 */
 	public void saveSettings(List<String> lines) {
 		try {
-			Iterator hashMapIter = lines.iterator();
+			Iterator<String> hashMapIter = lines.iterator();
 			
 			BufferedWriter write = new BufferedWriter(
 					new OutputStreamWriter(

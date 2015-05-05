@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.jibble.pircbot.*;
@@ -70,10 +71,10 @@ public class Kdkbot extends PircBot {
 		try {
 			this.reconnect();
 			// Iterator<Channel> chanIter = CHANS.iterator();
-			Iterator chanIter = CHANS.entrySet().iterator();
+			Iterator<Entry<String, Channel>> chanIter = CHANS.entrySet().iterator();
 			
 			while(chanIter.hasNext()) {
-				Map.Entry<String, Channel> chan = (Map.Entry) chanIter.next();
+				Map.Entry<String, Channel> chan = chanIter.next();
 				chan.getValue().joinChannel();
 			}
 		} catch (NickAlreadyInUseException e) {
@@ -199,12 +200,11 @@ public class Kdkbot extends PircBot {
     			this.sendMessage(messageArgs[1], messageArgs[2]);
     		} else if(message.startsWith("||echotoall ")) {
     			String messageArgs[] = message.split(" ", 2);
-    			Iterator chanIter = CHANS.entrySet().iterator();
+    			Iterator<Entry<String, Channel>> chanIter = CHANS.entrySet().iterator();
     			while(chanIter.hasNext()) {
-    				Map.Entry pairs = (Map.Entry) chanIter.next();
+    				Map.Entry<String, Channel> pairs = chanIter.next();
     				this.sendMessage(pairs.getKey().toString(), messageArgs[1]);
     			}
-    			
     		} else if(message.startsWith("||joinchan ")) {
     			String[] args = message.split(" ");
     			

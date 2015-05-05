@@ -1,10 +1,8 @@
 package kdkbot.commands.filters;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 import kdkbot.Kdkbot;

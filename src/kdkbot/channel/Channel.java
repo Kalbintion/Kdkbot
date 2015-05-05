@@ -7,7 +7,6 @@ import java.util.List;
 
 import kdkbot.*;
 import kdkbot.commands.*;
-import kdkbot.economy.Economy;
 import kdkbot.filemanager.Config;
 
 public class Channel {
@@ -17,12 +16,13 @@ public class Channel {
 	// private Economy economy;
 	private boolean repeatMessages;
 	public ArrayList<Forwarder> forwarders;
-	public String baseConfigLocation;
 	public Config channelConfig;
 	public String commandPrefix;
 	
 	// Path & Config locations (set by Channel() init)
+	public String baseConfigLocation;
 	public Config cfgPerms;
+	public Config cfgChan;
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
 	/**
@@ -46,6 +46,7 @@ public class Channel {
 			this.baseConfigLocation = "./cfg/" + channel + "/";
 		
 			this.channelConfig = new Config(this.baseConfigLocation + "channel.cfg");
+			
 			
 			this.joinChannel();
 			

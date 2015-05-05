@@ -1,15 +1,7 @@
 package kdkbot.commands.strings;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import kdkbot.*;
-import kdkbot.channel.Channel;
 import kdkbot.commands.*;
-import kdkbot.commands.counters.Counter;
 
 public class StringCommand extends Command {
 	// Class Specific

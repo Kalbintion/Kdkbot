@@ -5,15 +5,9 @@ import kdkbot.MessageInfo;
 import kdkbot.commands.*;
 import kdkbot.filemanager.Config;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class AMA extends Command {
 	private String channel;
@@ -38,13 +32,10 @@ public class AMA extends Command {
 	
 	public void executeCommand(MessageInfo info) {
 		String[] args = info.message.split(" ");
-		
-		// System.out.println("[DBG] [questions] [EXEC] Args[1] is " + args[1]);
-		
+				
 		switch(args[1]) {
 			case "get":
 				try {
-					// System.out.println("[DBG] [questions] [EXEC] Args[2] is " + args[2]);
 					String question = questions.get(Integer.parseInt(args[2]));
 					if(question != null) {
 						this.getBotInstance().sendMessage(channel, "Question #" + args[2] + ": " + question);

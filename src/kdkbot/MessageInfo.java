@@ -1,7 +1,5 @@
 package kdkbot;
 
-import java.util.ArrayList;
-
 public class MessageInfo {
 	public String channel;
 	public String sender;

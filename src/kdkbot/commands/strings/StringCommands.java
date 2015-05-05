@@ -1,11 +1,9 @@
 package kdkbot.commands.strings;
 
-import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;

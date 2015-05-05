@@ -1,7 +1,5 @@
 package kdkbot.channel;
 
-import java.util.Date;
-
 public class UserStat {
 	public long since;
 	public long timeSpent;

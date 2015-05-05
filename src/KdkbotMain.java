@@ -1,5 +1,3 @@
-import kdkbot.*;
-
 /**
  * Initializes the bot and executes it. Does nothing else.
  */

@@ -1,8 +1,5 @@
 package kdkbot.commands.counters;
 
-import kdkbot.Kdkbot;
-import kdkbot.commands.Command;
-
 public class Counter {
 	public int value;
 	public String name;

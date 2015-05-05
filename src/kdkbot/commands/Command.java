@@ -1,7 +1,5 @@
 package kdkbot.commands;
 
-import java.util.ArrayList;
-
 import kdkbot.Kdkbot;
 
 public abstract class Command {

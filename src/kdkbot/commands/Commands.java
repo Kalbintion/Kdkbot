@@ -1,31 +1,19 @@
 package kdkbot.commands;
 
-import java.lang.reflect.Method;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.regex.*;
-
-import org.jibble.pircbot.User;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
 import kdkbot.channel.Forwarder;
-import kdkbot.commands.*;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
 import kdkbot.commands.filters.Filter;
 import kdkbot.commands.filters.Filters;
 import kdkbot.commands.strings.*;
-import kdkbot.filemanager.Config;
 
 public class Commands {
 	// Necessary variable for instance referencing
@@ -73,24 +61,30 @@ public class Commands {
 		ArrayList<Filter> fList = this.filters.getFilters();
 		Iterator<Filter> fIter = fList.iterator();
 		instance.dbg.writeln(this, "Filter count: " + fList.size());
+		int filterIndex = 0;
 		while(fIter.hasNext()) {
 			Filter filter = fIter.next();
+			filterIndex++;
 			if(filter.contains(info.message)) {
 				switch(filter.action) {
 					case 1:
 						instance.dbg.writeln(this, "Attempting to purge user due to filter");
+						instance.log("Attempting to purge user " + info.sender + " due to filter #" + filterIndex);
 						instance.sendMessage(info.channel, "/timeout " + info.sender + " 1");
 						break;
 					case 2:
 						instance.dbg.writeln(this, "Attempting to timeout user due to filter");
+						instance.log("Attempting to timeout user " + info.sender + " due to filter #" + filterIndex);
 						instance.sendMessage(info.channel, "/timeout " + info.sender);
 						break;
 					case 3:
 						instance.dbg.writeln(this, "Attempting to ban user due to filter");
+						instance.log("Attempting to ban user " + info.sender + " due to filter #" + filterIndex);
 						instance.sendMessage(info.channel, "/ban " + info.sender);
 						break;
 					case 4:
 						instance.dbg.writeln(this, "Attempting to respond to user due to filter");
+						instance.log("Attempting to respond to user " + info.sender + " due to filter #" + filterIndex);
 						instance.sendMessage(info.channel, info.sender + ": " + filter.actionInfo);
 						break;
 				}

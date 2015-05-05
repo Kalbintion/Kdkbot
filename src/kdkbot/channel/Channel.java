@@ -7,6 +7,8 @@ import java.util.List;
 
 import kdkbot.*;
 import kdkbot.commands.*;
+import kdkbot.commands.filters.Filter;
+import kdkbot.commands.filters.Filters;
 import kdkbot.filemanager.Config;
 
 public class Channel {
@@ -14,10 +16,10 @@ public class Channel {
 	public Commands commands;
 	private String channel;
 	// private Economy economy;
-	private boolean repeatMessages;
 	public ArrayList<Forwarder> forwarders;
 	public Config channelConfig;
-	public String commandPrefix;
+	public String commandPrefix = "|";
+	public Filters filters;
 	
 	// Path & Config locations (set by Channel() init)
 	public String baseConfigLocation;
@@ -39,14 +41,16 @@ public class Channel {
 	 */
 	public Channel(Kdkbot instance, String channel) {
 		try {
-			this.instance = instance;
+			Channel.instance = instance;
 			this.channel = channel;
 			this.commands = new Commands(instance, channel, this);
 			// this.economy = new Economy(instance, channel);
 			this.baseConfigLocation = "./cfg/" + channel + "/";
 		
 			this.channelConfig = new Config(this.baseConfigLocation + "channel.cfg");
-			
+
+			this.filters = new Filters(Channel.instance, channel);
+			this.filters.loadFilters();
 			
 			this.joinChannel();
 			
@@ -59,11 +63,11 @@ public class Channel {
 	}
 	
 	public void joinChannel() {
-		this.instance.joinChannel(this.channel);
+		Channel.instance.joinChannel(this.channel);
 	}
 	
 	public void leaveChannel() {
-		this.instance.partChannel(this.channel);
+		Channel.instance.partChannel(this.channel);
 	}
 	
 	public String getChannel() {
@@ -71,15 +75,15 @@ public class Channel {
 	}
 	
 	public void leaveChannel(String reason) {
-		this.instance.partChannel(this.channel, reason);
+		Channel.instance.partChannel(this.channel, reason);
 	}
 	
 	public void kickUser(String nick) {
-		this.instance.kick(this.channel, nick);
+		Channel.instance.kick(this.channel, nick);
 	}
 	
 	public void kickUser(String nick, String reason) {
-		this.instance.kick(this.channel, nick, reason);
+		Channel.instance.kick(this.channel, nick, reason);
 	}
 
 	public String getCommandPrefix() {
@@ -165,6 +169,42 @@ public class Channel {
 	}
 	
 	public void messageHandler(MessageInfo info) {
+		// Begin filtering first before checking for command validity
+		ArrayList<Filter> fList = this.filters.getFilters();
+		Iterator<Filter> fIter = fList.iterator();
+		instance.dbg.writeln(this, "Filter count: " + fList.size());
+		int filterIndex = 0;
+		while(fIter.hasNext()) {
+			Filter filter = fIter.next();
+			filterIndex++;
+			if(filter.contains(info.message)) {
+				switch(filter.action) {
+					case 1:
+						instance.dbg.writeln(this, "Attempting to purge user due to filter");
+						instance.log("Attempting to purge user " + info.sender + " due to filter #" + filterIndex);
+						instance.sendMessage(info.channel, "/timeout " + info.sender + " 1");
+						break;
+					case 2:
+						instance.dbg.writeln(this, "Attempting to timeout user due to filter");
+						instance.log("Attempting to timeout user " + info.sender + " due to filter #" + filterIndex);
+						instance.sendMessage(info.channel, "/timeout " + info.sender);
+						break;
+					case 3:
+						instance.dbg.writeln(this, "Attempting to ban user due to filter");
+						instance.log("Attempting to ban user " + info.sender + " due to filter #" + filterIndex);
+						instance.sendMessage(info.channel, "/ban " + info.sender);
+						break;
+					case 4:
+						instance.dbg.writeln(this, "Attempting to respond to user due to filter");
+						instance.log("Attempting to respond to user " + info.sender + " due to filter #" + filterIndex);
+						instance.sendMessage(info.channel, info.sender + ": " + filter.actionInfo);
+						break;
+				}
+			}
+		}
 		
+		if(info.message.startsWith(this.commandPrefix)) {
+			this.commands.commandHandler(info);
+		}
 	}
 }

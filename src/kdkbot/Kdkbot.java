@@ -242,14 +242,6 @@ public class Kdkbot extends PircBot {
     		}
     	}
     	
-    	if(!this.msgIgnoreList.contains(sender)) {
-	    	// Send info off to correct channel
-    		
-	    	Channel curChan = getChannel(channel);
-	    	MessageInfo msgInfo = new MessageInfo(channel, sender, message, login, hostname,  curChan.getSenderRank(sender));
-    		curChan.commands.commandHandler(msgInfo);
-    	}
-    	
     	CHANS.get(channel).messageHandler(new MessageInfo(channel, sender, message, login, hostname, CHANS.get(channel).getSenderRank(sender)));
 	}
     

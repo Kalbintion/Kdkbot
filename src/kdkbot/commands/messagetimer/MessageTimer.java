@@ -2,7 +2,6 @@ package kdkbot.commands.messagetimer;
 
 import kdkbot.Kdkbot;
 import kdkbot.channel.Channel;
-import kdkbot.commands.Command;
 import kdkbot.commands.strings.StringCommand;
 
 import java.util.Iterator;

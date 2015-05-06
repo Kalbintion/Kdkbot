@@ -12,6 +12,7 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
 import kdkbot.commands.counters.Counter;
+import kdkbot.commands.strings.StringCommand;
 
 public class MessageParser {
 	public Kdkbot instance;
@@ -61,6 +62,24 @@ public class MessageParser {
 				toParse = toParse.replace("%ARGS%", info.message.substring(args[0].length() + 2));
 			} else {
 				toParse = toParse.replace("%ARGS%", info.message.substring(args[0].length() + 1));
+			}
+		}
+		
+		// Command replacement
+		Pattern PATTERN_CMD_REPLACE = Pattern.compile("%CMD:.*?%");
+		Matcher pattern_cmd_matches = PATTERN_CMD_REPLACE.matcher(toParse);
+		
+		while(pattern_cmd_matches.find()) {
+			String result = pattern_cmd_matches.group();
+			
+			String argID = result.substring("%CMD:".length(), result.length()-1);
+			
+			Channel chan = instance.getChannel(info.channel);
+			StringCommand cmdID = chan.commands.commandStrings.getCommand(argID);
+			if(cmdID != null) {
+				toParse = toParse.replace(result, cmdID.messageToSend);
+			} else {
+				toParse = toParse.replace(result, "No command found for " + argID);
 			}
 		}
 		

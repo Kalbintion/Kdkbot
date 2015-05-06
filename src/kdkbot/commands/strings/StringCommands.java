@@ -255,4 +255,21 @@ public class StringCommands {
 		listOfCommands.addAll(hs);
 		return listOfCommands;
 	}
+	
+	/**
+	 * Returns the StringCommand object with a given trigger
+	 * @param command The trigger to look for
+	 * @return null if the command cannot be found, otherwise the StringCommand instance
+	 */
+	public StringCommand getCommand(String command) {
+		Iterator<StringCommand> iter = this.commands.iterator();
+		while(iter.hasNext()) {
+			StringCommand strCmd = iter.next();
+			if(strCmd.getTrigger().equals(command)) {
+				return strCmd;
+			}
+		}
+		
+		return null;
+	}
 }

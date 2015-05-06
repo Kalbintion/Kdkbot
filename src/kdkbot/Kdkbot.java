@@ -27,6 +27,7 @@ public class Kdkbot extends PircBot {
 	private Pattern logIgnores;
 	private Log logger;
 	public Debugger dbg = new Debugger(false);
+	public static Kdkbot instance;
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
@@ -61,6 +62,8 @@ public class Kdkbot extends PircBot {
 			dbg.writeln(this, "Added new channel object for channel: " + cfgChannels[i]);
 			dbg.writeln(this, "Channel object: " + getChannel(cfgChannels[i]));
 		}
+		
+		instance = this;
 	}
 
 	/**

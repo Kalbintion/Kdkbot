@@ -210,7 +210,11 @@ public class StringCommands {
 						// List commands based on users rank
 						int senderRankTemp = info.senderLevel;
 						while(senderRankTemp > 0 ) {
-							outMessage.append(additionalCommands[senderRankTemp--]);
+							if(senderRankTemp >= additionalCommands.length) {
+								senderRankTemp--;
+							} else {
+								outMessage.append(additionalCommands[senderRankTemp--]);
+							}
 						}
 						commands = this.getListOfCommands(info.senderLevel, GetLevels.INCLUDE_LOWER);
 					}

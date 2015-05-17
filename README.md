@@ -12,3 +12,7 @@ TaitFox: http://twitch.tv/taitfox
 This bot has two dependences:
 * PIRCBot: http://www.jibble.org/pircbot.php
 * GSON: https://code.google.com/p/google-gson/
+
+# Trello
+https://trello.com/b/wNdlBf67/kdkbot
+This project uses Trello, an online available option to tracking roadmaps a bit more visual and intuitive.

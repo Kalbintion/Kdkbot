@@ -1,6 +1,1 @@
-This file contains the current list of things to be implemented into Kdkbot. Assume date of completion to be unknown unless otherwise noted.
-
-* UserStats: A method in which to keep track of and store user statistical information.
-* Economy: A method in which to implement an economy system into the bot.
-* MessageTimers: A method in which to automatically send messages to the channel periodically.
-* Filter Bypass: A method in which to allow users to bypass the filters an X number of times. ("permit" command on other bots)
+--- This file has been replaced by https://trello.com/b/wNdlBf67/kdkbot ---

@@ -47,8 +47,6 @@ public class Commands {
 	public void commandHandler(MessageInfo info) {
 		instance.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
 		
-		instance.dbg.writeln(this, "Got past filter section.");
-		
 		// Start command checking
 		String coreWord = info.getSegments()[0].substring(1);
 		String args[] = info.getSegments();
@@ -78,11 +76,6 @@ public class Commands {
 				  || coreWord.equalsIgnoreCase("forward"))) {
 			String toChan = args[1];
 			this.chan.forwarders.add(new Forwarder(toChan));
-		}
-		// Filters
-		else if(info.senderLevel >= 3 &&
-				coreWord.equalsIgnoreCase("filters")) {
-			// filters.executeCommand(channel, sender, login, hostname, message, additionalParams)
 		}
 		// Filter Bypass
 		else if(info.senderLevel >= 3 &&

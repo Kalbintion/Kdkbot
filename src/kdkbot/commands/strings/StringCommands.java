@@ -58,9 +58,13 @@ public class StringCommands {
 	}
 	
 	public String addCommand(String trigger, String message, String level) {	
-		commands.add(new StringCommand(this.instance, trigger, message, Integer.parseInt(level), true));
-		this.saveCommands();
-		return "Added new command " + trigger;
+		try {
+			commands.add(new StringCommand(this.instance, trigger, message, Integer.parseInt(level), true));
+			this.saveCommands();
+			return "Added new command " + trigger;
+		} catch (NumberFormatException e) {
+			return "Failed to add command. " + level + " is not an integer. Syntax: commands new <trigger> <rank> <message>";
+		}		
 	}
 	
 	public String removeCommand(String trigger) {

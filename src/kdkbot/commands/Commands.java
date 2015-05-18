@@ -84,6 +84,24 @@ public class Commands {
 				coreWord.equalsIgnoreCase("filters")) {
 			// filters.executeCommand(channel, sender, login, hostname, message, additionalParams)
 		}
+		// Filter Bypass
+		else if(info.senderLevel >= 3 &&
+				coreWord.equalsIgnoreCase("permit")) {
+			try {
+				int bypassLimit = 0;
+				String user = args[1];
+				if(args.length > 2) {
+					bypassLimit = Integer.parseInt(args[2]);
+				} else {
+					bypassLimit = 1;
+				}
+				chan.filterBypass.put(user, bypassLimit);
+				instance.sendMessage(info.channel, info.sender + " has permitted user " + args[1] + " to bypass all filters " + args[2] + " time(s)");
+			} catch (NumberFormatException e) {
+				instance.sendMessage(info.channel, info.sender + ": " + args[2] + " is not a valid number to permit user " + args[1]);
+			}
+			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
+		}
 		// Help
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("help")) {

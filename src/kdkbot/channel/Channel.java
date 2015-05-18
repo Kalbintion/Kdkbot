@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import kdkbot.*;
 import kdkbot.commands.*;
@@ -26,6 +27,9 @@ public class Channel {
 	public Config cfgPerms;
 	public Config cfgChan;
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
+	
+	// Other Vars
+	public HashMap<String, Integer> filterBypass = new HashMap<String, Integer>();
 	
 	/**
 	 * Constructs a new channel instance with no references
@@ -178,6 +182,13 @@ public class Channel {
 			Filter filter = fIter.next();
 			filterIndex++;
 			if(filter.contains(info.message)) {
+				if(this.filterBypass.containsKey(info.sender)) {
+					if(filterBypass.get(info.sender).intValue() > 0) {
+						instance.dbg.writeln(this, "Decreased " + info.sender + " permit bypass by 1");
+						filterBypass.put(info.sender, filterBypass.get(info.sender).intValue() - 1);
+						break;
+					}
+				}
 				switch(filter.action) {
 					case 1:
 						instance.dbg.writeln(this, "Attempting to purge user due to filter");

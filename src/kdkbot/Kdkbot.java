@@ -89,6 +89,14 @@ public class Kdkbot extends PircBot {
 		}
 	}
 	
+	/**
+	 * Event handler for connecting (successfully) to a server
+	 */
+	@Override
+	public void onConnect() {
+		// Re-establishes JOIN/LEAVE msges per Twitch IRCv3 implementation
+		sendRawLine("CAP REQ :twitch.tv/membership");
+	}
 	
 	/**
 	 * Overrides the PIRC implementation of logging to console for purposes of logging to file as well.
@@ -140,7 +148,7 @@ public class Kdkbot extends PircBot {
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
     	// Message Duplicator
-    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot")) {
+    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !message.contains("RAF2")) {
     		Iterator<String> msgDupeIter = messageDuplicatorList.get(channel).iterator();
     		while(msgDupeIter.hasNext()) {
         		this.sendMessage(msgDupeIter.next(), sender + ": " + message);

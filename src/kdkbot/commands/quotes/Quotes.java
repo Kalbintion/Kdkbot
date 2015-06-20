@@ -76,6 +76,7 @@ public class Quotes extends Command {
 			case "count":
 			case "amount":
 			case "total":
+			case "size":
 				this.getBotInstance().sendMessage(channel, "There are " + quotes.size() + " quotes.");
 				break;
 			case "random":

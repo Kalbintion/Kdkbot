@@ -2,11 +2,19 @@ package kdkbot.commands.filters;
 
 import java.util.regex.Pattern;
 
+/**
+ * An individual Filter for the Filters class, this is the main class
+ * responsible for determining whether or not a filter is to trigger
+ * on a message.
+ * @author KDK
+ *
+ */
 public class Filter {
 	public Pattern toFind;
 	public int action;
 	public String actionInfo;
 	public String humanName;
+	public boolean ignoresPermit = false;
 	
 	/**
 	 * Creates a new filter with a given String object
@@ -31,9 +39,7 @@ public class Filter {
 	 * @param actionInfo The message to send in response, if action = 4
 	 */
 	public Filter(Pattern toFind, int action, String actionInfo) {
-		this.toFind = toFind;
-		this.action = action;
-		this.actionInfo = actionInfo;
+		this(toFind, action, actionInfo, "", false);
 	}
 	
 	/**
@@ -53,6 +59,31 @@ public class Filter {
 	 */
 	public Filter(String toFind, int action) {
 		this(Pattern.compile(toFind), action, "");
+	}
+	
+	/**
+	 * Creates a new filter with a given regex pattern, action id, action info, human name, and indication if
+	 * this filter can ignore the permit system.
+	 * @param toFind the regex string to use.
+	 * @param action the integer value to associate (See Filters.FILTER_*)
+	 * @param actionInfo the text associated with the action
+	 * @param humanName the human readable name associated with the filter
+	 * @param ignoresPermit whether or not this filter ignores the permit system
+	 */
+	public Filter(String toFind, int action, String actionInfo, String humanName, boolean ignoresPermit) {
+		this(Pattern.compile(toFind), action, actionInfo, humanName, ignoresPermit);
+	}
+	
+	/**
+	 * Creates a new filter with a given regex pattern, action id, action info, human name, and indication if
+	 * this filter can ignore the permit system.
+	 */
+	public Filter(Pattern toFind, int action, String actionInfo, String humanName, boolean ignoresPermit) {
+		this.toFind = toFind;
+		this.action = action;
+		this.actionInfo = actionInfo;
+		this.humanName = humanName;
+		this.ignoresPermit = ignoresPermit;
 	}
 	
 	/**
@@ -78,9 +109,11 @@ public class Filter {
 	 * This is in the format of the RegEx, Action and ActionInfo separated by two pipe (|) characters.
 	 * NOTE: This does impose the limit of not being able to be permitted to use two pipe characters
 	 * in the filters regex as this will cause the information to segment incorrectly when read.
+	 * 
+	 * Human Name||Action||Action Info||Ignores Permit||Regex
 	 */
 	@Override
 	public String toString() {
-		return toFind.toString() + "||" + action + "||" + actionInfo;
+		return this.humanName + "||" + action + "||" + actionInfo + "||" + ignoresPermit +  "||" + toFind.toString();
 	}
 }

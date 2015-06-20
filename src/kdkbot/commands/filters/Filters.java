@@ -9,7 +9,18 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.filemanager.Config;
 
+/**
+ * Filters will check messages based on a given RegEx and enact upon them. 
+ * This can be anything from doing nothing, purging chat, timeout, ban, and
+ * message response. Filters may be permitted to be bypassed by use of the
+ * 'permit' command which allows a user to ignore filters that are not set
+ * to override permit status. This allows for filters to exist that are always
+ * active and be enabled regardless of permission.
+ * @author KDK
+ *
+ */
 public class Filters {
+	// Enum list of filter types
 	public final int FILTER_USER_NONE = 0;
 	public final int FILTER_USER_PURGE = 1;
 	public final int FILTER_USER_TIMEOUT = 2;
@@ -33,6 +44,10 @@ public class Filters {
 		}
 	}
 	
+	/**
+	 * Filter format:
+	 * Human Name||Action||Action Info||Ignores Permit||Regex
+	 */
 	public void saveFilters() {
 		ArrayList<String> sFilters = new ArrayList<String>();
 		Iterator<Filter> fIter = filters.iterator();
@@ -43,6 +58,10 @@ public class Filters {
 		cfgFilters.saveSettings(sFilters);
 	}
 	
+	/**
+	 * Filter format:
+	 * Human Name||Action||Action Info||Ignores Permit||Regex
+	 */
 	public void loadFilters() {
 		try {
 			List<String> sFilters = cfgFilters.getConfigContents();
@@ -50,8 +69,9 @@ public class Filters {
 			filters.clear();
 			while(sIter.hasNext()) {
 				String sNxt = sIter.next();
-				String[] values = sNxt.split("\\|\\|", 3);
-				Filter f = new Filter(values[0], values[1], values[2]);
+				String[] values = sNxt.split("\\|\\|", 5);
+				// String toFind, int action, String actionInfo, String humanName, boolean ignoresPermit
+				Filter f = new Filter(values[4], Integer.parseInt(values[1]), values[2], values[0], Boolean.parseBoolean(values[3]));
 				filters.add(f);
 			}
 		} catch (Exception e) {

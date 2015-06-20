@@ -15,12 +15,13 @@ import kdkbot.filemanager.Config;
 public class Channel {
 	private static Kdkbot instance;
 	public Commands commands;
-	private String channel;
+	public String channel;
 	// private Economy economy;
 	public ArrayList<Forwarder> forwarders;
 	public Config channelConfig;
 	public String commandPrefix = "|";
 	public Filters filters;
+	public Stats stats;
 	
 	// Path & Config locations (set by Channel() init)
 	public String baseConfigLocation;
@@ -56,11 +57,15 @@ public class Channel {
 			this.filters = new Filters(Channel.instance, channel);
 			this.filters.loadFilters();
 			
+			this.stats = new Stats(this);
+			this.stats.loadStats();
+			
 			this.joinChannel();
 			
 			instance.dbg.writeln(this, "Attempting to load config ranks.");
 			cfgPerms = new Config("./cfg/" + channel + "/perms.cfg");
 			this.loadSenderRanks();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -176,13 +181,12 @@ public class Channel {
 		// Begin filtering first before checking for command validity
 		ArrayList<Filter> fList = this.filters.getFilters();
 		Iterator<Filter> fIter = fList.iterator();
-		instance.dbg.writeln(this, "Filter count: " + fList.size());
 		int filterIndex = 0;
 		while(fIter.hasNext()) {
 			Filter filter = fIter.next();
 			filterIndex++;
 			if(filter.contains(info.message)) {
-				if(this.filterBypass.containsKey(info.sender)) {
+				if(filter.ignoresPermit == false && this.filterBypass.containsKey(info.sender)) {
 					if(filterBypass.get(info.sender).intValue() > 0) {
 						instance.dbg.writeln(this, "Decreased " + info.sender + " permit bypass by 1");
 						filterBypass.put(info.sender, filterBypass.get(info.sender).intValue() - 1);

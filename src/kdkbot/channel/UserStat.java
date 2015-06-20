@@ -1,6 +1,7 @@
 package kdkbot.channel;
 
 public class UserStat {
+	public String userName;
 	public long since;
 	public long timeSpent;
 	public long messageCount;
@@ -11,7 +12,8 @@ public class UserStat {
 		
 	}
 	
-	public UserStat(long since, long timeSpent, long messageCount, long lastJoin, long lastLeave) {
+	public UserStat(String userName, long since, long timeSpent, long messageCount, long lastJoin, long lastLeave) {
+		this.userName = userName;
 		this.since = since;
 		this.timeSpent = timeSpent;
 		this.messageCount = messageCount;
@@ -19,8 +21,12 @@ public class UserStat {
 		this.lastLeave = lastLeave;
 	}
 	
+	/**
+	 * Creates a string representation of this object in the format of:
+	 * userame:since:time spent:message count:last join:last leave
+	 */
 	@Override
 	public String toString() {
-		return (this.since + ":" + this.timeSpent + ":" + this.messageCount + ":" + this.lastJoin + ":" + this.lastLeave);
+		return (this.userName + ":" + this.since + ":" + this.timeSpent + ":" + this.messageCount + ":" + this.lastJoin + ":" + this.lastLeave);
 	}
 }

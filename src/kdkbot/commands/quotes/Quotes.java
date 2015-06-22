@@ -81,8 +81,13 @@ public class Quotes extends Command {
 				break;
 			case "random":
 				Random rnd = new Random();
-				int quoteNum = rnd.nextInt(this.quotes.size() + 1);
+				int quoteNum = 0;
+				do {
+					quoteNum = rnd.nextInt(this.quotes.size() + 1);
+				} while(quotes.get(Integer.toString(quoteNum)) == null);
+				
 				this.getBotInstance().sendMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
+				
 				break;
 		}
 	}

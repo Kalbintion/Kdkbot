@@ -17,7 +17,7 @@ import kdkbot.channel.*;
 import kdkbot.filemanager.*;
 
 public class Kdkbot extends PircBot {
-	private String version = "0.1.0.22";
+	private String version = "0.1.0.31";
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
@@ -148,7 +148,7 @@ public class Kdkbot extends PircBot {
 	 */
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
     	// Message Duplicator
-    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !message.contains("RAF2")) {
+    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !message.contains("RAF2") && !sender.equalsIgnoreCase("jtv")) {
     		Iterator<String> msgDupeIter = messageDuplicatorList.get(channel).iterator();
     		while(msgDupeIter.hasNext()) {
         		this.sendMessage(msgDupeIter.next(), sender + ": " + message);

@@ -1,13 +1,10 @@
 package kdkbot.commands.messagetimer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Timer;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
-import kdkbot.commands.strings.StringCommand;
-import kdkbot.commands.strings.StringCommands.GetLevels;
 import kdkbot.filemanager.Config;
 
 public class Timers {

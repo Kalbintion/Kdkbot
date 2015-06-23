@@ -7,6 +7,7 @@ public class MessageInfo {
 	public String login;
 	public String hostname;
 	public int senderLevel;
+	public long timestamp;
 	
 	/**
 	 * Creates a new MessageInfo class that is used to store a particular messages information.
@@ -24,6 +25,7 @@ public class MessageInfo {
 		this.login = login;
 		this.hostname = hostname;
 		this.senderLevel = senderLevel;
+		this.timestamp = System.currentTimeMillis();
 	}
 	
 	/**

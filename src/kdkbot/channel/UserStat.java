@@ -2,23 +2,25 @@ package kdkbot.channel;
 
 public class UserStat {
 	public String userName;
-	public long since;
-	public long timeSpent;
-	public long messageCount;
+	public long firstJoin;
 	public long lastJoin;
 	public long lastLeave;
-	
-	public UserStat() {
-		
+	public long messageCount;
+	public long timeSpent;
+	public long characterCount;
+
+	public UserStat(String userName) {
+		this(userName, 0, 0, 0, 0, 0, 0);
 	}
 	
-	public UserStat(String userName, long since, long timeSpent, long messageCount, long lastJoin, long lastLeave) {
+	public UserStat(String userName, long firstJoin, long timeSpent, long messageCount, long lastJoin, long lastLeave, long characterCount) {
 		this.userName = userName;
-		this.since = since;
+		this.firstJoin = firstJoin;
 		this.timeSpent = timeSpent;
 		this.messageCount = messageCount;
 		this.lastJoin = lastJoin;
 		this.lastLeave = lastLeave;
+		this.characterCount = characterCount;
 	}
 	
 	/**
@@ -27,6 +29,6 @@ public class UserStat {
 	 */
 	@Override
 	public String toString() {
-		return (this.userName + ":" + this.since + ":" + this.timeSpent + ":" + this.messageCount + ":" + this.lastJoin + ":" + this.lastLeave);
+		return (this.userName + ":" + this.firstJoin + ":" + this.timeSpent + ":" + this.messageCount + ":" + this.lastJoin + ":" + this.lastLeave + ":" + this.characterCount);
 	}
 }

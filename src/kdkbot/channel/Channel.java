@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import kdkbot.*;
 import kdkbot.commands.*;
@@ -178,6 +177,9 @@ public class Channel {
 	}
 	
 	public void messageHandler(MessageInfo info) {
+		// User Stats
+		stats.handleMessage(info);
+		
 		// Begin filtering first before checking for command validity
 		ArrayList<Filter> fList = this.filters.getFilters();
 		Iterator<Filter> fIter = fList.iterator();

@@ -2,15 +2,10 @@ package kdkbot.commands.messagetimer;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
-import kdkbot.channel.Channel;
 import kdkbot.commands.MessageParser;
-import kdkbot.commands.strings.StringCommand;
 
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MessageTimer extends TimerTask {
 	private String timerID;

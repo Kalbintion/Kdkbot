@@ -11,13 +11,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+
 import org.jibble.pircbot.*;
 
 import kdkbot.channel.*;
 import kdkbot.filemanager.*;
 
 public class Kdkbot extends PircBot {
-	private String version = "0.1.0.31";
+	private static String version = "0.1.0.35";
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
@@ -146,9 +150,10 @@ public class Kdkbot extends PircBot {
 	/**
 	 * Event handler for messages received
 	 */
-    public void onMessage(String channel, String sender, String login, String hostname, String message) {
+	public void onMessage(String channel, String sender, String login, String hostname, String message) {
+   	
     	// Message Duplicator
-    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !message.contains("RAF2") && !sender.equalsIgnoreCase("jtv")) {
+    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !message.contains("RAF2") && !sender.equalsIgnoreCase("jtv") && !sender.equalsIgnoreCase("monstercat")) {
     		Iterator<String> msgDupeIter = messageDuplicatorList.get(channel).iterator();
     		while(msgDupeIter.hasNext()) {
         		this.sendMessage(msgDupeIter.next(), sender + ": " + message);

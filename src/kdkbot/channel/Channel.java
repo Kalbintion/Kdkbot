@@ -17,7 +17,6 @@ public class Channel {
 	public String channel;
 	// private Economy economy;
 	public ArrayList<Forwarder> forwarders;
-	public Config channelConfig;
 	public String commandPrefix = "|";
 	public Filters filters;
 	public Stats stats;
@@ -51,7 +50,7 @@ public class Channel {
 			// this.economy = new Economy(instance, channel);
 			this.baseConfigLocation = "./cfg/" + channel + "/";
 		
-			this.channelConfig = new Config(this.baseConfigLocation + "channel.cfg");
+			this.cfgChan = new Config(this.baseConfigLocation + "channel.cfg");
 
 			this.filters = new Filters(Channel.instance, channel);
 			this.filters.loadFilters();

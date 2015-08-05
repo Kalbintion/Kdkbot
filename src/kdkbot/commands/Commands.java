@@ -10,6 +10,7 @@ import kdkbot.channel.Forwarder;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
+import kdkbot.commands.stats.Stats;
 import kdkbot.commands.strings.*;
 
 public class Commands {
@@ -19,6 +20,7 @@ public class Commands {
 	
 	// Sub-system commands managers
 	public Quotes quotes;
+	public Stats stats;
 	public StringCommands commandStrings;
 	public Counters counters;
 	public AMA amas;
@@ -35,6 +37,8 @@ public class Commands {
 			
 			this.counters = new Counters(this.instance, channel);
 			this.counters.loadCounters();
+			
+			this.stats = new Stats(this.instance, channel);
 			
 			this.amas = new AMA(this.instance, channel);
 			this.amas.loadQuestions();
@@ -115,6 +119,14 @@ public class Commands {
 		else if (info.senderLevel >= 3 &&
 				coreWord.equalsIgnoreCase("raid")) {
 			instance.sendMessage(info.channel, "Raid http://www.twitch.tv/" + args[1]);
+		}
+		// Stats
+		else if(coreWord.equalsIgnoreCase("time")) {
+			info.message = "stats time " + info.message;
+			stats.executeCommand(info);
+		}
+		else if(coreWord.equalsIgnoreCase("stats")) {
+			stats.executeCommand(info);
 		}
 		// Multitwitch
 		else if (info.senderLevel >= 2 &&

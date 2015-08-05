@@ -73,8 +73,6 @@ public class Stats {
 			// This is a new user, we need to create the object
 			user = new UserStat(info.sender);
 			userStats.put(info.sender, user);
-			// Force save
-			this.saveStats();
 		}
 		
 		if(info.message.contains("#JOIN")) {

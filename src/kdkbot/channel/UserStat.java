@@ -1,5 +1,9 @@
 package kdkbot.channel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class UserStat {
 	public String userName;
 	public long firstJoin;
@@ -25,7 +29,7 @@ public class UserStat {
 	
 	/**
 	 * Creates a string representation of this object in the format of:
-	 * userame:since:time spent:message count:last join:last leave
+	 * username:since:time spent:message count:last join:last leave
 	 */
 	@Override
 	public String toString() {

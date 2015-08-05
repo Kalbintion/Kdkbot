@@ -29,16 +29,14 @@ public class Filters {
 	
 	private ArrayList<Filter> filters = new ArrayList<Filter>();
 	private Config cfgFilters;
-	private Kdkbot instance;
 	private String channel;
 	
-	public Filters(Kdkbot instance, String channel) {
+	public Filters(String channel) {
 		try {
 			this.filters = new ArrayList<Filter>();
 			cfgFilters = new Config("./cfg/" + channel + "/filters.cfg");
 			this.channel = channel;
 			loadFilters();
-			this.instance = instance;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -115,14 +113,14 @@ public class Filters {
 							newAdditionalInfo = " Use command 'filter edit <id> info <new info> to add response message.";
 							break;
 					}
-					instance.sendMessage(this.channel, "Added a new filter with id #" + filters.size() + "." + newAdditionalInfo);
+					Kdkbot.instance.sendMessage(this.channel, "Added a new filter with id #" + filters.size() + "." + newAdditionalInfo);
 					saveFilters();
 				break;
 			case "remove":
 				// |filter remove <index>
 				parts = info.getSegments(3);
 				this.filters.remove(Integer.parseInt(parts[2]) - 1);
-				instance.sendMessage(this.channel, "Removed filter #" + parts[2]);
+				Kdkbot.instance.sendMessage(this.channel, "Removed filter #" + parts[2]);
 				saveFilters();
 				break;
 			case "view":
@@ -130,13 +128,13 @@ public class Filters {
 				parts = info.getSegments(4);
 				switch(parts[3]) {
 					case "type":
-						instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).action);
+						Kdkbot.instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).action);
 						break;
 					case "regex":
-						instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).toFind.toString());
+						Kdkbot.instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).toFind.toString());
 						break;
 					case "info":
-						instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).actionInfo);
+						Kdkbot.instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).actionInfo);
 						break;
 				}
 				break;
@@ -154,7 +152,7 @@ public class Filters {
 						filters.get(Integer.parseInt(parts[2]) - 1).actionInfo = parts[4];
 						break;
 				}
-				instance.sendMessage(this.channel, "Changed filter #" + parts[2] + "'s " + parts[3] + " value to: " + parts[4]);
+				Kdkbot.instance.sendMessage(this.channel, "Changed filter #" + parts[2] + "'s " + parts[3] + " value to: " + parts[4]);
 				saveFilters();
 				break;
 			case "save":
@@ -164,7 +162,7 @@ public class Filters {
 					// |filter reload
 				break;
 			case "size":
-				instance.sendMessage(this.channel, "There are " + filters.size() + " filter(s) in this channel.");
+				Kdkbot.instance.sendMessage(this.channel, "There are " + filters.size() + " filter(s) in this channel.");
 				break;
 		}
 	}

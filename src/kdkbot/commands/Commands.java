@@ -49,15 +49,34 @@ public class Commands {
 	public void commandHandler(MessageInfo info) {
 		Kdkbot.instance.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
 		
+		// Enforce senders name to be lowercased - prevents case sensitive issues later on
+		info.sender = info.sender.toLowerCase();
+		
 		// Start command checking
-		String coreWord = info.getSegments()[0].substring(1);
+		String coreWord = info.getSegments()[0].substring(chan.commandPrefix.length());
 		String args[] = info.getSegments();
 		
 		Kdkbot.instance.dbg.writeln(this, "Core Command detected as '" + coreWord + "'");
 		Kdkbot.instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
 		
-		// Enforce senders name to be lowercased - prevents case sensitive issues later on
-		info.sender = info.sender.toLowerCase();
+		// These commands supersede command processing toggling
+		System.out.println("Sender Level: " + info.senderLevel);
+		if(info.senderLevel >= 5 &&
+				coreWord.equalsIgnoreCase("channel")) {
+			// Channel settings
+			if(args[1].equalsIgnoreCase("commandProcessing")) {
+				chan.cfgChan.setSetting("commandProcessing", String.valueOf(Boolean.parseBoolean(args[2])));
+				chan.commandProcessing = Boolean.parseBoolean(args[2]);
+				Kdkbot.instance.sendMessage(info.channel, "Channel's command processing set to " + String.valueOf(chan.commandProcessing));
+			} else if(args[1].equalsIgnoreCase("commandPrefix")) {
+				chan.cfgChan.setSetting("commandPrefix", args[2]);
+				chan.commandPrefix = args[2];
+				Kdkbot.instance.sendMessage(info.channel, "Channel's command prefix set to " + args[2]);
+			}
+		}
+		
+		// Command Processing Breaking
+		if(!chan.commandProcessing) { return; }
 		
 		// Permission Ranks
 		if (info.senderLevel >= 3 &&

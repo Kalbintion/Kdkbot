@@ -16,7 +16,7 @@ public class Timers {
 		timers = new ArrayList<MessageTimer>();
 		this.channel = channel;
 		try {
-			this.config = new Config("./cfgs/timers/" + channel + ".cfg" );
+			this.config = new Config("./cfg/" + channel + "/timers.cfg" );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

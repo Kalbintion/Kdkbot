@@ -27,6 +27,11 @@ public class Config {
 	 */
 	public Config(Path filePath) {
 		this.filePath = filePath;
+		try {
+			this.verifyExists();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

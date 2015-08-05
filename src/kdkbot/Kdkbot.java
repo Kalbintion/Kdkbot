@@ -39,6 +39,8 @@ public class Kdkbot extends PircBot {
      * Initialization of the basic bot
      */
 	public Kdkbot() throws Exception {
+		instance = this;
+		
 		// Setup log system
 		botCfg.loadConfigContents();
 		this._logChat = Boolean.parseBoolean(botCfg.getSetting("logChat"));
@@ -66,8 +68,6 @@ public class Kdkbot extends PircBot {
 			dbg.writeln(this, "Added new channel object for channel: " + cfgChannels[i]);
 			dbg.writeln(this, "Channel object: " + getChannel(cfgChannels[i]));
 		}
-		
-		instance = this;
 	}
 
 	/**

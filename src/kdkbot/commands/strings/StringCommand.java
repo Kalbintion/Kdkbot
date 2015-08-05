@@ -21,8 +21,8 @@ public class StringCommand extends Command {
 	}
 	
 	public void executeCommand(MessageInfo info) {
-		this.getBotInstance().dbg.writeln(this, "Attempting to execute command " + this.getTrigger() + " to channel " + info.channel);
-		this.getBotInstance().sendMessage(info.channel, new MessageParser(this.getBotInstance()).parseMessage(this.messageToSend, info));
+		Kdkbot.instance.dbg.writeln(this, "Attempting to execute command " + this.getTrigger() + " to channel " + info.channel);
+		Kdkbot.instance.sendMessage(info.channel, new MessageParser(this.getBotInstance()).parseMessage(this.messageToSend, info));
 	}
 	
 	public String getMessage() {

@@ -46,7 +46,7 @@ public class Channel {
 		try {
 			Channel.instance = instance;
 			this.channel = channel;
-			this.commands = new Commands(instance, channel, this);
+			this.commands = new Commands(channel, this);
 			// this.economy = new Economy(instance, channel);
 			this.baseConfigLocation = "./cfg/" + channel + "/";
 		

@@ -15,7 +15,6 @@ import kdkbot.commands.strings.*;
 
 public class Commands {
 	// Necessary variable for instance referencing
-	public Kdkbot instance;
 	public Channel chan;
 	
 	// Sub-system commands managers
@@ -25,22 +24,21 @@ public class Commands {
 	public Counters counters;
 	public AMA amas;
 	
-	public Commands(Kdkbot instance, String channel, Channel chanInst) {
-		this.instance = instance;
+	public Commands(String channel, Channel chanInst) {
 		this.chan = chanInst;
 		try {			
-			this.commandStrings = new StringCommands(this.instance, channel);
+			this.commandStrings = new StringCommands(channel);
 			this.commandStrings.loadCommands();
 			
-			this.quotes = new Quotes(this.instance, channel);
+			this.quotes = new Quotes(channel);
 			this.quotes.loadQuotes();
 			
-			this.counters = new Counters(this.instance, channel);
+			this.counters = new Counters(channel);
 			this.counters.loadCounters();
 			
-			this.stats = new Stats(this.instance, channel);
+			this.stats = new Stats(channel);
 			
-			this.amas = new AMA(this.instance, channel);
+			this.amas = new AMA(channel);
 			this.amas.loadQuestions();
 			
 		} catch(Exception e) {
@@ -49,14 +47,14 @@ public class Commands {
 	}
 	
 	public void commandHandler(MessageInfo info) {
-		instance.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
+		Kdkbot.instance.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
 		
 		// Start command checking
 		String coreWord = info.getSegments()[0].substring(1);
 		String args[] = info.getSegments();
 		
-		instance.dbg.writeln(this, "Core Command detected as '" + coreWord + "'");
-		instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
+		Kdkbot.instance.dbg.writeln(this, "Core Command detected as '" + coreWord + "'");
+		Kdkbot.instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
 		
 		// Enforce senders name to be lowercased - prevents case sensitive issues later on
 		info.sender = info.sender.toLowerCase();
@@ -67,10 +65,10 @@ public class Commands {
 			switch(args[1]) {
 				case "set":
 					chan.setSenderRank(args[2], Integer.parseInt(args[3]));
-					instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
+					Kdkbot.instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
 					break;
 				case "get":
-					instance.sendMessage(info.channel, "The user " + args[2] + " is set to " + chan.getSenderRank(args[2]));
+					Kdkbot.instance.sendMessage(info.channel, "The user " + args[2] + " is set to " + chan.getSenderRank(args[2]));
 					break;
 			}
 		}
@@ -93,9 +91,9 @@ public class Commands {
 					bypassLimit = 1;
 				}
 				chan.filterBypass.put(user, bypassLimit);
-				instance.sendMessage(info.channel, info.sender + " has permitted user " + args[1] + " to bypass all filters " + args[2] + " time(s)");
+				Kdkbot.instance.sendMessage(info.channel, info.sender + " has permitted user " + args[1] + " to bypass all filters " + args[2] + " time(s)");
 			} catch (NumberFormatException e) {
-				instance.sendMessage(info.channel, info.sender + ": " + args[2] + " is not a valid number to permit user " + args[1]);
+				Kdkbot.instance.sendMessage(info.channel, info.sender + ": " + args[2] + " is not a valid number to permit user " + args[1]);
 			}
 			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
 		}
@@ -104,7 +102,7 @@ public class Commands {
 				coreWord.equalsIgnoreCase("help")) {
 			if(args.length <= 1) {
 				// Send link to channel for wiki
-				instance.sendMessage(info.channel, "You can see standard commands and get bot help @ https://github.com/kalbintion/kdkbot/wiki");
+				Kdkbot.instance.sendMessage(info.channel, "You can see standard commands and get bot help @ https://github.com/kalbintion/kdkbot/wiki");
 			} else {
 				// Get information for command help
 			}
@@ -118,7 +116,7 @@ public class Commands {
 		// Raid
 		else if (info.senderLevel >= 3 &&
 				coreWord.equalsIgnoreCase("raid")) {
-			instance.sendMessage(info.channel, "Raid http://www.twitch.tv/" + args[1]);
+			Kdkbot.instance.sendMessage(info.channel, "Raid http://www.twitch.tv/" + args[1]);
 		}
 		// Stats
 		else if(coreWord.equalsIgnoreCase("time")) {
@@ -135,7 +133,7 @@ public class Commands {
 			for(int i = 1; i < args.length; i++) {
 				multiOut += args[i] + "/";
 			}
-			instance.sendMessage(info.channel, "http://www.multitwitch.tv/" + multiOut);
+			Kdkbot.instance.sendMessage(info.channel, "http://www.multitwitch.tv/" + multiOut);
 		}
 		// Custom Commands
 		else if(info.senderLevel >= 1 &&
@@ -159,14 +157,14 @@ public class Commands {
 					 coreWord.equalsIgnoreCase("8ball"))) {
 			Random conchRnd = new Random();
 			String[] conchResponses = {"It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely on it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy, try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"};
-			instance.sendMessage(info.channel, conchResponses[conchRnd.nextInt(conchResponses.length)]);
+			Kdkbot.instance.sendMessage(info.channel, conchResponses[conchRnd.nextInt(conchResponses.length)]);
 		}
 		// Coin Flip
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("coin")) {
 			Random coinRnd = new Random();
 			String[] coinResponses = {"Heads", "Tails"};
-			instance.sendMessage(info.channel, coinResponses[coinRnd.nextInt(coinResponses.length)]);
+			Kdkbot.instance.sendMessage(info.channel, coinResponses[coinRnd.nextInt(coinResponses.length)]);
 		} else if(info.senderLevel >= 5 &&
 				  coreWord.equalsIgnoreCase("fwd")) {
 		

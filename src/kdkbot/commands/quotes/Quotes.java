@@ -21,10 +21,9 @@ public class Quotes extends Command {
 	
 	public HashMap<String, String> quotes = new HashMap<String, String>();
 	
-	public Quotes(Kdkbot instance, String channel) {
+	public Quotes(String channel) {
 		this.setTrigger("quote");
 		this.setAvailability(true);
-		this.setBotInstance(instance);
 		this.setPermissionLevel(1);
 		this.channel = channel;
 		try {
@@ -45,9 +44,9 @@ public class Quotes extends Command {
 				try {
 					String quote = quotes.get(args[2]);
 					if(quote != null) {
-						this.getBotInstance().sendMessage(channel, "Quote #" + args[2] + ": " + quote);
+						Kdkbot.instance.sendMessage(channel, "Quote #" + args[2] + ": " + quote);
 					} else {
-						this.getBotInstance().sendMessage(channel, "Quote #" + args[2] + " does not exist.");
+						Kdkbot.instance.sendMessage(channel, "Quote #" + args[2] + " does not exist.");
 					}
 					
 				} catch(NumberFormatException e) {
@@ -58,26 +57,26 @@ public class Quotes extends Command {
 				break;
 			case "add":
 				quotes.put(Integer.toString(++lastIndex), info.message.substring("quote add ".length()));
-				this.getBotInstance().sendMessage(channel, "Quote #" + lastIndex + " added.");
+				Kdkbot.instance.sendMessage(channel, "Quote #" + lastIndex + " added.");
 				saveQuotes();
 				break;
 			case "remove":
 				quotes.remove(args[2]);
-				this.getBotInstance().sendMessage(channel, "Quote #" + args[2] + " removed.");
+				Kdkbot.instance.sendMessage(channel, "Quote #" + args[2] + " removed.");
 				break;
 			case "save":
 				this.saveQuotes();
-				this.getBotInstance().sendMessage(channel, "Manually saved quote list for this channel.");
+				Kdkbot.instance.sendMessage(channel, "Manually saved quote list for this channel.");
 				break;
 			case "reload":
 				this.quotes = new HashMap<String, String>();
 				this.loadQuotes();
-				this.getBotInstance().sendMessage(channel, "Manually reloaded quote list for this channel.");
+				Kdkbot.instance.sendMessage(channel, "Manually reloaded quote list for this channel.");
 			case "count":
 			case "amount":
 			case "total":
 			case "size":
-				this.getBotInstance().sendMessage(channel, "There are " + quotes.size() + " quotes.");
+				Kdkbot.instance.sendMessage(channel, "There are " + quotes.size() + " quotes.");
 				break;
 			case "random":
 				Random rnd = new Random();

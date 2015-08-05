@@ -9,11 +9,9 @@ import kdkbot.MessageInfo;
 import kdkbot.channel.UserStat;
 
 public class Stats {
-	private Kdkbot instance;
 	private String channel;
 	
-	public Stats(Kdkbot instance, String channel) {
-		this.instance = instance;
+	public Stats(String channel) {
 		this.channel = channel;
 	}
 	
@@ -23,14 +21,14 @@ public class Stats {
 
 		switch(subCmd) {
 			case "time":
-				UserStat userstat = instance.getChannel(channel).stats.userStats.get(info.sender);
+				UserStat userstat = Kdkbot.instance.getChannel(channel).stats.userStats.get(info.sender);
 				if(userstat == null) {
-					instance.sendMessage(channel, "Could not retreive user stats for " + info.sender);
+					Kdkbot.instance.sendMessage(channel, "Could not retreive user stats for " + info.sender);
 				} else {
 					if(userstat.firstJoin == 0) {
-						instance.sendMessage(channel, info.sender + ": You have yet to spend enough time here to have been tracked!");
+						Kdkbot.instance.sendMessage(channel, info.sender + ": You have yet to spend enough time here to have been tracked!");
 					} else {
-						instance.sendMessage(channel, info.sender + ": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat));
+						Kdkbot.instance.sendMessage(channel, info.sender + ": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat));
 					}
 				}
 				break;
@@ -51,9 +49,9 @@ public class Stats {
 	}
 	
 	public String getDurationTime(UserStat user) {
-		long diffSeconds = user.timeSpent / 1000 % 60;
-		long diffMinutes = user.timeSpent / (60 * 1000) % 60;
-		long diffHours = user.timeSpent / (60 * 60 * 1000) % 24;
+		byte diffSeconds = (byte) (user.timeSpent / 1000 % 60);
+		byte diffMinutes = (byte) (user.timeSpent / (60 * 1000) % 60);
+		byte diffHours = (byte) (user.timeSpent / (60 * 60 * 1000) % 24);
 		long diffDays = user.timeSpent / (24 * 60 * 60 * 1000);
 
 		return diffDays + " days, " + diffHours + " hours, " + diffMinutes + " minutes and " + diffSeconds + " seconds";

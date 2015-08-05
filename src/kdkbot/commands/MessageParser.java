@@ -1,5 +1,8 @@
 package kdkbot.commands;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -212,6 +215,22 @@ public class MessageParser {
 			String messagePiece = result.substring("%LEET:".length(), result.length()-1);
 			messagePiece = charTransform(LEET_MAP, messagePiece);
 			toParse = toParse.replace(result, messagePiece);
+		}
+		
+		// Hash
+		Pattern PATTERN_HASH_REPLACE = Pattern.compile("%HASH:.*?%");
+		Matcher pattern_hash_replace_matches = PATTERN_HASH_REPLACE.matcher(toParse);
+		while(pattern_hash_replace_matches.find()) {
+			String result = pattern_hash_replace_matches.group();
+			String messagePiece = result.substring("%HASH:".length(), result.length()-1);
+			String argParts[] = messagePiece.split(",", 2);
+			
+			try {
+				MessageDigest md = MessageDigest.getInstance(argParts[1]);
+				toParse = toParse.replace(result, new String(md.digest(argParts[2].getBytes("UTF-8"))));
+			} catch (Exception e) {
+				toParse = toParse.replace(result, e.getMessage());
+			}
 		}
 
 		return toParse;

@@ -3,6 +3,7 @@ package kdkbot;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ import kdkbot.channel.*;
 import kdkbot.filemanager.*;
 
 public class Kdkbot extends PircBot {
-	private static String version = "0.1.0.35";
+	private static String version = "0.1.0.41";
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
@@ -75,22 +76,31 @@ public class Kdkbot extends PircBot {
 	 */
 	@Override
 	public void onDisconnect() {
-		try {
-			this.reconnect();
-			// Iterator<Channel> chanIter = CHANS.iterator();
-			Iterator<Entry<String, Channel>> chanIter = CHANS.entrySet().iterator();
-			
-			while(chanIter.hasNext()) {
-				Map.Entry<String, Channel> chan = chanIter.next();
-				chan.getValue().joinChannel();
+		boolean hasReconnected = false;
+		
+		do {
+			try {
+				this.reconnect();
+				// Iterator<Channel> chanIter = CHANS.iterator();
+				Iterator<Entry<String, Channel>> chanIter = CHANS.entrySet().iterator();
+				
+				while(chanIter.hasNext()) {
+					Map.Entry<String, Channel> chan = chanIter.next();
+					chan.getValue().joinChannel();
+				}
+				
+				hasReconnected = true;
+			} catch (NickAlreadyInUseException e) {
+				e.printStackTrace();
+			} catch (UnknownHostException e) {
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (IrcException e) {
+				e.printStackTrace();
 			}
-		} catch (NickAlreadyInUseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (IrcException e) {
-			e.printStackTrace();
-		}
+		} while(!hasReconnected);
+
 	}
 	
 	/**

@@ -83,7 +83,40 @@ public class Commands {
 				coreWord.equalsIgnoreCase("perm")) {
 			switch(args[1]) {
 				case "set":
-					chan.setSenderRank(args[2], Integer.parseInt(args[3]));
+					
+					try {
+						chan.setSenderRank(args[2], Integer.parseInt(args[3]));
+					} catch(NumberFormatException e) {
+						// May mean we need to translate it from a rank to integer before adding
+						switch(args[3]) {
+							case "nobody":
+								args[3] = "0";
+								break;
+							case "normal":
+								args[3] = "1";
+								break;
+							case "regular":
+								args[3] = "2";
+								break;
+							case "moderator":
+							case "mod":
+								args[3] = "3";
+								break;
+							case "supermoderator":
+							case "smod":
+							case "supermod":
+								args[3] = "4";
+								break;
+							case "channeloperator":
+							case "chanop":
+								args[3] = "5";
+								break;
+							default:
+								args[3] = "0";
+						}
+						chan.setSenderRank(args[2], Integer.parseInt(args[3]));
+					}
+					
 					Kdkbot.instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
 					break;
 				case "get":
@@ -116,6 +149,8 @@ public class Commands {
 			}
 			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
 		}
+		// Regulars
+		
 		// Help
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("help")) {

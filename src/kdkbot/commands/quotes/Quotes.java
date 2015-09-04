@@ -85,7 +85,7 @@ public class Quotes extends Command {
 					quoteNum = rnd.nextInt(this.quotes.size() + 1);
 				} while(quotes.get(Integer.toString(quoteNum)) == null);
 				
-				this.getBotInstance().sendMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
+				Kdkbot.instance.sendMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
 				
 				break;
 		}

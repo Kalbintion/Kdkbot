@@ -28,6 +28,7 @@ public class Channel {
 	
 	// Other Vars
 	public HashMap<String, Integer> filterBypass = new HashMap<String, Integer>();
+	public ArrayList<String> regulars = new ArrayList<String>();
 	public boolean commandProcessing = true;
 	
 	/**
@@ -64,8 +65,6 @@ public class Channel {
 			
 			this.commandPrefix = cfgChan.getSetting("commandPrefix");
 			
-			System.out.println("Channel " + channel + " commandPrefix is " + commandPrefix);
-
 			this.filters = new Filters(channel);
 			this.filters.loadFilters();
 			
@@ -234,8 +233,6 @@ public class Channel {
 		}
 		
 		// Send the message off to the channels command processor
-		System.out.println("Message: " + info.message);
-		System.out.println("Command Prefix: " + this.commandPrefix);
 		if(info.message.startsWith(this.commandPrefix)){
 			this.commands.commandHandler(info);
 		}

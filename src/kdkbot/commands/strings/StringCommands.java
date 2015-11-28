@@ -243,7 +243,7 @@ public class StringCommands {
 	}
 	
 	public ArrayList<String> getListOfCommands(int senderLevel, GetLevels permLevel) {
-		HashSet hs = new HashSet();
+		HashSet<String> hs = new HashSet<String>();
 		Iterator<StringCommand> strCmds = this.commands.iterator();
 		while(strCmds.hasNext()) {
 			StringCommand strCmd = strCmds.next();

@@ -15,7 +15,6 @@ import java.util.Random;
 
 public class Quotes extends Command {
 	private String channel;
-	private CommandPermissionLevel cpl = new CommandPermissionLevel();
 	private Config cfg;
 	private int lastIndex;
 	
@@ -37,7 +36,7 @@ public class Quotes extends Command {
 		String[] args = info.getSegments();
 		String subCmd = "";
 
-		if(args.length == 1) { subCmd = "random"; }	else { subCmd = args[1]; }
+		if(args.length == 1) { subCmd = "random"; }	else { subCmd = args[1].toLowerCase(); }
 		
 		switch(subCmd) {
 			case "get":

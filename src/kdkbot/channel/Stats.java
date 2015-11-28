@@ -10,19 +10,37 @@ import java.util.Map.Entry;
 import kdkbot.MessageInfo;
 import kdkbot.filemanager.Config;
 
+/*
+ * Stats class is responsible for holding statistical information for users
+ */
 public class Stats {
+	// The location to the stats configuration file - this file holds user information strings
 	public Config statsConfig;
+	// The list of users and their statistical information as defined in UserStat
 	public HashMap<String, UserStat> userStats = new HashMap<String, UserStat>();
+	// The channel this Stats object belongs to
 	public String channel;
 	
+	/**
+	 * Creates a new Stats class with a given channel
+	 * @param channel The channel this is to belong to
+	 */
 	public Stats(Channel channel) {
 		this(channel.channel);
 	}
 	
+	/**
+	 * Creates a new Stats class with a given channel as a string
+	 * @param channel The channel this is to belong to
+	 */
 	public Stats(String channel) {
 		statsConfig = new Config("./cfg/" + channel + "/stats.cfg");
 	}
 	
+	/**
+	 * Loads the user stats from the configuration file. May output
+	 * a failure message if something fails to load properly.
+	 */
 	public void loadStats() {
 		try {
 			List<String> lines = statsConfig.getConfigContents();
@@ -49,6 +67,10 @@ public class Stats {
 		
 	}
 	
+	/**
+	 * Saves the user statistical information back into the file. May
+	 * print a failure message in the event something happens.
+	 */
 	public void saveStats() {
 		try {
 			ArrayList<String> userstatList = new ArrayList<String>();

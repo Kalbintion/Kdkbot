@@ -12,17 +12,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
-
 import org.jibble.pircbot.*;
 
 import kdkbot.channel.*;
 import kdkbot.filemanager.*;
 
 public class Kdkbot extends PircBot {
-	private static String version = "0.1.0.41";
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
@@ -161,7 +156,6 @@ public class Kdkbot extends PircBot {
 	 * Event handler for messages received
 	 */
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {
-   	
     	// Message Duplicator
     	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !message.contains("RAF2") && !sender.equalsIgnoreCase("jtv") && !sender.equalsIgnoreCase("monstercat")) {
     		Iterator<String> msgDupeIter = messageDuplicatorList.get(channel).iterator();
@@ -170,8 +164,10 @@ public class Kdkbot extends PircBot {
     		}
     	}
     	
+    	MessageInfo info = new MessageInfo(channel, sender, message, login, hostname, CHANS.get(channel).getSenderRank(sender));
+    	
     	// Master Commands
-    	if(sender.equalsIgnoreCase("kalbintion")) {
+    	if(sender.equalsIgnoreCase("kalbintion") && info.message.startsWith("||")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			// Leave channel
     			this.partChannel(channel, "By order of " + sender + "!");
@@ -232,16 +228,10 @@ public class Kdkbot extends PircBot {
     				this.sendMessage(pairs.getKey().toString(), messageArgs[1]);
     			}
     		} else if(message.startsWith("||joinchan ")) {
-    			String[] args = message.split(" ");
-    			
     			// Join channel
     			String channelToJoin = message.substring("||joinchan ".length());
     			this.sendMessage(channel, "Joining channel " + channelToJoin);
     			CHANS.put(channelToJoin, new Channel(this, channelToJoin));
-    			
-    			if(!(args.length < 3) && args[2].equalsIgnoreCase("false")) {
-    				this.sendMessage(channelToJoin, "Hello chat! I am Kdkbot, a bot authored by Kalbintion.");
-    			}
     			
     			// Add channel to settings cfg
     			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channelToJoin);
@@ -268,12 +258,12 @@ public class Kdkbot extends PircBot {
     		}
     	}
     	
-    	CHANS.get(channel).messageHandler(new MessageInfo(channel, sender, message, login, hostname, CHANS.get(channel).getSenderRank(sender)));
+    	CHANS.get(channel).messageHandler(info);
 	}
     
     public Channel getChannel(String channel) {
     	dbg.writeln(this, "Requested for channel object for channel " + channel);
 
-    	return this.CHANS.get(channel);
+    	return Kdkbot.CHANS.get(channel);
     }
 }

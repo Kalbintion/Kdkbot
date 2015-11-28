@@ -1,8 +1,6 @@
 package kdkbot.commands;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -20,6 +18,7 @@ import kdkbot.commands.strings.StringCommand;
 public class MessageParser {
 	public Kdkbot instance;
 	public HashMap<String, String> LEET_MAP = new HashMap<String, String>();
+	public HashMap<String, String> FLIP_MAP = new HashMap<String, String>();
 	
 	public MessageParser(Kdkbot instance) {
 		this.instance = instance;
@@ -51,6 +50,38 @@ public class MessageParser {
 		LEET_MAP.put("x", "><");
 		LEET_MAP.put("y", "`/");
 		LEET_MAP.put("z", "`/_");
+
+		// Initialize Flip Map
+		FLIP_MAP.put("a", "ɐ");
+		FLIP_MAP.put("b", "q");
+		FLIP_MAP.put("c", "ɔ");
+		FLIP_MAP.put("d", "p");
+		FLIP_MAP.put("e", "ǝ");
+		FLIP_MAP.put("f", "ɟ");
+		FLIP_MAP.put("g", "b");
+		FLIP_MAP.put("h", "ɥ");
+		FLIP_MAP.put("i", "ı");
+		FLIP_MAP.put("j", "ظ");
+		FLIP_MAP.put("k", "ʞ");
+		FLIP_MAP.put("l", "ן");
+		FLIP_MAP.put("m", "ɯ");
+		FLIP_MAP.put("n", "u");
+		FLIP_MAP.put("o", "o");
+		FLIP_MAP.put("p", "d");
+		FLIP_MAP.put("q", "b");
+		FLIP_MAP.put("r", "ɹ");
+		FLIP_MAP.put("s", "s");
+		FLIP_MAP.put("t", "ʇ");
+		FLIP_MAP.put("u", "n");
+		FLIP_MAP.put("v", "ʌ");
+		FLIP_MAP.put("w", "ʍ");
+		FLIP_MAP.put("x", "x");
+		FLIP_MAP.put("y", "ʎ");
+		FLIP_MAP.put("z", "z");
+		FLIP_MAP.put("?", "¿");
+		FLIP_MAP.put("!", "¡");
+		FLIP_MAP.put("6", "9");
+		FLIP_MAP.put("9", "6");
 	}
 	
 	public String parseMessage(String toParse, MessageInfo info) {
@@ -217,6 +248,16 @@ public class MessageParser {
 			toParse = toParse.replace(result, messagePiece);
 		}
 		
+		// Flip
+		Pattern PATTERN_FLIP_REPLACE = Pattern.compile("%FLIP:.*?%");
+		Matcher pattern_flip_replace_matches = PATTERN_FLIP_REPLACE.matcher(toParse);
+		while(pattern_flip_replace_matches.find()) {
+			String result = pattern_flip_replace_matches.group();
+			String messagePiece = result.substring("%FLIP:".length(), result.length()-1);
+			messagePiece = charTransform(FLIP_MAP, messagePiece);
+			toParse = toParse.replace(result, messagePiece);
+		}
+		
 		// Hash
 		Pattern PATTERN_HASH_REPLACE = Pattern.compile("%HASH:.*?%");
 		Matcher pattern_hash_replace_matches = PATTERN_HASH_REPLACE.matcher(toParse);
@@ -231,6 +272,15 @@ public class MessageParser {
 			} catch (Exception e) {
 				toParse = toParse.replace(result, e.getMessage());
 			}
+		}
+		
+		// Reverse String (ie: abc, cba)
+		Pattern PATTERN_REVERSE_REPLACE = Pattern.compile("%REVERSE:.*?%");
+		Matcher pattern_reverse_replace_matches = PATTERN_REVERSE_REPLACE.matcher(toParse);
+		while(pattern_reverse_replace_matches.find()) {
+			String result = pattern_reverse_replace_matches.group();
+			String messagePiece = result.substring("%REVERSE:".length(), result.length()-1);
+			toParse = toParse.replace(result, new StringBuilder(messagePiece).reverse().toString());
 		}
 
 		return toParse;

@@ -117,11 +117,11 @@ public class Commands {
 						toRank = Integer.parseInt(args[3]);
 					}
 					
-					if(info.senderLevel <= toRank) {
+					if(info.senderLevel < toRank) {
+						Kdkbot.instance.sendMessage(info.channel, info.sender + ": You cannot set someones rank to a higher one than your own");
+					} else {
 						chan.setSenderRank(args[2], Integer.parseInt(args[3]));
 						Kdkbot.instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
-					} else {
-						Kdkbot.instance.sendMessage(info.channel, info.sender + ": You cannot set someones rank to a higher one than your own");
 					}
 					break;
 				case "get":

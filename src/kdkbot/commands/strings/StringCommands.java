@@ -154,7 +154,7 @@ public class StringCommands {
 									if(type.equalsIgnoreCase("trigger")) {
 										Kdkbot.instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
 										strCmd.setTrigger(toValue);
-									} else if(type.equalsIgnoreCase("level")) {
+									} else if(type.equalsIgnoreCase("rank")) {
 										Kdkbot.instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
 										strCmd.setPermissionLevel(Integer.parseInt(toValue));
 									} else if(type.equalsIgnoreCase("message")) {

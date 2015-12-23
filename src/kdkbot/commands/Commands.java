@@ -83,9 +83,9 @@ public class Commands {
 				coreWord.equalsIgnoreCase("perm")) {
 			switch(args[1]) {
 				case "set":
-					
+					int toRank;
 					try {
-						chan.setSenderRank(args[2], Integer.parseInt(args[3]));
+						toRank = Integer.parseInt(args[3]);
 					} catch(NumberFormatException e) {
 						// May mean we need to translate it from a rank to integer before adding
 						switch(args[3]) {
@@ -114,10 +114,15 @@ public class Commands {
 							default:
 								args[3] = "0";
 						}
-						chan.setSenderRank(args[2], Integer.parseInt(args[3]));
+						toRank = Integer.parseInt(args[3]);
 					}
 					
-					Kdkbot.instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
+					if(info.senderLevel <= toRank) {
+						chan.setSenderRank(args[2], Integer.parseInt(args[3]));
+						Kdkbot.instance.sendMessage(info.channel, "Set " + args[2] + " to level " + args[3] + " permission.");
+					} else {
+						Kdkbot.instance.sendMessage(info.channel, info.sender + ": You cannot set someones rank to a higher one than your own");
+					}
 					break;
 				case "get":
 					Kdkbot.instance.sendMessage(info.channel, "The user " + args[2] + " is set to " + chan.getSenderRank(args[2]));

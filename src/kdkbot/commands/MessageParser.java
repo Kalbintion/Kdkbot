@@ -152,7 +152,52 @@ public class MessageParser {
 			}
 			
 			toParse = toParse.replace("%CNTR:" + cntrID + "%", Integer.toString(cntr.value));
-		}		
+		}
+		
+		// Counter++ Specificity
+		Pattern PATTERN_CNTRPP_REPLACE = Pattern.compile("%CNTR\\+\\+:.*?%");
+		Matcher pattern_cntrpp_matches = PATTERN_CNTRPP_REPLACE.matcher(toParse);
+		while(pattern_cntrpp_matches.find()) {
+			System.out.println("Hit CNTR++");
+			String result = pattern_cntrpp_matches.group();
+			
+			String cntrID = result.substring("%CNTR++:".length(), result.length()-1);
+			
+			Channel chan = this.instance.getChannel(info.channel);
+			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
+			Counter cntr = null;
+			while(cntrIter.hasNext()) {
+				cntr = cntrIter.next();
+				if(cntr.name.equalsIgnoreCase(cntrID)) {
+					break;
+				}
+			}
+			
+			toParse = toParse.replace("%CNTR++:" + cntrID + "%", Integer.toString(cntr.value));
+			cntr.value++;
+		}
+		
+		// Counter-- Specificity
+		Pattern PATTERN_CNTRMM_REPLACE = Pattern.compile("%CNTR--:.*?%");
+		Matcher pattern_cntrmm_matches = PATTERN_CNTRMM_REPLACE.matcher(toParse);
+		while(pattern_cntrmm_matches.find()) {
+			String result = pattern_cntrmm_matches.group();
+			
+			String cntrID = result.substring("%CNTR--:".length(), result.length()-1);
+			
+			Channel chan = this.instance.getChannel(info.channel);
+			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
+			Counter cntr = null;
+			while(cntrIter.hasNext()) {
+				cntr = cntrIter.next();
+				if(cntr.name.equalsIgnoreCase(cntrID)) {
+					break;
+				}
+			}
+			
+			toParse = toParse.replace("%CNTR--:" + cntrID + "%", Integer.toString(cntr.value));
+			cntr.value--;
+		}
 		
 		// Random Number Generator Variables
 		Random rnd = new Random();

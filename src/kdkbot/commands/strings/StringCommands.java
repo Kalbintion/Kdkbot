@@ -1,18 +1,21 @@
 package kdkbot.commands.strings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
+import kdkbot.commands.Commands;
 import kdkbot.filemanager.Config;
 
 public class StringCommands {
 	public ArrayList<StringCommand> commands;
 	private String channel;
 	private Config config;
+	private static Config defaults;
 	
 	public enum GetLevels {
 		INCLUDE_LOWER,
@@ -23,6 +26,9 @@ public class StringCommands {
 	
 	public StringCommands(String channel) {
 		try {
+			if(StringCommands.defaults == null) {
+				StringCommands.defaults = new Config("./cfg/default/cmds.cfg");
+			}
 			this.channel = channel;
 			this.config = new Config("./cfg/" + channel + "/cmds.cfg");
 			this.commands = new ArrayList<StringCommand>();
@@ -94,9 +100,8 @@ public class StringCommands {
 	}
 	
 	public void executeCommand(MessageInfo info) {
-		String[] args = info.message.split(" ");
-		if(args.length > 1) {
-			switch(args[1]) {
+		if(info.getSegments().length > 1) {
+			switch(info.getSegments()[1]) {
 				case "new":
 					if(info.senderLevel >= 3 ) {
 						String[] csArgs = info.message.split(" ", 5);
@@ -180,68 +185,148 @@ public class StringCommands {
 					break;
 				case "remove":
 					if(info.senderLevel >= 3) {
-						Kdkbot.instance.sendMessage(channel, removeCommand(args[2]));
+						Kdkbot.instance.sendMessage(channel, removeCommand(info.getSegments()[2]));
 						this.saveCommands();
 					}
 					break;
 				case "list":
-					// commands list <rank>
+					// commands list [custom] <rank>
 					ArrayList<String> commands = new ArrayList<String>();
 					
 					// Output message standard
 					StringBuilder outMessage = new StringBuilder(400);
-					outMessage.append("Commands for " + channel + " ");
-					
+
 					// Hardcoded commands - need a better situation here
 					// TODO: Implement better solution
 					String[] additionalCommands = {"", "ama, counter, commands list, quote get, ", "ama, counter, multi, ", "commands, raid, quote, perm, perm, ", "", ""};
-									
-					// Are we expecting a particular rank to look at? If so, grab those, otherwise, get commands user can use
-					if(args.length == 3) {
-						// We are expecting a rank to list for
-						outMessage.append(" @ rank " + args[2] + ": ");
-						if(args[2].equalsIgnoreCase("*")) {
-							// Doesn't matter what rank we send with this, as it'll grab all commands.
-							commands = this.getListOfCommands(0, GetLevels.INCLUDE_ALL);
-						} else {
-							commands = this.getListOfCommands(Integer.parseInt(args[2]), GetLevels.INCLUDE_EQUALS);
+					ArrayList<String> defaultCommands = new ArrayList<String>();
+					
+					try {
+						List<String> defaultCommandsContents = defaults.getConfigContents();
+						Iterator<String> defaultCommandsIter = defaultCommandsContents.iterator();
+						while(defaultCommandsIter.hasNext()) {
+							String defaultCommandsStr = defaultCommandsIter.next();
+							String[] defaultCommandsParts = defaultCommandsStr.split("\\|");
+							// We're only interested in storing the command name itself @ position 2
+							defaultCommands.add(defaultCommandsParts[2]);
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					boolean customCommandsOnly = false;
+					int commandRank = 0;
+					
+					switch(info.getSegments().length) {
+						case 2:
+							// commands list (To give only user permitted commands, shows all commands usable by user by default)
+							commandRank = Integer.MIN_VALUE;
+							break;
+						case 3:
+							// commands list [custom] OR commands list <rank>
+							if(info.getSegments()[2].equalsIgnoreCase("c") || info.getSegments()[2].equalsIgnoreCase("custom")) {
+								// commands list [custom]
+								customCommandsOnly = true;
+								commandRank = Integer.MIN_VALUE;
+							} else {
+								// commands list <rank>
+								String commandRankStr = info.getSegments()[2];
+								commandRank = Commands.rankNameToInt(commandRankStr);
+							}
+							break;
+						case 4:
+							// commands list [custom] <rank>
+							if(info.getSegments()[2].equalsIgnoreCase("c") || info.getSegments()[2].equalsIgnoreCase("custom")) {
+								customCommandsOnly = true;
+							} else {
+								Kdkbot.instance.sendMessage(info.channel, info.sender + ": You did not specify a valid custom (or 'c') arguments! Given: " + info.getSegments()[2]);
+								break;
+							}
+							String commandRankStr = info.getSegments()[3];
+							commandRank = Commands.rankNameToInt(commandRankStr);
+					}
+					
+					// How should the rest of the message be formatted to indicate what was requested?
+					if(customCommandsOnly) {
+						// Showing custom commands
+						outMessage.append("Custom commands ");
 					} else {
-						outMessage.append(" available to " + info.sender +": ");
-						// List commands based on users rank
-						int senderRankTemp = info.senderLevel;
-						while(senderRankTemp > 0 ) {
-							if(senderRankTemp >= additionalCommands.length) {
+						outMessage.append("Commands ");
+					}
+					
+					// for <user> @ rank?
+					if(commandRank == Integer.MAX_VALUE) {
+						// We're showing all commands
+						outMessage.append(" at all ranks: ");
+					} else if(commandRank == Integer.MIN_VALUE) {
+						// We're showing commands available to the sender
+						outMessage.append(" available to " + info.sender + ": ");
+					} else {
+						// We're showing commands @ a particular rank
+						outMessage.append(" available @ rank " + commandRank + ": ");
+					}
+					
+					// Do we add the built-in commands to the list or no?
+					if(!customCommandsOnly) {
+						int senderRankTemp = commandRank;
+						while(senderRankTemp > 0) {
+							if(senderRankTemp >= additionalCommands.length){
 								senderRankTemp--;
 							} else {
 								outMessage.append(additionalCommands[senderRankTemp--]);
 							}
 						}
-						commands = this.getListOfCommands(info.senderLevel, GetLevels.INCLUDE_LOWER);
 					}
-		
-					// Loop over command list and add it to the outMessage
+					
+					// Now we need to get the rest of the commands
+					if(commandRank == Integer.MAX_VALUE) {
+						// Grab all the commands
+						commands = this.getListOfCommands(0, GetLevels.INCLUDE_ALL);
+					} else if(commandRank == Integer.MIN_VALUE) {
+						// Get commands for user
+						commands = this.getListOfCommands(info.senderLevel, GetLevels.INCLUDE_LOWER);
+					} else {
+						// We are getting commands for a particular rank
+						commands = this.getListOfCommands(commandRank, GetLevels.INCLUDE_EQUALS);
+					}
+					
+					// Sort the list
+					Collections.sort(commands);
+					
+					// Lets iterate through that now.
 					Iterator<String> commandIter = commands.iterator();
 					while(commandIter.hasNext()) {
 						String nextCommand = commandIter.next();
-						if(outMessage.length() + nextCommand.length() > 400) {
-							// Length too long, send message and reset string
-							Kdkbot.instance.sendMessage(channel, outMessage.toString());
-							outMessage = new StringBuilder(400);
-						} else {
-							outMessage.append(nextCommand + ", ");
+						if(!defaultCommands.contains(nextCommand)) {
+							if(outMessage.length() + nextCommand.length() > 400) {
+								// Length too long, send message and reset string
+								Kdkbot.instance.sendMessage(channel, outMessage.toString());
+								outMessage = new StringBuilder(400);
+							} else {
+								outMessage.append(nextCommand + ", ");
+							}
 						}
 					}
 					
 					// Trim off last two characters and 
 					// Finally send the last bit of info to the channel
-					Kdkbot.instance.sendMessage(channel, outMessage.substring(0, outMessage.length() - 2));
-					
+					if(outMessage.length() > 2) {
+						Kdkbot.instance.sendMessage(channel, outMessage.substring(0, outMessage.length() - 2));
+					} else {
+						// We shouldnt have a message to send
+					}
+		
 					break;
 			}
 		}
 	}
 	
+	/**
+	 * Returns an array list of type string containing a list of commands found in the channel for a given permLevel
+	 * @param senderLevel The senders permission level
+	 * @param permLevel Which permission levels to compare against, see GetLevels enum
+	 * @return An ArrayList<String> containing the commands triggers
+	 */
 	public ArrayList<String> getListOfCommands(int senderLevel, GetLevels permLevel) {
 		HashSet<String> hs = new HashSet<String>();
 		Iterator<StringCommand> strCmds = this.commands.iterator();
@@ -259,6 +344,33 @@ public class StringCommands {
 		ArrayList<String> listOfCommands = new ArrayList<String>();
 		listOfCommands.addAll(hs);
 		return listOfCommands;
+	}
+	
+	/**
+	 * Returns an array list of type string containing a list of commands found in the channel excluding the ones found in filter
+	 * @param senderLevel The senders permission level
+	 * @param permLevel
+	 * @param filters
+	 * @return An ArrayList<String> containing the commands triggers
+	 */
+	public ArrayList<String> getListOfCommands(int senderLevel, GetLevels permLevel, ArrayList<String> filter) {
+		ArrayList<String> commandList = getListOfCommands(senderLevel, permLevel);
+		
+		if(filter == null) { return commandList; }
+		
+		Iterator<String> strCmds = commandList.iterator();
+		while(strCmds.hasNext()) {
+			String strCmd = strCmds.next();
+			Iterator<String> strFilters = filter.iterator();
+			while(strFilters.hasNext()) {
+				String strFilter = strFilters.next();
+				if(strCmd.equalsIgnoreCase(strFilter)) {
+					strCmds.remove();
+				}
+			}
+		}
+		return commandList;
+		
 	}
 	
 	/**

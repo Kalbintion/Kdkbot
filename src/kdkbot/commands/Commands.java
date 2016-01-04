@@ -84,38 +84,7 @@ public class Commands {
 			switch(args[1]) {
 				case "set":
 					int toRank;
-					try {
-						toRank = Integer.parseInt(args[3]);
-					} catch(NumberFormatException e) {
-						// May mean we need to translate it from a rank to integer before adding
-						switch(args[3]) {
-							case "nobody":
-								args[3] = "0";
-								break;
-							case "normal":
-								args[3] = "1";
-								break;
-							case "regular":
-								args[3] = "2";
-								break;
-							case "moderator":
-							case "mod":
-								args[3] = "3";
-								break;
-							case "supermoderator":
-							case "smod":
-							case "supermod":
-								args[3] = "4";
-								break;
-							case "channeloperator":
-							case "chanop":
-								args[3] = "5";
-								break;
-							default:
-								args[3] = "0";
-						}
-						toRank = Integer.parseInt(args[3]);
-					}
+					toRank = rankNameToInt(args[3]);
 					
 					if(info.senderLevel < toRank) {
 						Kdkbot.instance.sendMessage(info.channel, info.sender + ": You cannot set someones rank to a higher one than your own");
@@ -241,6 +210,45 @@ public class Commands {
 					stringNext.getAvailability()) {
 				stringNext.executeCommand(info);
 			}
+		}
+	}
+	
+	public static int rankNameToInt(String rank) {
+		switch(rank) {
+			case "normal":
+			case "n":
+				return 1;
+			case "regular":
+			case "r":
+				return 2;
+			case "moderator":
+			case "mod":
+			case "m":
+				return 3;
+			case "supermoderator":
+			case "smod":
+			case "supermod":
+			case "sm":
+				return 4;
+			case "channeloperator":
+			case "chanop":
+			case "co":
+			case "op":
+			case "owner":
+				return 5;
+			case "max":
+			case "*":
+				return Integer.MAX_VALUE;
+			case "/":
+			case "min":
+				return Integer.MIN_VALUE;
+			case "nobody":
+			default:
+				try {
+					return Integer.parseInt(rank);
+				} catch (NumberFormatException e) {
+					return 0;
+				}
 		}
 	}
 }

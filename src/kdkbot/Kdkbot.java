@@ -167,6 +167,7 @@ public class Kdkbot extends PircBot {
     	MessageInfo info = new MessageInfo(channel, sender, message, login, hostname, CHANS.get(channel).getSenderRank(sender));
     	
     	// Master Commands
+    	// TODO: Remove master commands and write web interface
     	if(sender.equalsIgnoreCase("kalbintion") && info.message.startsWith("||")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			// Leave channel

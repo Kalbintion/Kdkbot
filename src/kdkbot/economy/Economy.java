@@ -11,7 +11,6 @@ import kdkbot.filemanager.Config;
  *
  */
 public class Economy {
-	private Kdkbot instance;
 	private String channel;	
 	private String currencyName;
 	private String currencySymbol;
@@ -29,10 +28,9 @@ public class Economy {
 		SYMBOL, NAME;
 	}
 	
-	public Economy(Kdkbot instance, String channel) {
+	public Economy(String channel) {
 		try {
 			// Basics
-			this.instance = instance;
 			this.channel = channel;
 			
 			// Initialize config file

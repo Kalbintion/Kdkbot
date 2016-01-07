@@ -41,6 +41,42 @@ public class Commands {
 			this.amas = new AMA(channel);
 			this.amas.loadQuestions();
 			
+			
+			if(chan.cfgChan.getSetting("rankQuotes") == null) {
+				chan.cfgChan.setSetting("rankQuotes", "1");
+			}
+			
+			try {
+				this.quotes.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankQuotes")));
+			} catch (NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
+				this.quotes.setAvailability(false);
+			}
+			
+			if(chan.cfgChan.getSetting("rankCounters") == null) {
+				chan.cfgChan.setSetting("rankCounters", "1");
+			}
+			
+			try {
+				this.counters.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankCounters")));
+			} catch (NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankCounters setting is invalid! Got " + chan.cfgChan.getSetting("rankCounters"));
+				this.counters.setAvailability(false);
+			}
+			
+			
+			if(chan.cfgChan.getSetting("rankAMA") == null) {
+				chan.cfgChan.setSetting("rankAMA", "1");
+			}
+			
+			try {
+				this.amas.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankAMA")));
+			} catch (NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankAMA setting is invalid! Got " + chan.cfgChan.getSetting("rankAMA"));
+				this.amas.setAvailability(false);
+			}
+			
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -60,19 +96,20 @@ public class Commands {
 		Kdkbot.instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
 		
 		// These commands supersede command processing toggling
-		System.out.println("Sender Level: " + info.senderLevel);
 		if(info.senderLevel >= 5 &&
 				coreWord.equalsIgnoreCase("channel")) {
 			// Channel settings
 			if(args[1].equalsIgnoreCase("commandProcessing")) {
 				chan.cfgChan.setSetting("commandProcessing", String.valueOf(Boolean.parseBoolean(args[2])));
 				chan.commandProcessing = Boolean.parseBoolean(args[2]);
-				Kdkbot.instance.sendMessage(info.channel, "Channel's command processing set to " + String.valueOf(chan.commandProcessing));
 			} else if(args[1].equalsIgnoreCase("commandPrefix")) {
 				chan.cfgChan.setSetting("commandPrefix", args[2]);
 				chan.commandPrefix = args[2];
-				Kdkbot.instance.sendMessage(info.channel, "Channel's command prefix set to " + args[2]);
+			} else if(args[1].equalsIgnoreCase("logChat")) {
+				chan.cfgChan.setSetting("logChat", args[2]);
 			}
+			
+			Kdkbot.instance.sendMessage(info.channel, "Channel setting " + args[1] + " set to " + args[2]);
 		}
 		
 		// Command Processing Breaking
@@ -123,8 +160,6 @@ public class Commands {
 			}
 			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
 		}
-		// Regulars
-		
 		// Help
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("help")) {

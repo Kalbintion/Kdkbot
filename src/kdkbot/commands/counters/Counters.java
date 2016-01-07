@@ -6,9 +6,10 @@ import java.util.List;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
+import kdkbot.commands.Command;
 import kdkbot.filemanager.Config;
 
-public class Counters {
+public class Counters extends Command {
 	public ArrayList<Counter> counters;
 	private String channel;
 	private Config config;
@@ -110,7 +111,7 @@ public class Counters {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.addValue(amount);
-						// Kdkbot.instance.sendMessage(channel, "Incremented " + args[2] + " by " + amount + ". Value is now " + cntr.value);
+						Kdkbot.instance.sendMessage(channel, "Incremented " + args[2] + " by " + amount + ". Value is now " + cntr.value);
 					}
 				}
 				break;

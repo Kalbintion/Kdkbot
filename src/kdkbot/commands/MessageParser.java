@@ -175,6 +175,9 @@ public class MessageParser {
 			
 			toParse = toParse.replace("%CNTR++:" + cntrID + "%", Integer.toString(cntr.value));
 			cntr.value++;
+			
+			// Force a counter save
+			Kdkbot.CHANS.get(info.channel).commands.counters.saveCounters();
 		}
 		
 		// Counter-- Specificity
@@ -197,6 +200,9 @@ public class MessageParser {
 			
 			toParse = toParse.replace("%CNTR--:" + cntrID + "%", Integer.toString(cntr.value));
 			cntr.value--;
+			
+			// Force a counter save
+			Kdkbot.CHANS.get(info.channel).commands.counters.saveCounters();
 		}
 		
 		// Random Number Generator Variables

@@ -46,7 +46,6 @@ public class Channel {
 	public Channel(Kdkbot instance, String channel) {
 		try {
 			this.channel = channel;
-			this.commands = new Commands(channel, this);
 			this.baseConfigLocation = "./cfg/" + channel + "/";
 		
 			this.cfgChan = new Config(this.baseConfigLocation + "channel.cfg");
@@ -85,7 +84,8 @@ public class Channel {
 			instance.dbg.writeln(this, "Attempting to load config ranks.");
 			cfgPerms = new Config("./cfg/" + channel + "/perms.cfg");
 			this.loadSenderRanks();
-			
+
+			this.commands = new Commands(channel, this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

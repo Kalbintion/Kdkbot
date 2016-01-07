@@ -6,6 +6,9 @@ This bot has two dependences:
 * PIRCBot: http://www.jibble.org/pircbot.php
 * GSON: https://code.google.com/p/google-gson/
 
+# Suggestions & Bugs
+If you have any suggestions for feature requests, etc, please report it to the [Issues](https://github.com/Kalbintion/Kdkbot/issues) page.
+
 # Trello
 https://trello.com/b/wNdlBf67/kdkbot
 This project uses Trello, an online available option to tracking roadmaps a bit more visual and intuitive.

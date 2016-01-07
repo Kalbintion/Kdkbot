@@ -2,7 +2,6 @@ package kdkbot.economy;
 
 import java.util.HashMap;
 
-import kdkbot.Kdkbot;
 import kdkbot.filemanager.Config;
 
 /**

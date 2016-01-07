@@ -28,8 +28,8 @@ public class Channel {
 	
 	// Other Vars
 	public HashMap<String, Integer> filterBypass = new HashMap<String, Integer>();
-	public ArrayList<String> regulars = new ArrayList<String>();
 	public boolean commandProcessing = true;
+	public boolean logChat = true;
 	
 	/**
 	 * Constructs a new channel instance with no references
@@ -47,24 +47,33 @@ public class Channel {
 		try {
 			this.channel = channel;
 			this.commands = new Commands(channel, this);
-			// this.economy = new Economy(instance, channel);
 			this.baseConfigLocation = "./cfg/" + channel + "/";
 		
 			this.cfgChan = new Config(this.baseConfigLocation + "channel.cfg");
 			this.cfgChan.loadConfigContents();
 			
+			// Command Processing?
 			if(cfgChan.getSetting("commandProcessing") == null) {
 				cfgChan.setSetting("commandProcessing", Boolean.TRUE.toString());
 			}
 			
 			this.commandProcessing = Boolean.parseBoolean(cfgChan.getSetting("commandProcessing"));
 			
+			// Command Prefix?
 			if(cfgChan.getSetting("commandPrefix") == null) {
 				cfgChan.setSetting("commandPrefix", "|");
 			}
 			
 			this.commandPrefix = cfgChan.getSetting("commandPrefix");
 			
+			// Log Chat?
+			if(cfgChan.getSetting("logChat") == null) {
+				cfgChan.setSetting("logChat", "true");
+			}
+			
+			this.logChat = Boolean.parseBoolean(cfgChan.getSetting("logChat"));
+			
+			// Filters, Stats, etc
 			this.filters = new Filters(channel);
 			this.filters.loadFilters();
 			

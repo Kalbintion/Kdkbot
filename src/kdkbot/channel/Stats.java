@@ -80,6 +80,7 @@ public class Stats {
 				userstatList.add(pairs.getValue().toString());
 			}
 			statsConfig.saveSettings(userstatList);
+			userstatList.clear();
 		} catch (Exception e) {
 			System.out.println("Failed to save user stats for channel: " + channel);
 		}

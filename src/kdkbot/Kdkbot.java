@@ -19,15 +19,15 @@ import kdkbot.filemanager.*;
 
 public class Kdkbot extends PircBot {
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
+	public static Kdkbot instance;
+	
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
-	public Config msgIgnoreCfg = new Config(FileSystems.getDefault().getPath("./cfg/ignores.cfg"));
 	public ArrayList<String> msgIgnoreList = new ArrayList<String>();
 	private boolean _verbose = false;
 	private boolean _logChat = false;
 	private Pattern logIgnores;
 	private Log logger;
 	public Debugger dbg = new Debugger(false);
-	public static Kdkbot instance;
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
@@ -35,7 +35,11 @@ public class Kdkbot extends PircBot {
      * Initialization of the basic bot
      */
 	public Kdkbot() throws Exception {
-		instance = this;
+		if(instance == null) { // Protection against initializing the bot more than once - singleton!
+			instance = this;
+		} else {
+			throw new Exception("Bot instance already created!");
+		}
 		
 		// Setup log system
 		botCfg.loadConfigContents();
@@ -157,7 +161,7 @@ public class Kdkbot extends PircBot {
 	 */
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {
     	// Message Duplicator
-    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !message.contains("RAF2") && !sender.equalsIgnoreCase("jtv") && !sender.equalsIgnoreCase("monstercat")) {
+    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !sender.equalsIgnoreCase("jtv") && !sender.equalsIgnoreCase("monstercat")) {
     		Iterator<String> msgDupeIter = messageDuplicatorList.get(channel).iterator();
     		while(msgDupeIter.hasNext()) {
         		this.sendMessage(msgDupeIter.next(), sender + ": " + message);
@@ -181,7 +185,11 @@ public class Kdkbot extends PircBot {
     			prevChanSetting = prevChanSetting.replace(",,", ",");
     			
     			botCfg.saveSettings();
-    		} else if(message.startsWith("||debug disable")) {
+    		} else if(message.equalsIgnoreCase("||flush")) {
+    			System.gc();
+    			this.sendMessage(channel, "Suggested to JVM for a GC");
+    		}
+    		else if(message.startsWith("||debug disable")) {
     			dbg.disable();
     			this.sendMessage(channel, "Disabled internal debug messages");
     		} else if(message.startsWith("||msgdupe ")) {

@@ -24,6 +24,13 @@ public class Commands {
 	public Counters counters;
 	public AMA amas;
 	
+	// Additional Commands
+	private CommandHolder cmdChannel = new CommandHolder();
+	private CommandHolder cmdPerm = new CommandHolder();
+	private CommandHolder cmdForward = new CommandHolder();
+	private CommandHolder cmdPermit = new CommandHolder();
+	private CommandHolder cmdFilter = new CommandHolder();
+	
 	public Commands(String channel, Channel chanInst) {
 		this.chan = chanInst;
 		try {			
@@ -41,6 +48,49 @@ public class Commands {
 			this.amas = new AMA(channel);
 			this.amas.loadQuestions();
 			
+			if(chan.cfgChan.getSetting("rankChannel") == null) {
+				chan.cfgChan.setSetting("rankChannel", "5");
+			}
+			
+			try {
+				this.cmdChannel.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankChannel")));
+			} catch(NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankChannel setting is invalid! Got " + chan.cfgChan.getSetting("rankChannel"));
+				this.cmdChannel.setAvailability(false);
+			}
+			
+			if(chan.cfgChan.getSetting("rankPerm") == null) {
+				chan.cfgChan.setSetting("rankPerm", "5");
+			}
+			
+			try {
+				this.cmdPerm.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankPerm")));
+			} catch(NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankPerm setting is invalid! Got " + chan.cfgChan.getSetting("rankPerm"));
+				this.cmdPerm.setAvailability(false);
+			}
+			
+			if(chan.cfgChan.getSetting("rankPermit") == null) {
+				chan.cfgChan.setSetting("rankPermit", "3");
+			}
+			
+			try {
+				this.cmdPermit.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankPermit")));
+			} catch(NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankPermit setting is invalid! Got " + chan.cfgChan.getSetting("rankPermit"));
+				this.cmdPermit.setAvailability(false);
+			}
+			
+			if(chan.cfgChan.getSetting("rankForward") == null) {
+				chan.cfgChan.setSetting("rankForward", "4");
+			}
+			
+			try {
+				this.cmdForward.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankForward")));
+			} catch (NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankForward settig is invalid! Got " + chan.cfgChan.getSetting("rankForward"));
+				this.cmdForward.setAvailability(false);
+			}
 			
 			if(chan.cfgChan.getSetting("rankQuotes") == null) {
 				chan.cfgChan.setSetting("rankQuotes", "1");
@@ -64,6 +114,16 @@ public class Commands {
 				this.counters.setAvailability(false);
 			}
 			
+			if(chan.cfgChan.getSetting("rankFilter") == null) {
+				chan.cfgChan.setSetting("rankFilter", "3");
+			}
+			
+			try {
+				this.cmdFilter.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankFilter")));
+			} catch(NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankFilter setting is invalid! Got " + chan.cfgChan.getSetting("rankFilter"));
+				this.cmdFilter.setAvailability(false);
+			}
 			
 			if(chan.cfgChan.getSetting("rankAMA") == null) {
 				chan.cfgChan.setSetting("rankAMA", "1");
@@ -76,7 +136,7 @@ public class Commands {
 				this.amas.setAvailability(false);
 			}
 			
-			
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -96,7 +156,7 @@ public class Commands {
 		Kdkbot.instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
 		
 		// These commands supersede command processing toggling
-		if(info.senderLevel >= 5 &&
+		if(info.senderLevel >= cmdChannel.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase("channel")) {
 			// Channel settings
 			if(args[1].equalsIgnoreCase("commandProcessing")) {
@@ -107,6 +167,17 @@ public class Commands {
 				chan.commandPrefix = args[2];
 			} else if(args[1].equalsIgnoreCase("logChat")) {
 				chan.cfgChan.setSetting("logChat", args[2]);
+			} else if(args[1].equalsIgnoreCase("rankQuotes")) {
+				chan.cfgChan.setSetting("rankQuotes", String.valueOf(rankNameToInt(args[2])));
+				quotes.setPermissionLevel(rankNameToInt(args[2]));
+			} else if(args[1].equalsIgnoreCase("rankAMA")) {
+				chan.cfgChan.setSetting("rankAMA", String.valueOf(rankNameToInt(args[2])));
+				amas.setPermissionLevel(rankNameToInt(args[2]));
+			} else if(args[1].equalsIgnoreCase("rankCounters")) {
+				chan.cfgChan.setSetting("rankCounters", String.valueOf(rankNameToInt(args[2])));
+				counters.setPermissionLevel(rankNameToInt(args[2]));
+			} else if(args[1].equalsIgnoreCase("rankChannel")) {
+				chan.cfgChan.setSetting("rankChannel", String.valueOf(rankNameToInt(args[2])));
 			}
 			
 			Kdkbot.instance.sendMessage(info.channel, "Channel setting " + args[1] + " set to " + args[2]);
@@ -116,7 +187,7 @@ public class Commands {
 		if(!chan.commandProcessing) { return; }
 		
 		// Permission Ranks
-		if (info.senderLevel >= 3 &&
+		if (info.senderLevel >= cmdPerm.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase("perm")) {
 			switch(args[1]) {
 				case "set":
@@ -136,14 +207,14 @@ public class Commands {
 			}
 		}
 		// Forwarders
-		else if(info.senderLevel >= 5 &&
+		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 					(coreWord.equalsIgnoreCase("fwd")
 				  || coreWord.equalsIgnoreCase("forward"))) {
 			String toChan = args[1];
 			this.chan.forwarders.add(new Forwarder(toChan));
 		}
 		// Filter Bypass
-		else if(info.senderLevel >= 3 &&
+		else if(info.senderLevel >= cmdPermit.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase("permit")) {
 			try {
 				int bypassLimit = 0;
@@ -160,26 +231,11 @@ public class Commands {
 			}
 			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
 		}
-		// Help
-		else if(info.senderLevel >= 1 &&
-				coreWord.equalsIgnoreCase("help")) {
-			if(args.length <= 1) {
-				// Send link to channel for wiki
-				Kdkbot.instance.sendMessage(info.channel, "You can see standard commands and get bot help @ https://github.com/kalbintion/kdkbot/wiki");
-			} else {
-				// Get information for command help
-			}
-		}
 		// Quotes
 		else if (info.senderLevel >= quotes.getPermissionLevel() &&
 					quotes.getAvailability() &&
 					quotes.getTrigger().equalsIgnoreCase(coreWord)) {
 			quotes.executeCommand(info);
-		}
-		// Raid
-		else if (info.senderLevel >= 3 &&
-				coreWord.equalsIgnoreCase("raid")) {
-			Kdkbot.instance.sendMessage(info.channel, "Raid http://www.twitch.tv/" + args[1]);
 		}
 		// Stats
 		else if(coreWord.equalsIgnoreCase("time")) {
@@ -210,28 +266,12 @@ public class Commands {
 			amas.executeCommand(info);
 		}
 		// Counters
-		else if(info.senderLevel >= 1 &&
+		else if(info.senderLevel >= counters.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase("counter")) {
 			counters.executeCommand(info);
-		}
-		// Magic 8-Ball / Conch
-		else if(info.senderLevel >= 1 &&
-					(coreWord.equalsIgnoreCase("conch") ||
-					 coreWord.equalsIgnoreCase("8ball"))) {
-			Random conchRnd = new Random();
-			String[] conchResponses = {"It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely on it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy, try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"};
-			Kdkbot.instance.sendMessage(info.channel, conchResponses[conchRnd.nextInt(conchResponses.length)]);
-		}
-		// Coin Flip
-		else if(info.senderLevel >= 1 &&
-				coreWord.equalsIgnoreCase("coin")) {
-			Random coinRnd = new Random();
-			String[] coinResponses = {"Heads", "Tails"};
-			Kdkbot.instance.sendMessage(info.channel, coinResponses[coinRnd.nextInt(coinResponses.length)]);
-		} else if(info.senderLevel >= 5 &&
+		} else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 				  coreWord.equalsIgnoreCase("fwd")) {
-		
-		} else if(info.senderLevel >= 3 &&
+		} else if(info.senderLevel >= cmdFilter.getPermissionLevel() &&
 				  coreWord.equalsIgnoreCase("filter")) {
 			this.chan.filters.executeCommand(info);
 		}

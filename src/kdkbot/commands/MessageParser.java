@@ -333,6 +333,18 @@ public class MessageParser {
 			String messagePiece = result.substring("%REVERSE:".length(), result.length()-1);
 			toParse = toParse.replace(result, new StringBuilder(messagePiece).reverse().toString());
 		}
+		
+		// Pick
+		Pattern PATTERN_PICK_REPLACE = Pattern.compile("%PICK:.*?%");
+		Matcher pattern_pick_replace_matches = PATTERN_PICK_REPLACE.matcher(toParse);
+		while(pattern_pick_replace_matches.find()) {
+			String result = pattern_pick_replace_matches.group();
+			String messagePiece = result.substring("%PICK:".length(), result.length()-1);
+			
+			String messageParts[] = messagePiece.split(",");
+			
+			toParse = toParse.replace(result, messageParts[new Random().nextInt(messageParts.length)]);
+		}
 
 		return toParse;
 	}

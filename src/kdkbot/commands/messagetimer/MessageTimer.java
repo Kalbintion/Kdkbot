@@ -39,7 +39,7 @@ public class MessageTimer extends TimerTask {
 	@Override
 	public void run() {
 		MessageInfo info = new MessageInfo(channel, "", message, "", "", 0);
-		instance.sendMessage(channel, new MessageParser(instance).parseMessage(message, info));
+		instance.sendMessage(channel, MessageParser.parseMessage(message, info));
 	}
 	
 	public String parseMessage() {

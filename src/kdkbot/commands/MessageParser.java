@@ -16,13 +16,10 @@ import kdkbot.commands.counters.Counter;
 import kdkbot.commands.strings.StringCommand;
 
 public class MessageParser {
-	public Kdkbot instance;
-	public HashMap<String, String> LEET_MAP = new HashMap<String, String>();
-	public HashMap<String, String> FLIP_MAP = new HashMap<String, String>();
+	public static HashMap<String, String> LEET_MAP = new HashMap<String, String>();
+	public static HashMap<String, String> FLIP_MAP = new HashMap<String, String>();
 	
-	public MessageParser(Kdkbot instance) {
-		this.instance = instance;
-		
+	static {
 		// Initialize LEET_MAP
 		LEET_MAP.put("a", "@");
 		LEET_MAP.put("b", "|3");
@@ -84,7 +81,7 @@ public class MessageParser {
 		FLIP_MAP.put("9", "6");
 	}
 	
-	public String parseMessage(String toParse, MessageInfo info) {
+	public static String parseMessage(String toParse, MessageInfo info) {
 		String args[] = info.message.split(" ");
 		// Static message replacements
 		toParse = toParse.replace("%USER%", info.sender);
@@ -108,7 +105,7 @@ public class MessageParser {
 			
 			String argID = result.substring("%CMD:".length(), result.length()-1);
 			
-			Channel chan = instance.getChannel(info.channel);
+			Channel chan = Kdkbot.instance.getChannel(info.channel);
 			StringCommand cmdID = chan.commands.commandStrings.getCommand(argID);
 			if(cmdID != null) {
 				toParse = toParse.replace(result, cmdID.messageToSend);
@@ -141,7 +138,7 @@ public class MessageParser {
 			
 			String cntrID = result.substring("%CNTR:".length(), result.length()-1);
 			
-			Channel chan = this.instance.getChannel(info.channel);
+			Channel chan = Kdkbot.instance.getChannel(info.channel);
 			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
 			Counter cntr = null;
 			while(cntrIter.hasNext()) {
@@ -163,7 +160,7 @@ public class MessageParser {
 			
 			String cntrID = result.substring("%CNTR++:".length(), result.length()-1);
 			
-			Channel chan = this.instance.getChannel(info.channel);
+			Channel chan = Kdkbot.instance.getChannel(info.channel);
 			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
 			Counter cntr = null;
 			while(cntrIter.hasNext()) {
@@ -188,7 +185,7 @@ public class MessageParser {
 			
 			String cntrID = result.substring("%CNTR--:".length(), result.length()-1);
 			
-			Channel chan = this.instance.getChannel(info.channel);
+			Channel chan = Kdkbot.instance.getChannel(info.channel);
 			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
 			Counter cntr = null;
 			while(cntrIter.hasNext()) {
@@ -249,7 +246,7 @@ public class MessageParser {
 		while(pattern_chanuser_replace_matches.find()) {
 			String result = pattern_chanuser_replace_matches.group();
 			
-			User[] users = instance.getUsers(info.channel);
+			User[] users = Kdkbot.instance.getUsers(info.channel);
 			for(int i = 0; i < users.length; i++) {
 				System.out.println(users[i].getNick());
 			}
@@ -263,7 +260,7 @@ public class MessageParser {
 		while(pattern_chanuser_idx_replace_matches.find()) {
 			String result = pattern_chanuser_idx_replace_matches.group();
 			
-			User[] users = instance.getUsers(info.channel);
+			User[] users = Kdkbot.instance.getUsers(info.channel);
 			int idx = Integer.parseInt(result.substring("%CHANUSER:".length(), result.length() -1));
 			
 			toParse = toParse.replace(result, users[idx].getNick());
@@ -349,12 +346,12 @@ public class MessageParser {
 		return toParse;
 	}
 	
-	public void debugPatternMatcher(Pattern pattern, Matcher matcher) {
-		this.instance.dbg.writeln(this, "Pattern: " + pattern.toString());
-		this.instance.dbg.writeln(this, "Matcher: " + matcher.toString());
+	public static void debugPatternMatcher(Pattern pattern, Matcher matcher) {
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "Pattern: " + pattern.toString());
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "Matcher: " + matcher.toString());
 	}
 	
-	public String charTransform(HashMap<String, String> characterTable, String message) {
+	public static String charTransform(HashMap<String, String> characterTable, String message) {
 		String modifiedMessage = "";
 		
 		for(int i = 0; i < message.length(); i++) {

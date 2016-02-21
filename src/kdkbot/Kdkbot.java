@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.jibble.pircbot.*;
 
 import kdkbot.channel.*;
+import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.*;
 
 public class Kdkbot extends PircBot {
@@ -27,7 +28,7 @@ public class Kdkbot extends PircBot {
 	private boolean _logChat = false;
 	private Pattern logIgnores;
 	private Log logger;
-	public Debugger dbg = new Debugger(false);
+	public Debugger dbg;
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
@@ -51,6 +52,9 @@ public class Kdkbot extends PircBot {
 			this.logger = new Log();
 		}
 		
+		// Setup the debugger instance
+		this.dbg = new Debugger(false);
+		
 		// Setup this bot
 		this.setEncoding("UTF-8");
 		this.setName(botCfg.getSetting("nick"));
@@ -68,6 +72,9 @@ public class Kdkbot extends PircBot {
 			dbg.writeln(this, "Added new channel object for channel: " + cfgChannels[i]);
 			dbg.writeln(this, "Channel object: " + getChannel(cfgChannels[i]));
 		}
+		
+		// Instantiate a MessageParser
+		new MessageParser();
 	}
 
 	/**
@@ -185,11 +192,7 @@ public class Kdkbot extends PircBot {
     			prevChanSetting = prevChanSetting.replace(",,", ",");
     			
     			botCfg.saveSettings();
-    		} else if(message.equalsIgnoreCase("||flush")) {
-    			System.gc();
-    			this.sendMessage(channel, "Suggested to JVM for a GC");
-    		}
-    		else if(message.startsWith("||debug disable")) {
+    		} else if(message.startsWith("||debug disable")) {
     			dbg.disable();
     			this.sendMessage(channel, "Disabled internal debug messages");
     		} else if(message.startsWith("||msgdupe ")) {
@@ -237,13 +240,19 @@ public class Kdkbot extends PircBot {
     				this.sendMessage(pairs.getKey().toString(), messageArgs[1]);
     			}
     		} else if(message.startsWith("||joinchan ")) {
-    			// Join channel
     			String channelToJoin = message.substring("||joinchan ".length());
-    			this.sendMessage(channel, "Joining channel " + channelToJoin);
-    			CHANS.put(channelToJoin, new Channel(this, channelToJoin));
     			
-    			// Add channel to settings cfg
-    			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channelToJoin);
+    			if(this.botCfg.getSetting("channels").contains(channelToJoin)) {
+    				instance.sendMessage(channel, "I am already in " + channelToJoin);
+    			} else {
+        			// Join channel
+        			this.sendMessage(channel, "Joining channel " + channelToJoin);
+        			CHANS.put(channelToJoin, new Channel(this, channelToJoin));
+        			
+        			// Add channel to settings cfg
+        			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channelToJoin);
+    			}
+
     		} else if(message.startsWith("||color ")) {
     			String colorArgs[] = message.split(" ");
     			this.sendMessage(channel, "/color " + colorArgs[1]);
@@ -275,4 +284,6 @@ public class Kdkbot extends PircBot {
 
     	return Kdkbot.CHANS.get(channel);
     }
+    
+    
 }

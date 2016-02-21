@@ -1,5 +1,6 @@
 package kdkbot.commands;
 
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -33,7 +34,8 @@ public class Commands {
 	
 	public Commands(String channel, Channel chanInst) {
 		this.chan = chanInst;
-		try {			
+		
+		try {
 			this.commandStrings = new StringCommands(channel);
 			this.commandStrings.loadCommands();
 			
@@ -47,6 +49,15 @@ public class Commands {
 			
 			this.amas = new AMA(channel);
 			this.amas.loadQuestions();
+			
+			// TODO: Work on minimizing the code impact here
+			/*
+			Object ret = verifyGetSetting("rankChannel", "5", Integer.class);
+			if(ret == null) {
+				setCommandStatus(cmdChannel, "availability", false);
+			} else {
+				setCommandStatus(cmdChannel, "availability", ret);
+			} */
 			
 			if(chan.cfgChan.getSetting("rankChannel") == null) {
 				chan.cfgChan.setSetting("rankChannel", "5");
@@ -326,4 +337,53 @@ public class Commands {
 				}
 		}
 	}
+	
+	/*
+	 * 			if(chan.cfgChan.getSetting("rankQuotes") == null) {
+				chan.cfgChan.setSetting("rankQuotes", "1");
+			}
+			
+			try {
+				this.quotes.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankQuotes")));
+			} catch (NumberFormatException e) {
+				Kdkbot.instance.sendMessage(channel, "This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
+				this.quotes.setAvailability(false);
+			}
+	 */
+	private <T> Object verifyGetSetting(String settingName, String settingDefault, Class<T> settingType) {
+		if(chan.cfgChan.getSetting(settingName) == null) {
+			chan.cfgChan.setSetting(settingName, settingDefault);
+		}
+		
+		try {
+			String configValue = chan.cfgChan.getSetting(settingName);
+			switch(settingType.getCanonicalName()) {
+				case "java.lang.Integer":
+					return Integer.parseInt(configValue);
+				case "java.lang.String":
+					return configValue;
+			}
+
+			System.out.println("::: " + settingType.getCanonicalName());
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return settingDefault;
+	}
+	
+	private boolean setCommandStatus(Command command, String settingName, Object value) {
+		switch(settingName) {
+			case "availability":
+				command.setAvailability((boolean) value);
+				return true;
+			case "permission":
+				command.setPermissionLevel((int) value);
+				return true;
+		}
+		return false;
+	}
+	
 }
+
+

@@ -1,5 +1,6 @@
 package kdkbot.commands.filters;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,11 +22,29 @@ import kdkbot.filemanager.Config;
  */
 public class Filters {
 	// Enum list of filter types
-	public final int FILTER_USER_NONE = 0;
-	public final int FILTER_USER_PURGE = 1;
-	public final int FILTER_USER_TIMEOUT = 2;
-	public final int FILTER_USER_BAN = 3;
-	public final int FILTER_USER_MSG = 4;
+	public enum TYPE {
+		NONE, PURGE, TIMEOUT, BAN, MSG
+	}
+	
+	// Enum list of java.util.regex.Pattern;
+	public enum FLAG {
+		CANON_EQ(Pattern.CANON_EQ),
+		CASE_INSENSITIVE(Pattern.CASE_INSENSITIVE),
+		COMMENTS(Pattern.COMMENTS),
+		DOTALL(Pattern.DOTALL),
+		LITERAL(Pattern.LITERAL),
+		MULTILINE(Pattern.MULTILINE),
+		UNICODE_CASE(Pattern.UNICODE_CASE),
+		UNICODE_CHARACTER_CLASS(Pattern.UNICODE_CHARACTER_CLASS),
+		UNIX_LINES(Pattern.UNIX_LINES);
+
+		@SuppressWarnings("unused")
+		private int value;
+		
+		private FLAG(int value) {
+			this.value = value;
+		}
+	}
 	
 	private ArrayList<Filter> filters = new ArrayList<Filter>();
 	private Config cfgFilters;
@@ -83,37 +102,37 @@ public class Filters {
 	}
 	
 	public void executeCommand(MessageInfo info) {
-		String[] args = info.message.split(" ");
+		String[] args = info.getSegments();
 		
 		switch(args[1]) {
 			case "new":
-					// |filter new <type> <find_regex>
-					String[] parts = info.getSegments(4);
+					// |filter new <type> <name> <find_regex>
+					String[] parts = info.getSegments(5);
 					String newAdditionalInfo = "";
 					switch(parts[2]) {
 						case "none":
 						case "0":
-							filters.add(new Filter(parts[3], FILTER_USER_NONE));
+							filters.add(new Filter(parts[3], TYPE.NONE.ordinal()));
 							break;
 						case "purge":
 						case "1":
-							filters.add(new Filter(parts[3], FILTER_USER_PURGE));
+							filters.add(new Filter(parts[3], TYPE.PURGE.ordinal()));
 							break;
 						case "timeout":
 						case "2":
-							filters.add(new Filter(parts[3], FILTER_USER_TIMEOUT));
+							filters.add(new Filter(parts[3], TYPE.TIMEOUT.ordinal()));
 							break;
 						case "ban":
 						case "3":
-							filters.add(new Filter(parts[3], FILTER_USER_BAN));
+							filters.add(new Filter(parts[3], TYPE.BAN.ordinal()));
 							break;
 						case "message":
 						case "4":
-							filters.add(new Filter(parts[3], FILTER_USER_MSG));
-							newAdditionalInfo = " Use command 'filter edit <id> info <new info> to add response message.";
+							filters.add(new Filter(parts[3], TYPE.MSG.ordinal()));
+							newAdditionalInfo = " Use command 'filter edit <name> info <msg> to add response message.";
 							break;
 					}
-					Kdkbot.instance.sendMessage(this.channel, "Added a new filter with id #" + filters.size() + "." + newAdditionalInfo);
+					Kdkbot.instance.sendMessage(this.channel, "Added a new filter named " + parts[3] + "." + newAdditionalInfo);
 					saveFilters();
 				break;
 			case "remove":
@@ -140,23 +159,28 @@ public class Filters {
 				break;
 			case "edit":
 					// |filter edit <number> <value> <new_value>
-				parts = info.message.split(" ", 5);
+				parts = info.getSegments(5);
+				Filter toModify = getFilterOnName(parts[2]);
 				switch(parts[3]) {
 					case "type":
-						filters.get(Integer.parseInt(parts[2]) - 1).action = Integer.parseInt(parts[4]);
+						toModify.action = Integer.parseInt(parts[4]);
 						break;
 					case "regex":
-						filters.get(Integer.parseInt(parts[2]) - 1).toFind = Pattern.compile(parts[4]);
+						toModify.toFind = Pattern.compile(parts[4]);
 						break;
 					case "info":
-						filters.get(Integer.parseInt(parts[2]) - 1).actionInfo = parts[4];
+						toModify.actionInfo = parts[4];
 						break;
+					case "name":
+						toModify.humanName = parts[4];
+						break;
+					case "flag":
+						// Toggles flag values based on <new_value>
 				}
-				Kdkbot.instance.sendMessage(this.channel, "Changed filter #" + parts[2] + "'s " + parts[3] + " value to: " + parts[4]);
+				Kdkbot.instance.sendMessage(this.channel, "Changed filter " + parts[2] + "'s " + parts[3] + " value to: " + parts[4]);
 				saveFilters();
 				break;
 			case "save":
-					// |filter save
 				break;
 			case "reload":
 					// |filter reload
@@ -165,5 +189,22 @@ public class Filters {
 				Kdkbot.instance.sendMessage(this.channel, "There are " + filters.size() + " filter(s) in this channel.");
 				break;
 		}
+	}
+	
+	public Filter getFilterOnName(String name) {
+		try {
+			int filterNumber = Integer.parseInt(name);
+			return filters.get(filterNumber);
+		} catch(NumberFormatException e) {
+			// We have a proper name
+			Iterator<Filter> iter = filters.iterator();
+			while(iter.hasNext()) {
+				Filter next = iter.next();
+				if(next.humanName.equalsIgnoreCase("name")) {
+					return next;
+				}
+			}
+		}
+		return null;
 	}
 }

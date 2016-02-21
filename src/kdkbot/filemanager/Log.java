@@ -6,20 +6,22 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import kdkbot.Kdkbot;
+
 public class Log {
 	private Path filePath;
 	
 	/**
-	 * Creates a new logger for the default file location.
+	 * Creates a new logger for the default file location (based on settings.cfg value of "logChatLocation")
 	 */
 	public Log() {
-		String curDate = new SimpleDateFormat("yyyy_MM_dd").format(new Date());
-		filePath = FileSystems.getDefault().getPath("./logs/" + curDate + ".log");
+		this(Paths.get(Kdkbot.instance.botCfg.getSetting("logChatLocation")));
 	}
 	
 	/**
@@ -35,7 +37,7 @@ public class Log {
 	 * @param filePath The target path location
 	 */
 	public Log(String filePath) {
-		this.filePath = Paths.get(filePath);
+		this(Paths.get(filePath));
 	}
 	
 	/**
@@ -54,34 +56,13 @@ public class Log {
 		return this.filePath.toString();
 	}
 	
-	/**
-	 * Updates filePath object if time has changed from initial creation
-	 */
-	public void updateFileFromTime() {
-		String curDate = new SimpleDateFormat("yyyy_MM_dd").format(new Date());
-		this.filePath.getFileName().toString();
-		if(!curDate.equalsIgnoreCase(curDate)) {
-			this.filePath = Paths.get(this.filePath.getParent().toAbsolutePath().toString() + curDate + ".log");
-		}
-	}
 	
 	/**
 	 * Logs a given line to this loggers file. Appends to end of file.
 	 * @param line The line to log to this instances file.
 	 */
 	public void logln(String line) {
-		// Open File
-		BufferedWriter out;
-		try {
-			out = new BufferedWriter(
-					new OutputStreamWriter(
-							new FileOutputStream(this.filePath.toAbsolutePath().toString(), true),
-						StandardCharsets.UTF_8));
-			out.write(line + "\r\n");
-    		out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.log(line + "\r\n");
 	}
 	
 	/**
@@ -89,16 +70,54 @@ public class Log {
 	 * @param text The text to log to this instances file.
 	 */
 	public void log(String text) {
+		Path finalizedPath = Paths.get(this.filePath.toAbsolutePath().toString() + "\\" + getChannel(text) + "\\");
+		verifyExists(finalizedPath);
+		
 		BufferedWriter out;
 		try {
 			out = new BufferedWriter(
 					new OutputStreamWriter(
-							new FileOutputStream(this.filePath.toAbsolutePath().toString(), true),
+							new FileOutputStream(finalizedPath.toAbsolutePath().toString() + "\\" + getCurrentDate() + ".log", true),
 						StandardCharsets.UTF_8));
 			out.write(text);
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private String getChannel(String text) {
+		String parts[] = text.split(" ");
+		for(int i = 0; i < parts.length; i++) {
+			if(parts[i].startsWith("#")) {
+				// We can be sure this is the channel, since itll be the first we run into due to the format of the messages
+				// unless its "###"
+				if(parts[i].equalsIgnoreCase("###")) {
+					return "internal";
+				} else {
+					return parts[i].substring(1).replace("\r", "").replace("\n", "");
+				}
+			}
+		}
+		
+		return "internal";	// If we cannot for some reason find a channel name, the message may be a general message and we'll return it under "internal"
+	}
+	
+	private String getCurrentDate() {
+		return new SimpleDateFormat("yyyy_MM_dd").format(new Date());
+	}
+	
+	/**
+	 * Verifies the existence of the file at a given path, if it does not exist, it will
+	 * automatically create it.
+	 */
+	public void verifyExists(Path file) {
+		if(!Files.exists(file)) {
+			try {
+				Files.createDirectories(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

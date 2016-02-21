@@ -198,7 +198,7 @@ public class StringCommands {
 
 					// Hardcoded commands - need a better situation here
 					// TODO: Implement better solution
-					String[] additionalCommands = {"", "ama, counter, commands list, quote get, ", "ama, counter, multi, ", "commands, raid, quote, perm, perm, ", "", ""};
+					String[] additionalCommands = {"", "ama, counter, commands list, quote get, ", "ama, counter, multi, ", "commands, quote, perm, ", "", ""};
 					ArrayList<String> defaultCommands = new ArrayList<String>();
 					
 					try {

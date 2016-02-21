@@ -5,7 +5,7 @@ public class Debugger {
 	private Log logger = new Log();
 	
 	public Debugger() {
-		isEnabled = false;
+		this(false);
 	}
 	
 	public Debugger(boolean isEnabled) {

@@ -15,6 +15,7 @@ public class Filter {
 	public String actionInfo;
 	public String humanName;
 	public boolean ignoresPermit = false;
+	public int flags;
 	
 	/**
 	 * Creates a new filter with a given String object

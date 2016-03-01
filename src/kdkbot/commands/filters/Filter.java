@@ -22,7 +22,7 @@ public class Filter {
 	 * @param toFind The string REGEX pattern to use.
 	 */
 	public Filter(String toFind) {
-		this(Pattern.compile(toFind));
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE));
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class Filter {
 	 * @param actionInfo The message to send in response, if action = 4
 	 */
 	public Filter(String toFind, String action, String actionInfo) {
-		this(Pattern.compile(toFind), Integer.parseInt(action), actionInfo);
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE), Integer.parseInt(action), actionInfo);
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class Filter {
 	 * @param action The integer value to associate (See Filters.FILTER_*)
 	 */
 	public Filter(String toFind, int action) {
-		this(Pattern.compile(toFind), action, "");
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE), action, "");
 	}
 	
 	/**

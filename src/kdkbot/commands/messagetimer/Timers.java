@@ -31,7 +31,7 @@ public class Timers {
 		if(args.length > 1) {
 			switch(args[1]) {
 				case "new":
-					MessageTimer newTimer = new MessageTimer(Kdkbot.instance, info.channel, args[1], args[3], new Timer());
+					MessageTimer newTimer = new MessageTimer(info.channel, args[1], args[3], new Timer());
 					timers.add(newTimer);
 					break;
 				case "remove":

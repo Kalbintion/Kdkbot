@@ -1,6 +1,5 @@
 package kdkbot.commands.filters;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;

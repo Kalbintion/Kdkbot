@@ -12,18 +12,16 @@ public class MessageTimer extends TimerTask {
 	private String channel;
 	private String message;
 	private Timer timer;
-	private Kdkbot instance;
 	
-	public MessageTimer(Kdkbot instance, String channel) {
-		this(instance, channel, "", "");
+	public MessageTimer(String channel) {
+		this(channel, "", "");
 	}
 	
-	public MessageTimer(Kdkbot instance, String channel, String id, String message) {
-		this(instance, channel, id, message, null);
+	public MessageTimer(String channel, String id, String message) {
+		this(channel, id, message, null);
 	}
 	
-	public MessageTimer(Kdkbot instance, String channel, String id, String message, Timer timer) {
-		this.instance = instance;
+	public MessageTimer(String channel, String id, String message, Timer timer) {
 		this.timerID = id;
 		this.message = message;
 		this.timer = timer;
@@ -39,7 +37,7 @@ public class MessageTimer extends TimerTask {
 	@Override
 	public void run() {
 		MessageInfo info = new MessageInfo(channel, "", message, "", "", 0);
-		instance.sendMessage(channel, MessageParser.parseMessage(message, info));
+		Kdkbot.instance.sendMessage(channel, MessageParser.parseMessage(message, info));
 	}
 	
 	public String parseMessage() {

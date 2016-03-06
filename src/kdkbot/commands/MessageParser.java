@@ -15,10 +15,18 @@ import kdkbot.channel.Channel;
 import kdkbot.commands.counters.Counter;
 import kdkbot.commands.strings.StringCommand;
 
+/**
+ * Class responsible for parsing custom command (StringCommand) messages
+ * @author KDK
+ *
+ */
 public class MessageParser {
 	public static HashMap<String, String> LEET_MAP = new HashMap<String, String>();
 	public static HashMap<String, String> FLIP_MAP = new HashMap<String, String>();
 	
+	/**
+	 * Necessary information for certain character mappings
+	 */
 	static {
 		// Initialize LEET_MAP
 		LEET_MAP.put("a", "@");
@@ -81,6 +89,12 @@ public class MessageParser {
 		FLIP_MAP.put("9", "6");
 	}
 	
+	/**
+	 * Parses a provided message with supplied information
+	 * @param toParse The string to parse through
+	 * @param info The message information to substitute some options information
+	 * @return Finalized string containing a fully parsed message
+	 */
 	public static String parseMessage(String toParse, MessageInfo info) {
 		String args[] = info.message.split(" ");
 		// Static message replacements
@@ -351,6 +365,12 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "Matcher: " + matcher.toString());
 	}
 	
+	/**
+	 * Uses the maps defined in this classes static section to translate a message based on these mappings
+	 * @param characterTable The character table to use containig the mappings
+	 * @param message Message to transform
+	 * @return The finalized transformed message, leaving unfound letters untouched
+	 */
 	public static String charTransform(HashMap<String, String> characterTable, String message) {
 		String modifiedMessage = "";
 		

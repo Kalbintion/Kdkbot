@@ -1,8 +1,6 @@
 package kdkbot.commands;
 
-import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.Random;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
@@ -32,6 +30,11 @@ public class Commands {
 	private CommandHolder cmdPermit = new CommandHolder();
 	private CommandHolder cmdFilter = new CommandHolder();
 	
+	/**
+	 * Creates a new Commands class with a given channel assignment and channel instance
+	 * @param channel The name of the channel these commands are to belong
+	 * @param chanInst The instance of the channel object to use
+	 */
 	public Commands(String channel, Channel chanInst) {
 		this.chan = chanInst;
 		
@@ -299,6 +302,11 @@ public class Commands {
 		}
 	}
 	
+	/**
+	 * Translates human readable names into their respective rank integer
+	 * @param rank The human readable name to translate from
+	 * @return An integer representing the rank provided
+	 */
 	public static int rankNameToInt(String rank) {
 		switch(rank) {
 			case "normal":
@@ -330,6 +338,7 @@ public class Commands {
 				return Integer.MIN_VALUE;
 			case "nobody":
 			default:
+				// If we hit here, try to just parse the rank as an int, upon failure just return 0 for an invalid rank name
 				try {
 					return Integer.parseInt(rank);
 				} catch (NumberFormatException e) {

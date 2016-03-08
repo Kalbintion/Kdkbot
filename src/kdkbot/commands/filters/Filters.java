@@ -22,7 +22,14 @@ import kdkbot.filemanager.Config;
 public class Filters {
 	// Enum list of filter types
 	public enum TYPE {
-		NONE, PURGE, TIMEOUT, BAN, MSG
+		NONE(0), PURGE(1), TIMEOUT(2), BAN(3), MSG(4);
+		
+		@SuppressWarnings("unused")
+		private int value;
+		
+		private TYPE(int value) {
+			this.value = value;
+		}
 	}
 	
 	// Enum list of java.util.regex.Pattern;
@@ -111,23 +118,24 @@ public class Filters {
 					switch(parts[2]) {
 						case "none":
 						case "0":
-							filters.add(new Filter(parts[3], TYPE.NONE.ordinal()));
+							filters.add(new Filter(parts[4], TYPE.NONE.ordinal(), parts[3]));
 							break;
 						case "purge":
 						case "1":
-							filters.add(new Filter(parts[3], TYPE.PURGE.ordinal()));
+							filters.add(new Filter(parts[4], TYPE.PURGE.ordinal(), parts[3]));
 							break;
 						case "timeout":
 						case "2":
-							filters.add(new Filter(parts[3], TYPE.TIMEOUT.ordinal()));
+							filters.add(new Filter(parts[4], TYPE.TIMEOUT.ordinal(), parts[3]));
 							break;
 						case "ban":
 						case "3":
-							filters.add(new Filter(parts[3], TYPE.BAN.ordinal()));
+							filters.add(new Filter(parts[4], TYPE.BAN.ordinal(), parts[3]));
 							break;
 						case "message":
+						case "msg":
 						case "4":
-							filters.add(new Filter(parts[3], TYPE.MSG.ordinal()));
+							filters.add(new Filter(parts[3], TYPE.MSG.ordinal(), parts[3]));
 							newAdditionalInfo = " Use command 'filter edit <name> info <msg> to add response message.";
 							break;
 					}
@@ -135,34 +143,52 @@ public class Filters {
 					saveFilters();
 				break;
 			case "remove":
-				// |filter remove <index>
+				// |filter remove (<name> | <index>)
 				parts = info.getSegments(3);
-				this.filters.remove(Integer.parseInt(parts[2]) - 1);
-				Kdkbot.instance.sendMessage(this.channel, "Removed filter #" + parts[2]);
+				try {
+					int idx = Integer.parseInt(parts[2]);
+					this.filters.remove(idx);
+					Kdkbot.instance.sendMessage(this.channel, "Removed filter #" + parts[2]);
+				} catch(NumberFormatException e) {
+					// We must be dealing with a human name
+					Iterator<Filter> it = this.filters.iterator();
+					while(it.hasNext()) {
+						Filter nxt = it.next();
+						if(nxt.humanName.equalsIgnoreCase(parts[2])) {
+							it.remove();
+							Kdkbot.instance.sendMessage(this.channel, "Removed filter: " + parts[2]);
+							break;
+						}
+					}
+				}
+				
 				saveFilters();
 				break;
 			case "view":
-					// |filter view <number> <value>
+					// |filter view (<name> | <index>) <value>
 				parts = info.getSegments(4);
+				Filter toView = getFilterOnName(parts[2]);
+				
 				switch(parts[3]) {
 					case "type":
-						Kdkbot.instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).action);
+						Kdkbot.instance.sendMessage(this.channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.action);
 						break;
 					case "regex":
-						Kdkbot.instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).toFind.toString());
+						Kdkbot.instance.sendMessage(this.channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.toFind.toString());
 						break;
 					case "info":
-						Kdkbot.instance.sendMessage(this.channel, "Filter #" + parts[2] + "'s " + parts[3] + " has value of " + filters.get(Integer.parseInt(parts[2]) - 1).actionInfo);
+						Kdkbot.instance.sendMessage(this.channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.actionInfo);
 						break;
 				}
 				break;
 			case "edit":
-					// |filter edit <number> <value> <new_value>
+					// |filter edit (<name> | <index>) <value> <new_value>
 				parts = info.getSegments(5);
+				
 				Filter toModify = getFilterOnName(parts[2]);
 				switch(parts[3]) {
 					case "type":
-						toModify.action = Integer.parseInt(parts[4]);
+						toModify.action = getTypeOnName(parts[4]);
 						break;
 					case "regex":
 						toModify.toFind = Pattern.compile(parts[4]);
@@ -199,11 +225,34 @@ public class Filters {
 			Iterator<Filter> iter = filters.iterator();
 			while(iter.hasNext()) {
 				Filter next = iter.next();
-				if(next.humanName.equalsIgnoreCase("name")) {
+				if(next.humanName.equalsIgnoreCase(name)) {
 					return next;
 				}
 			}
 		}
 		return null;
+	}
+	
+	public int getTypeOnName(String name) {
+		switch(name) {
+			case "none":
+			case "0":
+				return 0;
+			case "purge":
+			case "1":
+				return 1;
+			case "timeout":
+			case "2":
+				return 2;
+			case "ban":
+			case "3":
+				return 3;
+			case "message":
+			case "msg":
+			case "4":
+				return 4;
+			default:
+				return 0;
+		}
 	}
 }

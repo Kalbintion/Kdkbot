@@ -43,14 +43,12 @@ public class Filter {
 		this(toFind, action, actionInfo, "", false);
 	}
 	
-	/**
-	 * Creates a new filter with a given REGEX String object with a defined action and action message
-	 * @param toFind The regex string to use.
-	 * @param action The integer value to associate (See Filters.FILTER_*)
-	 * @param actionInfo The message to send in response, if action = 4
-	 */
-	public Filter(String toFind, String action, String actionInfo) {
-		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE), Integer.parseInt(action), actionInfo);
+	public Filter(String toFind, String action, String humanName) {
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE), Integer.parseInt(action), "", humanName, false);
+	}
+	
+	public Filter(String toFind, int action, String humanName) {
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE), action, "", humanName, false);
 	}
 	
 	/**

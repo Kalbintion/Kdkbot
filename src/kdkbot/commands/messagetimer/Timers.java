@@ -3,7 +3,6 @@ package kdkbot.commands.messagetimer;
 import java.util.ArrayList;
 import java.util.Timer;
 
-import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.filemanager.Config;
 

@@ -261,7 +261,7 @@ public class Kdkbot extends PircBot {
     			Channel chan = getChannel(channel);
     			chan.setSenderRank(botCfg.getSetting("masterCommands"), 5);
     			chan.setSenderRank(channel.substring(1), 5);
-    			this.sendMessage(channel, "Initialized channel by giving user " + channel.substring(1) + " and Kalbintion permission level 5");
+    			this.sendMessage(channel, "Initialized channel by giving user " + channel.substring(1) + " and " + botCfg.getSetting("masterCommands") + " permission level 5");
     			
     			try {
     				

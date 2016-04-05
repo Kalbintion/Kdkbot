@@ -24,11 +24,11 @@ public class Commands {
 	public AMA amas;
 	
 	// Additional Commands
-	private CommandHolder cmdChannel = new CommandHolder();
-	private CommandHolder cmdPerm = new CommandHolder();
-	private CommandHolder cmdForward = new CommandHolder();
-	private CommandHolder cmdPermit = new CommandHolder();
-	private CommandHolder cmdFilter = new CommandHolder();
+	private InternalCommand cmdChannel = new InternalCommand("rankChannel", "5", Integer.class);
+	private InternalCommand cmdPerm = new InternalCommand("rankPerm", "5", Integer.class);
+	private InternalCommand cmdForward = new InternalCommand("rankForward", "4", Integer.class);
+	private InternalCommand cmdPermit = new InternalCommand("rankPermit", "3", Integer.class);
+	private InternalCommand cmdFilter = new InternalCommand("rankFilter", "5", Integer.class);
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -52,58 +52,17 @@ public class Commands {
 			
 			this.amas = new AMA(channel);
 			this.amas.loadQuestions();
-			
-			// TODO: Work on minimizing the code impact here
-			/*
-			Object ret = verifyGetSetting("rankChannel", "5", Integer.class);
-			if(ret == null) {
-				setCommandStatus(cmdChannel, "availability", false);
-			} else {
-				setCommandStatus(cmdChannel, "availability", ret);
-			} */
-			
-			if(chan.cfgChan.getSetting("rankChannel") == null) {
-				chan.cfgChan.setSetting("rankChannel", "5");
-			}
-			
-			try {
-				this.cmdChannel.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankChannel")));
-			} catch(NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankChannel setting is invalid! Got " + chan.cfgChan.getSetting("rankChannel"));
-				this.cmdChannel.setAvailability(false);
-			}
-			
-			if(chan.cfgChan.getSetting("rankPerm") == null) {
-				chan.cfgChan.setSetting("rankPerm", "5");
-			}
-			
-			try {
-				this.cmdPerm.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankPerm")));
-			} catch(NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankPerm setting is invalid! Got " + chan.cfgChan.getSetting("rankPerm"));
-				this.cmdPerm.setAvailability(false);
-			}
-			
-			if(chan.cfgChan.getSetting("rankPermit") == null) {
-				chan.cfgChan.setSetting("rankPermit", "3");
-			}
-			
-			try {
-				this.cmdPermit.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankPermit")));
-			} catch(NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankPermit setting is invalid! Got " + chan.cfgChan.getSetting("rankPermit"));
-				this.cmdPermit.setAvailability(false);
-			}
-			
-			if(chan.cfgChan.getSetting("rankForward") == null) {
-				chan.cfgChan.setSetting("rankForward", "4");
-			}
-			
-			try {
-				this.cmdForward.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankForward")));
-			} catch (NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankForward settig is invalid! Got " + chan.cfgChan.getSetting("rankForward"));
-				this.cmdForward.setAvailability(false);
+
+			InternalCommand[] internalCommands = {cmdChannel, cmdPerm, cmdForward, cmdPermit, cmdFilter};
+			for (InternalCommand cmd : internalCommands) {
+				Object ret = verifyGetSetting(cmd.getSettingName(), cmd.getSettingDefault(), cmd.getSettingType());
+				if(ret == null) {
+					setCommandStatus(cmd, "availability", false);
+					setCommandStatus(cmd, "permission", cmd.getSettingDefault());
+				} else {
+					setCommandStatus(cmd, "availability", true);
+					setCommandStatus(cmd, "permission", ret);
+				}
 			}
 			
 			if(chan.cfgChan.getSetting("rankQuotes") == null) {
@@ -119,17 +78,6 @@ public class Commands {
 			
 			if(chan.cfgChan.getSetting("rankCounters") == null) {
 				chan.cfgChan.setSetting("rankCounters", "1");
-			}
-			
-			try {
-				this.counters.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankCounters")));
-			} catch (NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankCounters setting is invalid! Got " + chan.cfgChan.getSetting("rankCounters"));
-				this.counters.setAvailability(false);
-			}
-			
-			if(chan.cfgChan.getSetting("rankFilter") == null) {
-				chan.cfgChan.setSetting("rankFilter", "3");
 			}
 			
 			try {

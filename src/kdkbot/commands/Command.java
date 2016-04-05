@@ -13,29 +13,32 @@ public abstract class Command {
 	 * Initializes a new command with nothing defaulted
 	 */
 	public Command() {
-		this.trigger = "";
-		this.cpl = new CommandPermissionLevel(0);
-		
+		this("", 0, true, "");
 	}
 	
 	/**
-	 * Initializes a new command with a trigger and commandpermissionlevel object
+	 * Initializes a new command with a given trigger, permission level, availability, and help message
 	 * @param trigger The commands trigger word
-	 * @param cpl The permission level object to use for the rank required to use this command
+	 * @param cpl The CommandPermissionLevels integer rank
+	 * @param isAvailable Whether or not this command is enabled
+	 * @param helpMessage The help message to go along with this command
 	 */
-	public Command(String trigger, CommandPermissionLevel cpl) {
+	public Command(String trigger, int cpl, boolean isAvailable, String helpMessage) {
+		this(trigger, new CommandPermissionLevel(cpl), isAvailable, helpMessage);
+	}
+	
+	/**
+	 * Initializes a new command with a given trigger, permission level, availability, and help message
+	 * @param trigger The commands trigger word
+	 * @param cpl The CommandPermissionLevels instance
+	 * @param isAvailable Whether or not this command is enabled
+	 * @param helpMessage The help message to go along with this command
+	 */
+	public Command(String trigger, CommandPermissionLevel cpl, boolean isAvailable, String helpMessage) {
 		this.trigger = trigger;
 		this.cpl = cpl;
-	}
-	
-	/**
-	 * Initializes a new command with a trigger and permission level integer value
-	 * @param trigger The commands trigger word
-	 * @param cpl The integer permission level to use for the rank required to use this command
-	 */
-	public Command(String trigger, int cpl) {
-		this.trigger = trigger;
-		this.cpl = new CommandPermissionLevel(cpl);
+		this.isAvailable = isAvailable;
+		this.helpMessage = helpMessage;
 	}
 	
 	/**

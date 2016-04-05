@@ -3,6 +3,8 @@ package kdkbot.commands;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,13 +23,33 @@ import kdkbot.commands.strings.StringCommand;
  *
  */
 public class MessageParser {
-	public static HashMap<String, String> LEET_MAP = new HashMap<String, String>();
-	public static HashMap<String, String> FLIP_MAP = new HashMap<String, String>();
+	private static HashMap<String, String> LEET_MAP = new HashMap<String, String>();
+	private static HashMap<String, String> FLIP_MAP = new HashMap<String, String>();
+	private static HashMap<String, Pattern> PATTERN_MAP = new HashMap<String, Pattern>();
 	
 	/**
-	 * Necessary information for certain character mappings
+	 * Necessary information for regex patterns & character mappings
 	 */
 	static {
+		PATTERN_MAP.put("cmd", Pattern.compile("%CMD:.*?%"));
+		PATTERN_MAP.put("argN", Pattern.compile("%ARGS:\\d*?%"));
+		PATTERN_MAP.put("args", Pattern.compile("%ARGS%"));
+		PATTERN_MAP.put("cntr", Pattern.compile("%CNTR:.*?%"));
+		PATTERN_MAP.put("cntr++", Pattern.compile("%CNTR\\+\\+:.*?%"));
+		PATTERN_MAP.put("cntr--", Pattern.compile("%CNTR--:.*?%"));
+		PATTERN_MAP.put("rndMax", Pattern.compile("%RND:\\d*?%"));
+		PATTERN_MAP.put("rndMinMax", Pattern.compile("%RND:\\d*?,\\d*?%"));
+		PATTERN_MAP.put("chanuser", Pattern.compile("%CHANUSER%"));
+		PATTERN_MAP.put("chanuserIdx", Pattern.compile("%CHANUSER:\\d*?%"));
+		PATTERN_MAP.put("upper", Pattern.compile("%UPPER:.*?%"));
+		PATTERN_MAP.put("lower", Pattern.compile("%LOWER:.*?%"));
+		PATTERN_MAP.put("leet", Pattern.compile("%LEET:.*?%"));
+		PATTERN_MAP.put("flip", Pattern.compile("%FLIP:.*?%"));
+		PATTERN_MAP.put("hash", Pattern.compile("%HASH:.*?%"));
+		PATTERN_MAP.put("reverse", Pattern.compile("%REVERSE:.*?%"));
+		PATTERN_MAP.put("pick", Pattern.compile("%PICK:.*?%"));
+		
+		
 		// Initialize LEET_MAP
 		LEET_MAP.put("a", "@");
 		LEET_MAP.put("b", "|3");
@@ -102,6 +124,8 @@ public class MessageParser {
 		toParse = toParse.replace("%CHAN%", info.channel);
 		toParse = toParse.replace("%LOGIN%", info.login);
 		toParse = toParse.replace("%HOSTNAME%", info.hostname);
+		
+		// Replace %ARGS% based information
 		if(args[0].length() + 1 < info.message.length()) {
 			if(info.message.substring(args[0].length() + 1).startsWith("/")) {
 				toParse = toParse.replace("%ARGS%", info.message.substring(args[0].length() + 2));
@@ -110,9 +134,11 @@ public class MessageParser {
 			}
 		}
 		
+		// If it was all replaced, we can default to removing them completely (should remove stray %ARGS%)
+		toParse = toParse.replace("%ARGS%", "");
+		
 		// Command replacement
-		Pattern PATTERN_CMD_REPLACE = Pattern.compile("%CMD:.*?%");
-		Matcher pattern_cmd_matches = PATTERN_CMD_REPLACE.matcher(toParse);
+		Matcher pattern_cmd_matches = PATTERN_MAP.get("cmd").matcher(toParse);
 		
 		while(pattern_cmd_matches.find()) {
 			String result = pattern_cmd_matches.group();
@@ -129,24 +155,27 @@ public class MessageParser {
 		}
 		
 		// Arg specificity
-		Pattern PATTERN_ARGS_REPLACE = Pattern.compile("%ARGS:\\d*?%");
-		Matcher pattern_args_matches = PATTERN_ARGS_REPLACE.matcher(toParse);
-
+		Matcher pattern_args_matches = PATTERN_MAP.get("argN").matcher(toParse);
+		
 		while(pattern_args_matches.find()) {
 			String result = pattern_args_matches.group();
 			
 			String argID = result.substring("%ARGS:".length(), result.length()-1);
 			int argIDInt = Integer.parseInt(argID);
 			
-			if(args[argIDInt].startsWith("/")) {
-				args[argIDInt] = args[argIDInt].substring(1);
+			if(args.length > argIDInt) {
+				if(args[argIDInt].startsWith("/")) {
+					args[argIDInt] = args[argIDInt].substring(1);
+				}
+				
+			
+				toParse = toParse.replace("%ARGS:" + argID + "%", args[argIDInt]);
 			}
-			toParse = toParse.replace("%ARGS:" + argID + "%", args[argIDInt]);
 		}
-		
+				
 		// Counter specificity
-		Pattern PATTERN_CNTR_REPLACE = Pattern.compile("%CNTR:.*?%");
-		Matcher pattern_cntr_matches = PATTERN_CNTR_REPLACE.matcher(toParse);
+		Matcher pattern_cntr_matches = PATTERN_MAP.get("cntr").matcher(toParse);
+		
 		while(pattern_cntr_matches.find()) {
 			String result = pattern_cntr_matches.group();
 			
@@ -166,8 +195,7 @@ public class MessageParser {
 		}
 		
 		// Counter++ Specificity
-		Pattern PATTERN_CNTRPP_REPLACE = Pattern.compile("%CNTR\\+\\+:.*?%");
-		Matcher pattern_cntrpp_matches = PATTERN_CNTRPP_REPLACE.matcher(toParse);
+		Matcher pattern_cntrpp_matches = PATTERN_MAP.get("cntr++").matcher(toParse);
 		while(pattern_cntrpp_matches.find()) {
 			System.out.println("Hit CNTR++");
 			String result = pattern_cntrpp_matches.group();
@@ -192,8 +220,7 @@ public class MessageParser {
 		}
 		
 		// Counter-- Specificity
-		Pattern PATTERN_CNTRMM_REPLACE = Pattern.compile("%CNTR--:.*?%");
-		Matcher pattern_cntrmm_matches = PATTERN_CNTRMM_REPLACE.matcher(toParse);
+		Matcher pattern_cntrmm_matches = PATTERN_MAP.get("cntr--").matcher(toParse);
 		while(pattern_cntrmm_matches.find()) {
 			String result = pattern_cntrmm_matches.group();
 			
@@ -223,9 +250,7 @@ public class MessageParser {
 		toParse = toParse.replace("%RND%", Integer.toString(rnd.nextInt()));
 		
 		// Advanced replacement (specifying max value)
-		Pattern PATTERN_RND_MAX_REPLACE = Pattern.compile("%RND:\\d*?%");
-		Matcher pattern_rnd_max_matches = PATTERN_RND_MAX_REPLACE.matcher(toParse);
-		debugPatternMatcher(PATTERN_RND_MAX_REPLACE, pattern_rnd_max_matches);
+		Matcher pattern_rnd_max_matches = PATTERN_MAP.get("rndMax").matcher(toParse);
 		
 		while(pattern_rnd_max_matches.find()) {
 			String result = pattern_rnd_max_matches.group();
@@ -238,9 +263,7 @@ public class MessageParser {
 		}
 		
 		// Advanced replacement (specifying min and max values)
-		Pattern PATTERN_RND_MIN_MAX_REPLACE = Pattern.compile("%RND:\\d*?,\\d*?%");
-		Matcher pattern_rnd_min_max_matches = PATTERN_RND_MIN_MAX_REPLACE.matcher(toParse);
-		debugPatternMatcher(PATTERN_RND_MIN_MAX_REPLACE, pattern_rnd_min_max_matches);
+		Matcher pattern_rnd_min_max_matches = PATTERN_MAP.get("rndMinMax").matcher(toParse);
 				
 		while(pattern_rnd_min_max_matches.find()) {
 			String result = pattern_rnd_min_max_matches.group();
@@ -255,22 +278,17 @@ public class MessageParser {
 		}
 		
 		// Channel Users
-		Pattern PATTERN_CHANUSER_REPLACE = Pattern.compile("%CHANUSER%");
-		Matcher pattern_chanuser_replace_matches = PATTERN_CHANUSER_REPLACE.matcher(toParse);
+		Matcher pattern_chanuser_replace_matches = PATTERN_MAP.get("chanuser").matcher(toParse);
 		while(pattern_chanuser_replace_matches.find()) {
 			String result = pattern_chanuser_replace_matches.group();
 			
 			User[] users = Kdkbot.instance.getUsers(info.channel);
-			for(int i = 0; i < users.length; i++) {
-				System.out.println(users[i].getNick());
-			}
 			User randomUser = users[rnd.nextInt(users.length)];
 			
 			toParse = toParse.replace(result, randomUser.getNick());
 		}
 		
-		Pattern PATTERN_CHANUSER_IDX_REPLACE = Pattern.compile("%CHANUSER:\\d*?%");
-		Matcher pattern_chanuser_idx_replace_matches = PATTERN_CHANUSER_IDX_REPLACE.matcher(toParse);
+		Matcher pattern_chanuser_idx_replace_matches = PATTERN_MAP.get("chanuserIdx").matcher(toParse);
 		while(pattern_chanuser_idx_replace_matches.find()) {
 			String result = pattern_chanuser_idx_replace_matches.group();
 			
@@ -283,8 +301,7 @@ public class MessageParser {
 		
 		// Case methods
 		// Upper
-		Pattern PATTERN_UPPER_REPLACE = Pattern.compile("%UPPER:.*?%");
-		Matcher pattern_upper_replace_matches = PATTERN_UPPER_REPLACE.matcher(toParse);
+		Matcher pattern_upper_replace_matches = PATTERN_MAP.get("upper").matcher(toParse);
 		while(pattern_upper_replace_matches.find()) {
 			String result = pattern_upper_replace_matches.group();
 			
@@ -292,8 +309,7 @@ public class MessageParser {
 		}
 		
 		// Lower
-		Pattern PATTERN_LOWER_REPLACE = Pattern.compile("%LOWER:.*?%");
-		Matcher pattern_lower_replace_matches = PATTERN_LOWER_REPLACE.matcher(toParse);
+		Matcher pattern_lower_replace_matches = PATTERN_MAP.get("lower").matcher(toParse);
 		while(pattern_lower_replace_matches.find()) {
 			String result = pattern_lower_replace_matches.group();
 			
@@ -301,8 +317,7 @@ public class MessageParser {
 		}
 		
 		// Leet
-		Pattern PATTERN_LEET_REPLACE = Pattern.compile("%LEET:.*?%");
-		Matcher pattern_leet_replace_matches = PATTERN_LEET_REPLACE.matcher(toParse);
+		Matcher pattern_leet_replace_matches = PATTERN_MAP.get("leet").matcher(toParse);
 		while(pattern_leet_replace_matches.find()) {
 			String result = pattern_leet_replace_matches.group();
 			String messagePiece = result.substring("%LEET:".length(), result.length()-1);
@@ -311,8 +326,7 @@ public class MessageParser {
 		}
 		
 		// Flip
-		Pattern PATTERN_FLIP_REPLACE = Pattern.compile("%FLIP:.*?%");
-		Matcher pattern_flip_replace_matches = PATTERN_FLIP_REPLACE.matcher(toParse);
+		Matcher pattern_flip_replace_matches = PATTERN_MAP.get("flip").matcher(toParse);
 		while(pattern_flip_replace_matches.find()) {
 			String result = pattern_flip_replace_matches.group();
 			String messagePiece = result.substring("%FLIP:".length(), result.length()-1);
@@ -321,8 +335,7 @@ public class MessageParser {
 		}
 		
 		// Hash
-		Pattern PATTERN_HASH_REPLACE = Pattern.compile("%HASH:.*?%");
-		Matcher pattern_hash_replace_matches = PATTERN_HASH_REPLACE.matcher(toParse);
+		Matcher pattern_hash_replace_matches = PATTERN_MAP.get("hash").matcher(toParse);
 		while(pattern_hash_replace_matches.find()) {
 			String result = pattern_hash_replace_matches.group();
 			String messagePiece = result.substring("%HASH:".length(), result.length()-1);
@@ -337,8 +350,7 @@ public class MessageParser {
 		}
 		
 		// Reverse String (ie: abc, cba)
-		Pattern PATTERN_REVERSE_REPLACE = Pattern.compile("%REVERSE:.*?%");
-		Matcher pattern_reverse_replace_matches = PATTERN_REVERSE_REPLACE.matcher(toParse);
+		Matcher pattern_reverse_replace_matches = PATTERN_MAP.get("reverse").matcher(toParse);
 		while(pattern_reverse_replace_matches.find()) {
 			String result = pattern_reverse_replace_matches.group();
 			String messagePiece = result.substring("%REVERSE:".length(), result.length()-1);
@@ -346,8 +358,7 @@ public class MessageParser {
 		}
 		
 		// Pick
-		Pattern PATTERN_PICK_REPLACE = Pattern.compile("%PICK:.*?%");
-		Matcher pattern_pick_replace_matches = PATTERN_PICK_REPLACE.matcher(toParse);
+		Matcher pattern_pick_replace_matches = PATTERN_MAP.get("pick").matcher(toParse);
 		while(pattern_pick_replace_matches.find()) {
 			String result = pattern_pick_replace_matches.group();
 			String messagePiece = result.substring("%PICK:".length(), result.length()-1);
@@ -355,6 +366,14 @@ public class MessageParser {
 			String messageParts[] = messagePiece.split(",");
 			
 			toParse = toParse.replace(result, messageParts[new Random().nextInt(messageParts.length)]);
+		}
+		
+		// We've gone through all of the percent-args, we can clear the remaining ones now
+		Iterator<Entry<String, Pattern>> patternItr = PATTERN_MAP.entrySet().iterator();
+		while (patternItr.hasNext()) {
+			Map.Entry<String, Pattern> pair = patternItr.next();
+			Pattern obj = (Pattern) pair.getValue();
+			toParse = toParse.replaceAll(obj.toString(), "");
 		}
 
 		return toParse;

@@ -1,0 +1,10 @@
+port=6667
+oauth=some_auth_token
+nick=Kdkbot
+logIgnores=(PING :|PONG :|MODE #)
+verbose=true
+irc=irc.twitch.tv
+channels=#kalbintion,#taitfox
+logChatLocation=C:\Projects\Java\kdkbot\logs\
+clientId=some_client_id
+logChat=true

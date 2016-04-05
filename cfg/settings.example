@@ -8,3 +8,4 @@ channels=#kalbintion,#taitfox
 logChatLocation=C:\Projects\Java\kdkbot\logs\
 clientId=some_client_id
 logChat=true
+masterCommands=Kalbintion

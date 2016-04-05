@@ -179,7 +179,7 @@ public class Kdkbot extends PircBot {
     	
     	// Master Commands
     	// TODO: Remove master commands and write web interface
-    	if(sender.equalsIgnoreCase("kalbintion") && info.message.startsWith("||")) {
+    	if(sender.equalsIgnoreCase(botCfg.getSetting("masterCommands")) && info.message.startsWith("||")) {
     		if(message.equalsIgnoreCase("||leavechan")) {
     			// Leave channel
     			this.partChannel(channel, "By order of " + sender + "!");

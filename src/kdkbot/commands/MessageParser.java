@@ -48,7 +48,10 @@ public class MessageParser {
 		PATTERN_MAP.put("hash", Pattern.compile("%HASH:.*?%"));
 		PATTERN_MAP.put("reverse", Pattern.compile("%REVERSE:.*?%"));
 		PATTERN_MAP.put("pick", Pattern.compile("%PICK:.*?%"));
-		
+		PATTERN_MAP.put("pagetitle", Pattern.compile("%PAGETITLE:.*?%"));
+		PATTERN_MAP.put("yturltoken", Pattern.compile("%YTURL%"));
+		// %YTURL% special condition pattern
+		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9]*)"));
 		
 		// Initialize LEET_MAP
 		LEET_MAP.put("a", "@");
@@ -367,6 +370,35 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, messageParts[new Random().nextInt(messageParts.length)]);
 		}
+		
+		// YTURL
+		Matcher pattern_yturl_replace_matches = PATTERN_MAP.get("yturl").matcher(info.message);
+		Matcher pattern_yturl_token_replace_matches = PATTERN_MAP.get("yturltoken").matcher(toParse);
+		while(pattern_yturl_token_replace_matches.find()) {
+			String result = pattern_yturl_token_replace_matches.group();
+			String urlResult = "";
+			
+			if(pattern_yturl_replace_matches.find()) {
+				urlResult = kdkbot.youtubeapi.YoutubeAPI.baseURL + pattern_yturl_replace_matches.group("VidID");
+			} else {
+				urlResult = "";
+			}
+			
+			System.out.println(urlResult);
+			
+			toParse = toParse.replace(result, urlResult);
+		}
+		
+		// Pagetitle
+		Matcher pattern_pagetitle_replace_matches = PATTERN_MAP.get("pagetitle").matcher(toParse);
+		while(pattern_pagetitle_replace_matches.find()) {
+			String result = pattern_pagetitle_replace_matches.group();
+			// messagePiece will contain the URL to look-up
+			String messagePiece = result.substring("%PAGETITLE:".length(), result.length()-1);
+			
+			toParse = toParse.replace(result, kdkbot.webinterface.Webpage.getWebpageTitle(messagePiece));
+		}
+		
 		
 		// We've gone through all of the percent-args, we can clear the remaining ones now
 		Iterator<Entry<String, Pattern>> patternItr = PATTERN_MAP.entrySet().iterator();

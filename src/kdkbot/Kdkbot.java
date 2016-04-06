@@ -17,6 +17,8 @@ import org.jibble.pircbot.*;
 import kdkbot.channel.*;
 import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.*;
+import kdkbot.urbanapi.UrbanAPI;
+import kdkbot.youtubeapi.YoutubeAPI;
 
 public class Kdkbot extends PircBot {
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
@@ -192,6 +194,10 @@ public class Kdkbot extends PircBot {
     			prevChanSetting = prevChanSetting.replace(",,", ",");
     			
     			botCfg.saveSettings();
+    		} else if(message.startsWith("||yttest ")) {
+    			Kdkbot.instance.sendMessage(channel, "Linked video: " + YoutubeAPI.getVideoTitle(info.getSegments()[1]));
+    		} else if(message.startsWith("||ytidtest ")) {
+    			Kdkbot.instance.sendMessage(channel, "Linked video: " + YoutubeAPI.getVideoTitleFromID(info.getSegments()[1]));
     		} else if(message.startsWith("||debug disable")) {
     			dbg.disable();
     			this.sendMessage(channel, "Disabled internal debug messages");

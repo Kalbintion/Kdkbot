@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 public class Webpage {
 	public static String getWebpageContents(String url) {
 		try {
@@ -37,5 +41,16 @@ public class Webpage {
 		}
 		
 		return contents.toString();
+	}
+	
+	public static String getWebpageTitle(String url) {
+		Document doc;
+		try {
+			doc = Jsoup.connect(url).get();
+			Element ele = doc.select("title").get(0);
+			return ele.text();
+		} catch (IOException e) {
+			return "";
+		}
 	}
 }

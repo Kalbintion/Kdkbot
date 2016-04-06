@@ -135,7 +135,7 @@ public class Filters {
 						case "message":
 						case "msg":
 						case "4":
-							filters.add(new Filter(parts[3], TYPE.MSG.ordinal(), parts[3]));
+							filters.add(new Filter(parts[4], TYPE.MSG.ordinal(), parts[3]));
 							newAdditionalInfo = " Use command 'filter edit <name> info <msg> to add response message.";
 							break;
 					}

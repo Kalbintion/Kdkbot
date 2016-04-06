@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 public final class YoutubeAPI {
-	private static String baseURL = "https://www.youtube.com/watch?v=";
+	public static String baseURL = "https://www.youtube.com/watch?v=";
 	public static String getVideoTitle(String url) {
 		Document doc;
 		try {

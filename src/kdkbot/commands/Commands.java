@@ -11,12 +11,14 @@ import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
 import kdkbot.commands.stats.Stats;
 import kdkbot.commands.strings.*;
+import kdkbot.urbanapi.UrbanAPI;
 
 public class Commands {
 	// Necessary variable for instance referencing
 	public Channel chan;
 	
 	// Sub-system commands managers
+	// #TODO: Figure out way to add these to the InternalCommand list since these internal commands are a bit more in-depth then the "Additional Commands" comment section
 	public Quotes quotes;
 	public Stats stats;
 	public StringCommands commandStrings;
@@ -176,6 +178,7 @@ public class Commands {
 			this.chan.forwarders.add(new Forwarder(toChan));
 		}
 		// Filter Bypass
+		// TODO: Errors on _permit <username>_ but not _permit <username> <times>_
 		else if(info.senderLevel >= cmdPermit.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase("permit")) {
 			try {
@@ -192,6 +195,12 @@ public class Commands {
 				Kdkbot.instance.sendMessage(info.channel, info.sender + ": " + args[2] + " is not a valid number to permit user " + args[1]);
 			}
 			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
+		}
+		// Urban Look-up
+		else if (info.senderLevel >= 2 &&
+					true &&
+					coreWord.equalsIgnoreCase("urban")) {
+			Kdkbot.instance.sendMessage(info.channel, UrbanAPI.getTopDefinition(info.getSegments(2)[1]));
 		}
 		// Quotes
 		else if (info.senderLevel >= quotes.getPermissionLevel() &&

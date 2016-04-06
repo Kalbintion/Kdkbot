@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class UrbanAPI {	
+public final class UrbanAPI {	
 	private static String baseURL = "http://www.urbandictionary.com/define.php?term=";
 	public static String getTopDefinition(String lookup) {
 		try {

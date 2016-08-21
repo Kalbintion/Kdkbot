@@ -50,6 +50,7 @@ public class MessageParser {
 		PATTERN_MAP.put("pick", Pattern.compile("%PICK:.*?%"));
 		PATTERN_MAP.put("pagetitle", Pattern.compile("%PAGETITLE:.*?%"));
 		PATTERN_MAP.put("yturltoken", Pattern.compile("%YTURL%"));
+		PATTERN_MAP.put("join", Pattern.compile("%JOIN:.*?,.*?,.*?%"));
 		// %YTURL% special condition pattern
 		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9]*)"));
 		
@@ -370,6 +371,33 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, messageParts[new Random().nextInt(messageParts.length)]);
 		}
+		
+		// Join
+		Matcher pattern_join_replace_matches = PATTERN_MAP.get("join").matcher(toParse);
+		while(pattern_join_replace_matches.find()) {
+			System.out.println("Found JOIN");
+			String result = pattern_join_replace_matches.group();
+			String messageParts[] = result.substring("%JOIN:".length(), result.length()-1).split(",", 3);
+			
+			System.out.println("Size of messageParts: " + messageParts.length);
+			for (int i=0; i< messageParts.length; i++) {
+				System.out.println("messageParts[" + i + "] = " + messageParts[i]);
+			}
+			
+			String messageEles[] = messageParts[0].split(messageParts[1]);
+			
+			StringBuffer sb = new StringBuffer();
+			System.out.println("Size of JOIN array: " + messageEles.length);
+			for (int i=0; i < messageEles.length; i++) {
+				System.out.println("Ele #" + i + " is " + messageEles[i]);
+				if (i != 0) sb.append(messageParts[2]);
+				sb.append(messageEles[i]);
+				System.out.println("Total string thus far is: " + sb.toString());
+			}
+			
+			toParse = toParse.replace(result, sb.toString());
+		}
+		
 		
 		// YTURL
 		Matcher pattern_yturl_replace_matches = PATTERN_MAP.get("yturl").matcher(info.message);

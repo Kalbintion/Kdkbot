@@ -27,7 +27,7 @@ public class Commands {
 	
 	// Additional Commands
 	private InternalCommand cmdChannel = new InternalCommand("rankChannel", "5", Integer.class);
-	private InternalCommand cmdPerm = new InternalCommand("rankPerm", "5", Integer.class);
+	private InternalCommand cmdPerm = new InternalCommand("rankPerm", "3", Integer.class);
 	private InternalCommand cmdForward = new InternalCommand("rankForward", "4", Integer.class);
 	private InternalCommand cmdPermit = new InternalCommand("rankPermit", "3", Integer.class);
 	private InternalCommand cmdFilter = new InternalCommand("rankFilter", "5", Integer.class);
@@ -215,15 +215,6 @@ public class Commands {
 		}
 		else if(coreWord.equalsIgnoreCase("stats")) {
 			stats.executeCommand(info);
-		}
-		// Multitwitch
-		else if (info.senderLevel >= 2 &&
-				coreWord.equalsIgnoreCase("multi")) {
-			String multiOut = "";
-			for(int i = 1; i < args.length; i++) {
-				multiOut += args[i] + "/";
-			}
-			Kdkbot.instance.sendMessage(info.channel, "http://www.multitwitch.tv/" + multiOut);
 		}
 		// Custom Commands
 		else if(info.senderLevel >= 1 &&

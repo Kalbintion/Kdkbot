@@ -1,5 +1,9 @@
 package kdkbot;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MessageInfo {
 	public String channel;
 	public String sender;
@@ -43,5 +47,29 @@ public class MessageInfo {
 	 */
 	public String[] getSegments(int limit) {
 		return this.message.split(" ", limit);
+	}
+	
+	/**
+	 * Parses the provided message class variable for URIs, and returns all of them found.
+	 * @return An ArrayList<String> containing all of the found URIs within the message variable
+	 */
+	public ArrayList<String> getURLsFromMessage() {
+		Pattern url = Pattern.compile("(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?");
+		Matcher url_matcher = url.matcher(message);
+		ArrayList<String> urls = new ArrayList<String>();
+		
+		while(url_matcher.find()) {
+			urls.add(url_matcher.group());
+		}
+		
+		return urls;
+	}
+	
+	/**
+	 * Parses the provided message class variable for URIs, and returns only the first one.
+	 * @return A String containing the first URI that was found in the message.
+	 */
+	public String getURLFromMessage() {
+		return getURLsFromMessage().get(0);
 	}
 }

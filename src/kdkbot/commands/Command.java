@@ -8,6 +8,7 @@ public abstract class Command {
 	private CommandPermissionLevel cpl;
 	private boolean isAvailable;
 	private String helpMessage;
+	private int lastCall;
 	
 	/**
 	 * Initializes a new command with nothing defaulted
@@ -119,5 +120,21 @@ public abstract class Command {
 	 */
 	public String getHelpMessage() {
 		return this.helpMessage;
+	}
+	
+	/**
+	 * Gets this commands last call time, otherwise returns 0
+	 * @return The time this command was last called
+	 */
+	public int getLastCall() {
+		return lastCall;
+	}
+	
+	/**
+	 * Sets this commands last call time
+	 * @param time The time to set the last call to
+	 */
+	public void setLastCall(int time) {
+		lastCall = time;
 	}
 }

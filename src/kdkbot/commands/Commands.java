@@ -218,6 +218,11 @@ public class Commands {
 			stats.executeCommand(info);
 		}
 		else if(coreWord.equalsIgnoreCase("stats")) {
+			info.message = "stats all " + info.message;
+			stats.executeCommand(info);
+		}
+		else if(coreWord.equalsIgnoreCase("msges")) {
+			info.message ="stats msges " + info.message;
 			stats.executeCommand(info);
 		}
 		// Custom Commands

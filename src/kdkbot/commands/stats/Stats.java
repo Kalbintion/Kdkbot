@@ -18,23 +18,35 @@ public class Stats {
 	public void executeCommand(MessageInfo info) {
 		String[] args = info.getSegments();
 		String subCmd = args[1];
-
+		UserStat userstat = Kdkbot.instance.getChannel(channel).stats.userStats.get(info.sender);
+		if(userstat == null) {
+			failedToFind(info);
+			return;
+		}
+		
 		switch(subCmd) {
 			case "time":
-				UserStat userstat = Kdkbot.instance.getChannel(channel).stats.userStats.get(info.sender);
-				if(userstat == null) {
-					Kdkbot.instance.sendMessage(channel, "Could not retreive user stats for " + info.sender);
+				if(userstat.firstJoin == 0) {
+					Kdkbot.instance.sendMessage(channel, info.sender + ": You have yet to spend enough time here to have been tracked!");
 				} else {
-					if(userstat.firstJoin == 0) {
-						Kdkbot.instance.sendMessage(channel, info.sender + ": You have yet to spend enough time here to have been tracked!");
-					} else {
-						Kdkbot.instance.sendMessage(channel, info.sender + ": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat));
-					}
+					Kdkbot.instance.sendMessage(channel, info.sender + ": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat));
 				}
+				break;
+			case "msges":
+				Kdkbot.instance.sendMessage(channel, info.sender +": You have sent " + getMessageCount(userstat) + " messages, containing " + getCharacterCount(userstat) + " characters.");			
+				break;
+			case "char":
+				Kdkbot.instance.sendMessage(channel, info.sender + ": You have sent " + getCharacterCount(userstat) + " characters.");
+				break;
+			case "all":
+				Kdkbot.instance.sendMessage(channel, info.sender +": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat) + ", having sent " + getMessageCount(userstat) + " messages containing " + getCharacterCount(userstat) + " characters.");
 				break;
 		}
 	}
 	
+	public void failedToFind(MessageInfo info) {
+		Kdkbot.instance.sendMessage(channel, "Could not retriever user stats for " + info.sender);
+	}
 
 	public String getFirstJoinDate(UserStat user) {
 		return unixToTimestamp(user.firstJoin, "d/M/y");
@@ -42,6 +54,18 @@ public class Stats {
 	
 	public String getMessageCount(UserStat user) {
 		return String.valueOf(user.messageCount);
+	}
+	
+	public long getMessageCountValue(UserStat user) {
+		return user.messageCount;
+	}
+	
+	public String getCharacterCount(UserStat user) {
+		return String.valueOf(user.characterCount);
+	}
+	
+	public long getCharacterCountValue(UserStat user) {
+		return user.characterCount;
 	}
 	
 	public String getLastJoinDate(UserStat user) {

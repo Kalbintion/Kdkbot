@@ -1,0 +1,11 @@
+cfg/#*
+cfg/settings.cfg
+Start.bat
+bin/
+lib/
+logs/
+pircbot-1.5.0/
+.classpath
+.metadata/
+.project
+.settings/

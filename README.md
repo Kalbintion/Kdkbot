@@ -2,7 +2,7 @@
 KDKBot is an IRC bot designed for the Twitch.tv website. Primarily developed by Kalbintion, this bot came about as a replacement for other bots that are being used on the Twitch.tv network.
 
 # Dependencies
-This bot has two dependences:
+This bot has multiple dependences:
 * PIRCBot: http://www.jibble.org/pircbot.php
 * GSON: https://code.google.com/p/google-gson/
 * JSOUP: http://jsoup.org/

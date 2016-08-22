@@ -106,6 +106,10 @@ public class Commands {
 		}
 	}
 	
+	/**
+	 * Command handler for processing messages
+	 * @param info MessageInfo containing the message to process
+	 */
 	public void commandHandler(MessageInfo info) {
 		Kdkbot.instance.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
 		

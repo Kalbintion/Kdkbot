@@ -62,9 +62,14 @@ public class StringCommands {
 	
 	public String addCommand(String trigger, String message, String level) {	
 		try {
-			commands.add(new StringCommand(Kdkbot.instance, trigger, message, Integer.parseInt(level), true));
+			StringCommand toAdd = new StringCommand(Kdkbot.instance, trigger, message, Integer.parseInt(level), true);
+			String outMsg = "Added new command " + trigger;
+			if(getCommand(trigger) != null) {
+				outMsg = "Added additional command " + trigger + " - All instances of this will be executed!";
+			}
+			commands.add(toAdd);
 			this.saveCommands();
-			return "Added new command " + trigger;
+			return outMsg;
 		} catch (NumberFormatException e) {
 			return "Failed to add command. " + level + " is not an integer. Syntax: commands new <trigger> <rank> <message>";
 		}		

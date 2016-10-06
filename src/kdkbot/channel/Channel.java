@@ -209,7 +209,12 @@ public class Channel {
 	}
 	
 	public void sendMessage(String message) {
-		Kdkbot.instance.sendMessage(channel, cfgChan.getSetting("msgPrefix") + message + cfgChan.getSetting("msgSuffix"));
+		String msgPrefix = cfgChan.getSetting("msgPrefix");
+		String msgSuffix = cfgChan.getSetting("msgSuffix");
+		if(msgPrefix.length() > 0) { msgPrefix += " "; } // Append a space
+		if(msgSuffix.length() > 0) { msgSuffix = " " + msgSuffix; } // Prepend a space
+		
+		Kdkbot.instance.sendMessage(channel, msgPrefix + message + msgSuffix);
 	}
 	
 	/**

@@ -127,32 +127,56 @@ public class Commands {
 		if(info.senderLevel >= cmdChannel.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase("channel")) {
 			// Channel settings
-			if(args[1].equalsIgnoreCase("commandProcessing")) {
-				chan.cfgChan.setSetting("commandProcessing", String.valueOf(Boolean.parseBoolean(args[2])));
-				chan.commandProcessing = Boolean.parseBoolean(args[2]);
-			} else if(args[1].equalsIgnoreCase("commandPrefix")) {
-				chan.cfgChan.setSetting("commandPrefix", args[2]);
-				chan.commandPrefix = args[2];
-			} else if(args[1].equalsIgnoreCase("logChat")) {
-				chan.cfgChan.setSetting("logChat", args[2]);
-			} else if(args[1].equalsIgnoreCase("rankQuotes")) {
-				chan.cfgChan.setSetting("rankQuotes", String.valueOf(rankNameToInt(args[2])));
-				quotes.setPermissionLevel(rankNameToInt(args[2]));
-			} else if(args[1].equalsIgnoreCase("rankAMA")) {
-				chan.cfgChan.setSetting("rankAMA", String.valueOf(rankNameToInt(args[2])));
-				amas.setPermissionLevel(rankNameToInt(args[2]));
-			} else if(args[1].equalsIgnoreCase("rankCounters")) {
-				chan.cfgChan.setSetting("rankCounters", String.valueOf(rankNameToInt(args[2])));
-				counters.setPermissionLevel(rankNameToInt(args[2]));
-			} else if(args[1].equalsIgnoreCase("rankChannel")) {
-				chan.cfgChan.setSetting("rankChannel", String.valueOf(rankNameToInt(args[2])));
-			} else if(args[1].equalsIgnoreCase("msgPrefix")) {
-				chan.cfgChan.setSetting("msgPrefix", args[2]);
-			} else if(args[2].equalsIgnoreCase("msgSuffix")) {
-				chan.cfgChan.setSetting("msgSuffix", args[2]);
-			}
 			
-			chan.sendMessage("Channel setting " + args[1] + " set to " + args[2]);
+			try {
+				boolean validCommand = true;
+				if(args[1].equalsIgnoreCase("commandProcessing")) {
+					chan.cfgChan.setSetting("commandProcessing", String.valueOf(Boolean.parseBoolean(args[2])));
+					chan.commandProcessing = Boolean.parseBoolean(args[2]);
+				} else if(args[1].equalsIgnoreCase("commandPrefix")) {
+					chan.cfgChan.setSetting("commandPrefix", args[2]);
+					chan.commandPrefix = args[2];
+				} else if(args[1].equalsIgnoreCase("logChat")) {
+					chan.cfgChan.setSetting("logChat", args[2]);
+				} else if(args[1].equalsIgnoreCase("rankQuotes")) {
+					chan.cfgChan.setSetting("rankQuotes", String.valueOf(rankNameToInt(args[2])));
+					quotes.setPermissionLevel(rankNameToInt(args[2]));
+				} else if(args[1].equalsIgnoreCase("rankAMA")) {
+					chan.cfgChan.setSetting("rankAMA", String.valueOf(rankNameToInt(args[2])));
+					amas.setPermissionLevel(rankNameToInt(args[2]));
+				} else if(args[1].equalsIgnoreCase("rankCounters")) {
+					chan.cfgChan.setSetting("rankCounters", String.valueOf(rankNameToInt(args[2])));
+					counters.setPermissionLevel(rankNameToInt(args[2]));
+				} else if(args[1].equalsIgnoreCase("rankChannel")) {
+					chan.cfgChan.setSetting("rankChannel", String.valueOf(rankNameToInt(args[2])));
+				} else if(args[1].equalsIgnoreCase("msgPrefix")) {
+					if(args.length < 3) { 
+						chan.cfgChan.setSetting("msgPrefix", "");
+					} else {
+						chan.cfgChan.setSetting("msgPrefix", args[2]);
+					}
+				} else if(args[1].equalsIgnoreCase("msgSuffix")) {
+					if(args.length < 3) { 
+						chan.cfgChan.setSetting("msgSuffix", "");
+					} else {
+						chan.cfgChan.setSetting("msgSuffix", args[2]);
+					}
+				} else {
+					validCommand = false;
+				}
+				
+				if(validCommand) {
+					if(args.length < 3) {
+						chan.sendMessage("Channel setting " + args[1] + " set to nothing");
+					} else {
+						chan.sendMessage("Channel setting " + args[1] + " set to " + args[2]);
+					}
+				} else {
+					chan.sendMessage("Channel setting " + args[1] + " was not recognized.");
+				}
+			} catch(ArrayIndexOutOfBoundsException e) {
+				chan.sendMessage("Could not successfully set channel setting. Please double-check input.");
+			}
 		}
 		
 		// Command Processing Breaking

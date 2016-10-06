@@ -107,7 +107,8 @@ public class Stats {
 			
 			user.lastLeave = info.timestamp;
 			user.timeSpent += user.lastLeave - user.lastJoin;
-			// Economy hooks into here for timespent credits
+			
+			// TODO: Economy hooks into here for timespent credits
 		} else {
 			user.messageCount++;
 			user.characterCount += info.message.toCharArray().length;

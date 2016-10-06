@@ -22,7 +22,7 @@ public class StringCommand extends Command {
 	
 	public void executeCommand(MessageInfo info) {
 		Kdkbot.instance.dbg.writeln(this, "Attempting to execute command " + this.getTrigger() + " to channel " + info.channel);
-		Kdkbot.instance.sendMessage(info.channel, MessageParser.parseMessage(this.messageToSend, info));
+		Kdkbot.instance.getChannel(info.channel).sendMessage(MessageParser.parseMessage(this.messageToSend, info));
 	}
 	
 	public String getMessage() {

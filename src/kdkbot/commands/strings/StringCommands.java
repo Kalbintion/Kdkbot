@@ -115,7 +115,7 @@ public class StringCommands {
 						for(int i = 0 ; i < csArgs.length; i++) {
 							Kdkbot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 						}
-						Kdkbot.instance.sendMessage(channel, addCommand(csArgs[2], csArgs[4], csArgs[3]));
+						Kdkbot.instance.getChannel(channel).sendMessage(addCommand(csArgs[2], csArgs[4], csArgs[3]));
 					}
 					break;
 				case "view":
@@ -134,11 +134,11 @@ public class StringCommands {
 							StringCommand strCmd = strCmdIter.next();
 							if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 								if(type.equalsIgnoreCase("available")) {
-									Kdkbot.instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s availability is set to " + strCmd.getAvailability());
+									Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s availability is set to " + strCmd.getAvailability());
 								} else if(type.equalsIgnoreCase("level")) {
-									Kdkbot.instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s permission level is set to " + strCmd.getPermissionLevel());
+									Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s permission level is set to " + strCmd.getPermissionLevel());
 								} else if(type.equalsIgnoreCase("message")) {
-									Kdkbot.instance.sendMessage(channel, "The command " + strCmd.getTrigger() + "'s message is set to: " + strCmd.messageToSend);
+									Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s message is set to: " + strCmd.messageToSend);
 								}
 								break;
 							}
@@ -163,25 +163,25 @@ public class StringCommands {
 							if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 								if(info.senderLevel >= strCmd.getPermissionLevel()) {
 									if(type.equalsIgnoreCase("trigger")) {
-										Kdkbot.instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
+										Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
 										strCmd.setTrigger(toValue);
 									} else if(type.equalsIgnoreCase("rank")) {
-										Kdkbot.instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
+										Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
 										strCmd.setPermissionLevel(Integer.parseInt(toValue));
 									} else if(type.equalsIgnoreCase("message")) {
-										Kdkbot.instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + "'s message.");
+										Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s message.");
 										strCmd.messageToSend = toValue;
 									} else if(type.equalsIgnoreCase("available")) {
 										try {
 											boolean bool = Boolean.parseBoolean(csArgs[4]);
-											Kdkbot.instance.sendMessage(channel, info.sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
+											Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
 											strCmd.setAvailability(bool);
 										} catch(Exception e) {
-											Kdkbot.instance.sendMessage(channel, "Unable to discern " + csArgs[4] + " as a true/false value.");
+											Kdkbot.instance.getChannel(channel).sendMessage("Unable to discern " + csArgs[4] + " as a true/false value.");
 										}
 									}
 								} else {
-									Kdkbot.instance.sendMessage(channel, info.sender + ", you do not have the required permission to change this command.");
+									Kdkbot.instance.getChannel(channel).sendMessage(info.sender + ", you do not have the required permission to change this command.");
 								}
 								break;
 							}
@@ -191,7 +191,7 @@ public class StringCommands {
 					break;
 				case "remove":
 					if(info.senderLevel >= 3) {
-						Kdkbot.instance.sendMessage(channel, removeCommand(info.getSegments()[2]));
+						Kdkbot.instance.getChannel(channel).sendMessage(removeCommand(info.getSegments()[2]));
 						this.saveCommands();
 					}
 					break;
@@ -306,7 +306,7 @@ public class StringCommands {
 						if(!defaultCommands.contains(nextCommand)) {
 							if(outMessage.length() + nextCommand.length() > 400) {
 								// Length too long, send message and reset string
-								Kdkbot.instance.sendMessage(channel, outMessage.toString());
+								Kdkbot.instance.getChannel(channel).sendMessage(outMessage.toString());
 								outMessage = new StringBuilder(400);
 							} else {
 								outMessage.append(nextCommand + ", ");
@@ -317,7 +317,7 @@ public class StringCommands {
 					// Trim off last two characters and 
 					// Finally send the last bit of info to the channel
 					if(outMessage.length() > 2) {
-						Kdkbot.instance.sendMessage(channel, outMessage.substring(0, outMessage.length() - 2));
+						Kdkbot.instance.getChannel(channel).sendMessage(outMessage.substring(0, outMessage.length() - 2));
 					} else {
 						// We shouldnt have a message to send
 					}

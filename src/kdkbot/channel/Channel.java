@@ -73,6 +73,16 @@ public class Channel {
 			
 			this.logChat = Boolean.parseBoolean(cfgChan.getSetting("logChat"));
 			
+			// Message Prefix?
+			if(cfgChan.getSetting("msgPrefix") == null) {
+				cfgChan.setSetting("msgPrefix", "");
+			}
+			
+			// Mesage Suffix?
+			if(cfgChan.getSetting("msgSuffix") == null) {
+				cfgChan.setSetting("msgSuffix", "");
+			}
+			
 			// Filters, Stats, etc
 			this.filters = new Filters(channel);
 			this.filters.loadFilters();
@@ -198,6 +208,14 @@ public class Channel {
 		cfgPerms.saveSettings(this.senderRanks);
 	}
 	
+	public void sendMessage(String message) {
+		Kdkbot.instance.sendMessage(channel, cfgChan.getSetting("msgPrefix") + message + cfgChan.getSetting("msgSuffix"));
+	}
+	
+	/**
+	 * 
+	 * @param info
+	 */
 	public void messageHandler(MessageInfo info) {
 		// User Stats
 		stats.handleMessage(info);

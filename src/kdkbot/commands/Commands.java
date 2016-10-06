@@ -74,7 +74,7 @@ public class Commands {
 			try {
 				this.quotes.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankQuotes")));
 			} catch (NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
+				chan.sendMessage("This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
 				this.quotes.setAvailability(false);
 			}
 			
@@ -85,7 +85,7 @@ public class Commands {
 			try {
 				this.cmdFilter.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankFilter")));
 			} catch(NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankFilter setting is invalid! Got " + chan.cfgChan.getSetting("rankFilter"));
+				chan.sendMessage("This channels rankFilter setting is invalid! Got " + chan.cfgChan.getSetting("rankFilter"));
 				this.cmdFilter.setAvailability(false);
 			}
 			
@@ -96,7 +96,7 @@ public class Commands {
 			try {
 				this.amas.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankAMA")));
 			} catch (NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankAMA setting is invalid! Got " + chan.cfgChan.getSetting("rankAMA"));
+				chan.sendMessage("This channels rankAMA setting is invalid! Got " + chan.cfgChan.getSetting("rankAMA"));
 				this.amas.setAvailability(false);
 			}
 			
@@ -146,9 +146,13 @@ public class Commands {
 				counters.setPermissionLevel(rankNameToInt(args[2]));
 			} else if(args[1].equalsIgnoreCase("rankChannel")) {
 				chan.cfgChan.setSetting("rankChannel", String.valueOf(rankNameToInt(args[2])));
+			} else if(args[1].equalsIgnoreCase("msgPrefix")) {
+				chan.cfgChan.setSetting("msgPrefix", args[2]);
+			} else if(args[2].equalsIgnoreCase("msgSuffix")) {
+				chan.cfgChan.setSetting("msgSuffix", args[2]);
 			}
 			
-			Kdkbot.instance.sendMessage(info.channel, "Channel setting " + args[1] + " set to " + args[2]);
+			chan.sendMessage("Channel setting " + args[1] + " set to " + args[2]);
 		}
 		
 		// Command Processing Breaking
@@ -163,14 +167,14 @@ public class Commands {
 					toRank = rankNameToInt(args[3]);
 					
 					if(info.senderLevel < toRank) {
-						Kdkbot.instance.sendMessage(info.channel, info.sender + ": You cannot set someones rank to a higher one than your own");
+						chan.sendMessage(info.sender + ": You cannot set someones rank to a higher one than your own");
 					} else {
 						chan.setSenderRank(args[2], toRank);
-						Kdkbot.instance.sendMessage(info.channel, "Set " + args[2] + " to permission rank: " + args[3] + ".");
+						chan.sendMessage("Set " + args[2] + " to permission rank: " + args[3] + ".");
 					}
 					break;
 				case "get":
-					Kdkbot.instance.sendMessage(info.channel, "The user " + args[2] + " is set to " + chan.getSenderRank(args[2]));
+					chan.sendMessage("The user " + args[2] + " is set to " + chan.getSenderRank(args[2]));
 					break;
 			}
 		}
@@ -194,9 +198,9 @@ public class Commands {
 					bypassLimit = 1;
 				}
 				chan.filterBypass.put(user, bypassLimit);
-				Kdkbot.instance.sendMessage(info.channel, info.sender + " has permitted user " + args[1] + " to bypass all filters " + args[2] + " time(s)");
+				chan.sendMessage(info.sender + " has permitted user " + args[1] + " to bypass all filters " + args[2] + " time(s)");
 			} catch (NumberFormatException e) {
-				Kdkbot.instance.sendMessage(info.channel, info.sender + ": " + args[2] + " is not a valid number to permit user " + args[1]);
+				chan.sendMessage(info.sender + ": " + args[2] + " is not a valid number to permit user " + args[1]);
 			}
 			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
 		}
@@ -204,7 +208,7 @@ public class Commands {
 		else if (info.senderLevel >= 2 &&
 					true &&
 					coreWord.equalsIgnoreCase("urban")) {
-			Kdkbot.instance.sendMessage(info.channel, UrbanAPI.getTopDefinition(info.getSegments(2)[1]));
+			chan.sendMessage(UrbanAPI.getTopDefinition(info.getSegments(2)[1]));
 		}
 		// Quotes
 		else if (info.senderLevel >= quotes.getPermissionLevel() &&
@@ -312,7 +316,7 @@ public class Commands {
 			try {
 				this.quotes.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankQuotes")));
 			} catch (NumberFormatException e) {
-				Kdkbot.instance.sendMessage(channel, "This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
+				chan.sendMessage("This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
 				this.quotes.setAvailability(false);
 			}
 	 */

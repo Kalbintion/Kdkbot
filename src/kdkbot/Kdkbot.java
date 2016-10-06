@@ -62,7 +62,19 @@ public class Kdkbot extends PircBot {
 		this.setName(botCfg.getSetting("nick"));
 		this._verbose = Boolean.parseBoolean(botCfg.getSetting("verbose"));
 		this.setVerbose(_verbose);
-		this.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
+		
+		boolean connectionSent = false;
+		
+		do {
+			try {
+				this.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
+				connectionSent = true;
+			} catch(UnknownHostException e) {
+				logger.logln("Failed to resolve host for " + botCfg.getSetting("irc") + ". Retrying in 10 seconds.");
+				Thread.sleep(10 * 1000); // 10s * 1000ms
+			}
+		} while (connectionSent = false);
+		
 		messageDuplicatorList = new HashMap<String, ArrayList<String>>();
 
 		// Get channels
@@ -84,9 +96,12 @@ public class Kdkbot extends PircBot {
 	 */
 	@Override
 	public void onDisconnect() {
+		logger.log("Bot has disconnected. Will be attempting to re-join.");
 		boolean hasReconnected = false;
+		int retryAttempts = 1;
 		
 		do {
+			logger.logln("Reconnection retry #" + retryAttempts);
 			try {
 				this.reconnect();
 				// Iterator<Channel> chanIter = CHANS.iterator();
@@ -99,16 +114,27 @@ public class Kdkbot extends PircBot {
 				
 				hasReconnected = true;
 			} catch (NickAlreadyInUseException e) {
-				e.printStackTrace();
+				logger.logln("Could not re-connect due to nickname already in use.");
 			} catch (UnknownHostException e) {
-				
+				logger.logln("Failed to resolve host for " + botCfg.getSetting("irc") + ".");
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (IrcException e) {
-				e.printStackTrace();
+				logger.logln("Could not reconnect to the irc server, disallowed.");
 			}
+			
+			// Only sleep if we havent reconnected, otherwise we can safely exit this function.
+			if(!hasReconnected) {
+				try {
+					// 10s * 1000ms
+					Thread.sleep(10 * 1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			retryAttempts++;
+			
 		} while(!hasReconnected);
-
 	}
 	
 	/**
@@ -163,6 +189,10 @@ public class Kdkbot extends PircBot {
     		}
     	}
     	CHANS.get(target).messageHandler(new MessageInfo(target, sender, action, login, hostname, CHANS.get(target).getSenderRank(sender)));
+    }
+    
+    public void onUnknown(String msg) {
+    	System.out.println("UNKNOWN MESSAGE: " + msg);
     }
     
 	/**

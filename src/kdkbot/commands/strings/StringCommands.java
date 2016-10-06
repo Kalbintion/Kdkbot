@@ -107,6 +107,7 @@ public class StringCommands {
 	public void executeCommand(MessageInfo info) {
 		if(info.getSegments().length > 1) {
 			switch(info.getSegments()[1]) {
+				case "add":
 				case "new":
 					if(info.senderLevel >= 3 ) {
 						String[] csArgs = info.message.split(" ", 5);

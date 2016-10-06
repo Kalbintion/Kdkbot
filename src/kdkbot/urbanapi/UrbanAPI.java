@@ -1,7 +1,6 @@
 package kdkbot.urbanapi;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

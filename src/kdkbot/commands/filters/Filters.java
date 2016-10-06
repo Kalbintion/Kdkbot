@@ -147,6 +147,7 @@ public class Filters {
 				parts = info.getSegments(3);
 				try {
 					int idx = Integer.parseInt(parts[2]);
+					
 					this.filters.remove(idx);
 					Kdkbot.instance.sendMessage(this.channel, "Removed filter #" + parts[2]);
 				} catch(NumberFormatException e) {
@@ -160,6 +161,9 @@ public class Filters {
 							break;
 						}
 					}
+				} catch(IndexOutOfBoundsException e) {
+					// IOOB exception
+					Kdkbot.instance.sendMessage(this.channel, "Provided index (" + parts[2] + ") could not be found due to it being larger than the number of filters.");
 				}
 				
 				saveFilters();

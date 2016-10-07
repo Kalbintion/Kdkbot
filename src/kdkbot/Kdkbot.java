@@ -14,6 +14,11 @@ import java.util.regex.Pattern;
 
 import org.jibble.pircbot.*;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
+
 import kdkbot.channel.*;
 import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.*;
@@ -33,6 +38,10 @@ public class Kdkbot extends PircBot {
 	public Debugger dbg;
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
+	
+	// Twitter related variables
+	boolean useTwitter = true;
+	static Twitter status;
 	
     /**
      * Initialization of the basic bot
@@ -89,6 +98,18 @@ public class Kdkbot extends PircBot {
 		
 		// Instantiate a MessageParser
 		new MessageParser();
+		
+		// Setup Twitter interface
+		if (useTwitter) {
+			ConfigurationBuilder cb = new ConfigurationBuilder();
+			cb.setDebugEnabled(true)
+			  .setOAuthConsumerKey(botCfg.getSetting("twitterOAuthConsumer"))
+			  .setOAuthConsumerSecret(botCfg.getSetting("twitterOAuthConsumerSecret"))
+			  .setOAuthAccessToken(botCfg.getSetting("twitterOAuth"))
+			  .setOAuthAccessTokenSecret(botCfg.getSetting("twitterOAuthSecret"));
+			TwitterFactory tf = new TwitterFactory(cb.build());
+			status = tf.getInstance();
+		}
 	}
 
 	/**
@@ -97,12 +118,18 @@ public class Kdkbot extends PircBot {
 	@Override
 	public void onDisconnect() {
 		logger.log("Bot has disconnected. Will be attempting to re-join.");
+
 		boolean hasReconnected = false;
 		int retryAttempts = 1;
 		
 		do {
 			logger.logln("Reconnection retry #" + retryAttempts);
+
 			try {
+				if((retryAttempts - 1) % 100 == 0) {
+					status.updateStatus("I have disconnected from twitch! Attempting to reconnect. #kdkbot");
+				}
+				
 				this.reconnect();
 				// Iterator<Channel> chanIter = CHANS.iterator();
 				Iterator<Entry<String, Channel>> chanIter = CHANS.entrySet().iterator();
@@ -121,6 +148,8 @@ public class Kdkbot extends PircBot {
 				e.printStackTrace();
 			} catch (IrcException e) {
 				logger.logln("Could not reconnect to the irc server, disallowed.");
+			} catch (TwitterException e) {
+				
 			}
 			
 			// Only sleep if we havent reconnected, otherwise we can safely exit this function.
@@ -135,6 +164,12 @@ public class Kdkbot extends PircBot {
 			retryAttempts++;
 			
 		} while(!hasReconnected);
+		
+		try {
+			status.updateStatus("I have successfully reconnect! #kdkbot");
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

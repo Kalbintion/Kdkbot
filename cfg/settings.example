@@ -9,3 +9,7 @@ logChatLocation=C:\Projects\Java\kdkbot\logs\
 clientId=some_client_id
 logChat=true
 masterCommands=Kalbintion
+twitterOAuth=
+twitterOAuthSecret=
+twitterOAuthConsumer=
+twitterOAuthConsumerSecret=

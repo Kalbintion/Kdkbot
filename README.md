@@ -6,6 +6,7 @@ This bot has multiple dependences:
 * PIRCBot: http://www.jibble.org/pircbot.php
 * GSON: https://code.google.com/p/google-gson/
 * JSOUP: http://jsoup.org/
+* Twitter4J: http://twitter4j.org/en/
 
 # Suggestions & Bugs
 If you have any suggestions for feature requests, etc, please report it to the [Issues](https://github.com/Kalbintion/Kdkbot/issues) page.

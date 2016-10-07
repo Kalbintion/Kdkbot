@@ -123,6 +123,28 @@ public class Commands {
 		Kdkbot.instance.dbg.writeln(this, "Core Command detected as '" + coreWord + "'");
 		Kdkbot.instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
 		
+		// These commands are bot-room specific
+		Kdkbot.instance.dbg.writeln(this, "Kdkbot nick is: " + Kdkbot.instance.getNick());
+		Kdkbot.instance.dbg.writeln(this, "Channel is: " + info.channel);
+		if(info.channel.equalsIgnoreCase("#" + Kdkbot.instance.getNick())) {
+			Kdkbot.instance.dbg.writeln(this, "Running through bot specific channel commands");
+			if (coreWord.equalsIgnoreCase("join")) {
+				switch(Kdkbot.instance.enterChannel(info.sender)) {
+					case -1:
+						Kdkbot.instance.getChannel(info.channel).sendMessage("Already in " + info.sender);
+						break;
+					case 1:
+						Kdkbot.instance.getChannel(info.channel).sendMessage("Joined channel " + info.sender);
+						break;
+					default:
+						Kdkbot.instance.getChannel(info.channel).sendMessage("Unknown error occured attempting to join channel " + info.sender);
+						break;
+				}
+			} else if (coreWord.equalsIgnoreCase("leave")) {
+				Kdkbot.instance.exitChannel(info.sender);
+			}
+		}
+		
 		// These commands supersede command processing toggling
 		if(info.senderLevel >= cmdChannel.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase("channel")) {

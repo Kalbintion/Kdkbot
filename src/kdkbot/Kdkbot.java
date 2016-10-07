@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -109,6 +111,8 @@ public class Kdkbot extends PircBot {
 			  .setOAuthAccessTokenSecret(botCfg.getSetting("twitterOAuthSecret"));
 			TwitterFactory tf = new TwitterFactory(cb.build());
 			status = tf.getInstance();
+			
+			status.updateStatus("I'm now online! #kdkbot");
 		}
 	}
 
@@ -247,23 +251,7 @@ public class Kdkbot extends PircBot {
     	// Master Commands
     	// TODO: Remove master commands and write web interface
     	if(sender.equalsIgnoreCase(botCfg.getSetting("masterCommands")) && info.message.startsWith("||")) {
-    		if(message.equalsIgnoreCase("||leavechan")) {
-    			// Leave channel
-    			this.partChannel(channel, "By order of " + sender + "!");
-    			
-    			// Remove it from setting list
-    			String prevChanSetting = botCfg.getSetting("channels");
-    			// Remove it from the setting
-    			prevChanSetting = prevChanSetting.replace(channel, "");
-    			// Remove duplicated commas that can result from removing from channel
-    			prevChanSetting = prevChanSetting.replace(",,", ",");
-    			
-    			botCfg.saveSettings();
-    		} else if(message.startsWith("||yttest ")) {
-    			Kdkbot.instance.sendMessage(channel, "Linked video: " + YoutubeAPI.getVideoTitle(info.getSegments()[1]));
-    		} else if(message.startsWith("||ytidtest ")) {
-    			Kdkbot.instance.sendMessage(channel, "Linked video: " + YoutubeAPI.getVideoTitleFromID(info.getSegments()[1]));
-    		} else if(message.startsWith("||debug disable")) {
+    		if(message.startsWith("||debug disable")) {
     			dbg.disable();
     			this.sendMessage(channel, "Disabled internal debug messages");
     		} else if(message.startsWith("||msgdupe ")) {
@@ -310,20 +298,6 @@ public class Kdkbot extends PircBot {
     				Map.Entry<String, Channel> pairs = chanIter.next();
     				this.sendMessage(pairs.getKey().toString(), messageArgs[1]);
     			}
-    		} else if(message.startsWith("||joinchan ")) {
-    			String channelToJoin = message.substring("||joinchan ".length());
-    			
-    			if(this.botCfg.getSetting("channels").contains(channelToJoin)) {
-    				instance.sendMessage(channel, "I am already in " + channelToJoin);
-    			} else {
-        			// Join channel
-        			this.sendMessage(channel, "Joining channel " + channelToJoin);
-        			CHANS.put(channelToJoin, new Channel(this, channelToJoin));
-        			
-        			// Add channel to settings cfg
-        			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channelToJoin);
-    			}
-
     		} else if(message.startsWith("||color ")) {
     			String colorArgs[] = message.split(" ");
     			this.sendMessage(channel, "/color " + colorArgs[1]);
@@ -345,6 +319,8 @@ public class Kdkbot extends PircBot {
 					e.printStackTrace();
 				}
     		}
+    		
+
     	}
     	
     	CHANS.get(channel).messageHandler(info);
@@ -356,5 +332,67 @@ public class Kdkbot extends PircBot {
     	return Kdkbot.CHANS.get(channel);
     }
     
+    /**
+     * Sets up and joins a particular channel
+     * @param channel The channel to join
+     * @return -1 if it is already in the channel, 1 if successful, any other value means unsuccesful
+     */
+    public int enterChannel(String channel) {
+    	if (! channel.startsWith("#")) {
+    		channel = "#" + channel;
+    	}
+    	
+		if(this.botCfg.getSetting("channels").contains(channel)) {
+			return -1;
+		} else {
+			// Join channel
+			this.sendMessage(channel, "Joining channel " + channel);
+			CHANS.put(channel, new Channel(this, channel));
+			
+			// Add channel to settings cfg
+			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channel);
+			
+			Channel chan = getChannel(channel);
+			chan.setSenderRank(botCfg.getSetting("masterCommands"), 5);
+			chan.setSenderRank(channel.substring(1), 5);
+
+			// Initialize new commands list for channel if the channel info doesnt exist!
+			Path path = FileSystems.getDefault().getPath("./cfg/" + channel).toAbsolutePath();
+			if(Files.notExists(path)) {
+				try {
+					FileInputStream cmdIn = new FileInputStream(FileSystems.getDefault().getPath("./cfg/default/cmds.cfg").toAbsolutePath().toString());
+					FileOutputStream cmdOut = new FileOutputStream(FileSystems.getDefault().getPath("./cfg/" + channel + "/cmds.cfg").toAbsolutePath().toString());
+					cmdOut.getChannel().transferFrom(cmdIn.getChannel(), 0, cmdIn.getChannel().size());
+					cmdIn.close();
+					cmdOut.close();
+				} catch (IOException e) {
+					chan.sendMessage("Couldn't initialize default commands!");
+				}
+			} // else we dont need to attempt to create a new instance for the channels commands
+			
+			return 1;
+		}
+    }
     
+    /**
+     * Exits a given channel
+     * @param channel The channel to leave
+     */
+    public void exitChannel(String channel) {
+		// Leave channel
+		this.partChannel(channel);
+		
+		// Remove it from setting list
+		String prevChanSetting = botCfg.getSetting("channels");
+		
+		// Remove it from the setting
+		prevChanSetting = prevChanSetting.replace(channel, "");
+		
+		// Remove duplicated commas that can result from removing from channel
+		prevChanSetting = prevChanSetting.replace(",,", ",");
+		
+		botCfg.setSetting("channels", prevChanSetting);
+		
+		botCfg.saveSettings();
+    }
 }

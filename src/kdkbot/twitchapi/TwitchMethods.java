@@ -1,13 +1,7 @@
 package kdkbot.twitchapi;
 
-import java.nio.file.FileSystems;
-
-import kdkbot.filemanager.Config;
-
 public class TwitchMethods {
 	private TwitchURLS URLS;
-	private Config cfg = new Config(FileSystems.getDefault().getPath("./cfg/twitch.cfg"));
-	
 	TwitchMethods() {
 		
 	}

@@ -93,16 +93,17 @@ public class Config {
 		try {
 			Iterator<Entry<String, String>> hashMapIter = hash.entrySet().iterator();
 			
-			BufferedWriter write = new BufferedWriter(
-					new OutputStreamWriter(
-							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
-						StandardCharsets.UTF_8));
+			FileOutputStream fos = new FileOutputStream(this.filePath.toAbsolutePath().toString());
+			OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+			BufferedWriter write = new BufferedWriter(osw);
 			
 			while(hashMapIter.hasNext()) {
 				Map.Entry<String, String> pairs = hashMapIter.next();
 				write.write(pairs.getKey() + "=" + pairs.getValue() + "\r\n");
 			}
 			
+			fos.close();
+			osw.close();
 			write.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,16 +119,17 @@ public class Config {
 		try {
 			Iterator<Entry<String, Integer>> hashMapIter = hash.entrySet().iterator();
 			
-			BufferedWriter write = new BufferedWriter(
-					new OutputStreamWriter(
-							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
-						StandardCharsets.UTF_8));
+			FileOutputStream fos = new FileOutputStream(this.filePath.toAbsolutePath().toString());
+			OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+			BufferedWriter write = new BufferedWriter(osw);
 			
 			while(hashMapIter.hasNext()) {
 				Map.Entry<String, Integer> pairs = hashMapIter.next();
 				write.write(pairs.getKey() + "=" + pairs.getValue() + "\r\n");
 			}
 			
+			fos.close();
+			osw.close();
 			write.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -143,15 +145,16 @@ public class Config {
 		try {
 			Iterator<String> hashMapIter = lines.iterator();
 			
-			BufferedWriter write = new BufferedWriter(
-					new OutputStreamWriter(
-							new FileOutputStream(this.filePath.toAbsolutePath().toString()),
-						StandardCharsets.UTF_8));
+			FileOutputStream fos = new FileOutputStream(this.filePath.toAbsolutePath().toString());
+			OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+			BufferedWriter write = new BufferedWriter(osw);
 			
 			while(hashMapIter.hasNext()) {
 				write.write(hashMapIter.next() + "\r\n");
 			}
 			
+			fos.close();
+			osw.close();
 			write.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -202,7 +205,7 @@ public class Config {
 	public List<String> getConfigContents() throws Exception {
 		verifyExists();
 		List<String> lines = Files.readAllLines(this.filePath.toAbsolutePath(), StandardCharsets.UTF_8);
-
+		
 		return lines;
 	}
 }

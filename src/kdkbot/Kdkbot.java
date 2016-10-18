@@ -24,8 +24,6 @@ import twitter4j.conf.ConfigurationBuilder;
 import kdkbot.channel.*;
 import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.*;
-import kdkbot.urbanapi.UrbanAPI;
-import kdkbot.youtubeapi.YoutubeAPI;
 
 public class Kdkbot extends PircBot {
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
@@ -249,7 +247,7 @@ public class Kdkbot extends PircBot {
     	MessageInfo info = new MessageInfo(channel, sender, message, login, hostname, CHANS.get(channel).getSenderRank(sender));
     	
     	// Master Commands
-    	// TODO: Remove master commands and write web interface
+    	// TODO: Remove master commands and write web interface or alternate means to do the same thing
     	if(sender.equalsIgnoreCase(botCfg.getSetting("masterCommands")) && info.message.startsWith("||")) {
     		if(message.startsWith("||debug disable")) {
     			dbg.disable();
@@ -302,25 +300,13 @@ public class Kdkbot extends PircBot {
     			String colorArgs[] = message.split(" ");
     			this.sendMessage(channel, "/color " + colorArgs[1]);
     			this.sendMessage(channel, "Changed color to " + colorArgs[1]);
-    		} else if(message.equalsIgnoreCase("||initchan")) {
-    			Channel chan = getChannel(channel);
-    			chan.setSenderRank(botCfg.getSetting("masterCommands"), 5);
-    			chan.setSenderRank(channel.substring(1), 5);
-    			this.sendMessage(channel, "Initialized channel by giving user " + channel.substring(1) + " and " + botCfg.getSetting("masterCommands") + " permission level 5");
-    			
+    		} else if(message.startsWith("||status ")) {
     			try {
-    				
-        			FileInputStream cmdIn = new FileInputStream(FileSystems.getDefault().getPath("./cfg/default/cmds.cfg").toAbsolutePath().toString());
-        			FileOutputStream cmdOut = new FileOutputStream(FileSystems.getDefault().getPath("./cfg/" + channel + "/cmds.cfg").toAbsolutePath().toString());
-					cmdOut.getChannel().transferFrom(cmdIn.getChannel(), 0, cmdIn.getChannel().size());
-					cmdIn.close();
-	    			cmdOut.close();
-				} catch (IOException e) {
+					Kdkbot.status.updateStatus(message.substring("||status ".length()));
+				} catch (TwitterException e) {
 					e.printStackTrace();
 				}
     		}
-    		
-
     	}
     	
     	CHANS.get(channel).messageHandler(info);
@@ -335,7 +321,7 @@ public class Kdkbot extends PircBot {
     /**
      * Sets up and joins a particular channel
      * @param channel The channel to join
-     * @return -1 if it is already in the channel, 1 if successful, any other value means unsuccesful
+     * @return -1 if it is already in the channel, 1 if successful, any other value means unsuccessful
      */
     public int enterChannel(String channel) {
     	if (! channel.startsWith("#")) {
@@ -356,7 +342,7 @@ public class Kdkbot extends PircBot {
 			chan.setSenderRank(botCfg.getSetting("masterCommands"), 5);
 			chan.setSenderRank(channel.substring(1), 5);
 
-			// Initialize new commands list for channel if the channel info doesnt exist!
+			// Initialize new commands list for channel if the channel info doesn't exist
 			Path path = FileSystems.getDefault().getPath("./cfg/" + channel).toAbsolutePath();
 			if(Files.notExists(path)) {
 				try {
@@ -368,7 +354,7 @@ public class Kdkbot extends PircBot {
 				} catch (IOException e) {
 					chan.sendMessage("Couldn't initialize default commands!");
 				}
-			} // else we dont need to attempt to create a new instance for the channels commands
+			} // else we don't need to attempt to create a new instance for the channels commands
 			
 			return 1;
 		}
@@ -394,5 +380,14 @@ public class Kdkbot extends PircBot {
 		botCfg.setSetting("channels", prevChanSetting);
 		
 		botCfg.saveSettings();
+    }
+    
+    /**
+     * Determine if the bot exists in a particular channel
+     * @param channel The channel to look up
+     * @return True if the bot is in the channel, false otherwise
+     */
+    public boolean isInChannel(String channel) {
+    	return (this.getChannel(channel) == null) ? false : true;
     }
 }

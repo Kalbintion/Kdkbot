@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 public abstract class Communicator {
 	public JsonObject getResponse(String url, String method, HashMap<String, String> headers, String body) {
@@ -25,7 +24,6 @@ public abstract class Communicator {
 	}
 	
 	public JsonObject getResponse(URL url, String method, HashMap<String, String> headers, String body) {
-		JsonParser parser = new JsonParser();
 		HttpURLConnection conn = createConnection(url.toString(), method, headers);
 		
 		DataOutputStream dos;

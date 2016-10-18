@@ -224,13 +224,61 @@ public class Commands {
 					break;
 			}
 		}
+		
 		// Forwarders
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 					(coreWord.equalsIgnoreCase("fwd")
 				  || coreWord.equalsIgnoreCase("forward"))) {
-			String toChan = args[1];
-			this.chan.forwarders.add(new Forwarder(toChan));
+			if(args.length >= 2) {
+				String toChan = args[1];
+				if(!toChan.startsWith("#")) {
+					toChan = "#" + toChan;
+				}
+				
+				if(Kdkbot.instance.isInChannel(toChan)) {
+					Channel toChanObj = Kdkbot.instance.getChannel(toChan);
+					toChanObj.sendMessage(info.channel + " has requested forwarding permissions. Type '" + toChanObj.cfgChan.getSetting("commandPrefix") + "afwd " + info.channel + "' to authorize or '" + toChanObj.cfgChan.getSetting("commandPRefix") + "dfwd " + info.channel + "' to deny.");
+					this.chan.forwarders.add(new Forwarder(toChan));
+				} else {
+					chan.sendMessage(info.sender + ": This bot is not in that channel.");
+				}
+				
+			} else {
+				chan.sendMessage(info.sender + ": You did not provide a channel name.");
+			}
 		}
+		
+		// Forwarder - Authorization - Accept
+		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
+					(coreWord.equalsIgnoreCase("afwd")
+				  || coreWord.equalsIgnoreCase("acceptforward"))) {
+			if(args.length >= 2) {
+				String toAuthorize = args[1];
+				if(!toAuthorize.startsWith("#")) { toAuthorize = "#" + toAuthorize; }
+				
+				Channel fromChan = Kdkbot.instance.getChannel(toAuthorize);
+				fromChan.sendMessage("Forwarding authorization request accepted.");
+			} else {
+				chan.sendMessage("You did not specify a channel to accept the forward request from.");
+			}
+		}
+
+		// Forwarder - Authorization - Deny
+		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
+					(coreWord.equalsIgnoreCase("dfwd")
+				  || coreWord.equalsIgnoreCase("denyforward"))) {
+			if(args.length >= 2) {
+				String toDeny = args[1];
+				if(!toDeny.startsWith("#")) { toDeny = "#" + toDeny; }
+				
+				Channel fromChan = Kdkbot.instance.getChannel(toDeny);
+				fromChan.sendMessage("Forwarding authorization request denied.");
+			} else {
+				chan.sendMessage("You did not specify a channel to deny the forward request from.");
+			}
+			
+		}
+		
 		// Filter Bypass
 		// TODO: Errors on _permit <username>_ but not _permit <username> <times>_
 		else if(info.senderLevel >= cmdPermit.getPermissionLevel() &&

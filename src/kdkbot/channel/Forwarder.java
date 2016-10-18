@@ -2,10 +2,12 @@ package kdkbot.channel;
 
 import java.util.ArrayList;
 
+import kdkbot.MessageInfo;
+import kdkbot.commands.MessageParser;
 import kdkbot.commands.filters.Filter;
 
 /**
- * This class is reponsible for handling the message forwarding system between Twitch channels
+ * This class is responsible for handling the message forwarding system between Twitch channels
  * @author KDK
  *
  */
@@ -16,6 +18,9 @@ public class Forwarder {
 	private ArrayList<Filter> messageFilters;
 	// The prefix format of the message (Default: %user%)
 	private String prefixFormat;
+	
+	// Authorization variable, if this is false then this forwarder hasnt been validated yet
+	private boolean authorized = false;
 	
 	/*
 	 * Initializes an empty forwarder that goes to no specific channel
@@ -42,8 +47,8 @@ public class Forwarder {
 	/*
 	 * Formats the message using the information provided
 	 */
-	public String formatMessage(String channel, String sender, String login, String hostname, String message) {
-		return parseMessage(prefixFormat, channel, sender, login, hostname, message) + message;
+	public String formatMessage(MessageInfo info) {
+		return parseMessage(prefixFormat, info) + info.message;
 	}
 	
 	/**
@@ -56,7 +61,33 @@ public class Forwarder {
 	 * @param message The message to be used in place of %MSG%
 	 * @return The finalized, parsed, message
 	 */
-	public String parseMessage(String toFormat, String channel, String sender, String login, String hostname, String message) {
-		return toFormat.replace("%USER%", sender).replace("%CHAN%", channel).replace("%LOGIN%", login).replace("%HOST%", hostname).replace("%MSG%", message);
+	public String parseMessage(String toFormat, MessageInfo info) {
+		return MessageParser.parseMessage(toFormat, info);
+	}
+	
+	/**
+	 * Authorizes this forwarder to work
+	 */
+	public void authorize() {
+		this.authorized = true;
+	}
+	
+	/**
+	 * Unauthorizes this forwarder to work
+	 */
+	public void unauthorize() {
+		this.authorized = false;
+	}
+	
+	/**
+	 * Gets the forwarders authorization status
+	 * @return True if the forwarder is authorized, false otherwise
+	 */
+	public boolean isAuthorized() {
+		return this.authorized;
+	}
+	
+	public String getChannel() {
+		return this.toChannel;
 	}
 }

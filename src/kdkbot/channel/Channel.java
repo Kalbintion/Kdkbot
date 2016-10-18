@@ -265,10 +265,67 @@ public class Channel {
 			}
 		}
 		
+		// Do we have any message forwarders
+		if(forwarders != null && forwarders.size() > 0) {
+			// We do! Lets check that they're validated forwarders
+			Iterator<Forwarder> fwdIter = forwarders.iterator();
+			while(fwdIter.hasNext()) {
+				Forwarder fwder = fwdIter.next();
+				if(fwder.isAuthorized()) {
+					Kdkbot.instance.getChannel(fwder.getChannel()).sendMessage(fwder.formatMessage(info));
+				}
+			}
+		}
+		
 		// Send the message off to the channels command processor
 		if(info.message.startsWith(this.commandPrefix)){
 			this.commands.commandHandler(info);
 		}
 		
+	}
+	
+	/**
+	 * Authorizes a forwarder for this channel
+	 * @param fromChannel The channel to accept the request from
+	 */
+	public void authorizeForwarder(String fromChannel) {
+		setForwarderAuthorization(fromChannel, true);
+	}
+	
+	/**
+	 * Denies a forwarder for this channel
+	 * @param fromChannel The channel to deny the request from
+	 */
+	public void denyForwarder(String fromChannel) {
+		setForwarderAuthorization(fromChannel, false);
+	}
+	
+	/**
+	 * Sets authorization status for a forwarder based on the channel accepting or denying the forwarder
+	 * @param fromChannel The channel to accept/deny the request from
+	 * @param status The authorization status. True for accept, False for deny.
+	 */
+	private void setForwarderAuthorization(String fromChannel, boolean status) {
+		Iterator<Forwarder> fwdIter = this.forwarders.iterator();
+		while(fwdIter.hasNext()) {
+			Forwarder nxt = fwdIter.next();
+			if(nxt.getChannel().equalsIgnoreCase(fromChannel)) {
+				if(status) { nxt.authorize(); } else { nxt.unauthorize(); }
+			}
+		}
+	}
+	
+	/**
+	 * Removes a forwarder from this channel
+	 * @param fromChannel The channel to remove the forwarder to
+	 */
+	public void removeForwarder(String fromChannel) {
+		Iterator<Forwarder> fwdIter=  this.forwarders.iterator();
+		while(fwdIter.hasNext()) {
+			Forwarder nxt = fwdIter.next();
+			if(nxt.getChannel().equalsIgnoreCase(fromChannel)) {
+				fwdIter.remove();
+			}
+		}
 	}
 }

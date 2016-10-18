@@ -109,8 +109,6 @@ public class Kdkbot extends PircBot {
 			  .setOAuthAccessTokenSecret(botCfg.getSetting("twitterOAuthSecret"));
 			TwitterFactory tf = new TwitterFactory(cb.build());
 			status = tf.getInstance();
-			
-			status.updateStatus("I'm now online! #kdkbot");
 		}
 	}
 

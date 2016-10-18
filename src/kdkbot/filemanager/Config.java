@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -90,20 +91,14 @@ public class Config {
 	 */
 	public void saveSettings() {
 		HashMap<String, String> hash = this.values;
-		try {
+		try (BufferedWriter write = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath.toAbsolutePath().toString()), StandardCharsets.UTF_8))) {
 			Iterator<Entry<String, String>> hashMapIter = hash.entrySet().iterator();
-			
-			FileOutputStream fos = new FileOutputStream(this.filePath.toAbsolutePath().toString());
-			OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-			BufferedWriter write = new BufferedWriter(osw);
-			
+						
 			while(hashMapIter.hasNext()) {
 				Map.Entry<String, String> pairs = hashMapIter.next();
 				write.write(pairs.getKey() + "=" + pairs.getValue() + "\r\n");
 			}
 			
-			fos.close();
-			osw.close();
 			write.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -116,20 +111,14 @@ public class Config {
 	 * @param hash the HashMap containing the key value pairs to save.
 	 */
 	public void saveSettings(HashMap<String, Integer> hash) {
-		try {
+		try (BufferedWriter write = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath.toAbsolutePath().toString()), StandardCharsets.UTF_8))) {
 			Iterator<Entry<String, Integer>> hashMapIter = hash.entrySet().iterator();
-			
-			FileOutputStream fos = new FileOutputStream(this.filePath.toAbsolutePath().toString());
-			OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-			BufferedWriter write = new BufferedWriter(osw);
-			
+
 			while(hashMapIter.hasNext()) {
 				Map.Entry<String, Integer> pairs = hashMapIter.next();
 				write.write(pairs.getKey() + "=" + pairs.getValue() + "\r\n");
 			}
 			
-			fos.close();
-			osw.close();
 			write.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -142,19 +131,13 @@ public class Config {
 	 * @param hash the HashMap containing the key value pairs to save.
 	 */
 	public void saveSettings(List<String> lines) {
-		try {
+		try (BufferedWriter write = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath.toAbsolutePath().toString()), StandardCharsets.UTF_8))) {
 			Iterator<String> hashMapIter = lines.iterator();
-			
-			FileOutputStream fos = new FileOutputStream(this.filePath.toAbsolutePath().toString());
-			OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-			BufferedWriter write = new BufferedWriter(osw);
 			
 			while(hashMapIter.hasNext()) {
 				write.write(hashMapIter.next() + "\r\n");
 			}
 			
-			fos.close();
-			osw.close();
 			write.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -193,6 +176,7 @@ public class Config {
 				this.values.put(args[0], args[1]);
 		}
 		
+
 		fis.close();
 		isr.close();
 		br.close();

@@ -6,93 +6,89 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.List;
-
-import kdkbot.Kdkbot;
 
 import com.google.gson.*;
 
-public class JSONConfig {
+public final class JSONConfig {
+	private String filePath;
+	private JsonObject settings;
+	
 	private enum SETTING_TYPES {
 		STRING, INTEGER, FLOAT, BOOLEAN;
 	}
 	
-	private String filePath;
 
 	/**
-	 * A new config instance with a given Path to the file.
-	 * @param filePath The path to the file that this config file belongs to
+	 * Creates a new JSON Configuration with a specified file path
+	 * @param filePath The location to the file to use
 	 */
-	public JSONConfig(Path filePath) {
-		this.filePath = filePath.toAbsolutePath().toString();
-		try {
-			if(!Files.exists(filePath)) {
-				Files.createFile(filePath);
-			}
-		} catch (IOException e) {
-			try {
-				Files.createDirectories(filePath.getParent());
-			} catch (IOException e1) {
-				Kdkbot.instance.dbg.writeln(this, "Failed to create directory structure to: " + filePath.toAbsolutePath().toString());
-			}
-		}
+	private JSONConfig(String filePath) {
+		this.filePath = filePath;
+		this.settings = getAllSettings();
 	}
 	
 	/**
-	 * A new config instance with a given String to the file.
-	 * @param filePath
+	 * Obtains all of settings from the provided file for the class as a JsonObject
+	 * @return A JsonObject containing all of the JSON data
 	 */
-	public JSONConfig(String filePath) {
-		this(Paths.get(filePath));
-	}
-	
 	public JsonObject getAllSettings() {
 		return new JsonParser().parse(filePath).getAsJsonObject();
 	}
 
+	/**
+	 * Gets a particular setting based on name
+	 * @param name The name of the setting to obtain
+	 * @return The value, as a String, of the provided name
+	 */
 	public String getSetting(String name) {
 		return (String) getSetting(name, SETTING_TYPES.STRING);
 	}
 	
+	/**
+	 * Gets a particular setting based on name and data type
+	 * @param name The name of the setting to obtain
+	 * @param type The type of data it is to be
+	 * @return The value, as an Object, of the provided name and type
+	 */
 	public Object getSetting(String name, SETTING_TYPES type) {
 		switch(type) {
 			case STRING:
-				return getAllSettings().get(name).getAsString();
+				return this.settings.get(name).getAsString();
 			case INTEGER:
-				return getAllSettings().get(name).getAsInt();
+				return this.settings.get(name).getAsInt();
 			case FLOAT:
-				return getAllSettings().get(name).getAsFloat();
+				return this.settings.get(name).getAsFloat();
 			case BOOLEAN:
-				return getAllSettings().get(name).getAsBoolean();
+				return this.settings.get(name).getAsBoolean();
 			default:
 				return null;
 		}
 	}
 	
+	/**
+	 * Sets a particular setting based on name
+	 * @param name The name of the setting to set
+	 * @param value The value to set the setting name
+	 */
 	public void setSetting(String name, Object value) {
-		JsonObject allSettings = getAllSettings();
-		allSettings.addProperty(name, value.toString());
+		this.settings.addProperty(name, value.toString());
 	}
 	
+	/**
+	 * Saves the settings to file
+	 * @param settings
+	 */
 	public void saveSettings(JsonObject settings) {
-		try {
-			BufferedWriter write = new BufferedWriter(
+		try (BufferedWriter write = new BufferedWriter(
 					new OutputStreamWriter(
 							new FileOutputStream(filePath),
-						StandardCharsets.UTF_8));
+						StandardCharsets.UTF_8))) {
 			write.write(settings.toString());
 			write.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
 		}
 	}
 }

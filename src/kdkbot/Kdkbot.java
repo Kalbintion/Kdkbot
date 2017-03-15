@@ -72,6 +72,7 @@ public class Kdkbot extends PircBot {
 		this._verbose = Boolean.parseBoolean(botCfg.getSetting("verbose"));
 		this.setVerbose(_verbose);
 		
+		@SuppressWarnings("unused")
 		boolean connectionSent = false;
 		
 		do {
@@ -166,7 +167,7 @@ public class Kdkbot extends PircBot {
 		} while(!hasReconnected);
 		
 		try {
-			status.updateStatus("I have successfully reconnect! #kdkbot");
+			status.updateStatus("I have successfully reconnected! #kdkbot");
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}
@@ -246,11 +247,11 @@ public class Kdkbot extends PircBot {
     	
     	// Master Commands
     	// TODO: Remove master commands and write web interface or alternate means to do the same thing
-    	if(sender.equalsIgnoreCase(botCfg.getSetting("masterCommands")) && info.message.startsWith("||")) {
-    		if(message.startsWith("||debug disable")) {
+    	if(sender.equalsIgnoreCase(botCfg.getSetting("masterCommands")) && info.message.startsWith("&&")) {
+    		if(message.startsWith("&&debug disable")) {
     			dbg.disable();
     			this.sendMessage(channel, "Disabled internal debug messages");
-    		} else if(message.startsWith("||msgdupe ")) {
+    		} else if(message.startsWith("&&msgdupe ")) {
     			String[] chanArgs = message.split(" ");
     			if(messageDuplicatorList.get(chanArgs[1]) == null) {
     				messageDuplicatorList.put(chanArgs[1], new ArrayList<String>());
@@ -258,7 +259,7 @@ public class Kdkbot extends PircBot {
     			messageDuplicatorList.get(chanArgs[1]).add(chanArgs[2]);
     			this.sendMessage(chanArgs[1], "Now sending all messages from this channel to " + chanArgs[2]);
     			this.sendMessage(chanArgs[2], "Now receiving all messages from " + chanArgs[1]);
-    		} else if(message.startsWith("||msgdupeto ")) {
+    		} else if(message.startsWith("&&msgdupeto ")) {
     			String[] chanArgs = message.split(" ");
     			if(messageDuplicatorList.get(channel) == null) {
     				messageDuplicatorList.put(channel, new ArrayList<String>());
@@ -272,38 +273,46 @@ public class Kdkbot extends PircBot {
     			
     			this.sendMessage(channel, "Now sending & receiving all messages from this channel to " + chanArgs[1]);
     			this.sendMessage(chanArgs[1], "Now sending & receiving all messages from " + channel);
-    		} else if(message.equalsIgnoreCase("||msgbreakall")) {
+    		} else if(message.equalsIgnoreCase("&&msgbreakall")) {
         			messageDuplicatorList.clear();
         			this.sendMessage(channel, "Breaking all message dupe systems!");
-    		} else if(message.startsWith("||debug enable")) {
+    		} else if(message.startsWith("&&debug enable")) {
     			dbg.enable();
     			this.sendMessage(channel, "Enabled internal debug messages");
-    		} else if(message.startsWith("||stop")) {
+    		} else if(message.startsWith("&&stop")) {
     			this.disconnect();
     			System.exit(0);
-    		} else if(message.startsWith("||echo " )) {
-    			String messageToSend = message.substring("||echo ".length());
+    		} else if(message.startsWith("&&echo " )) {
+    			String messageToSend = message.substring("&&echo ".length());
     			this.sendMessage(channel, messageToSend);
-    		} else if(message.startsWith("||echoto ")) {
+    		} else if(message.startsWith("&&echoto ")) {
     			String messageArgs[] = message.split(" ", 3);
     			this.sendMessage(messageArgs[1], messageArgs[2]);
-    		} else if(message.startsWith("||echotoall ")) {
+    		} else if(message.startsWith("&&echotoall ")) {
     			String messageArgs[] = message.split(" ", 2);
     			Iterator<Entry<String, Channel>> chanIter = CHANS.entrySet().iterator();
     			while(chanIter.hasNext()) {
     				Map.Entry<String, Channel> pairs = chanIter.next();
     				this.sendMessage(pairs.getKey().toString(), messageArgs[1]);
     			}
-    		} else if(message.startsWith("||color ")) {
+    		} else if(message.startsWith("&&color ")) {
     			String colorArgs[] = message.split(" ");
     			this.sendMessage(channel, "/color " + colorArgs[1]);
     			this.sendMessage(channel, "Changed color to " + colorArgs[1]);
-    		} else if(message.startsWith("||status ")) {
+    		} else if(message.startsWith("&&status ")) {
     			try {
-					Kdkbot.status.updateStatus(message.substring("||status ".length()));
+					Kdkbot.status.updateStatus(message.substring("&&status ".length()));
+					Kdkbot.instance.sendMessage(channel, "Updated my twitter status.");
 				} catch (TwitterException e) {
+					Kdkbot.instance.sendMessage(channel, "Failed to update my twitter status. " + e.getMessage());
 					e.printStackTrace();
 				}
+    		} else if(message.startsWith("&&ram?")) {
+    			Kdkbot.instance.sendMessage(channel, "My current ram usage is estimated to be at in KB: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024);
+    		} else if(message.startsWith("&&gc")) {
+    			Kdkbot.instance.sendMessage(channel, "Telling java to collect garbage...");
+    			System.gc();
+    			System.gc();
     		}
     	}
     	

@@ -6,6 +6,7 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
 import kdkbot.channel.Forwarder;
+import kdkbot.commands.messagetimer.Timers;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
@@ -24,6 +25,7 @@ public class Commands {
 	public StringCommands commandStrings;
 	public Counters counters;
 	public AMA amas;
+	public Timers timers;
 	
 	// Additional Commands
 	private InternalCommand cmdChannel = new InternalCommand("rankChannel", "5", Integer.class);
@@ -31,6 +33,7 @@ public class Commands {
 	private InternalCommand cmdForward = new InternalCommand("rankForward", "4", Integer.class);
 	private InternalCommand cmdPermit = new InternalCommand("rankPermit", "3", Integer.class);
 	private InternalCommand cmdFilter = new InternalCommand("rankFilter", "5", Integer.class);
+	private InternalCommand cmdTimer = new InternalCommand("rankTimer", "3", Integer.class);
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -54,6 +57,9 @@ public class Commands {
 			
 			this.amas = new AMA(channel);
 			this.amas.loadQuestions();
+			
+			this.timers = new Timers(channel);
+			this.timers.loadTimers();
 
 			InternalCommand[] internalCommands = {cmdChannel, cmdPerm, cmdForward, cmdPermit, cmdFilter};
 			for (InternalCommand cmd : internalCommands) {
@@ -98,6 +104,17 @@ public class Commands {
 			} catch (NumberFormatException e) {
 				chan.sendMessage("This channels rankAMA setting is invalid! Got " + chan.cfgChan.getSetting("rankAMA"));
 				this.amas.setAvailability(false);
+			}
+			
+			if(chan.cfgChan.getSetting("rankTimer") == null) {
+				chan.cfgChan.setSetting("rankTimer",  "3");
+			}
+			
+			try {
+				this.timers.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankTimer")));
+			} catch (NumberFormatException e) {
+				chan.sendMessage("this channels rankTimer setting is invalid! Got " + chan.cfgChan.getSetting("rankTimer"));
+				this.timers.setAvailability(false);
 			}
 			
 
@@ -343,6 +360,11 @@ public class Commands {
 		} else if(info.senderLevel >= cmdFilter.getPermissionLevel() &&
 				  coreWord.equalsIgnoreCase("filter")) {
 			this.chan.filters.executeCommand(info);
+		}
+		// Timers
+		else if(info.senderLevel >= timers.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase("timer")) {
+			timers.executeCommand(info);	
 		}
 		// Custom String Commands
 		Iterator<StringCommand> stringIter = commandStrings.commands.iterator();

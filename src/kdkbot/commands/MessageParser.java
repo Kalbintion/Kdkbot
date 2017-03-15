@@ -1,6 +1,7 @@
 package kdkbot.commands;
 
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class MessageParser {
 		PATTERN_MAP.put("cntr++", Pattern.compile("%CNTR\\+\\+:.*?%"));
 		PATTERN_MAP.put("cntr--", Pattern.compile("%CNTR--:.*?%"));
 		PATTERN_MAP.put("rndMax", Pattern.compile("%RND:\\d*?%"));
-		PATTERN_MAP.put("rndMinMax", Pattern.compile("%RND:\\d*?,\\d*?%"));
+		PATTERN_MAP.put("rndMinMax", Pattern.compile("%RND:-?\\d*?,-?\\d*?%"));
 		PATTERN_MAP.put("chanuser", Pattern.compile("%CHANUSER%"));
 		PATTERN_MAP.put("chanuserIdx", Pattern.compile("%CHANUSER:\\d*?%"));
 		PATTERN_MAP.put("upper", Pattern.compile("%UPPER:.*?%"));
@@ -51,6 +52,9 @@ public class MessageParser {
 		PATTERN_MAP.put("pagetitle", Pattern.compile("%PAGETITLE:.*?%"));
 		PATTERN_MAP.put("yturltoken", Pattern.compile("%YTURL%"));
 		PATTERN_MAP.put("join", Pattern.compile("%JOIN:.*?,.*?,.*?%"));
+		PATTERN_MAP.put("math", Pattern.compile("%MATH:.*?%"));
+		PATTERN_MAP.put("split", Pattern.compile("%SPLIT:.*?,.*?%"));
+		PATTERN_MAP.put("replace", Pattern.compile("%REPLACE:(.*?),(.{1,}),(.*?)%"));
 		// %YTURL% special condition pattern
 		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9]*)"));
 		
@@ -129,6 +133,10 @@ public class MessageParser {
 		toParse = toParse.replace("%LOGIN%", info.login);
 		toParse = toParse.replace("%HOSTNAME%", info.hostname);
 		
+		// Random Number Generator Variables
+		Random rnd = new Random();
+		
+		
 		// Replace %ARGS% based information
 		if(args[0].length() + 1 < info.message.length()) {
 			if(info.message.substring(args[0].length() + 1).startsWith("/")) {
@@ -176,7 +184,7 @@ public class MessageParser {
 				toParse = toParse.replace("%ARGS:" + argID + "%", args[argIDInt]);
 			}
 		}
-				
+		
 		// Counter specificity
 		Matcher pattern_cntr_matches = PATTERN_MAP.get("cntr").matcher(toParse);
 		
@@ -245,40 +253,6 @@ public class MessageParser {
 			
 			// Force a counter save
 			Kdkbot.CHANS.get(info.channel).commands.counters.saveCounters();
-		}
-		
-		// Random Number Generator Variables
-		Random rnd = new Random();
-		
-		// Basic replacement
-		toParse = toParse.replace("%RND%", Integer.toString(rnd.nextInt()));
-		
-		// Advanced replacement (specifying max value)
-		Matcher pattern_rnd_max_matches = PATTERN_MAP.get("rndMax").matcher(toParse);
-		
-		while(pattern_rnd_max_matches.find()) {
-			String result = pattern_rnd_max_matches.group();
-			
-			String argValues = result.substring("%RND:".length(), result.length()-1);
-			
-			int maxValue = Integer.parseInt(argValues);
-
-			toParse = toParse.replace(result, Integer.toString(rnd.nextInt(maxValue)));
-		}
-		
-		// Advanced replacement (specifying min and max values)
-		Matcher pattern_rnd_min_max_matches = PATTERN_MAP.get("rndMinMax").matcher(toParse);
-				
-		while(pattern_rnd_min_max_matches.find()) {
-			String result = pattern_rnd_min_max_matches.group();
-
-			String argValues = result.substring("%RND:".length(), result.length()-1);
-			String[] argParts = argValues.split(",");
-			
-			int minValue = Integer.parseInt(argParts[0]);
-			int maxValue = Integer.parseInt(argParts[1]);
-
-			toParse = toParse.replace(result, Integer.toString(rnd.nextInt(maxValue - minValue + 1) + minValue));
 		}
 		
 		// Channel Users
@@ -372,14 +346,45 @@ public class MessageParser {
 			toParse = toParse.replace(result, messageParts[new Random().nextInt(messageParts.length)]);
 		}
 		
+		// Replace specificity
+		Matcher pattern_replace_matches = PATTERN_MAP.get("replace").matcher(toParse);
+		
+		while(pattern_replace_matches.find()) {
+			String result = pattern_replace_matches.group();
+			
+			System.out.println("result: " + result);
+			
+			String[] messageParts = {pattern_replace_matches.group(1), pattern_replace_matches.group(2), pattern_replace_matches.group(3)};
+
+			System.out.println("messageParts: " + Arrays.toString(messageParts));
+			
+			System.out.println("messageParts[2]: " + messageParts[2]);
+			System.out.println("messageParts[0]: " + messageParts[0]);
+			System.out.println("messageParts[1]: " + messageParts[1]);
+			System.out.println("Replace: " + messageParts[2].replace(messageParts[0], messageParts[1]));
+			toParse = toParse.replace(result, messageParts[2].replace(messageParts[0], messageParts[1]));
+			
+			System.out.println("toParse: " + toParse);
+		}
+		
+		// Split specificity
+		Matcher pattern_split_matches = PATTERN_MAP.get("split").matcher(toParse);
+		
+		while(pattern_split_matches.find()) {
+			String result = pattern_split_matches.group();
+			
+			String[] splitArgs = result.substring("%SPLIT:".length(), result.length()-1).split(",", 1);
+			
+			// Split text, Text to split
+			toParse = toParse.replace(result, "");
+		}
+		
 		// Join
 		Matcher pattern_join_replace_matches = PATTERN_MAP.get("join").matcher(toParse);
 		while(pattern_join_replace_matches.find()) {
-			System.out.println("Found JOIN");
 			String result = pattern_join_replace_matches.group();
 			String messageParts[] = result.substring("%JOIN:".length(), result.length()-1).split(",", 3);
 			
-			System.out.println("Size of messageParts: " + messageParts.length);
 			for (int i=0; i< messageParts.length; i++) {
 				System.out.println("messageParts[" + i + "] = " + messageParts[i]);
 			}
@@ -389,16 +394,13 @@ public class MessageParser {
 			StringBuffer sb = new StringBuffer();
 			System.out.println("Size of JOIN array: " + messageEles.length);
 			for (int i=0; i < messageEles.length; i++) {
-				System.out.println("Ele #" + i + " is " + messageEles[i]);
 				if (i != 0) sb.append(messageParts[2]);
 				sb.append(messageEles[i]);
-				System.out.println("Total string thus far is: " + sb.toString());
 			}
 			
 			toParse = toParse.replace(result, sb.toString());
 		}
-		
-		
+						
 		// YTURL
 		Matcher pattern_yturl_replace_matches = PATTERN_MAP.get("yturl").matcher(info.message);
 		Matcher pattern_yturl_token_replace_matches = PATTERN_MAP.get("yturltoken").matcher(toParse);
@@ -425,6 +427,52 @@ public class MessageParser {
 			String messagePiece = result.substring("%PAGETITLE:".length(), result.length()-1);
 			
 			toParse = toParse.replace(result, kdkbot.webinterface.Webpage.getWebpageTitle(messagePiece));
+		}
+		
+		// Math
+		Matcher pattern_math_replace_matches = PATTERN_MAP.get("math").matcher(toParse);
+		while(pattern_math_replace_matches.find()) {
+			String result = pattern_math_replace_matches.group();
+			
+			// messagePiece will contain the math equation to evaluate
+			String messagePiece = result.substring("%MATH:".length(), result.length()-1);
+			try {
+				toParse = toParse.replace(result, Double.toString(eval(sanitizeMath(messagePiece))));
+			} catch(RuntimeException e) {
+				toParse = toParse.replace(result, "Invalid Expression");
+			}
+			
+		}
+		
+		// Random Basic replacement
+		toParse = toParse.replace("%RND%", Integer.toString(rnd.nextInt()));
+		
+		// Advanced replacement (specifying max value)
+		Matcher pattern_rnd_max_matches = PATTERN_MAP.get("rndMax").matcher(toParse);
+		
+		while(pattern_rnd_max_matches.find()) {
+			String result = pattern_rnd_max_matches.group();
+			
+			String argValues = result.substring("%RND:".length(), result.length()-1);
+			
+			int maxValue = Integer.parseInt(argValues);
+
+			toParse = toParse.replace(result, Integer.toString(rnd.nextInt(maxValue)));
+		}
+		
+		// Advanced replacement (specifying min and max values)
+		Matcher pattern_rnd_min_max_matches = PATTERN_MAP.get("rndMinMax").matcher(toParse);
+				
+		while(pattern_rnd_min_max_matches.find()) {
+			String result = pattern_rnd_min_max_matches.group();
+
+			String argValues = result.substring("%RND:".length(), result.length()-1);
+			String[] argParts = argValues.split(",");
+			
+			int minValue = Integer.parseInt(argParts[0]);
+			int maxValue = Integer.parseInt(argParts[1]);
+
+			toParse = toParse.replace(result, Integer.toString(rnd.nextInt(maxValue - minValue + 1) + minValue));
 		}
 		
 		
@@ -463,5 +511,96 @@ public class MessageParser {
 		}
 		
 		return modifiedMessage;
+	}
+	
+	private static String sanitizeMath(String message) {
+		return message.replaceAll("[^0-9.*+\\-%/()^]", "");
+	}
+	
+	/**
+	 * Evaluates a string as a mathematical expression and returns it as a double. Supports basic math as well as 
+	 * 
+	 * Original found on http://stackoverflow.com/a/26227947
+	 * @param str The expression to evaluate
+	 * @return The result, as a double, of the result from the given expression
+	 */
+	public static double eval(final String str) {
+	    return new Object() {
+	        int pos = -1, ch;
+
+	        void nextChar() {
+	            ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+	        }
+
+	        boolean eat(int charToEat) {
+	            while (ch == ' ') nextChar();
+	            if (ch == charToEat) {
+	                nextChar();
+	                return true;
+	            }
+	            return false;
+	        }
+
+	        double parse() {
+	            nextChar();
+	            double x = parseExpression();
+	            if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
+	            return x;
+	        }
+
+	        // Grammar:
+	        // expression = term | expression `+` term | expression `-` term
+	        // term = factor | term `*` factor | term `/` factor
+	        // factor = `+` factor | `-` factor | `(` expression `)`
+	        //        | number | functionName factor | factor `^` factor
+
+	        double parseExpression() {
+	            double x = parseTerm();
+	            for (;;) {
+	                if      (eat('+')) x += parseTerm(); // addition
+	                else if (eat('-')) x -= parseTerm(); // subtraction
+	                else return x;
+	            }
+	        }
+
+	        double parseTerm() {
+	            double x = parseFactor();
+	            for (;;) {
+	                if      (eat('*')) x *= parseFactor(); // multiplication
+	                else if (eat('/')) x /= parseFactor(); // division
+	                else return x;
+	            }
+	        }
+
+	        double parseFactor() {
+	            if (eat('+')) return parseFactor(); // unary plus
+	            if (eat('-')) return -parseFactor(); // unary minus
+
+	            double x;
+	            int startPos = this.pos;
+	            if (eat('(')) { // parentheses
+	                x = parseExpression();
+	                eat(')');
+	            } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
+	                while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+	                x = Double.parseDouble(str.substring(startPos, this.pos));
+	            } else if (ch >= 'a' && ch <= 'z') { // functions
+	                while (ch >= 'a' && ch <= 'z') nextChar();
+	                String func = str.substring(startPos, this.pos);
+	                x = parseFactor();
+	                if (func.equals("sqrt")) x = Math.sqrt(x);
+	                else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
+	                else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
+	                else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
+	                else throw new RuntimeException("Unknown function: " + func);
+	            } else {
+	                throw new RuntimeException("Unexpected: " + (char)ch);
+	            }
+
+	            if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
+
+	            return x;
+	        }
+	    }.parse();
 	}
 }

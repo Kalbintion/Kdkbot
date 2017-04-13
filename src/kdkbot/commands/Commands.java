@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
+import kdkbot.api.urban.UrbanAPI;
 import kdkbot.channel.Channel;
 import kdkbot.channel.Forwarder;
 import kdkbot.commands.messagetimer.Timers;
@@ -12,7 +13,6 @@ import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
 import kdkbot.commands.stats.Stats;
 import kdkbot.commands.strings.*;
-import kdkbot.urbanapi.UrbanAPI;
 
 public class Commands {
 	// Necessary variable for instance referencing

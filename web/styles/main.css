@@ -1,0 +1,102 @@
+body {
+	background-color: #666;
+	background-image: url('../imgs/wildtextures-seamless-checkerplate-metal-sheet.jpg');
+	color: #FFF;
+}
+
+a {
+	color: white;
+}
+
+.contentMain {
+	width: 80%;
+	min-height: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: rgba(0,0,0,0.5);
+	border-radius: 20px;
+}
+
+.contentMain > div {
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: rgba(0,0,0,0.5);
+}
+
+.contentHeader {
+	border-radius: 15px 15px 0px 0px;
+	font-size: 50px;
+}
+
+.contentHeader span {
+	margin-left: 20px;
+}
+
+.contentMenu {
+	
+	border-radius: 0px !important;	
+}
+
+.contentMenu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.contentMenu ul li {
+	float: left;
+	border: 1px solid gray;
+	margin: 5px;
+}
+
+.contentMenu ul li a {
+	display: block;
+	color: #FFF;
+	text-align: center;
+	padding: 5px 8px;
+	text-decoration: none;
+}
+
+.contentMenu ul li a:hover {
+	background-color: rgba(0,0,0,0.5);
+}
+
+.contentBody {
+	min-height: 75%;
+}
+
+.contentFooter {
+	border-radius: 0px 0px 15px 15px;
+	padding-top: 20px;
+	padding-bottom: 10px;
+	text-align: right;
+}
+
+.boxError {
+	background-color: rgba(255,0,0,0.5);
+	margin: auto auto;
+	width: 75%;
+	padding: 20px;
+	font-weight: bold;
+	border-radius: 20px;
+	text-align: center;
+}
+
+table.minTable {
+	background: rgba(0,0,0,0.5);
+	margin: auto auto;
+	border: 1px solid white;
+	border-collapse: collapse;
+}
+
+table.minTable td {
+	border: 1px solid white;
+	padding: 5px;
+}
+
+table.minTable caption {
+	font-weight: bold;
+	font-size: 5em;
+}

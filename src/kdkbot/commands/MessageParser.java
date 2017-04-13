@@ -409,7 +409,7 @@ public class MessageParser {
 			String urlResult = "";
 			
 			if(pattern_yturl_replace_matches.find()) {
-				urlResult = kdkbot.youtubeapi.YoutubeAPI.baseURL + pattern_yturl_replace_matches.group("VidID");
+				urlResult = kdkbot.api.youtube.YoutubeAPI.baseURL + pattern_yturl_replace_matches.group("VidID");
 			} else {
 				urlResult = "";
 			}

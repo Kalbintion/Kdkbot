@@ -1,0 +1,1 @@
+<center><img src="https://cdnd.icons8.com/wp-content/uploads/2015/06/under-construction-2.gif" width="120px" height="100px"><br /><br />This website is currently under construction! If you are here for a channels list of commands, feel free to click "Channels" above and select the appropriate channel!</center>

@@ -196,6 +196,8 @@ public class StringCommands {
 					}
 					break;
 				case "list":
+					Kdkbot.instance.getChannel(channel).sendMessage("You can get this channels list of commands by visiting: tfk.zapto.org/kdkbot/?p=channels&channel=" + channel.replace("#", ""));
+				/* case "list":
 					// commands list [custom] <rank>
 					ArrayList<String> commands = new ArrayList<String>();
 					
@@ -322,7 +324,7 @@ public class StringCommands {
 						// We shouldnt have a message to send
 					}
 		
-					break;
+					break; */
 			}
 		}
 	}

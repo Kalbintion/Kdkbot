@@ -11,6 +11,5 @@ This bot has multiple dependences:
 # Suggestions & Bugs
 If you have any suggestions for feature requests, etc, please report it to the [Issues](https://github.com/Kalbintion/Kdkbot/issues) page.
 
-# Trello
-https://trello.com/b/wNdlBf67/kdkbot
-This project uses Trello, an online available option to tracking roadmaps a bit more visual and intuitive.
+# Web System
+The web interface was designed using [PHP 5.4.4](http://php.net/downloads.php) and [Abyss Web Server x1 (v 2.11.2)](https://aprelium.com/abyssws/).

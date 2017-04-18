@@ -313,6 +313,10 @@ public class Kdkbot extends PircBot {
     			Kdkbot.instance.sendMessage(channel, "Telling java to collect garbage...");
     			System.gc();
     			System.gc();
+    		} else if(message.startsWith("&&gametest ")) {
+    			String[] args = message.split(" ", 2);
+    			String gameName = args[1];
+    			
     		}
     	}
     	

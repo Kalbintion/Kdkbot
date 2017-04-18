@@ -2,6 +2,7 @@ package kdkbot.api.twitch;
 
 public class TwitchMethods {
 	private TwitchURLS URLS;
+	
 	TwitchMethods() {
 		
 	}

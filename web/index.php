@@ -16,7 +16,8 @@
 			<li class="menuButton"><a href="?p=channels">Channels</a></li>
 			<li class="menuButton"><a href="https://github.com/Kalbintion/Kdkbot/wiki">Wiki</a></li>
 			<li class="menuButton"><a href="?p=contact">Contact Me</a></li>
-			<li class="menuButton"><a href="?p=basecommands">Base Commands (Temp Redirect)</a></li>
+			<li class="menuButton"><a href="?p=basecommands">Base Commands</a></li>
+			<li class="menuButton"><a href="https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=gia5fjuorx23n2e0wyfiii0soafxop0&redirect_uri=http%3A%2F%2Ftfk.zapto.org%2Fkdkbot%2F%3Fp%3Dtwitch&scope=channel_read+channel_editor+channel_commercial+channel_subscriptions&state=p%3Dauth&forceverify=true">Authorize</a></li>
 		</ul>
 	</div>
 	<div class="contentBody">

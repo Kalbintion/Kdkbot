@@ -77,6 +77,9 @@ public class Quotes extends Command {
 			case "size":
 				Kdkbot.instance.sendMessage(channel, "There are " + quotes.size() + " quotes.");
 				break;
+			case "list":
+				Kdkbot.instance.sendMessage(channel, "You are see all available quotes by visiting http://tfk.zapto.org/kdkbot/?p=channels&channel=" + info.channel + "&type=quotes");
+				break;
 			case "random":
 				Random rnd = new Random();
 				int quoteNum = 0;

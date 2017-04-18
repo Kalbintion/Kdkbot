@@ -9,3 +9,6 @@ pircbot-1.5.0/
 .metadata/
 .project
 .settings/
+twitter4j-4.0.4.zip
+twitter4j-4.0.4/*
+web/imgs-cache/*

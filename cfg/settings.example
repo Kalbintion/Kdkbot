@@ -1,16 +1,32 @@
+# Example Configs
+
+# These comments and the below information may be modified at bots run time to be in any order, once setup do not expect the list to be this neat in the future.
+
+
+# Bot Settings
+nick=Kdkbot
+verbose=true
+channels=#kdkbot,#channel1,#channel2
+masterCommands=Some_User
+
+# Twitch Settings
 port=6667
 oauth=some_auth_token
-nick=Kdkbot
-logIgnores=(PING :|PONG :|MODE #)
-verbose=true
-irc=irc.twitch.tv
-channels=#kdkbot,#kalbintion,#taitfox
-logChatLocation=C:\Projects\Java\kdkbot\logs\
 clientId=some_client_id
+twitchSecret=
+irc=irc.twitch.tv
+
+# Chat Logging
 logChat=true
-masterCommands=Kalbintion
+logChatLocation=C:\Projects\Java\kdkbot\logs\
+logIgnores=(PING :|PONG :|MODE #)
+
+# Twitter Settings
 twitterOAuth=
 twitterOAuthSecret=
 twitterOAuthConsumer=
 twitterOAuthConsumerSecret=
+
+# Web Settings
 webLocation=C:\Web Server\kdkbot\
+redirectURI=http://example.com/authenticate

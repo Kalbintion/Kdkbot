@@ -13,13 +13,13 @@
 </tr>
 <tr>
 	<td>ama</td>
-	<td></td>
+	<td>1</td>
 	<td>Yes</td>
 	<td><i>ama</i> incorporates an "ask me anything" system in which questions can be added to be viewed later through a queuing system.</td>
 </tr>
 <tr>
 	<td>quote</td>
-	<td></td>
+	<td>1</td>
 	<td>Yes</td>
 	<td><i>quote</i> incorporates a storage system for memorable comments by the streamer(s), for use later on.</td>
 </tr>
@@ -31,33 +31,45 @@
 </tr>
 <tr>
 	<td>commands</td>
-	<td></td>
+	<td>1</td>
 	<td>Yes</td>
 	<td><i>commands</i> incorporates a custom command system for creating channel specific user commands.</td>
 </tr>
 <tr>
 	<td>counter</td>
-	<td></td>
+	<td>2</td>
 	<td>Yes</td>
 	<td><i>counter</i> incorporates a counting system. Useful for tracking number of deaths, kills, etc.</td>
 </tr>
 <tr>
 	<td>perm</td>
-	<td></td>
+	<td>3</td>
 	<td>Yes</td>
 	<td><i>perm</i> is a core command that is designed to give other users a particular permission level.</td>
 </tr>
 <tr>
 	<td>stats</td>
-	<td></td>
+	<td>0</td>
 	<td>Yes</td>
 	<td><i>stats</i> gives the user specific statistical information about them in regards to the channel it was used in. Information such as number of messages sent and time spent in channel.</td>
 </tr>
 <tr>
 	<td>timers</td>
-	<td></td>
+	<td>3</td>
 	<td>Yes</td>
 	<td><i>timers</i> incorporates a repeatable message to be sent to the channel based on a given delay.</td>
+</tr>
+<tr>
+	<td>urban</td>
+	<td>2</td>
+	<td>Yes</td>
+	<td><i>urban</i> requests the information for the first result found on the urban dictionary website.</td>
+</tr>
+<tr>
+	<td>permit</td>
+	<td>3</td>
+	<td>Yes</td>
+	<td><i>permit</i> allows a user to bypass certain filters created with the <i>filters</i> command.</td>
 </tr>
 </table>
 <br /><br />

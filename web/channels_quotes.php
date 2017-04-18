@@ -1,9 +1,9 @@
 <?PHP
-	$fil = file_get_contents("../cfg/#" . $_GET['channel'] . "/quotes.cfg");
+	$fil = file_get_contents("../cfg/#" . $_GET['c'] . "/quotes.cfg");
 	$quotes = explode("\r\n", $fil);
 	asort($quotes);
 	
-	echo "<br /><p>Quotes list for " . ucwords(strtolower($_GET['channel'])) . "</p>";
+	echo "<br /><p>Quotes list for " . ucwords(strtolower($_GET['c'])) . "</p>";
 	echo "<table class=\"minTable\"><tr><th>ID</th><th>Quote Text</th></tr>";
 	foreach ($quotes as $quote) {
 		if($quote !== "") {

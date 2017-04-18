@@ -1,8 +1,8 @@
 <?PHP
-	$fil = file_get_contents("../cfg/#" . $_GET['channel'] . "/cmds.cfg");
+	$fil = file_get_contents("../cfg/#" . $_GET['c'] . "/cmds.cfg");
 	$commands = explode("\r\n", $fil);
 	
-	echo "<br /><p>Command list for " . ucwords(strtolower($_GET['channel'])) . "</p>";
+	echo "<br /><p>Command list for " . ucwords(strtolower($_GET['c'])) . "</p>";
 	echo "<table class=\"minTable\"><tr><th>Trigger</th><th>Rank</th><th>Active</th><th>Text</th></tr>";
 	foreach ($commands as $command) {
 		if($command !== "") {

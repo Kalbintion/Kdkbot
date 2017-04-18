@@ -11,7 +11,7 @@
 		}
 	}
 
-	if(!isset($_GET['channel'])) {
+	if(!isset($_GET['c'])) {
 		echo "<br /><span></span>";
 	
 		// We need to list the channels for the bot
@@ -81,15 +81,22 @@
 				curl_close($ch);
 			}
 			
-			echo "<div class=\"boxChannel\"><center><img width=\"50px\" height=\"50px\" src=\"$imgURL\"></center><br /><center><a href=\"http://twitch.tv/$channel\">$channel</a><br /><a href=\"?p=channels&channel=$channel&type=cmds\">Commands</a><br /><a href=\"?p=channels&channel=$channel&type=quotes\">Quotes</a></center><br /></div>";
+			echo "
+				<div class=\"boxChannel\">
+					<center><img width=\"50px\" height=\"50px\" src=\"$imgURL\"></center><br />
+					<center><a href=\"http://twitch.tv/$channel\">$channel</a><br />
+						<a href=\"?p=channels&c=$channel&t=c\">Commands</a><br />
+						<a href=\"?p=channels&c=$channel&t=q\">Quotes</a>
+					</center><br />
+				</div>";
 		}
 		echo "<hr style=\"clear:both\"><span>There are currently " . count($eChannels) . " channels with kdkbot inside.</span>";
 	} else {
 		// We have a channel selected, lets see what type of info we need to load
-		if($_GET['type'] == "cmds") {
+		if($_GET['t'] == "c") {
 			// Commands
 			require('channels_commands.php');
-		} elseif($_GET['type'] == "quotes") {
+		} elseif($_GET['t'] == "q") {
 			// Quotes
 			require('channels_quotes.php');
 		}

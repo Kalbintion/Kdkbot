@@ -61,7 +61,7 @@ public class Commands {
 			this.timers = new Timers(channel);
 			this.timers.loadTimers();
 
-			InternalCommand[] internalCommands = {cmdChannel, cmdPerm, cmdForward, cmdPermit, cmdFilter};
+			InternalCommand[] internalCommands = {cmdChannel, cmdPerm, cmdForward, cmdPermit, cmdFilter, cmdTimer};
 			for (InternalCommand cmd : internalCommands) {
 				Object ret = verifyGetSetting(cmd.getSettingName(), cmd.getSettingDefault(), cmd.getSettingType());
 				if(ret == null) {
@@ -80,7 +80,7 @@ public class Commands {
 			try {
 				this.quotes.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankQuotes")));
 			} catch (NumberFormatException e) {
-				chan.sendMessage("This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
+				// chan.sendMessage("This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
 				this.quotes.setAvailability(false);
 			}
 			
@@ -91,7 +91,7 @@ public class Commands {
 			try {
 				this.cmdFilter.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankFilter")));
 			} catch(NumberFormatException e) {
-				chan.sendMessage("This channels rankFilter setting is invalid! Got " + chan.cfgChan.getSetting("rankFilter"));
+				// chan.sendMessage("This channels rankFilter setting is invalid! Got " + chan.cfgChan.getSetting("rankFilter"));
 				this.cmdFilter.setAvailability(false);
 			}
 			
@@ -102,7 +102,7 @@ public class Commands {
 			try {
 				this.amas.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankAMA")));
 			} catch (NumberFormatException e) {
-				chan.sendMessage("This channels rankAMA setting is invalid! Got " + chan.cfgChan.getSetting("rankAMA"));
+				// chan.sendMessage("This channels rankAMA setting is invalid! Got " + chan.cfgChan.getSetting("rankAMA"));
 				this.amas.setAvailability(false);
 			}
 			
@@ -113,9 +113,10 @@ public class Commands {
 			try {
 				this.timers.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankTimer")));
 			} catch (NumberFormatException e) {
-				chan.sendMessage("this channels rankTimer setting is invalid! Got " + chan.cfgChan.getSetting("rankTimer"));
+				// chan.sendMessage("this channels rankTimer setting is invalid! Got " + chan.cfgChan.getSetting("rankTimer"));
 				this.timers.setAvailability(false);
 			}
+			
 			
 
 		} catch(Exception e) {

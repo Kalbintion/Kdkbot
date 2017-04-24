@@ -93,12 +93,16 @@
 		echo "<hr style=\"clear:both\"><span>There are currently " . count($eChannels) . " channels with kdkbot inside.</span>";
 	} else {
 		// We have a channel selected, lets see what type of info we need to load
-		if($_GET['t'] == "c") {
-			// Commands
-			require('channels_commands.php');
-		} elseif($_GET['t'] == "q") {
-			// Quotes
-			require('channels_quotes.php');
+		if(isset($_GET['t'])) {
+			if($_GET['t'] == "c") {
+				// Commands
+				require('channels_commands.php');
+			} elseif($_GET['t'] == "q") {
+				// Quotes
+				require('channels_quotes.php');
+			}
+		} else {
+			require('error.php');
 		}
 	}
 ?>

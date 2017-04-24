@@ -71,6 +71,18 @@
 	<td>Yes</td>
 	<td><i>permit</i> allows a user to bypass certain filters created with the <i>filters</i> command.</td>
 </tr>
+<tr>
+	<td>game</td>
+	<td>1, 3</td>
+	<td>Yes</td>
+	<td><i>game</i>, if not provided anything after, will request the streamers current game name. This requires a permission rank of 1 or higher to use. If something is after <i>game</i>, it will attempt to send the new games title to twitch. This requires a permission rank of 3 or higher to use.</td>
+</tr>
+<tr>
+	<td>status</td>
+	<td>1, 3</td>
+	<td>Yes</td>
+	<td><i>status</i>, if not provided anything after, will request the streamers current stream title. This requires a permission rank of 1 or higher to use. If something is after <i>status</i>, it will attempt to send the new streams title to twitch. This requires a permission rank of 3 or higher to use.</td>
+</tr>
 </table>
 <br /><br />
 <hr>

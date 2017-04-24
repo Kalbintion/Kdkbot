@@ -114,13 +114,9 @@ public class Quotes extends Command {
 				String line = lineItero.next();
 				String[] linePieces = line.split(": ", 2);
 				
-				// System.out.println("[DBG] [QUOTE] [LOAD] line: " + line);
-				// System.out.println("[DBG] [QUOTE] [LOAD] linePiece length: " + linePieces.length);
-				
 				quotes.put(linePieces[0], linePieces[1]);
 				
 				if(lastIndex < Integer.parseInt(linePieces[0])) {
-					// System.out.println("[DBG] [QUOTE] [LOAD] Setting lastIndex to " + linePieces[0] + " from " + lastIndex);
 					lastIndex = Integer.parseInt(linePieces[0]);
 				}
 			}

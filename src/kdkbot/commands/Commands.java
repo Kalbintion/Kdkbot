@@ -367,6 +367,36 @@ public class Commands {
 				coreWord.equalsIgnoreCase("timer")) {
 			timers.executeCommand(info);	
 		}
+		// Game, Status
+		else if(info.senderLevel >= 1 &&
+				coreWord.equalsIgnoreCase("game")) {
+			if(info.message.contains(" ") && info.senderLevel >= 3) {
+				// We are updating game
+				if(kdkbot.api.twitch.API.setChannelGame(chan.getAccessToken(), chan.channel, info.getSegments(2)[1])) {
+					chan.sendMessage("Sent game update request...");
+				} else {
+					chan.sendMessage("Failed to send game update request...");
+				}
+			} else {
+				// We are requesting game
+				chan.sendMessage(kdkbot.api.twitch.API.getChannelGame(chan.getAccessToken(), chan.channel));
+			}
+			
+		} else if(info.senderLevel >= 1 &&
+				coreWord.equalsIgnoreCase("status")) {
+			if(info.message.contains(" ") && info.senderLevel >= 3) {
+				// We are updating status
+				if(kdkbot.api.twitch.API.setChannelStatus(chan.getAccessToken(), chan.channel, info.getSegments(2)[1])) {
+					chan.sendMessage("Sent status update request...");
+				} else {
+					chan.sendMessage("Failed to send status update request...");
+				}
+			} else {
+				// We are requesting status
+				chan.sendMessage(kdkbot.api.twitch.API.getChannelStatus(chan.getAccessToken(), chan.channel));
+			}
+			
+		}
 		// Custom String Commands
 		Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
 		while(stringIter.hasNext()) {

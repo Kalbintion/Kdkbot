@@ -24,6 +24,7 @@ public class Channel {
 	public String baseConfigLocation;
 	public Config cfgPerms;
 	public Config cfgChan;
+	public Config cfgTokens;
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
 	// Other Vars
@@ -48,9 +49,13 @@ public class Channel {
 			this.channel = channel;
 			this.baseConfigLocation = "./cfg/" + channel + "/";
 		
-			this.cfgChan = new Config(this.baseConfigLocation + "channel.cfg");
+			cfgChan = new Config(this.baseConfigLocation + "channel.cfg");
 			cfgChan.verifyExists();
-			this.cfgChan.loadConfigContents();
+			cfgChan.loadConfigContents();
+			
+			cfgTokens = new Config(this.baseConfigLocation + "tokens.cfg");
+			cfgTokens.verifyExists();
+			cfgTokens.loadConfigContents();
 			
 			// Command Processing?
 			if(cfgChan.getSetting("commandProcessing") == null) {
@@ -320,12 +325,25 @@ public class Channel {
 	 * @param fromChannel The channel to remove the forwarder to
 	 */
 	public void removeForwarder(String fromChannel) {
-		Iterator<Forwarder> fwdIter=  this.forwarders.iterator();
+		Iterator<Forwarder> fwdIter = this.forwarders.iterator();
 		while(fwdIter.hasNext()) {
 			Forwarder nxt = fwdIter.next();
 			if(nxt.getChannel().equalsIgnoreCase(fromChannel)) {
 				fwdIter.remove();
 			}
 		}
+	}
+	
+	/**
+	 * Gets this channels access token if its available
+	 * @return Twitch access token in unencrypted form
+	 */
+	public String getAccessToken() {
+		String token = cfgTokens.getSetting("accessToken");
+		if(token == null) {
+			sendMessage("This channel has not authorized kdkbot to access stream information!");
+			return "";
+		}
+		return cfgTokens.getSetting("accessToken");
 	}
 }

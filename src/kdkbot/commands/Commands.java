@@ -397,6 +397,17 @@ public class Commands {
 			}
 			
 		}
+		// Hosting
+		else if(info.senderLevel >= 3 &&
+				coreWord.equalsIgnoreCase("host")) {
+			String channel = info.getSegments(2)[1];
+			if(kdkbot.api.twitch.API.isEditorOf(chan.getAccessToken(), chan.channel)) {
+				chan.sendRawMessage("/host " + channel);
+				chan.sendMessage("Now hosting: " + channel);
+			} else {
+				chan.sendMessage("Cannot send host request! Bot isn't an editor of the channel.");
+			}
+		}
 		// Custom String Commands
 		Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
 		while(stringIter.hasNext()) {

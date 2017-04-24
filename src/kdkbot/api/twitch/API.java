@@ -3,12 +3,12 @@ package kdkbot.api.twitch;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.google.gson.Gson;
+import kdkbot.Kdkbot;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -16,6 +16,7 @@ public final class API {
 	private static String URL_BASE = "https://api.twitch.tv/kraken/";
 	private static String URL_CHANNELS = URL_BASE + "channels/";
 	private static String URL_CHANNEL = URL_BASE + "channel/";
+	private static String URL_CHANNEL_EDITORS = "/editors";
 	private static String HEADER_ACCEPT = "application/vnd.twitchtv.v3+json";
 	private static String HEADER_ACCEPT_NAME = "Accept";
 	private static String HEADER_AUTH_NAME = "Authorization";
@@ -56,6 +57,11 @@ public final class API {
 	
 	public static boolean setChannelStatus(String token, String channel, String newTitle) {
 		return setChannelObject(token, channel, "channel[status]=" + newTitle.replace(" ", "+"));
+	}
+	
+	public static boolean isEditorOf(String token, String channel) {
+		String res = getResponse(token, URL_CHANNELS + channel.replace("#", "") + URL_CHANNEL_EDITORS, "GET");
+		return res.contains("\"" + Kdkbot.instance.getName() + "\"");
 	}
 	
 	private static String getResponse(String token, String sURL, String requestMethod) {

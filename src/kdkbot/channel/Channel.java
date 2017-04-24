@@ -222,6 +222,10 @@ public class Channel {
 		Kdkbot.instance.sendMessage(channel, msgPrefix + message + msgSuffix);
 	}
 	
+	public void sendRawMessage(String message) {
+		Kdkbot.instance.sendMessage(channel, message);
+	}
+	
 	/**
 	 * 
 	 * @param info

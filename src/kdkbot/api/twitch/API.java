@@ -6,6 +6,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import kdkbot.Kdkbot;
 
@@ -17,6 +22,7 @@ public final class API {
 	private static String URL_CHANNELS = URL_BASE + "channels/";
 	private static String URL_CHANNEL = URL_BASE + "channel/";
 	private static String URL_CHANNEL_EDITORS = "/editors";
+	private static String URL_STREAMS = URL_BASE + "streams/";
 	private static String HEADER_ACCEPT = "application/vnd.twitchtv.v3+json";
 	private static String HEADER_ACCEPT_NAME = "Accept";
 	private static String HEADER_AUTH_NAME = "Authorization";
@@ -47,6 +53,55 @@ public final class API {
 		}
 	}
 	
+	public static String getStreamObject(String token, String channel) {
+		return getResponse(token, URL_STREAMS + channel.replace("#", ""), "GET");
+	}
+	
+	public static String getStreamUptime(String token, String channel) {
+		String res = getStreamObject(token, channel);
+		JsonParser parser = new JsonParser();
+		try {
+			JsonObject jObj = parser.parse(res).getAsJsonObject();
+			// 2017-04-26T15:22:37Z
+			DateFormat dFormat = new SimpleDateFormat("'\"'yyyy-MM-dd'T'HH:mm:ss'Z\"'");
+			dFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+			
+			DateFormat dFormat2 = new SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy");
+			dFormat2.setTimeZone(TimeZone.getTimeZone("CST"));
+			
+			
+			JsonObject stream = jObj.get("stream").getAsJsonObject();
+			String created_at = stream.get("created_at").toString();
+
+			Date dStart = dFormat.parse(created_at);
+			Date dNow = dFormat2.parse(new Date().toString());
+			dNow.toString();
+
+			long dDiff = dNow.getTime() - dStart.getTime();
+
+			long dSec = dDiff / 1000 % 60;
+			long dMin = dDiff / 1000 / 60 % 60;
+			long dHour = dDiff / 1000 / 60 / 60 % 60;
+			long dDay = dDiff / 1000 / 60 / 60 / 24 % 24;
+			
+			String out = dDay + "D" + dHour + "H" + dMin + "M" + dSec + "S";
+			return out;
+		} catch(ParseException | NullPointerException | IllegalStateException e) {
+			return null;
+		}
+	}
+	
+	public static String getStreamViewers(String token, String channel) {
+		String res = getStreamObject(token, channel);
+		JsonParser parser = new JsonParser();
+		try {
+			JsonObject jObj = parser.parse(res).getAsJsonObject();
+			return jObj.get("stream").getAsJsonObject().get("viewers").toString();
+		} catch(NullPointerException | IllegalStateException e) {
+			return null;
+		}
+	}
+	
 	public static boolean setChannelObject(String token, String channel, String data) {
 		return setResponse(token, URL_CHANNELS + channel.replace("#",  ""), "PUT", data);
 	}
@@ -64,7 +119,7 @@ public final class API {
 		return res.contains("\"" + Kdkbot.instance.getName() + "\"");
 	}
 	
-	private static String getResponse(String token, String sURL, String requestMethod) {
+	public static String getResponse(String token, String sURL, String requestMethod) {
 		HttpURLConnection hc;
 		 try {
 	        URL address = new URL(sURL);
@@ -96,7 +151,7 @@ public final class API {
 		}
 	}
 
-	private static boolean setResponse(String token, String sURL, String requestMethod, String data) {
+	public static boolean setResponse(String token, String sURL, String requestMethod, String data) {
 		HttpURLConnection hc;
 		try {
 			URL address = new URL(sURL + "/");

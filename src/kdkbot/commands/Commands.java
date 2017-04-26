@@ -417,6 +417,26 @@ public class Commands {
 				chan.sendMessage("Cannot send unhost request! Bot isn't an editor of this channel.");
 			}
 		}
+		// Stream Uptime
+		else if(info.senderLevel >= 1 &&
+				coreWord.equalsIgnoreCase("uptime")) {
+			String res = kdkbot.api.twitch.API.getStreamUptime(chan.getAccessToken(), chan.channel);
+			if(res == null) {
+				chan.sendMessage("Stream is not currently live!");
+			} else {
+				chan.sendMessage("Stream has been going for " + res);
+			}
+		}
+		// Viewers
+		else if(info.senderLevel >= 1 &&
+				coreWord.equalsIgnoreCase("viewers")) {
+			String res = kdkbot.api.twitch.API.getStreamViewers(chan.getAccessToken(), chan.channel);
+			if(res == null) {
+				chan.sendMessage("Stream is not currently live!");
+			} else {
+				chan.sendMessage("There are " + res + " viewers.");
+			}
+		}
 		// Custom String Commands
 		Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
 		while(stringIter.hasNext()) {
@@ -512,10 +532,10 @@ public class Commands {
 	private boolean setCommandStatus(Command command, String settingName, Object value) {
 		switch(settingName) {
 			case "availability":
-				command.setAvailability((boolean) value);
+				command.setAvailability(Boolean.parseBoolean(value.toString()));
 				return true;
 			case "permission":
-				command.setPermissionLevel((int) value);
+				command.setPermissionLevel(Integer.parseInt(value.toString()));
 				return true;
 		}
 		return false;

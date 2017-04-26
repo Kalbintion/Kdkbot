@@ -83,6 +83,18 @@
 	<td>Yes</td>
 	<td><i>status</i>, if not provided anything after, will request the streamers current stream title. This requires a permission rank of 1 or higher to use. If something is after <i>status</i>, it will attempt to send the new streams title to twitch. This requires a permission rank of 3 or higher to use.</td>
 </tr>
+<tr>
+	<td>viewers</td>
+	<td>1</td>
+	<td>Yes</td>
+	<td><i>viewers</i> will return the amount of viewers that the stream currently has, or it'll say it isn't live if it isn't.</td>
+</tr>
+<tr>
+	<td>uptime</td>
+	<td>1</td>
+	<td>Yes</td>
+	<td><i>uptime</i> will return the amount of time that the stream has been live, or it'll say it isn't live if it isn't.</td>
+</tr>
 </table>
 <br /><br />
 <hr>

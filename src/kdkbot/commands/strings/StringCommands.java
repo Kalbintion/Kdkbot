@@ -1,14 +1,12 @@
 package kdkbot.commands.strings;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
-import kdkbot.commands.Commands;
 import kdkbot.filemanager.Config;
 
 public class StringCommands {

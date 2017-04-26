@@ -405,7 +405,16 @@ public class Commands {
 				chan.sendRawMessage("/host " + channel);
 				chan.sendMessage("Now hosting: " + channel);
 			} else {
-				chan.sendMessage("Cannot send host request! Bot isn't an editor of the channel.");
+				chan.sendMessage("Cannot send host request! Bot isn't an editor of this channel.");
+			}
+		}
+		// Unhosting
+		else if(info.senderLevel >= 3 &&
+				coreWord.equalsIgnoreCase("unhost")) {
+			if(kdkbot.api.twitch.API.isEditorOf(chan.getAccessToken(), chan.channel)) {
+				chan.sendRawMessage("/unhost");
+			} else {
+				chan.sendMessage("Cannot send unhost request! Bot isn't an editor of this channel.");
 			}
 		}
 		// Custom String Commands

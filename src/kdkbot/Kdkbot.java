@@ -399,6 +399,9 @@ public class Kdkbot extends PircBot {
     			Kdkbot.instance.sendMessage(info.channel, "Telling java to collect garbage...");
     			System.gc();
     			System.gc();
+    		} else if(info.message.startsWith("&&uptime ")) {
+    			String chan = info.getSegments(2)[1];
+    			Kdkbot.instance.sendMessage(info.channel, kdkbot.api.twitch.API.getStreamUptime(getClientID(), chan));
     		}
     	}
     }

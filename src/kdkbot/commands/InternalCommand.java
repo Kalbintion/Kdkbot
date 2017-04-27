@@ -6,13 +6,11 @@ package kdkbot.commands;
 public class InternalCommand extends Command {
 	private String settingName;
 	private String settingDefault;
-	private Class<?> settingType;
 	
-	public <T> InternalCommand(String settingName, String settingDefault, Class<T> settingType) {
+	public InternalCommand(String settingName, String settingDefault) {
 		super();
 		this.settingName = settingName;
 		this.settingDefault = settingDefault;
-		this.settingType = settingType;
 	}
 	
 	public String getSettingName() {
@@ -29,9 +27,5 @@ public class InternalCommand extends Command {
 	
 	public void setSettingDefault(String settingDefault) {
 		this.settingDefault = settingDefault;
-	}
-	
-	public Class<?> getSettingType() {
-		return this.settingType;
 	}
 }

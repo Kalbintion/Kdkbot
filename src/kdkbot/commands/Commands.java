@@ -1,5 +1,6 @@
 package kdkbot.commands;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import kdkbot.Kdkbot;
@@ -28,12 +29,17 @@ public class Commands {
 	public Timers timers;
 	
 	// Additional Commands
-	private InternalCommand cmdChannel = new InternalCommand("rankChannel", "5", Integer.class);
-	private InternalCommand cmdPerm = new InternalCommand("rankPerm", "3", Integer.class);
-	private InternalCommand cmdForward = new InternalCommand("rankForward", "4", Integer.class);
-	private InternalCommand cmdPermit = new InternalCommand("rankPermit", "3", Integer.class);
-	private InternalCommand cmdFilter = new InternalCommand("rankFilter", "5", Integer.class);
-	private InternalCommand cmdTimer = new InternalCommand("rankTimer", "3", Integer.class);
+	private InternalCommand cmdChannel = new InternalCommand("rankChannel", "5");
+	private InternalCommand cmdPerm = new InternalCommand("rankPerm", "3");
+	private InternalCommand cmdForward = new InternalCommand("rankForward", "4");
+	private InternalCommand cmdPermit = new InternalCommand("rankPermit", "3");
+	private InternalCommand cmdFilter = new InternalCommand("rankFilter", "5");
+	private InternalCommand cmdTimer = new InternalCommand("rankTimer", "3");
+	private InternalCommand cmdHost = new InternalCommand("rankHost", "3");
+	private InternalCommand cmdUnhost = new InternalCommand("rankUnhost", "3");
+	private InternalCommand cmdStatus = new InternalCommand("rankStatus", "1");
+	private InternalCommand cmdGame = new InternalCommand("rankGame", "1");
+	private ArrayList<InternalCommand> cmdList;
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -63,7 +69,7 @@ public class Commands {
 
 			InternalCommand[] internalCommands = {cmdChannel, cmdPerm, cmdForward, cmdPermit, cmdFilter, cmdTimer};
 			for (InternalCommand cmd : internalCommands) {
-				Object ret = verifyGetSetting(cmd.getSettingName(), cmd.getSettingDefault(), cmd.getSettingType());
+				Object ret = verifyGetSetting(cmd.getSettingName(), cmd.getSettingDefault(), Integer.class);
 				if(ret == null) {
 					setCommandStatus(cmd, "availability", false);
 					setCommandStatus(cmd, "permission", cmd.getSettingDefault());
@@ -367,33 +373,33 @@ public class Commands {
 				coreWord.equalsIgnoreCase("timer")) {
 			timers.executeCommand(info);	
 		}
-		// Game, Status
+		// Game
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("game")) {
 			if(info.message.contains(" ") && info.senderLevel >= 3) {
 				// We are updating game
 				if(kdkbot.api.twitch.API.setChannelGame(chan.getAccessToken(), chan.channel, info.getSegments(2)[1])) {
-					chan.sendMessage("Sent game update request...");
+					chan.sendMessage("Sent game update request.");
 				} else {
-					chan.sendMessage("Failed to send game update request...");
+					chan.sendMessage("Failed to send game update request.");
 				}
 			} else {
 				// We are requesting game
-				chan.sendMessage(kdkbot.api.twitch.API.getChannelGame(chan.getAccessToken(), chan.channel));
+				chan.sendMessage("Current game: " + kdkbot.api.twitch.API.getChannelGame(chan.getAccessToken(), chan.channel));
 			}
-			
+		// Status (Title)
 		} else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("status")) {
 			if(info.message.contains(" ") && info.senderLevel >= 3) {
 				// We are updating status
 				if(kdkbot.api.twitch.API.setChannelStatus(chan.getAccessToken(), chan.channel, info.getSegments(2)[1])) {
-					chan.sendMessage("Sent status update request...");
+					chan.sendMessage("Sent status update request.");
 				} else {
-					chan.sendMessage("Failed to send status update request...");
+					chan.sendMessage("Failed to send status update request.");
 				}
 			} else {
 				// We are requesting status
-				chan.sendMessage(kdkbot.api.twitch.API.getChannelStatus(chan.getAccessToken(), chan.channel));
+				chan.sendMessage("Current title: " + kdkbot.api.twitch.API.getChannelStatus(chan.getAccessToken(), chan.channel));
 			}
 			
 		}
@@ -432,7 +438,10 @@ public class Commands {
 		// Stream Uptime
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("uptime")) {
-			String res = kdkbot.api.twitch.API.getStreamUptime(Kdkbot.instance.getClientID(), chan.channel);
+			String getChan = chan.channel;
+			String[] parts = info.getSegments(2);
+			if(parts.length > 1) { getChan = parts[1]; }
+			String res = kdkbot.api.twitch.API.getStreamUptime(Kdkbot.instance.getClientID(), getChan);
 			if(res == null) {
 				chan.sendMessage("Stream is not currently live!");
 			} else {

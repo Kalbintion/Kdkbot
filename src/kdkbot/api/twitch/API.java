@@ -131,7 +131,6 @@ public final class API {
 			DateFormat dFormat2 = new SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy");
 			dFormat2.setTimeZone(TimeZone.getTimeZone("CST"));
 			
-			
 			JsonObject stream = jObj.get("stream").getAsJsonObject();
 			String created_at = stream.get("created_at").toString();
 
@@ -146,7 +145,12 @@ public final class API {
 			long dHour = dDiff / 1000 / 60 / 60 % 60;
 			long dDay = dDiff / 1000 / 60 / 60 / 24 % 24;
 			
-			String out = dDay + "D" + dHour + "H" + dMin + "M" + dSec + "S";
+			String out = "";
+			if(dDay > 0) { out = dDay + "D "; }
+			if(dHour > 0 || dDay > 0) { out = dHour + "H "; }
+			if(dMin > 0 || dHour > 0 || dDay > 0) { out += dMin + "M "; }
+			if(dSec > 0 || dMin > 0 || dHour > 0 || dDay > 0) { out += dSec + "S"; }
+			System.out.println(dDay + "D " + dHour + "H " + dMin + "M " + dSec + "S");
 			return out;
 		} catch(ParseException | NullPointerException | IllegalStateException e) {
 			return null;

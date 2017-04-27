@@ -95,6 +95,18 @@
 	<td>Yes</td>
 	<td><i>uptime</i> will return the amount of time that the stream has been live, or it'll say it isn't live if it isn't.</td>
 </tr>
+<tr>
+	<td>host</td>
+	<td>3</td>
+	<td>Yes</td>
+	<td><i>host channel</i> will host the given <i>channel</i> name, as long as the bot is marked as an editor of the channel.</td>
+</tr>
+<tr>
+	<td>unhost</td>
+	<td>3</td>
+	<td>Yes</td>
+	<td><i>unhost</i> will stop hosting as long as the bot is marked as an editor of the channel.</td>
+</tr>
 </table>
 <br /><br />
 <hr>

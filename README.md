@@ -3,10 +3,11 @@ KDKBot is an IRC bot designed for the Twitch.tv website. Primarily developed by 
 
 # Dependencies
 This bot has multiple dependences:
-* PIRCBot: http://www.jibble.org/pircbot.php
-* GSON: https://code.google.com/p/google-gson/
-* JSOUP: http://jsoup.org/
-* Twitter4J: http://twitter4j.org/en/
+* [Java 7](http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html)
+* [PIRCBot 1.5.0](http://www.jibble.org/pircbot.php)
+* [GSON 2.3.1](https://code.google.com/p/google-gson/)
+* [JSOUP 1.8.3](http://jsoup.org/)
+* [Twitter4J 4.0.4](http://twitter4j.org/en/)
 
 # Suggestions & Bugs
 If you have any suggestions for feature requests, etc, please report it to the [Issues](https://github.com/Kalbintion/Kdkbot/issues) page.

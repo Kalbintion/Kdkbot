@@ -7,22 +7,14 @@ import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.jibble.pircbot.*;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -409,5 +401,9 @@ public class Kdkbot extends PircBot {
     			System.gc();
     		}
     	}
+    }
+    
+    public String getClientID() {
+    	return botCfg.getSetting("clientId");
     }
 }

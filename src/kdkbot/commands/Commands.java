@@ -400,12 +400,24 @@ public class Commands {
 		// Hosting
 		else if(info.senderLevel >= 3 &&
 				coreWord.equalsIgnoreCase("host")) {
-			String channel = info.getSegments(2)[1];
-			if(kdkbot.api.twitch.API.isEditorOf(chan.getAccessToken(), chan.channel)) {
-				chan.sendRawMessage("/host " + channel);
-				chan.sendMessage("Now hosting: " + channel);
+			String[] parts = info.getSegments(2);
+			if(parts.length > 1) {
+				String channel = parts[1];
+				if(kdkbot.api.twitch.API.isEditorOf(chan.getAccessToken(), chan.channel)) {
+					chan.sendRawMessage("/host " + channel);
+					chan.sendMessage("Now hosting: " + channel);
+				} else {
+					chan.sendMessage("Cannot send host request! Bot isn't an editor of this channel.");
+				}
 			} else {
-				chan.sendMessage("Cannot send host request! Bot isn't an editor of this channel.");
+				// We are looking up who the channel is hosting, we need to get user id then get the host target
+				String chanID = kdkbot.api.twitch.API.getChannelID(chan.getAccessToken(), chan.channel);
+				String hostTarget = kdkbot.api.twitch.API.getHostTarget(Kdkbot.instance.getClientID(), chanID);
+				if(hostTarget == null) {
+					chan.sendMessage("Currently not hosting anyone.");
+				} else {
+					chan.sendMessage("Currently hosting " + hostTarget);
+				}
 			}
 		}
 		// Unhosting
@@ -420,7 +432,7 @@ public class Commands {
 		// Stream Uptime
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("uptime")) {
-			String res = kdkbot.api.twitch.API.getStreamUptime(chan.getAccessToken(), chan.channel);
+			String res = kdkbot.api.twitch.API.getStreamUptime(Kdkbot.instance.getClientID(), chan.channel);
 			if(res == null) {
 				chan.sendMessage("Stream is not currently live!");
 			} else {
@@ -430,7 +442,7 @@ public class Commands {
 		// Viewers
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("viewers")) {
-			String res = kdkbot.api.twitch.API.getStreamViewers(chan.getAccessToken(), chan.channel);
+			String res = kdkbot.api.twitch.API.getStreamViewers(Kdkbot.instance.getClientID(), chan.channel);
 			if(res == null) {
 				chan.sendMessage("Stream is not currently live!");
 			} else {

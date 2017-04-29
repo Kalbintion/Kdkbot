@@ -34,9 +34,9 @@ public class Quotes extends Command {
 	
 	public void executeCommand(MessageInfo info) {
 		String[] args = info.getSegments();
-		String subCmd = "";
+		String subCmd = args[1].toLowerCase();
 
-		if(args.length == 1) { subCmd = "random"; }	else { subCmd = args[1].toLowerCase(); }
+		if(args.length == 1) { subCmd = "random"; }
 		
 		switch(subCmd) {
 			case "get":

@@ -286,11 +286,20 @@ public class Channel {
 			}
 		}
 		
+		// ORDER IMPORTANT HERE: Channel starting giveaway through the command caused this to add the person starting the giveaway to add themselves to it automatically
+		// Do we have a giveaway active? If so, does the message contain the keyword?
+		if(this.commands.giveaway.hasStarted() && info.message.toLowerCase().contains(this.commands.giveaway.getTriggerWord().toLowerCase())) {
+			if(!this.commands.giveaway.hasEntry(info.sender)) {
+				this.commands.giveaway.addEntry(info.sender);
+			}
+		}
+		
 		// Send the message off to the channels command processor
 		if(info.message.startsWith(this.commandPrefix)){
 			this.commands.commandHandler(info);
 		}
 		
+
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import kdkbot.commands.messagetimer.Timers;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
+import kdkbot.commands.giveaway.Giveaway;
 import kdkbot.commands.stats.Stats;
 import kdkbot.commands.strings.*;
 
@@ -27,6 +28,7 @@ public class Commands {
 	public Counters counters;
 	public AMA amas;
 	public Timers timers;
+	public Giveaway giveaway;
 	
 	// Additional Commands
 	private InternalCommand cmdChannel = new InternalCommand("rankChannel", "5");
@@ -66,6 +68,9 @@ public class Commands {
 			
 			this.timers = new Timers(channel);
 			this.timers.loadTimers();
+			
+			this.giveaway = new Giveaway(channel);
+			
 
 			InternalCommand[] internalCommands = {cmdChannel, cmdPerm, cmdForward, cmdPermit, cmdFilter, cmdTimer};
 			for (InternalCommand cmd : internalCommands) {
@@ -457,6 +462,11 @@ public class Commands {
 			} else {
 				chan.sendMessage("There are " + res + " viewers.");
 			}
+		}
+		// Giveaway
+		else if(info.senderLevel >= giveaway.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase(giveaway.getTrigger())) {
+			giveaway.executeCommand(info);
 		}
 		// Custom String Commands
 		Iterator<StringCommand> stringIter = commandStrings.commands.iterator();

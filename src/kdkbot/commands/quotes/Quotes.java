@@ -43,9 +43,9 @@ public class Quotes extends Command {
 				try {
 					String quote = quotes.get(args[2]);
 					if(quote != null) {
-						Kdkbot.instance.sendMessage(channel, "Quote #" + args[2] + ": " + quote);
+						Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[2] + ": " + quote);
 					} else {
-						Kdkbot.instance.sendMessage(channel, "Quote #" + args[2] + " does not exist.");
+						Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[2] + " does not exist.");
 					}
 					
 				} catch(NumberFormatException e) {
@@ -56,29 +56,29 @@ public class Quotes extends Command {
 				break;
 			case "add":
 				quotes.put(Integer.toString(++lastIndex), info.message.substring("quote add ".length()));
-				Kdkbot.instance.sendMessage(channel, "Quote #" + lastIndex + " added.");
+				Kdkbot.instance.sendChanMessage(channel, "Quote #" + lastIndex + " added.");
 				saveQuotes();
 				break;
 			case "remove":
 				quotes.remove(args[2]);
-				Kdkbot.instance.sendMessage(channel, "Quote #" + args[2] + " removed.");
+				Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[2] + " removed.");
 				break;
 			case "save":
 				this.saveQuotes();
-				Kdkbot.instance.sendMessage(channel, "Manually saved quote list for this channel.");
+				Kdkbot.instance.sendChanMessage(channel, "Manually saved quote list for this channel.");
 				break;
 			case "reload":
 				this.quotes = new HashMap<String, String>();
 				this.loadQuotes();
-				Kdkbot.instance.sendMessage(channel, "Manually reloaded quote list for this channel.");
+				Kdkbot.instance.sendChanMessage(channel, "Manually reloaded quote list for this channel.");
 			case "count":
 			case "amount":
 			case "total":
 			case "size":
-				Kdkbot.instance.sendMessage(channel, "There are " + quotes.size() + " quotes.");
+				Kdkbot.instance.sendChanMessage(channel, "There are " + quotes.size() + " quotes.");
 				break;
 			case "list":
-				Kdkbot.instance.sendMessage(channel, "You are see all available quotes by visiting http://tfk.zapto.org/kdkbot/?p=channels&c=" + info.channel.replace("#", "") + "&t=q");
+				Kdkbot.instance.sendChanMessage(channel, "You are see all available quotes by visiting http://tfk.zapto.org/kdkbot/?p=channels&c=" + info.channel.replace("#", "") + "&t=q");
 				break;
 			case "random":
 				Random rnd = new Random();
@@ -87,7 +87,7 @@ public class Quotes extends Command {
 					quoteNum = rnd.nextInt(this.quotes.size() + 1);
 				} while(quotes.get(Integer.toString(quoteNum)) == null);
 				
-				Kdkbot.instance.sendMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
+				Kdkbot.instance.sendChanMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
 				
 				break;
 		}

@@ -31,53 +31,70 @@ public class Giveaway extends Command {
 			case "start":
 				// giveaway start <triggerword>
 				if(args.length < 3) {
-					Kdkbot.instance.sendMessage(channel, "Couldn't start giveaway! No keyword provided.");
+					Kdkbot.instance.sendChanMessage(channel, "Couldn't start giveaway! No keyword provided.");
 				} else {
 					this.triggerWord = args[2];
 					start();
-					Kdkbot.instance.sendMessage(channel, "Giveaway started! Send a message with '" + triggerWord + "' to enter.");
+					Kdkbot.instance.sendChanMessage(channel, "Giveaway started! Send a message with '" + triggerWord + "' to enter.");
 				}
 				break;
 			case "stop":
 				// giveaway stop
 				if(hasStarted()) {
-					Kdkbot.instance.sendMessage(channel, "Giveaway stopped!");
+					Kdkbot.instance.sendChanMessage(channel, "Giveaway stopped!");
 					stop();
 				} else {
-					Kdkbot.instance.sendMessage(channel, "Giveaway hasn't started.");
+					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
 				}
 				break;
 			case "count":
 				if(hasStarted()) {
-					Kdkbot.instance.sendMessage(channel, "Giveaway currently has " + numberOfEntries() + " people entered!");
+					Kdkbot.instance.sendChanMessage(channel, "Giveaway currently has " + numberOfEntries() + " people entered!");
 				} else {
-					Kdkbot.instance.sendMessage(channel, "Giveaway hasn't started.");
+					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
 				}
 				break;
 			case "pick":
 				// giveaway pick [n]
 				if(hasStarted()) {
 					if(args.length < 3) {
-						Kdkbot.instance.sendMessage(channel, "Giveaway winner: " + pick());
+						Kdkbot.instance.sendChanMessage(channel, "Giveaway winner: " + pick());
 					} else {
 						// PickN
 						try {
 							int toPick = Integer.parseInt(args[2]);
-							Kdkbot.instance.sendMessage(channel, "Giveaway winners: " + pickN(toPick));
+							Kdkbot.instance.sendChanMessage(channel, "Giveaway winners: " + pickN(toPick));
 						} catch (NumberFormatException e) {
-							Kdkbot.instance.sendMessage(channel, "Couldn't pick winners. Invalid number: " + args[2]);
+							Kdkbot.instance.sendChanMessage(channel, "Couldn't pick winners. Invalid number: " + args[2]);
 						}
 					}
 				} else {
-					Kdkbot.instance.sendMessage(channel, "Giveaway hasn't started.");
+					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
 				}
 				break;
+			case "pickr":
+				// giveaway pickr [n]
+				if(hasStarted()) {
+					if(args.length < 3) {
+						Kdkbot.instance.sendChanMessage(channel, "Giveaway winner: " + pick(true));
+					} else {
+						// PickN(true)
+						try {
+							int toPick = Integer.parseInt(args[2]);
+							Kdkbot.instance.sendChanMessage(channel, "Giveaway winners: " + pickN(toPick, true));
+						} catch (NumberFormatException e) {
+							Kdkbot.instance.sendChanMessage(channel,  "Couldn't pick winners. Invalid number: " + args[2]);
+						}
+					}
+				} else {
+					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
+				}
 			case "reset":
 				if(hasStarted()) {
-					Kdkbot.instance.sendMessage(channel, "Reset live giveaway entrants. People will need to re-enter giveaway.");
+					Kdkbot.instance.sendChanMessage(channel, "Reset live giveaway entrants. People will need to re-enter giveaway.");
 					entries.clear();
 				} else {
-					Kdkbot.instance.sendMessage(channel, "Reset giveaway.");
+					Kdkbot.instance.sendChanMessage(channel, "Reset giveaway.");
 					triggerWord = null;
 					entries.clear();
 				}
@@ -85,20 +102,28 @@ public class Giveaway extends Command {
 			case "add":
 				if(info.senderLevel >= 5) {
 					if(hasStarted()) {
-						Kdkbot.instance.sendMessage(channel, "Manually added user: " + args[2] + " to the entrants list.");
+						Kdkbot.instance.sendChanMessage(channel, "Manually added user: " + args[2] + " to the entrants list.");
 						addEntry(args[2]);
 					} else {
-						Kdkbot.instance.sendMessage(channel, "Giveaway hasn't started.");
+						Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
 					}
 				}
 				break;
 			case "remove":
 				if(info.senderLevel >= 5) {
 					if(hasStarted()) {
-						Kdkbot.instance.sendMessage(channel,  "Manually removed user: " + args[2] + " from the entrants list.");
+						Kdkbot.instance.sendChanMessage(channel,  "Manually removed user: " + args[2] + " from the entrants list.");
 					} else {
-						Kdkbot.instance.sendMessage(channel, "Giveaway hasn't started.");
+						Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
 					}
+				}
+				break;
+			case "pause":
+				if(hasStarted()) {
+					Kdkbot.instance.sendChanMessage(channel, "Pausing the giveaway! Entries will no longer be allowed until resumed.");;
+					pause();
+				} else {
+					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
 				}
 		}
 	}
@@ -167,10 +192,17 @@ public class Giveaway extends Command {
 		return user;
 	}
 	
+	/**
+	 * Picks people from the giveaway pool until the number provided has been reached.
+	 * @param number The number to pick. If 0 will return an empty string.
+	 * @return The usernames, separated by a comma and a space, that are picked.
+	 */
 	public String pickN(int number) {
+		if(number <= 0) { return ""; }
+		
 		ArrayList<String> winners = new ArrayList<String>();
-		if(number > winners.size()) {
-			number = winners.size();
+		if(number > entries.size()) {
+			number = entries.size();
 		}
 		
 		do {
@@ -189,6 +221,37 @@ public class Giveaway extends Command {
 		return sb.toString().substring(0, sb.toString().length() - 2);
 	}
 	
+	/**
+	 * Picks people from the giveaway pool until the number provided has been reached.
+	 * @param number The number to pick. If 0 will return an empty string.
+	 * @param removePicked If true, it will remove user from being picked again. if false, acts as if calling pickN(int);
+	 * @return The usernames, separated by a comma and a space, that are picked.
+	 */
+	public String pickN(int number, boolean removePicked) {
+		if(number <= 0) { return ""; }
+		
+		ArrayList<String> winners = new ArrayList<String>();
+		if(number > entries.size()) {
+			number = entries.size();
+		}
+		
+		do {
+			String pickedUser = pick();
+			if(!winners.contains(pickedUser) && !pastPicked.contains(pickedUser)) {
+				winners.add(pickedUser);
+				pastPicked.add(pickedUser);
+			}
+		} while(winners.size() < number || (entries.size() - (winners.size() + pastPicked.size()) <= 0));
+		
+		StringBuilder sb = new StringBuilder();
+		for(String winner : winners) {
+			sb.append(winner);
+			sb.append(", ");
+		}
+		
+		return sb.toString().substring(0, sb.toString().length() - 2);
+	}
+	
 	public String stopAndPick() {
 		if(hasStarted()) {
 			String user = pick();
@@ -199,6 +262,14 @@ public class Giveaway extends Command {
 		}
 	}
 	
+	public void pause() {
+		this.started = false;
+	}
+	
+	public void resume() {
+		this.started = true;
+	}
+	
 	public void stop() {
 		this.started = false;
 	}
@@ -206,5 +277,6 @@ public class Giveaway extends Command {
 	public void start() {
 		this.started = true;
 		this.entries.clear();
+		this.pastPicked.clear();
 	}
 }

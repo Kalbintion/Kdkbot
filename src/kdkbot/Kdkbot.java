@@ -406,7 +406,21 @@ public class Kdkbot extends PircBot {
     	}
     }
     
+    /**
+     * Gets the client ID for twitch
+     * @return The Client ID in plain text for twitch
+     */
     public String getClientID() {
     	return botCfg.getSetting("clientId");
+    }
+    
+    /**
+     * Sends a message through a channels sendMessage function
+     * @param channel The channel to find, and consequently send the message through
+     * @param message The message to be sent
+     */
+    public void sendChanMessage(String channel, String message) {
+    	Channel chan = getChannel(channel);
+    	chan.sendMessage(message);
     }
 }

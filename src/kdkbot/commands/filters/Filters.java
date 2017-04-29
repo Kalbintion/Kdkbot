@@ -139,7 +139,7 @@ public class Filters {
 							newAdditionalInfo = " Use command 'filter edit <name> info <msg> to add response message.";
 							break;
 					}
-					Kdkbot.instance.sendMessage(this.channel, "Added a new filter named " + parts[3] + "." + newAdditionalInfo);
+					Kdkbot.instance.sendChanMessage(channel, "Added a new filter named " + parts[3] + "." + newAdditionalInfo);
 					saveFilters();
 				break;
 			case "remove":
@@ -149,7 +149,7 @@ public class Filters {
 					int idx = Integer.parseInt(parts[2]);
 					
 					this.filters.remove(idx);
-					Kdkbot.instance.sendMessage(this.channel, "Removed filter #" + parts[2]);
+					Kdkbot.instance.sendChanMessage(channel, "Removed filter #" + parts[2]);
 				} catch(NumberFormatException e) {
 					// We must be dealing with a human name
 					Iterator<Filter> it = this.filters.iterator();
@@ -157,13 +157,13 @@ public class Filters {
 						Filter nxt = it.next();
 						if(nxt.humanName.equalsIgnoreCase(parts[2])) {
 							it.remove();
-							Kdkbot.instance.sendMessage(this.channel, "Removed filter: " + parts[2]);
+							Kdkbot.instance.sendChanMessage(channel, "Removed filter: " + parts[2]);
 							break;
 						}
 					}
 				} catch(IndexOutOfBoundsException e) {
 					// IOOB exception
-					Kdkbot.instance.sendMessage(this.channel, "Provided index (" + parts[2] + ") could not be found due to it being larger than the number of filters.");
+					Kdkbot.instance.sendChanMessage(channel, "Provided index (" + parts[2] + ") could not be found due to it being larger than the number of filters.");
 				}
 				
 				saveFilters();
@@ -175,13 +175,13 @@ public class Filters {
 				
 				switch(parts[3]) {
 					case "type":
-						Kdkbot.instance.sendMessage(this.channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.action);
+						Kdkbot.instance.sendChanMessage(channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.action);
 						break;
 					case "regex":
-						Kdkbot.instance.sendMessage(this.channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.toFind.toString());
+						Kdkbot.instance.sendChanMessage(channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.toFind.toString());
 						break;
 					case "info":
-						Kdkbot.instance.sendMessage(this.channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.actionInfo);
+						Kdkbot.instance.sendChanMessage(channel, "Filter " + parts[2] + "'s " + parts[3] + " has value of " + toView.actionInfo);
 						break;
 				}
 				break;
@@ -206,7 +206,7 @@ public class Filters {
 					case "flag":
 						// Toggles flag values based on <new_value>
 				}
-				Kdkbot.instance.sendMessage(this.channel, "Changed filter " + parts[2] + "'s " + parts[3] + " value to: " + parts[4]);
+				Kdkbot.instance.sendChanMessage(channel, "Changed filter " + parts[2] + "'s " + parts[3] + " value to: " + parts[4]);
 				saveFilters();
 				break;
 			case "save":
@@ -215,7 +215,7 @@ public class Filters {
 					// |filter reload
 				break;
 			case "size":
-				Kdkbot.instance.sendMessage(this.channel, "There are " + filters.size() + " filter(s) in this channel.");
+				Kdkbot.instance.sendChanMessage(channel, "There are " + filters.size() + " filter(s) in this channel.");
 				break;
 		}
 	}

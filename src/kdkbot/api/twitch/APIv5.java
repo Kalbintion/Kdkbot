@@ -207,8 +207,6 @@ public class APIv5 {
 	
 	public static boolean isEditorOf(String token, String channelID) {
 		String res = getResponse(token, URL_CHANNELS + channelID + URL_CHANNEL_EDITORS, "GET");
-		System.out.println("token: " + token + ", url: " + URL_CHANNELS + channelID + URL_CHANNEL_EDITORS);
-		System.out.println("isEditorOf().res: " + res);
 		return res.contains("\"" + Kdkbot.instance.getName() + "\"");
 	}
 	

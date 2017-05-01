@@ -36,7 +36,12 @@ public class APIv5 {
 	private static String HEADER_AUTH_NAME = "Authorization";
 	private static String HEADER_CLIENT_ID_NAME = "Client-ID";
 	
-	
+	/**
+	 * Gets the JSON object returned by twitch for a particular channel, note that an OAuth token is required.
+	 * @param clientID The client id used to authenticate with the twitch servers.
+	 * @param channel The channel to retrieve the object for
+	 * @return A string representation of the JSON object returned by the twitch servers
+	 */
 	public static String getChannelObjectId(String clientID, String channelID) {
 		return getResponseId(clientID, URL_CHANNELS + channelID, "GET");
 	}
@@ -119,6 +124,12 @@ public class APIv5 {
 		}
 	}
 	
+	/**
+	 * Gets the channels host target
+	 * @param clientId The client id used to authenticate with the twitch servers.
+	 * @param channelID The channel id to looking up who they're hosting
+	 * @return The name of the hosted target, null if the channel is not hosting
+	 */
 	public static String getHostTarget(String clientId, String channelID) {
 		String res = getResponseId(clientId, URL_TMI_HOSTS + channelID, "GET");
 		JsonParser parser = new JsonParser();
@@ -135,7 +146,7 @@ public class APIv5 {
 	/**
 	 * Gets the stream object returned by twitch for a particular channel, note that a Client ID is required.
 	 * @param clientID The client id used to authenticate with the twitch servers.
-	 * @param channel The channel to retrieve the object for
+	 * @param channelID The channel to retrieve the object for
 	 * @return A string representation of the JSON object returned by the twitch servers
 	 */
 	public static String getStreamObject(String clientID, String channelID) {

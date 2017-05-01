@@ -352,6 +352,10 @@ public class Commands {
 			info.message ="stats msges " + info.message;
 			stats.executeCommand(info);
 		}
+		else if(coreWord.equalsIgnoreCase("bits")) {
+			info.message = "stats bits " + info.message;
+			stats.executeCommand(info);
+		}
 		// Custom Commands
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("commands")) {
@@ -383,28 +387,28 @@ public class Commands {
 				coreWord.equalsIgnoreCase("game")) {
 			if(info.message.contains(" ") && info.senderLevel >= 3) {
 				// We are updating game
-				if(kdkbot.api.twitch.API.setChannelGame(chan.getAccessToken(), chan.channel, info.getSegments(2)[1])) {
+				if(kdkbot.api.twitch.APIv5.setChannelGame(chan.getAccessToken(), chan.getUserID(), info.getSegments(2)[1])) {
 					chan.sendMessage("Sent game update request.");
 				} else {
 					chan.sendMessage("Failed to send game update request.");
 				}
 			} else {
 				// We are requesting game
-				chan.sendMessage("Current game: " + kdkbot.api.twitch.API.getChannelGame(chan.getAccessToken(), chan.channel));
+				chan.sendMessage("Current game: " + kdkbot.api.twitch.APIv5.getChannelGame(chan.getAccessToken(), chan.getUserID()));
 			}
 		// Status (Title)
 		} else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("status")) {
 			if(info.message.contains(" ") && info.senderLevel >= 3) {
 				// We are updating status
-				if(kdkbot.api.twitch.API.setChannelStatus(chan.getAccessToken(), chan.channel, info.getSegments(2)[1])) {
+				if(kdkbot.api.twitch.APIv5.setChannelStatus(chan.getAccessToken(), chan.getUserID(), info.getSegments(2)[1])) {
 					chan.sendMessage("Sent status update request.");
 				} else {
 					chan.sendMessage("Failed to send status update request.");
 				}
 			} else {
 				// We are requesting status
-				chan.sendMessage("Current title: " + kdkbot.api.twitch.API.getChannelStatus(chan.getAccessToken(), chan.channel));
+				chan.sendMessage("Current title: " + kdkbot.api.twitch.APIv5.getChannelStatus(chan.getAccessToken(), chan.getUserID()));
 			}
 			
 		}
@@ -414,16 +418,20 @@ public class Commands {
 			String[] parts = info.getSegments(2);
 			if(parts.length > 1) {
 				String channel = parts[1];
-				if(kdkbot.api.twitch.API.isEditorOf(chan.getAccessToken(), chan.channel)) {
-					chan.sendRawMessage("/host " + channel);
-					chan.sendMessage("Now hosting: " + channel);
+				if(!kdkbot.api.twitch.APIv5.isStreamerLive(Kdkbot.instance.getClientID(), chan.getUserID())) {
+					if(kdkbot.api.twitch.APIv5.isEditorOf(chan.getAccessToken(), chan.getUserID())) {
+						chan.sendRawMessage("/host " + channel);
+						chan.sendMessage("Now hosting: " + channel);
+					} else {
+						chan.sendMessage("Cannot send host request! Bot isn't an editor of this channel.");
+					}
 				} else {
-					chan.sendMessage("Cannot send host request! Bot isn't an editor of this channel.");
+					chan.sendMessage("Cannot send host request! Stream is live!");
 				}
+				
 			} else {
 				// We are looking up who the channel is hosting, we need to get user id then get the host target
-				String chanID = kdkbot.api.twitch.API.getChannelID(chan.getAccessToken(), chan.channel);
-				String hostTarget = kdkbot.api.twitch.API.getHostTarget(Kdkbot.instance.getClientID(), chanID);
+				String hostTarget = kdkbot.api.twitch.APIv5.getHostTarget(Kdkbot.instance.getClientID(), chan.getUserID());
 				if(hostTarget == null) {
 					chan.sendMessage("Currently not hosting anyone.");
 				} else {
@@ -434,7 +442,7 @@ public class Commands {
 		// Unhosting
 		else if(info.senderLevel >= 3 &&
 				coreWord.equalsIgnoreCase("unhost")) {
-			if(kdkbot.api.twitch.API.isEditorOf(chan.getAccessToken(), chan.channel)) {
+			if(kdkbot.api.twitch.APIv5.isEditorOf(chan.getAccessToken(), chan.getUserID())) {
 				chan.sendRawMessage("/unhost");
 			} else {
 				chan.sendMessage("Cannot send unhost request! Bot isn't an editor of this channel.");
@@ -445,18 +453,28 @@ public class Commands {
 				coreWord.equalsIgnoreCase("uptime")) {
 			String getChan = chan.channel;
 			String[] parts = info.getSegments(2);
-			if(parts.length > 1) { getChan = parts[1]; }
-			String res = kdkbot.api.twitch.API.getStreamUptime(Kdkbot.instance.getClientID(), getChan);
-			if(res == null) {
-				chan.sendMessage("Stream is not currently live!");
+			if(parts.length > 1) {
+				getChan = parts[1];
+			}
+			
+			String userID;
+			if(chan.channel.equalsIgnoreCase(getChan)) {
+				userID = chan.getUserID();
 			} else {
+				userID = kdkbot.api.twitch.APIv5.getUserID(Kdkbot.instance.getClientID(), getChan);
+			}
+			
+			String res = kdkbot.api.twitch.APIv5.getStreamUptime(Kdkbot.instance.getClientID(), userID);
+			if(res != null) {
 				chan.sendMessage("Stream has been going for " + res);
+			} else {
+				chan.sendMessage("Stream is not currently live!");
 			}
 		}
 		// Viewers
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("viewers")) {
-			String res = kdkbot.api.twitch.API.getStreamViewers(Kdkbot.instance.getClientID(), chan.channel);
+			String res = kdkbot.api.twitch.APIv5.getStreamViewers(Kdkbot.instance.getClientID(), chan.getUserID());
 			if(res == null) {
 				chan.sendMessage("Stream is not currently live!");
 			} else {

@@ -21,7 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public final class API {
+public final class APIv3 {
 	private static String URL_BASE = "https://api.twitch.tv/kraken/";
 	private static String URL_CHANNELS = URL_BASE + "channels/";
 	private static String URL_CHANNEL_EDITORS = "/editors";
@@ -150,7 +150,7 @@ public final class API {
 			if(dHour > 0 || dDay > 0) { out = dHour + "H "; }
 			if(dMin > 0 || dHour > 0 || dDay > 0) { out += dMin + "M "; }
 			if(dSec > 0 || dMin > 0 || dHour > 0 || dDay > 0) { out += dSec + "S"; }
-			System.out.println(dDay + "D " + dHour + "H " + dMin + "M " + dSec + "S");
+
 			return out;
 		} catch(ParseException | NullPointerException | IllegalStateException e) {
 			return null;
@@ -179,16 +179,23 @@ public final class API {
 	}
 	
 	public static boolean setChannelGame(String token, String channel, String newGame) {
-		return setChannelObject(token, channel, "channel[game]=" + newGame.replace(" ", "+"));
+		return setChannelObject(token, channel, "channel[game]=" + newGame.replace(" ", "+").replace("&", "%26"));
 	}
 	
 	public static boolean setChannelStatus(String token, String channel, String newTitle) {
-		return setChannelObject(token, channel, "channel[status]=" + newTitle.replace(" ", "+"));
+		return setChannelObject(token, channel, "channel[status]=" + newTitle.replace(" ", "+").replace("&", "%26"));
 	}
 	
 	public static boolean isEditorOf(String token, String channel) {
 		String res = getResponse(token, URL_CHANNELS + channel.replace("#", "") + URL_CHANNEL_EDITORS, "GET");
 		return res.contains("\"" + Kdkbot.instance.getName() + "\"");
+	}
+	
+	public static boolean isStreamerLive(String clientID, String channel) {
+		String res = getStreamObject(clientID, channel);
+		JsonParser parser = new JsonParser();
+		JsonObject jObj = parser.parse(res).getAsJsonObject();
+		if(jObj.get("stream") == null) { return false; } else { return true; }
 	}
 	
 	public static String getResponse(String token, String sURL, String requestMethod) {

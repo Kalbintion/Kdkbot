@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import kdkbot.MessageInfo;
 import kdkbot.filemanager.Config;
@@ -49,7 +51,21 @@ public class Stats {
 				String[] lineValues = iter.next().split(":");
 				try {
 					// Load in userstat info
-					UserStat userstat = new UserStat(lineValues[0], Long.parseLong(lineValues[1]), Long.parseLong(lineValues[2]), Long.parseLong(lineValues[3]), Long.parseLong(lineValues[4]), Long.parseLong(lineValues[5]), Long.parseLong(lineValues[6]));
+					long bitCount;
+					if(lineValues.length < 8) {
+						bitCount = 0;
+					} else {
+						bitCount = Long.parseLong(lineValues[7]);
+					}
+					
+					long bitDate;
+					if(lineValues.length < 9) {
+						bitDate = 0;
+					} else {
+						bitDate = Long.parseLong(lineValues[8]);
+					}
+					
+					UserStat userstat = new UserStat(lineValues[0], Long.parseLong(lineValues[1]), Long.parseLong(lineValues[2]), Long.parseLong(lineValues[3]), Long.parseLong(lineValues[4]), Long.parseLong(lineValues[5]), Long.parseLong(lineValues[6]), bitCount, bitDate);
 					
 					// Add it to the array
 					userStats.put(lineValues[0], userstat);
@@ -112,6 +128,17 @@ public class Stats {
 		} else {
 			user.messageCount++;
 			user.characterCount += info.message.toCharArray().length;
+		}
+		
+		// Standard Bits Parser
+		Pattern regCheer = Pattern.compile("(cheer|kappa|swiftrage|kreygasm)(\\d*?)");
+		Matcher regMatch = regCheer.matcher(info.message);
+		if(regMatch.matches()) {
+			if(user.bitsDate == 0) { user.bitsDate = info.timestamp; }
+			user.bitsCount += Long.parseLong(regMatch.group(2)); // Contains amount of bits
+			while (regMatch.find()) {
+				user.bitsCount += Long.parseLong(regMatch.group(2)); // Match all subsequent cheers
+			}
 		}
 		
 		this.saveStats();

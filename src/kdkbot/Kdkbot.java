@@ -201,7 +201,9 @@ public class Kdkbot extends PircBot {
      */
     public void onJoin(String channel, String sender, String login, String hostname) {
     	Channel curChan = CHANS.get(channel);
-    	MessageInfo info = new MessageInfo(channel, sender, "#JOIN", login, hostname, curChan.getSenderRank(sender));
+    	int senderRank = 0;
+    	if(curChan != null) { senderRank = curChan.getSenderRank(sender); }
+    	MessageInfo info = new MessageInfo(channel, sender, "#JOIN", login, hostname, senderRank);
     	curChan.messageHandler(info);
     }
     
@@ -210,7 +212,9 @@ public class Kdkbot extends PircBot {
      */
     public void onPart(String channel, String sender, String login, String hostname) {
     	Channel curChan = CHANS.get(channel);
-    	MessageInfo info = new MessageInfo(channel, sender, "#PART", login, hostname, curChan.getSenderRank(sender));
+    	int senderRank = 0;
+    	if(curChan != null) { senderRank = curChan.getSenderRank(sender); }
+    	MessageInfo info = new MessageInfo(channel, sender, "#JOIN", login, hostname, senderRank);
     	curChan.messageHandler(info);
     }
     
@@ -330,6 +334,10 @@ public class Kdkbot extends PircBot {
     	return (this.getChannel(channel) == null) ? false : true;
     }
     
+    /**
+     * Master commands: These commands are designated to be used for debugging purposes or otherwise control the bot that has not been fully implemented in other ways.
+     * @param info The message information to use for parsing
+     */
     public void handleMasterCommands(MessageInfo info) {
        	// Master Commands
     	// TODO: Remove master commands and write web interface or alternate means to do the same thing
@@ -399,9 +407,6 @@ public class Kdkbot extends PircBot {
     			Kdkbot.instance.sendMessage(info.channel, "Telling java to collect garbage...");
     			System.gc();
     			System.gc();
-    		} else if(info.message.startsWith("&&uptime ")) {
-    			String chan = info.getSegments(2)[1];
-    			Kdkbot.instance.sendMessage(info.channel, kdkbot.api.twitch.API.getStreamUptime(getClientID(), chan));
     		}
     	}
     }
@@ -420,7 +425,12 @@ public class Kdkbot extends PircBot {
      * @param message The message to be sent
      */
     public void sendChanMessage(String channel, String message) {
-    	Channel chan = getChannel(channel);
-    	chan.sendMessage(message);
+    	try {
+	    	Channel chan = getChannel(channel);
+	    	chan.sendMessage(message);
+    	} catch(NullPointerException e) {
+    		// In the event an invalid channel is provided, we don't care, toss away the request.
+    		return;
+    	}
     }
 }

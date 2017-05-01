@@ -8,12 +8,14 @@ public class UserStat {
 	public long messageCount;
 	public long timeSpent;
 	public long characterCount;
+	public long bitsCount;
+	public long bitsDate;
 
 	public UserStat(String userName) {
-		this(userName, 0, 0, 0, 0, 0, 0);
+		this(userName, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 	
-	public UserStat(String userName, long firstJoin, long timeSpent, long messageCount, long lastJoin, long lastLeave, long characterCount) {
+	public UserStat(String userName, long firstJoin, long timeSpent, long messageCount, long lastJoin, long lastLeave, long characterCount, long bitsCount, long bitsDate) {
 		this.userName = userName;
 		this.firstJoin = firstJoin;
 		this.timeSpent = timeSpent;
@@ -21,6 +23,8 @@ public class UserStat {
 		this.lastJoin = lastJoin;
 		this.lastLeave = lastLeave;
 		this.characterCount = characterCount;
+		this.bitsCount = bitsCount;
+		this.bitsDate = bitsDate;
 	}
 	
 	/**
@@ -29,6 +33,6 @@ public class UserStat {
 	 */
 	@Override
 	public String toString() {
-		return (this.userName + ":" + this.firstJoin + ":" + this.timeSpent + ":" + this.messageCount + ":" + this.lastJoin + ":" + this.lastLeave + ":" + this.characterCount);
+		return (this.userName + ":" + this.firstJoin + ":" + this.timeSpent + ":" + this.messageCount + ":" + this.lastJoin + ":" + this.lastLeave + ":" + this.characterCount + ":" + this.bitsCount + ":" + this.bitsDate);
 	}
 }

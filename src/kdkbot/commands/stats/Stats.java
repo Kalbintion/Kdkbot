@@ -41,6 +41,13 @@ public class Stats {
 			case "all":
 				Kdkbot.instance.sendMessage(channel, info.sender +": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat) + ", having sent " + getMessageCount(userstat) + " messages containing " + getCharacterCount(userstat) + " characters.");
 				break;
+			case "bits":
+				if(userstat.bitsDate == 0) {
+					Kdkbot.instance.sendMessage(channel, info.sender + ": You have not yet used any cheers in here to have been tracked!");
+				} else {
+					Kdkbot.instance.sendMessage(channel, info.sender + ": You have used " + getBitCount(userstat) + " bits here since " + getFirstBitDate(userstat));
+				}
+				
 		}
 	}
 	
@@ -50,6 +57,10 @@ public class Stats {
 
 	public String getFirstJoinDate(UserStat user) {
 		return unixToTimestamp(user.firstJoin, "d/M/y");
+	}
+	
+	public String getFirstBitDate(UserStat user) {
+		return unixToTimestamp(user.bitsDate, "d/M/y");
 	}
 	
 	public String getMessageCount(UserStat user) {
@@ -66,6 +77,10 @@ public class Stats {
 	
 	public long getCharacterCountValue(UserStat user) {
 		return user.characterCount;
+	}
+	
+	public long getBitCount(UserStat user) {
+		return user.bitsCount;
 	}
 	
 	public String getLastJoinDate(UserStat user) {

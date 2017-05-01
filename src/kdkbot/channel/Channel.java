@@ -359,4 +359,17 @@ public class Channel {
 		}
 		return cfgTokens.getSetting("accessToken");
 	}
+	
+	/**
+	 * Gets the channel owners user ID. If it does not exist, it will retrieve and store it before returning the value.
+	 * @return The ID of the channel's owner.
+	 */
+	public String getUserID() {
+		String userID = cfgTokens.getSetting("userID");
+		if(userID == null || userID.equalsIgnoreCase("null")) {
+			userID = kdkbot.api.twitch.APIv5.getUserID(Kdkbot.instance.getClientID(), channel.replace("#", ""));
+			cfgTokens.setSetting("userID", userID);
+		}
+		return userID;
+	}
 }

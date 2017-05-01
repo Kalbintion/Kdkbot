@@ -15,6 +15,10 @@ public class Stats {
 		this.channel = channel;
 	}
 	
+	/**
+	 * Handles parsing of command
+	 * @param info The Message Info holding the data about the message to parse.
+	 */
 	public void executeCommand(MessageInfo info) {
 		String[] args = info.getSegments();
 		String subCmd = args[1];
@@ -27,32 +31,36 @@ public class Stats {
 		switch(subCmd) {
 			case "time":
 				if(userstat.firstJoin == 0) {
-					Kdkbot.instance.sendMessage(channel, info.sender + ": You have yet to spend enough time here to have been tracked!");
+					Kdkbot.instance.sendChanMessage(channel, info.sender + ": You have yet to spend enough time here to have been tracked!");
 				} else {
-					Kdkbot.instance.sendMessage(channel, info.sender + ": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat));
+					Kdkbot.instance.sendChanMessage(channel, info.sender + ": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat));
 				}
 				break;
 			case "msges":
-				Kdkbot.instance.sendMessage(channel, info.sender +": You have sent " + getMessageCount(userstat) + " messages, containing " + getCharacterCount(userstat) + " characters.");			
+				Kdkbot.instance.sendChanMessage(channel, info.sender +": You have sent " + getMessageCount(userstat) + " messages, containing " + getCharacterCount(userstat) + " characters.");			
 				break;
 			case "char":
-				Kdkbot.instance.sendMessage(channel, info.sender + ": You have sent " + getCharacterCount(userstat) + " characters.");
+				Kdkbot.instance.sendChanMessage(channel, info.sender + ": You have sent " + getCharacterCount(userstat) + " characters.");
 				break;
 			case "all":
-				Kdkbot.instance.sendMessage(channel, info.sender +": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat) + ", having sent " + getMessageCount(userstat) + " messages containing " + getCharacterCount(userstat) + " characters.");
+				Kdkbot.instance.sendChanMessage(channel, info.sender +": You have spent " + getDurationTime(userstat) + " since " + getFirstJoinDate(userstat) + ", having sent " + getMessageCount(userstat) + " messages containing " + getCharacterCount(userstat) + " characters.");
 				break;
 			case "bits":
 				if(userstat.bitsDate == 0) {
-					Kdkbot.instance.sendMessage(channel, info.sender + ": You have not yet used any cheers in here to have been tracked!");
+					Kdkbot.instance.sendChanMessage(channel, info.sender + ": You have not yet used any cheers in here to have been tracked!");
 				} else {
-					Kdkbot.instance.sendMessage(channel, info.sender + ": You have used " + getBitCount(userstat) + " bits here since " + getFirstBitDate(userstat));
+					Kdkbot.instance.sendChanMessage(channel, info.sender + ": You have used " + getBitCount(userstat) + " bits here since " + getFirstBitDate(userstat));
 				}
 				
 		}
 	}
 	
+	public UserStat getUserStat(String user) {
+		return Kdkbot.instance.getChannel(channel).stats.userStats.get(user);
+	}
+	
 	public void failedToFind(MessageInfo info) {
-		Kdkbot.instance.sendMessage(channel, "Could not retriever user stats for " + info.sender);
+		Kdkbot.instance.sendChanMessage(channel, "Could not retriever user stats for " + info.sender);
 	}
 
 	public String getFirstJoinDate(UserStat user) {
@@ -87,6 +95,24 @@ public class Stats {
 		return unixToTimestamp(user.lastJoin, "d/M/y");
 	}
 	
+	public String getFirstJoinDate(String user) {
+		UserStat stat = getUserStat(user);
+		if(stat == null) { return null; }
+		return unixToTimestamp(stat.firstJoin, "d/M/y");
+	}
+	
+	public String getLastJoinDate(String user) {
+		UserStat stat = getUserStat(user);
+		if(stat == null) { return null; }
+		return unixToTimestamp(stat.lastJoin, "d/M/y");
+	}
+	
+	public String getLastLeaveDate(String user) {
+		UserStat stat = getUserStat(user);
+		if(stat == null) { return null; }
+		return unixToTimestamp(stat.lastLeave, "d/M/y");
+	}
+	
 	public String getDurationTime(UserStat user) {
 		byte diffSeconds = (byte) (user.timeSpent / 1000 % 60);
 		byte diffMinutes = (byte) (user.timeSpent / (60 * 1000) % 60);
@@ -95,7 +121,7 @@ public class Stats {
 
 		return diffDays + " days, " + diffHours + " hours, " + diffMinutes + " minutes and " + diffSeconds + " seconds";
 	}
-		
+
 	/**
 	 * Converts a given unix timestamp to a readable format, defaulted to the GMT-6 timezone
 	 * @param value the unix timestamp

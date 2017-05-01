@@ -356,6 +356,15 @@ public class Commands {
 			info.message = "stats bits " + info.message;
 			stats.executeCommand(info);
 		}
+		else if(info.senderLevel >= 1 &&
+				coreWord.equalsIgnoreCase("seen")) {
+			String date = stats.getLastLeaveDate(info.getSegments(2)[1]);
+			if(date == null) {
+				chan.sendMessage(info.sender + ": I have not seen " + info.getSegments(2)[1]);
+			} else {
+				chan.sendMessage(info.sender +": " + info.getSegments(2)[1] + " was last seen on " + date);
+			}
+		}
 		// Custom Commands
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("commands")) {

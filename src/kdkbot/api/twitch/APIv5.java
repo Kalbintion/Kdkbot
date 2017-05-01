@@ -51,7 +51,12 @@ public class APIv5 {
 		return getResponse(token, URL_CHANNELS + channelID, "GET");
 	}
 	
-	
+	/**
+	 * Gets the JSON object returned by twitch for a particular channel, note that an OAuth token is required.
+	 * @param clientID The client id used to authenticate with the twitch servers.
+	 * @param channel The channel to retrieve the object for
+	 * @return A string representation of the JSON object returned by the twitch servers
+	 */
 	public static String getChannelGameId(String clientID, String channelID) {
 		String res = getChannelObjectId(clientID, channelID);
 		JsonParser parser = new JsonParser();
@@ -80,7 +85,12 @@ public class APIv5 {
 		}
 	}
 	
-	
+	/**
+	 * Gets the title, or status, of a stream returned by twitch for a particular channel, note that a twitch client id is required.
+	 * @param clientID The client id used to authenticate with the twitch servers.
+	 * @param channel The channel to retrieve the status for
+	 * @return An encapsulated string containing the status of the stream
+	 */
 	public static String getChannelStatusId(String clientID, String channelID) {
 		String res = getChannelObjectId(clientID, channelID);
 		JsonParser parser = new JsonParser();
@@ -193,23 +203,56 @@ public class APIv5 {
 		}
 	}
 
+	/**
+	 * Sets a channel object data based on the provided data.
+	 * @param token The OAuth token to use for authentication for the channel
+	 * @param channelID The channel id for the data to be sent to
+	 * @param data The data containing the information to set
+	 * @return true if setting the channel object was successful, false otherwise
+	 */
 	public static boolean setChannelObject(String token, String channelID, String data) {
 		return setResponse(token, URL_CHANNELS + channelID, "PUT", data);
 	}
 	
+	/**
+	 * Sets a channel game data based on the provided data.
+	 * @param token The OAuth token to use for authentication for the channel
+	 * @param channelID The channel id for the data to be sent to
+	 * @param newGame The game to set the channel information to
+	 * @return true if setting the channel game was successful, false otherwise
+	 */
 	public static boolean setChannelGame(String token, String channelID, String newGame) {
 		return setChannelObject(token, channelID, "channel[game]=" + newGame.replace(" ", "+").replace("&", "%26"));
 	}
 	
+	/**
+	 * Sets a channel status (title) based on the provided data.
+	 * @param token The OAuth token to use for authentication for the channel
+	 * @param channelID The channel id for the data to be sent to
+	 * @param newTitle The game to set the channel information to
+	 * @return true if setting the channel game was successful, false otherwise
+	 */
 	public static boolean setChannelStatus(String token, String channelID, String newTitle) {
 		return setChannelObject(token, channelID, "channel[status]=" + newTitle.replace(" ", "+").replace("&", "%26"));
 	}
 	
+	/**
+	 * Determines if the bot is an editor of a provided channel.
+	 * @param token The OAuth token to use for authentication for the channel
+	 * @param channelID The channel id for retrieving the list of editors
+	 * @return true if the bot is an editor, false otherwise
+	 */
 	public static boolean isEditorOf(String token, String channelID) {
 		String res = getResponse(token, URL_CHANNELS + channelID + URL_CHANNEL_EDITORS, "GET");
 		return res.contains("\"" + Kdkbot.instance.getName() + "\"");
 	}
 	
+	/**
+	 * Determines if the provided channel is live or not.
+	 * @param clientID The Twitch Client ID for the bot
+	 * @param channelID The channel id to look up
+	 * @return True if the channel is live, false otherwise
+	 */
 	public static boolean isStreamerLive(String clientID, String channelID) {
 		String res = getStreamObject(clientID, channelID);
 		JsonParser parser = new JsonParser();
@@ -217,6 +260,13 @@ public class APIv5 {
 		if(jObj.get("stream") == null || jObj.get("stream").toString().toLowerCase().contains("null")) { return false; } else { return true; }
 	}
 	
+	/**
+	 * Retrieves a response from the twitch api server, using a twitch OAuth token
+	 * @param token The OAuth token to use for authentication
+	 * @param sURL The URL to retrieve the information from
+	 * @param requestMethod The method to get the information
+	 * @return String containing the entirety of the response pages contents.
+	 */
 	public static String getResponse(String token, String sURL, String requestMethod) {
 		HashMap<String, String> headers = new HashMap<String, String>();
 		headers.put(HEADER_ACCEPT_NAME, HEADER_ACCEPT);
@@ -225,6 +275,13 @@ public class APIv5 {
 		return getResponse(headers, sURL, requestMethod);
 	}
 	
+	/**
+	 * Retreives a response from the twitch api server, using a twitch client id
+	 * @param clientID The Twitch Client ID
+	 * @param sURL The URL to retrieve the information from
+	 * @param requestMethod The method to get the information
+	 * @return String containing the entirety of the response pages contents.
+	 */
 	public static String getResponseId(String clientID, String sURL, String requestMethod) {
 		HashMap<String, String> headers = new HashMap<String, String>();
 		headers.put(HEADER_ACCEPT_NAME, HEADER_ACCEPT);
@@ -233,6 +290,14 @@ public class APIv5 {
 		return getResponse(headers, sURL, requestMethod);
 	}
 
+	/**
+	 * Sends data to the twitch api server, using a twitch OAuth token
+	 * @param token The OAuth token to use for authentication
+	 * @param sURL The URL to send the information to
+	 * @param requestMethod The method to send the information
+	 * @param data The data being sent to the sURL
+	 * @return True if the data being sent was successful, false otherwise. May still return true in the event of a bad server response to the data being posted.
+	 */
 	public static boolean setResponse(String token, String sURL, String requestMethod, String data) {
 		HashMap<String, String> headers = new HashMap<String, String>();
 		headers.put(HEADER_ACCEPT_NAME, HEADER_ACCEPT);
@@ -243,6 +308,13 @@ public class APIv5 {
 		return setResponse(headers, sURL, requestMethod, data);
 	}
 	
+	/**
+	 * Retrieves a response from the twitch api server, using a twitch OAuth token
+	 * @param headers The map containing the headers to be used in the HTTP request
+	 * @param sURL The URL to retrieve the information from
+	 * @param requestMethod The method to get the information
+	 * @return String containing the entirety of the response pages contents.
+	 */
 	public static String getResponse(HashMap<String, String> headers, String sURL, String requestMethod) {
 		HttpURLConnection hc;
 		try {
@@ -274,6 +346,14 @@ public class APIv5 {
 		}
 	}
 	
+	/**
+	 * Sends data to the twitch api server, using a twitch OAuth token
+	 * @param header The map containing the headers to be used in the HTTP request
+	 * @param sURL The URL to send the information to
+	 * @param requestMethod The method to send the information
+	 * @param data The data being sent to the sURL
+	 * @return True if the data being sent was successful, false otherwise. May still return true in the event of a bad server response to the data being posted.
+	 */
 	public static boolean setResponse(HashMap<String, String> headers, String sURL, String requestMethod, String data) {
 		HttpURLConnection hc;
 		try {

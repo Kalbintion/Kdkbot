@@ -100,6 +100,9 @@
 			} elseif($_GET['t'] == "q") {
 				// Quotes
 				require('channels_quotes.php');
+			} elseif($_GET['t'] == "s") {
+				// Stats
+				require('channels_stats.php');
 			}
 		} else {
 			require('error.php');

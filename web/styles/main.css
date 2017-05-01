@@ -115,6 +115,11 @@ table.minTable td {
 	padding: 5px;
 }
 
+table.borderHeader th {
+	border: 1px solid white;
+	padding: 10px;
+}
+
 table.minTable caption {
 	font-weight: bold;
 	font-size: 5em;

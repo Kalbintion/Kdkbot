@@ -15,7 +15,7 @@ public class Channel {
 	public Commands commands;
 	public String channel;
 	// private Economy economy;
-	public ArrayList<Forwarder> forwarders;
+	public ArrayList<Forwarder> forwarders = new ArrayList<Forwarder>();
 	public String commandPrefix = "|";
 	public Filters filters;
 	public Stats stats;
@@ -316,6 +316,7 @@ public class Channel {
 	 */
 	public void denyForwarder(String fromChannel) {
 		setForwarderAuthorization(fromChannel, false);
+		removeForwarder(fromChannel);
 	}
 	
 	/**

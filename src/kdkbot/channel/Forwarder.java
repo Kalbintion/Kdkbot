@@ -33,7 +33,7 @@ public class Forwarder {
 	 * Initializes a new forwarder that goes to a specific channel
 	 */
 	public Forwarder(String channel) {
-		this(channel, "%user%:");
+		this(channel, "%USER%: ");
 	}
 	
 	/*

@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 
 public final class UrbanAPI {	
 	private static String baseURL = "http://www.urbandictionary.com/define.php?term=";
+	
 	public static String getTopDefinition(String lookup) {
 		try {
 			Document doc = Jsoup.connect(baseURL + lookup).get();

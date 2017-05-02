@@ -266,8 +266,12 @@ public class Commands {
 				
 				if(Kdkbot.instance.isInChannel(toChan)) {
 					Channel toChanObj = Kdkbot.instance.getChannel(toChan);
-					toChanObj.sendMessage(info.channel + " has requested forwarding permissions. Type '" + toChanObj.cfgChan.getSetting("commandPrefix") + "afwd " + info.channel + "' to authorize or '" + toChanObj.cfgChan.getSetting("commandPRefix") + "dfwd " + info.channel + "' to deny.");
-					this.chan.forwarders.add(new Forwarder(toChan));
+					toChanObj.sendMessage(info.channel + " has requested forwarding permissions. Type '" + toChanObj.cfgChan.getSetting("commandPrefix") + "afwd " + info.channel.replaceAll("#", "") + "' to authorize or '" + toChanObj.cfgChan.getSetting("commandPrefix") + "dfwd " + info.channel.replaceAll("#", "") + "' to deny.");
+					chan.sendMessage("Sent forward request, awaiting reply.");
+					
+					// Add forwarder to both channels
+					chan.forwarders.add(new Forwarder(toChan));
+					toChanObj.forwarders.add(new Forwarder(info.channel));
 				} else {
 					chan.sendMessage(info.sender + ": This bot is not in that channel.");
 				}
@@ -287,6 +291,8 @@ public class Commands {
 				
 				Channel fromChan = Kdkbot.instance.getChannel(toAuthorize);
 				fromChan.sendMessage("Forwarding authorization request accepted.");
+				fromChan.authorizeForwarder(info.channel);
+				chan.authorizeForwarder(toAuthorize);
 			} else {
 				chan.sendMessage("You did not specify a channel to accept the forward request from.");
 			}
@@ -302,10 +308,28 @@ public class Commands {
 				
 				Channel fromChan = Kdkbot.instance.getChannel(toDeny);
 				fromChan.sendMessage("Forwarding authorization request denied.");
+				fromChan.denyForwarder(info.channel);
+				chan.denyForwarder(toDeny);
 			} else {
 				chan.sendMessage("You did not specify a channel to deny the forward request from.");
 			}
-			
+		}
+		
+		// Forwarder - Stop
+		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
+					(coreWord.equalsIgnoreCase("sfwd")
+				  || coreWord.equalsIgnoreCase("stopforward"))) {
+			if(args.length >= 2) {
+				String toStop = args[1];
+				if(!toStop.startsWith("#")) { toStop = "#" + toStop; }
+				
+				Channel fromChan = Kdkbot.instance.getChannel(toStop);
+				fromChan.sendMessage("Stopping message forwarding.");
+				chan.sendMessage("Stopping message forwarding.");
+				
+				fromChan.removeForwarder(info.channel);
+				chan.removeForwarder(toStop);
+			}
 		}
 		
 		// Filter Bypass

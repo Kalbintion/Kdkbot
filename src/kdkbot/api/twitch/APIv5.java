@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -233,7 +235,11 @@ public class APIv5 {
 	 * @return true if setting the channel game was successful, false otherwise
 	 */
 	public static boolean setChannelGame(String token, String channelID, String newGame) {
-		return setChannelObject(token, channelID, "channel[game]=" + newGame.replace(" ", "+").replace("&", "%26"));
+		try {
+			return setChannelObject(token, channelID, "channel[game]=" + URLEncoder.encode(newGame, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			return false;
+		}
 	}
 	
 	/**
@@ -244,7 +250,11 @@ public class APIv5 {
 	 * @return true if setting the channel game was successful, false otherwise
 	 */
 	public static boolean setChannelStatus(String token, String channelID, String newTitle) {
-		return setChannelObject(token, channelID, "channel[status]=" + newTitle.replace(" ", "+").replace("&", "%26"));
+		try {
+			return setChannelObject(token, channelID, "channel[status]=" + URLEncoder.encode(newTitle, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			return false;
+		}
 	}
 	
 	/**

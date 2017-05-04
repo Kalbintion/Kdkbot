@@ -291,6 +291,7 @@ public class Commands {
 				
 				Channel fromChan = Kdkbot.instance.getChannel(toAuthorize);
 				fromChan.sendMessage("Forwarding authorization request accepted.");
+				chan.sendMessage("Forwarding authorization request accepted.");
 				fromChan.authorizeForwarder(info.channel);
 				chan.authorizeForwarder(toAuthorize);
 			} else {
@@ -308,6 +309,7 @@ public class Commands {
 				
 				Channel fromChan = Kdkbot.instance.getChannel(toDeny);
 				fromChan.sendMessage("Forwarding authorization request denied.");
+				chan.sendMessage("Forwarding authorization request denied.");
 				fromChan.denyForwarder(info.channel);
 				chan.denyForwarder(toDeny);
 			} else {

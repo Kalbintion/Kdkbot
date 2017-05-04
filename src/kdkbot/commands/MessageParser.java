@@ -117,6 +117,8 @@ public class MessageParser {
 		FLIP_MAP.put("!", "¡");
 		FLIP_MAP.put("6", "9");
 		FLIP_MAP.put("9", "6");
+		FLIP_MAP.put("¯", "_");
+		FLIP_MAP.put("_", "¯");
 	}
 	
 	/**

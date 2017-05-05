@@ -200,22 +200,22 @@ public class Kdkbot extends PircBot {
      * Event handler for join messages received
      */
     public void onJoin(String channel, String sender, String login, String hostname) {
-    	Channel curChan = CHANS.get(channel);
+    	Channel curChan = getChannel(channel);
     	int senderRank = 0;
     	if(curChan != null) { senderRank = curChan.getSenderRank(sender); }
     	MessageInfo info = new MessageInfo(channel, sender, "#JOIN", login, hostname, senderRank);
-    	curChan.messageHandler(info);
+    	curChan.extraHandler(info);
     }
     
     /**
      * Event handler for part messages received
      */
     public void onPart(String channel, String sender, String login, String hostname) {
-    	Channel curChan = CHANS.get(channel);
+    	Channel curChan = getChannel(channel);
     	int senderRank = 0;
     	if(curChan != null) { senderRank = curChan.getSenderRank(sender); }
     	MessageInfo info = new MessageInfo(channel, sender, "#JOIN", login, hostname, senderRank);
-    	curChan.messageHandler(info);
+    	curChan.extraHandler(info);
     }
     
     /**

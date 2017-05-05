@@ -198,7 +198,7 @@ public class APIv5 {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Gets the amount of viewers of a particular channel, provided by the twitch servers.
 	 * @param clientID The client id used to authenticate with the twitch servers

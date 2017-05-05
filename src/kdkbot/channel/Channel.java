@@ -302,6 +302,11 @@ public class Channel {
 
 	}
 	
+	public void extraHandler(MessageInfo info) {
+		// User Stats
+		stats.handleMessage(info);
+	}
+	
 	/**
 	 * Authorizes a forwarder for this channel
 	 * @param fromChannel The channel to accept the request from

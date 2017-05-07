@@ -268,7 +268,7 @@ public class Channel {
 					case 4:
 						Kdkbot.instance.dbg.writeln(this, "Attempting to respond to user due to filter");
 						Kdkbot.instance.log("Attempting to respond to user " + info.sender + " due to filter #" + filterIndex);
-						Kdkbot.instance.sendMessage(info.channel, MessageParser.parseMessage(filter.actionInfo, info));
+						Kdkbot.instance.sendChanMessage(info.channel, MessageParser.parseMessage(filter.actionInfo, info));
 						break;
 				}
 			}

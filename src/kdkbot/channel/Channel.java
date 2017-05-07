@@ -281,7 +281,7 @@ public class Channel {
 			while(fwdIter.hasNext()) {
 				Forwarder fwder = fwdIter.next();
 				if(fwder.isAuthorized()) {
-					Kdkbot.instance.getChannel(fwder.getChannel()).sendMessage(fwder.formatMessage(info));
+					Kdkbot.instance.getChannel(fwder.getChannel()).sendRawMessage(fwder.formatMessage(info));
 				}
 			}
 		}

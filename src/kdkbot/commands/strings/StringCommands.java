@@ -1,12 +1,14 @@
 package kdkbot.commands.strings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
+import kdkbot.commands.Commands;
 import kdkbot.filemanager.Config;
 
 public class StringCommands {
@@ -194,8 +196,9 @@ public class StringCommands {
 					}
 					break;
 				case "list":
-					Kdkbot.instance.getChannel(channel).sendMessage("You can get this channels list of commands by visiting: tfk.zapto.org/kdkbot/?p=channels&channel=" + channel.replace("#", ""));
-				/* case "list":
+					Kdkbot.instance.getChannel(channel).sendMessage("You can get this channels list of commands by visiting: tfk.zapto.org/kdkbot/?p=channels&t=c&channel=" + channel.replace("#", ""));
+					break;
+				case "listx":
 					// commands list [custom] <rank>
 					ArrayList<String> commands = new ArrayList<String>();
 					
@@ -321,8 +324,7 @@ public class StringCommands {
 					} else {
 						// We shouldnt have a message to send
 					}
-		
-					break; */
+					break;
 			}
 		}
 	}

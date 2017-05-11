@@ -34,9 +34,11 @@ public class Quotes extends Command {
 	
 	public void executeCommand(MessageInfo info) {
 		String[] args = info.getSegments();
-		String subCmd = args[1].toLowerCase();
-
+		String subCmd = "";
+		
 		if(args.length == 1) { subCmd = "random"; }
+		else { subCmd = args[1].toLowerCase(); }
+
 		
 		switch(subCmd) {
 			case "get":
@@ -90,6 +92,19 @@ public class Quotes extends Command {
 				Kdkbot.instance.sendChanMessage(channel, "Quote #" + quoteNum + ": " + quotes.get(Integer.toString(quoteNum)));
 				
 				break;
+			default:
+				try {
+					int quoteIndex = Integer.parseInt(args[1]);
+					
+					String quote = quotes.get(quoteIndex);
+					if(quote != null) {
+						Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[2] + ": " + quote);
+					} else {
+						Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[2] + " does not exist.");
+					}
+				} catch(NumberFormatException|IndexOutOfBoundsException e) {
+					
+				}
 		}
 	}
 

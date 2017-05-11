@@ -57,6 +57,7 @@ public class MessageParser {
 		PATTERN_MAP.put("replace", Pattern.compile("%REPLACE:(.*?),(.{1,}),(.*?)%"));
 		// %YTURL% special condition pattern
 		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9]*)"));
+		PATTERN_MAP.put("url", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))"));
 		
 		// Initialize LEET_MAP
 		LEET_MAP.put("a", "@");

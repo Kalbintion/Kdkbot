@@ -1,6 +1,5 @@
 package kdkbot.commands;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import kdkbot.Kdkbot;
@@ -31,17 +30,30 @@ public class Commands {
 	public Giveaway giveaway;
 	
 	// Additional Commands
-	private InternalCommand cmdChannel = new InternalCommand("rankChannel", "5");
-	private InternalCommand cmdPerm = new InternalCommand("rankPerm", "3");
-	private InternalCommand cmdForward = new InternalCommand("rankForward", "4");
-	private InternalCommand cmdPermit = new InternalCommand("rankPermit", "3");
-	private InternalCommand cmdFilter = new InternalCommand("rankFilter", "5");
-	private InternalCommand cmdTimer = new InternalCommand("rankTimer", "3");
-	private InternalCommand cmdHost = new InternalCommand("rankHost", "3");
-	private InternalCommand cmdUnhost = new InternalCommand("rankUnhost", "3");
-	private InternalCommand cmdStatus = new InternalCommand("rankStatus", "1");
-	private InternalCommand cmdGame = new InternalCommand("rankGame", "1");
-	private ArrayList<InternalCommand> cmdList;
+	private InternalCommand cmdChannel = new InternalCommand("channel", 5);
+	private InternalCommand cmdPerm = new InternalCommand("perm", 3);
+	private InternalCommand cmdPermit = new InternalCommand("permit", 3);
+	private InternalCommand cmdForward = new InternalCommand("fwd", 4);
+	private InternalCommand cmdFilter = new InternalCommand("filter", 5);
+	private InternalCommand cmdTimer = new InternalCommand("timer", 3);
+	private InternalCommand cmdHost = new InternalCommand("host", 3);
+	private InternalCommand cmdUnhost = new InternalCommand("unhost", 3);
+	private InternalCommand cmdStatus = new InternalCommand("status", 1);
+	private InternalCommand cmdGame = new InternalCommand("game", 1);
+	private InternalCommand cmdGiveaway = new InternalCommand("giveaway", 3);
+	private InternalCommand cmdQuotes = new InternalCommand("quotes", 1);
+	private InternalCommand cmdAma = new InternalCommand("ama", 1);
+	private InternalCommand cmdTimers = new InternalCommand("timers", 3);
+	private InternalCommand cmdUrban = new InternalCommand("urban", 1);
+	private InternalCommand cmdTime = new InternalCommand("time", 0);
+	private InternalCommand cmdStats = new InternalCommand("stats", 0);
+	private InternalCommand cmdMsges = new InternalCommand("msges", 0);
+	private InternalCommand cmdBits = new InternalCommand("bits", 0);
+	private InternalCommand cmdSeen = new InternalCommand("seen", 1);
+	private InternalCommand cmdCommands = new InternalCommand("commands", 1);
+	private InternalCommand cmdUptime = new InternalCommand("uptime", 1);
+	private InternalCommand cmdViewers = new InternalCommand("viewers", 1);
+	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdForward, cmdFilter, cmdTimer, cmdHost, cmdUnhost, cmdStatus, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -71,65 +83,12 @@ public class Commands {
 			
 			this.giveaway = new Giveaway(channel);
 			
-
-			InternalCommand[] internalCommands = {cmdChannel, cmdPerm, cmdForward, cmdPermit, cmdFilter, cmdTimer};
-			for (InternalCommand cmd : internalCommands) {
-				Object ret = verifyGetSetting(cmd.getSettingName(), cmd.getSettingDefault(), Integer.class);
-				if(ret == null) {
-					setCommandStatus(cmd, "availability", false);
-					setCommandStatus(cmd, "permission", cmd.getSettingDefault());
-				} else {
-					setCommandStatus(cmd, "availability", true);
-					setCommandStatus(cmd, "permission", ret);
-				}
+			for (InternalCommand cmd : cmdList) {
+				cmd.setAvailability(Boolean.parseBoolean(getInternalCommandSetting(cmd.getSettingSuffix(), "availability", cmd.getDefaultAvailable()).toString()));
+				cmd.setPermissionLevel(Integer.parseInt(getInternalCommandSetting(cmd.getSettingSuffix(), "rank", cmd.getDefaultLevel()).toString()));
+				cmd.setTrigger(getInternalCommandSetting(cmd.getSettingSuffix(), "trigger", cmd.getDefaultTrigger()).toString());
 			}
 			
-			if(chan.cfgChan.getSetting("rankQuotes") == null) {
-				chan.cfgChan.setSetting("rankQuotes", "1");
-			}
-			
-			try {
-				this.quotes.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankQuotes")));
-			} catch (NumberFormatException e) {
-				// chan.sendMessage("This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
-				this.quotes.setAvailability(false);
-			}
-			
-			if(chan.cfgChan.getSetting("rankCounters") == null) {
-				chan.cfgChan.setSetting("rankCounters", "1");
-			}
-			
-			try {
-				this.cmdFilter.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankFilter")));
-			} catch(NumberFormatException e) {
-				// chan.sendMessage("This channels rankFilter setting is invalid! Got " + chan.cfgChan.getSetting("rankFilter"));
-				this.cmdFilter.setAvailability(false);
-			}
-			
-			if(chan.cfgChan.getSetting("rankAMA") == null) {
-				chan.cfgChan.setSetting("rankAMA", "1");
-			}
-			
-			try {
-				this.amas.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankAMA")));
-			} catch (NumberFormatException e) {
-				// chan.sendMessage("This channels rankAMA setting is invalid! Got " + chan.cfgChan.getSetting("rankAMA"));
-				this.amas.setAvailability(false);
-			}
-			
-			if(chan.cfgChan.getSetting("rankTimer") == null) {
-				chan.cfgChan.setSetting("rankTimer",  "3");
-			}
-			
-			try {
-				this.timers.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankTimer")));
-			} catch (NumberFormatException e) {
-				// chan.sendMessage("this channels rankTimer setting is invalid! Got " + chan.cfgChan.getSetting("rankTimer"));
-				this.timers.setAvailability(false);
-			}
-			
-			
-
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -176,7 +135,7 @@ public class Commands {
 		
 		// These commands supersede command processing toggling
 		if(info.senderLevel >= cmdChannel.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase("channel")) {
+				coreWord.equalsIgnoreCase(cmdChannel.getTrigger())) {
 			// Channel settings
 			
 			try {
@@ -189,17 +148,6 @@ public class Commands {
 					chan.commandPrefix = args[2];
 				} else if(args[1].equalsIgnoreCase("logChat")) {
 					chan.cfgChan.setSetting("logChat", args[2]);
-				} else if(args[1].equalsIgnoreCase("rankQuotes")) {
-					chan.cfgChan.setSetting("rankQuotes", String.valueOf(rankNameToInt(args[2])));
-					quotes.setPermissionLevel(rankNameToInt(args[2]));
-				} else if(args[1].equalsIgnoreCase("rankAMA")) {
-					chan.cfgChan.setSetting("rankAMA", String.valueOf(rankNameToInt(args[2])));
-					amas.setPermissionLevel(rankNameToInt(args[2]));
-				} else if(args[1].equalsIgnoreCase("rankCounters")) {
-					chan.cfgChan.setSetting("rankCounters", String.valueOf(rankNameToInt(args[2])));
-					counters.setPermissionLevel(rankNameToInt(args[2]));
-				} else if(args[1].equalsIgnoreCase("rankChannel")) {
-					chan.cfgChan.setSetting("rankChannel", String.valueOf(rankNameToInt(args[2])));
 				} else if(args[1].equalsIgnoreCase("msgPrefix")) {
 					if(args.length < 3) { 
 						chan.cfgChan.setSetting("msgPrefix", "");
@@ -212,6 +160,31 @@ public class Commands {
 					} else {
 						chan.cfgChan.setSetting("msgSuffix", args[2]);
 					}
+				} else if(args[1].equalsIgnoreCase("get")) {
+					chan.sendMessage(chan.cfgChan.getSetting(args[2].toLowerCase()));
+				} else if(args[1].startsWith("rank") || args[1].startsWith("trigger") || args[1].startsWith("active")) {
+						// May be looking for internal command setting
+						for(InternalCommand cmd : cmdList) {
+							args[1] = args[1].toLowerCase();
+							if(args[1].contains(cmd.getTrigger().toLowerCase())) {
+								if(args[1].startsWith("rank")) {
+									args[2] = String.valueOf(rankNameToInt(args[2]));
+									chan.cfgChan.setSetting(args[1], args[2]);
+									cmd.setPermissionLevel(rankNameToInt(args[2]));
+								} else if(args[1].startsWith("trigger")) {
+									chan.cfgChan.setSetting(args[1], args[2]);
+									cmd.setTrigger(args[2]);
+								} else if(args[1].startsWith("active")) {
+									args[2] = String.valueOf(Boolean.parseBoolean(args[2]));
+									chan.cfgChan.setSetting(args[1], args[2]);
+									cmd.setAvailability(Boolean.parseBoolean(args[2]));
+								}
+								validCommand = true;
+								break;
+							} else {
+								validCommand = false;
+							}
+						}
 				} else {
 					validCommand = false;
 				}
@@ -235,7 +208,8 @@ public class Commands {
 		
 		// Permission Ranks
 		if (info.senderLevel >= cmdPerm.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase("perm")) {
+				cmdPerm.getAvailability() && 
+				coreWord.equalsIgnoreCase(cmdPerm.getTrigger())) {
 			switch(args[1]) {
 				case "set":
 					int toRank;
@@ -256,8 +230,8 @@ public class Commands {
 		
 		// Forwarders
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
-					(coreWord.equalsIgnoreCase("fwd")
-				  || coreWord.equalsIgnoreCase("forward"))) {
+				    cmdForward.getAvailability() &&
+					coreWord.equalsIgnoreCase(cmdForward.getTrigger())) {
 			if(args.length >= 2) {
 				String toChan = args[1];
 				if(!toChan.startsWith("#")) {
@@ -283,6 +257,7 @@ public class Commands {
 		
 		// Forwarder - Authorization - Accept
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
+				     cmdForward.getAvailability() && 
 					(coreWord.equalsIgnoreCase("afwd")
 				  || coreWord.equalsIgnoreCase("acceptforward"))) {
 			if(args.length >= 2) {
@@ -301,6 +276,7 @@ public class Commands {
 
 		// Forwarder - Authorization - Deny
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
+				     cmdForward.getAvailability() && 
 					(coreWord.equalsIgnoreCase("dfwd")
 				  || coreWord.equalsIgnoreCase("denyforward"))) {
 			if(args.length >= 2) {
@@ -319,6 +295,7 @@ public class Commands {
 		
 		// Forwarder - Stop
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
+				     cmdForward.getAvailability() && 
 					(coreWord.equalsIgnoreCase("sfwd")
 				  || coreWord.equalsIgnoreCase("stopforward"))) {
 			if(args.length >= 2) {
@@ -337,7 +314,8 @@ public class Commands {
 		// Filter Bypass
 		// TODO: Errors on _permit <username>_ but not _permit <username> <times>_
 		else if(info.senderLevel >= cmdPermit.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase("permit")) {
+				cmdPermit.getAvailability() && 
+				coreWord.equalsIgnoreCase(cmdPermit.getTrigger())) {
 			try {
 				int bypassLimit = 0;
 				String user = args[1];
@@ -347,43 +325,57 @@ public class Commands {
 					bypassLimit = 1;
 				}
 				chan.filterBypass.put(user, bypassLimit);
-				chan.sendMessage(info.sender + " has permitted user " + args[1] + " to bypass all filters " + args[2] + " time(s)");
+				chan.sendMessage(info.sender + " has permitted user " + args[1] + " to bypass all filters " + bypassLimit + " time(s)");
 			} catch (NumberFormatException e) {
 				chan.sendMessage(info.sender + ": " + args[2] + " is not a valid number to permit user " + args[1]);
 			}
 			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
 		}
 		// Urban Look-up
-		else if (info.senderLevel >= 2 &&
-					true &&
-					coreWord.equalsIgnoreCase("urban")) {
+		// TODO: Add urban to internal command list
+		else if (info.senderLevel >= cmdUrban.getPermissionLevel() &&
+					cmdUrban.getAvailability() &&
+					coreWord.equalsIgnoreCase(cmdUrban.getTrigger())) {
 			chan.sendMessage(UrbanAPI.getTopDefinition(info.getSegments(2)[1]));
 		}
 		// Quotes
-		else if (info.senderLevel >= quotes.getPermissionLevel() &&
-					quotes.getAvailability() &&
-					quotes.getTrigger().equalsIgnoreCase(coreWord)) {
+		else if (info.senderLevel >= cmdQuotes.getPermissionLevel() &&
+					cmdQuotes.getAvailability() &&
+					coreWord.equalsIgnoreCase(cmdQuotes.getTrigger())) {
 			quotes.executeCommand(info);
 		}
-		// Stats
-		else if(coreWord.equalsIgnoreCase("time")) {
+		// Stats - Time
+		else if(info.senderLevel >= cmdTime.getPermissionLevel() &&
+					cmdTime.getAvailability() &&
+					coreWord.equalsIgnoreCase(cmdTime.getTrigger())) {
 			info.message = "stats time " + info.message;
 			stats.executeCommand(info);
 		}
-		else if(coreWord.equalsIgnoreCase("stats")) {
+		// Stats - Stats
+		else if(info.senderLevel >= cmdStats.getPermissionLevel() &&
+				cmdStats.getAvailability() &&
+				coreWord.equalsIgnoreCase(cmdStats.getTrigger())) {
 			info.message = "stats all " + info.message;
 			stats.executeCommand(info);
 		}
-		else if(coreWord.equalsIgnoreCase("msges")) {
+		// Stats - Msges
+		else if(info.senderLevel >= cmdMsges.getPermissionLevel() &&
+				cmdMsges.getAvailability() &&
+				coreWord.equalsIgnoreCase(cmdMsges.getTrigger())) {
 			info.message ="stats msges " + info.message;
 			stats.executeCommand(info);
 		}
-		else if(coreWord.equalsIgnoreCase("bits")) {
+		// Stats - Bits
+		else if(info.senderLevel >= cmdBits.getPermissionLevel() &&
+				cmdBits.getAvailability() &&
+				coreWord.equalsIgnoreCase(cmdBits.getTrigger())) {
 			info.message = "stats bits " + info.message;
 			stats.executeCommand(info);
 		}
-		else if(info.senderLevel >= 1 &&
-				coreWord.equalsIgnoreCase("seen")) {
+		// Stats - Seen
+		else if(info.senderLevel >= cmdSeen.getPermissionLevel() &&
+				cmdSeen.getAvailability() &&
+				coreWord.equalsIgnoreCase(cmdSeen.getTrigger())) {
 			String date = stats.getLastLeaveDate(info.getSegments(2)[1]);
 			if(date == null) {
 				chan.sendMessage(info.sender + ": I have not seen " + info.getSegments(2)[1]);
@@ -392,34 +384,36 @@ public class Commands {
 			}
 		}
 		// Custom Commands
-		else if(info.senderLevel >= 1 &&
-				coreWord.equalsIgnoreCase("commands")) {
+		else if(info.senderLevel >= cmdCommands.getPermissionLevel() &&
+				cmdCommands.getAvailability() &&
+				coreWord.equalsIgnoreCase(cmdCommands.getTrigger())) {
 			commandStrings.executeCommand(info);
 		}
 		// AMA
-		else if(info.senderLevel >= amas.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase(amas.getTrigger()) &&
-					amas.getAvailability()) {
+		else if(info.senderLevel >= cmdAma.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase(cmdAma.getTrigger()) &&
+				cmdAma.getAvailability()) {
 			amas.executeCommand(info);
 		}
 		// Counters
 		else if(info.senderLevel >= counters.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase("counter")) {
+				coreWord.equalsIgnoreCase(counters.getTrigger())) {
 			counters.executeCommand(info);
-		} else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
-				  coreWord.equalsIgnoreCase("fwd")) {
-		} else if(info.senderLevel >= cmdFilter.getPermissionLevel() &&
-				  coreWord.equalsIgnoreCase("filter")) {
+		}
+		// Filters
+		else if(info.senderLevel >= cmdFilter.getPermissionLevel() &&
+				  coreWord.equalsIgnoreCase(cmdFilter.getTrigger())) {
 			this.chan.filters.executeCommand(info);
 		}
 		// Timers
-		else if(info.senderLevel >= timers.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase("timer")) {
+		else if(info.senderLevel >= cmdTimers.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase(cmdTimers.getTrigger())) {
 			timers.executeCommand(info);	
 		}
 		// Game
 		else if(info.senderLevel >= 1 &&
-				coreWord.equalsIgnoreCase("game")) {
+				cmdGame.getAvailability() &&
+				coreWord.equalsIgnoreCase(cmdGame.getTrigger())) {
 			if(info.message.contains(" ") && info.senderLevel >= 3) {
 				// We are updating game
 				if(kdkbot.api.twitch.APIv5.setChannelGame(chan.getAccessToken(), chan.getUserID(), info.getSegments(2)[1])) {
@@ -433,7 +427,8 @@ public class Commands {
 			}
 		// Status (Title)
 		} else if(info.senderLevel >= 1 &&
-				coreWord.equalsIgnoreCase("status")) {
+				cmdStatus.getAvailability() &&
+				coreWord.equalsIgnoreCase(cmdStatus.getTrigger())) {
 			if(info.message.contains(" ") && info.senderLevel >= 3) {
 				// We are updating status
 				if(kdkbot.api.twitch.APIv5.setChannelStatus(chan.getAccessToken(), chan.getUserID(), info.getSegments(2)[1])) {
@@ -449,7 +444,8 @@ public class Commands {
 		}
 		// Hosting
 		else if(info.senderLevel >= 3 &&
-				coreWord.equalsIgnoreCase("host")) {
+				cmdHost.getAvailability() &&
+				coreWord.equalsIgnoreCase(cmdHost.getTrigger())) {
 			String[] parts = info.getSegments(2);
 			if(parts.length > 1) {
 				String channel = parts[1];
@@ -475,8 +471,8 @@ public class Commands {
 			}
 		}
 		// Unhosting
-		else if(info.senderLevel >= 3 &&
-				coreWord.equalsIgnoreCase("unhost")) {
+		else if(info.senderLevel >= cmdUnhost.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase(cmdUnhost.getTrigger())) {
 			if(kdkbot.api.twitch.APIv5.isEditorOf(chan.getAccessToken(), chan.getUserID())) {
 				chan.sendRawMessage("/unhost");
 			} else {
@@ -579,52 +575,13 @@ public class Commands {
 		}
 	}
 	
-	/*
-	 * 			if(chan.cfgChan.getSetting("rankQuotes") == null) {
-				chan.cfgChan.setSetting("rankQuotes", "1");
-			}
-			
-			try {
-				this.quotes.setPermissionLevel(Integer.parseInt(chan.cfgChan.getSetting("rankQuotes")));
-			} catch (NumberFormatException e) {
-				chan.sendMessage("This channels rankQuotes setting is invalid! Got " + chan.cfgChan.getSetting("rankQuotes"));
-				this.quotes.setAvailability(false);
-			}
-	 */
-	private <T> Object verifyGetSetting(String settingName, String settingDefault, Class<T> settingType) {
-		if(chan.cfgChan.getSetting(settingName) == null) {
-			chan.cfgChan.setSetting(settingName, settingDefault);
+	private Object getInternalCommandSetting(String settingSuffix, String settingType, Object defaultValue) {
+		if(chan.cfgChan.getSetting(settingType + settingSuffix.toLowerCase()) == null) {
+			chan.cfgChan.setSetting(settingType + settingSuffix.toLowerCase(), defaultValue.toString());
 		}
 		
-		try {
-			String configValue = chan.cfgChan.getSetting(settingName);
-			switch(settingType.getCanonicalName()) {
-				case "java.lang.Integer":
-					return Integer.parseInt(configValue);
-				case "java.lang.String":
-					return configValue;
-			}
-
-			System.out.println("::: " + settingType.getCanonicalName());
-		} catch (Exception e) {
-			return null;
-		}
-		
-		return settingDefault;
+		return chan.cfgChan.getSetting(settingType + settingSuffix.toLowerCase());
 	}
-	
-	private boolean setCommandStatus(Command command, String settingName, Object value) {
-		switch(settingName) {
-			case "availability":
-				command.setAvailability(Boolean.parseBoolean(value.toString()));
-				return true;
-			case "permission":
-				command.setPermissionLevel(Integer.parseInt(value.toString()));
-				return true;
-		}
-		return false;
-	}
-	
 }
 
 

@@ -3,6 +3,31 @@
 <hr>
 
 <div class="boxNews">
+<div class="boxNewsDate">9 May, 2017 - Updates</div>
+<div class="boxNewsContent">Message forwarding was implemented, tested, and some bugs have been fixed overall!<br >
+Status and game commands no longer have issues with special characters.
+<br /><br />
+<b>Message Forwarding</b>: Have your chat communicate with another channel without having them open up a multi-twitch service! This system allows all messages to be sent from your channel to another, as long as both sides agree to it. Begin by using the command <tt>fwd <i>channel</i></tt>, replacing <i>channel</i> with the channel name you want to forward to. Afterwards, they will have to agree to it by using <tt>afwd <i>channel</i></tt> where <i>channel</i> is the name of the channel the request came from. Once agreed upon, messages will begin being sent between both channels. Once the time has come, use <tt>sfwd <i>channel</i></tt> to stop sending messages between your channel and the channel provided in <i>channel</i>.
+<br /><br />
+<b>Bug Fixes/Changes</b>:
+<ul>
+<li>Updated Twitch API to v5</li>
+<li>New command: <tt>seen</tt></li>
+<li>New command: <tt>bits</tt></li>
+<li>New commands: <tt>fwd, afwd, dfwd, sfwd</tt></li>
+<li>New characters added to flip table</li>
+<li><tt>quotes list</tt> and <tt>commands list</tt> now link to the proper page</li>
+<li><tt>stats</tt> commands now appropriately take on a channels prefix and suffix setting</li>
+<li>Filter messages now apply channel prefix and suffix setting</li>
+</ul>
+<br />
+- Kalbintion
+</div>
+</div>
+
+<hr>
+
+<div class="boxNews">
 <div class="boxNewsDate">17 April, 2017 - Base Commands, Contact Me</div>
 <div class="boxNewsContent"><a href="?p=basecommands">Base commands</a> have been added to the page. These are not entirly completed yet but a lot of simple information is available there. If you are in need of immediate information, please check the wiki as that is most up to date. The <a href="?p=contact">contact</a> page has been updated to include information on contacting me in the event you need to.<br />
 <br />

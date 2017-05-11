@@ -44,11 +44,11 @@ public class Filter {
 	}
 	
 	public Filter(String toFind, String action, String humanName) {
-		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE), Integer.parseInt(action), "", humanName, false);
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE + Pattern.UNICODE_CASE), Integer.parseInt(action), "", humanName, false);
 	}
 	
 	public Filter(String toFind, int action, String humanName) {
-		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE), action, "", humanName, false);
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE + Pattern.UNICODE_CASE), action, "", humanName, false);
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class Filter {
 	 * @param action The integer value to associate (See Filters.FILTER_*)
 	 */
 	public Filter(String toFind, int action) {
-		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE), action, "");
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE + Pattern.UNICODE_CASE), action, "");
 	}
 	
 	/**

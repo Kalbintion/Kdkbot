@@ -4,28 +4,44 @@ package kdkbot.commands;
  * Class wrapper for the Command interface
  */
 public class InternalCommand extends Command {
-	private String settingName;
-	private String settingDefault;
+	private String settingSuffix;
+	private boolean defaultAvailable = false;
+	private int defaultLevel = 5;
+	private String defaultTrigger = "";
 	
-	public InternalCommand(String settingName, String settingDefault) {
+	public InternalCommand(String settingSuffix, String defaultTrigger, int defaultLevel, boolean defaultAvailable) {
 		super();
-		this.settingName = settingName;
-		this.settingDefault = settingDefault;
+		this.settingSuffix = settingSuffix;
+		this.defaultAvailable = defaultAvailable;
+		this.defaultLevel = defaultLevel;
+		this.defaultTrigger = defaultTrigger;
 	}
 	
-	public String getSettingName() {
-		return settingName;
+	public InternalCommand(String settingSuffix, int defaultLevel) {
+		this(settingSuffix, settingSuffix, defaultLevel, true);
 	}
 	
-	public void setSettingName(String settingName) {
-		this.settingName = settingName;
+	public InternalCommand(String settingSuffix) {
+		this(settingSuffix, 5);
+	}
+
+	public String getSettingSuffix() {
+		return this.settingSuffix;
 	}
 	
-	public String getSettingDefault() {
-		return this.settingDefault;
+	public void setSettingSuffix(String settingSuffix) {
+		this.settingSuffix = settingSuffix;
 	}
 	
-	public void setSettingDefault(String settingDefault) {
-		this.settingDefault = settingDefault;
+	public boolean getDefaultAvailable() {
+		return this.defaultAvailable;
+	}
+	
+	public int getDefaultLevel() {
+		return this.defaultLevel;
+	}
+	
+	public String getDefaultTrigger() {
+		return this.defaultTrigger;
 	}
 }

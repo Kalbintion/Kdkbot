@@ -22,4 +22,15 @@ public final class YoutubeAPI {
 	public static String getVideoTitleFromID(String id) {
 		return getVideoTitle(baseURL + id);
 	}
+	
+	public static String getNumberOfVideoViews(String id) {
+		Document doc;
+		try {
+			doc = Jsoup.connect(baseURL + id).get();
+			Element ele = doc.select("#watch7-views-info").get(0).child(0);
+			return ele.html();
+		} catch(IOException e) {
+			return "Not a valid video link.";
+		}
+	}
 }

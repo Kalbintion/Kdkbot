@@ -16,7 +16,7 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
 import kdkbot.commands.counters.Counter;
-import kdkbot.commands.strings.StringCommand;
+import kdkbot.commands.custom.StringCommand;
 
 /**
  * Class responsible for parsing custom command (StringCommand) messages
@@ -51,13 +51,14 @@ public class MessageParser {
 		PATTERN_MAP.put("pick", Pattern.compile("%PICK:.*?%"));
 		PATTERN_MAP.put("pagetitle", Pattern.compile("%PAGETITLE:.*?%"));
 		PATTERN_MAP.put("yturltoken", Pattern.compile("%YTURL%"));
+		PATTERN_MAP.put("urltoken", Pattern.compile("%URL%"));
 		PATTERN_MAP.put("join", Pattern.compile("%JOIN:.*?,.*?,.*?%"));
 		PATTERN_MAP.put("math", Pattern.compile("%MATH:.*?%"));
-		PATTERN_MAP.put("split", Pattern.compile("%SPLIT:.*?,.*?%"));
 		PATTERN_MAP.put("replace", Pattern.compile("%REPLACE:(.*?),(.{1,}),(.*?)%"));
+		PATTERN_MAP.put("ytviews_id", Pattern.compile("%YTVIEWS:.*?"));
 		// %YTURL% special condition pattern
 		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9]*)"));
-		PATTERN_MAP.put("url", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))"));
+		PATTERN_MAP.put("url", Pattern.compile("(https?\\:(?://|\\\\\\\\)[A-Za-z0-9\\./-]*)((?:/|\\\\\\\\)?|\\.(html?|php|asp))"));
 		
 		// Initialize LEET_MAP
 		LEET_MAP.put("a", "@");
@@ -369,19 +370,7 @@ public class MessageParser {
 			
 			System.out.println("toParse: " + toParse);
 		}
-		
-		// Split specificity
-		Matcher pattern_split_matches = PATTERN_MAP.get("split").matcher(toParse);
-		
-		while(pattern_split_matches.find()) {
-			String result = pattern_split_matches.group();
-			
-			String[] splitArgs = result.substring("%SPLIT:".length(), result.length()-1).split(",", 1);
-			
-			// Split text, Text to split
-			toParse = toParse.replace(result, "");
-		}
-		
+				
 		// Join
 		Matcher pattern_join_replace_matches = PATTERN_MAP.get("join").matcher(toParse);
 		while(pattern_join_replace_matches.find()) {
@@ -416,8 +405,25 @@ public class MessageParser {
 			} else {
 				urlResult = "";
 			}
+
+			toParse = toParse.replace(result, urlResult);
+		}
+		
+		// URL
+		Matcher pattern_url_replace_matches = PATTERN_MAP.get("url").matcher(info.message);
+		Matcher pattern_url_token_replace_matches = PATTERN_MAP.get("urltoken").matcher(toParse);
+		while(pattern_url_token_replace_matches.find()) {
+			String result = pattern_url_token_replace_matches.group();
+			String urlResult = "";
 			
+			System.out.println(result);
 			System.out.println(urlResult);
+			
+			if(pattern_url_replace_matches.find()) {
+				urlResult = pattern_url_replace_matches.group();
+			} else {
+				urlResult = "";
+			}
 			
 			toParse = toParse.replace(result, urlResult);
 		}
@@ -429,6 +435,8 @@ public class MessageParser {
 			// messagePiece will contain the URL to look-up
 			String messagePiece = result.substring("%PAGETITLE:".length(), result.length()-1);
 			
+			System.out.println(result);
+			System.out.println(messagePiece);
 			toParse = toParse.replace(result, kdkbot.webinterface.Webpage.getWebpageTitle(messagePiece));
 		}
 		

@@ -340,36 +340,10 @@ public class Kdkbot extends PircBot {
      */
     public void handleMasterCommands(MessageInfo info) {
        	// Master Commands
-    	// TODO: Remove master commands and write web interface or alternate means to do the same thing
     	if(info.sender.equalsIgnoreCase(botCfg.getSetting("masterCommands")) && info.message.startsWith("&&")) {
     		if(info.message.startsWith("&&debug disable")) {
     			dbg.disable();
     			this.sendMessage(info.channel, "Disabled internal debug messages");
-    		} else if(info.message.startsWith("&&msgdupe ")) {
-    			String[] chanArgs = info.message.split(" ");
-    			if(messageDuplicatorList.get(chanArgs[1]) == null) {
-    				messageDuplicatorList.put(chanArgs[1], new ArrayList<String>());
-    			}
-    			messageDuplicatorList.get(chanArgs[1]).add(chanArgs[2]);
-    			this.sendMessage(chanArgs[1], "Now sending all messages from this channel to " + chanArgs[2]);
-    			this.sendMessage(chanArgs[2], "Now receiving all messages from " + chanArgs[1]);
-    		} else if(info.message.startsWith("&&msgdupeto ")) {
-    			String[] chanArgs = info.message.split(" ");
-    			if(messageDuplicatorList.get(info.channel) == null) {
-    				messageDuplicatorList.put(info.channel, new ArrayList<String>());
-    			}
-    			messageDuplicatorList.get(info.channel).add(chanArgs[1]);
-    			
-    			if(messageDuplicatorList.get(chanArgs[1]) == null) {
-    				messageDuplicatorList.put(chanArgs[1], new ArrayList<String>());
-    			}
-    			messageDuplicatorList.get(chanArgs[1]).add(info.channel);
-    			
-    			this.sendMessage(info.channel, "Now sending & receiving all messages from this channel to " + chanArgs[1]);
-    			this.sendMessage(chanArgs[1], "Now sending & receiving all messages from " + info.channel);
-    		} else if(info.message.equalsIgnoreCase("&&msgbreakall")) {
-        			messageDuplicatorList.clear();
-        			this.sendMessage(info.channel, "Breaking all message dupe systems!");
     		} else if(info.message.startsWith("&&debug enable")) {
     			dbg.enable();
     			this.sendMessage(info.channel, "Enabled internal debug messages");
@@ -407,6 +381,8 @@ public class Kdkbot extends PircBot {
     			Kdkbot.instance.sendMessage(info.channel, "Telling java to collect garbage...");
     			System.gc();
     			System.gc();
+    		} else if(info.message.startsWith("&&ytviews ")) {
+    			Kdkbot.instance.sendMessage(info.channel, "Video views: " + kdkbot.api.youtube.YoutubeAPI.getNumberOfVideoViews(info.getSegments(2)[1]));
     		}
     	}
     }

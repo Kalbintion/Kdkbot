@@ -11,16 +11,15 @@ import kdkbot.commands.messagetimer.Timers;
 import kdkbot.commands.quotes.*;
 import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
+import kdkbot.commands.custom.*;
 import kdkbot.commands.giveaway.Giveaway;
 import kdkbot.commands.stats.Stats;
-import kdkbot.commands.strings.*;
 
 public class Commands {
 	// Necessary variable for instance referencing
 	public Channel chan;
 	
 	// Sub-system commands managers
-	// #TODO: Figure out way to add these to the InternalCommand list since these internal commands are a bit more in-depth then the "Additional Commands" comment section
 	public Quotes quotes;
 	public Stats stats;
 	public StringCommands commandStrings;
@@ -312,7 +311,6 @@ public class Commands {
 		}
 		
 		// Filter Bypass
-		// TODO: Errors on _permit <username>_ but not _permit <username> <times>_
 		else if(info.senderLevel >= cmdPermit.getPermissionLevel() &&
 				cmdPermit.getAvailability() && 
 				coreWord.equalsIgnoreCase(cmdPermit.getTrigger())) {
@@ -329,10 +327,8 @@ public class Commands {
 			} catch (NumberFormatException e) {
 				chan.sendMessage(info.sender + ": " + args[2] + " is not a valid number to permit user " + args[1]);
 			}
-			chan.filterBypass.put(info.sender, Integer.parseInt(args[2]));
 		}
 		// Urban Look-up
-		// TODO: Add urban to internal command list
 		else if (info.senderLevel >= cmdUrban.getPermissionLevel() &&
 					cmdUrban.getAvailability() &&
 					coreWord.equalsIgnoreCase(cmdUrban.getTrigger())) {
@@ -514,18 +510,20 @@ public class Commands {
 		}
 		// Giveaway
 		else if(info.senderLevel >= giveaway.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase(giveaway.getTrigger())) {
+				coreWord.equalsIgnoreCase(giveaway.getTrigger()) &&
+				info.getSegments().length > 1) {
 			giveaway.executeCommand(info);
-		}
-		// Custom String Commands
-		Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
-		while(stringIter.hasNext()) {
-			StringCommand stringNext = stringIter.next();
-			// Verify user has access to this command
-			if(info.senderLevel >= stringNext.getPermissionLevel() &&
-					coreWord.equalsIgnoreCase(stringNext.getTrigger()) &&
-					stringNext.getAvailability()) {
-				stringNext.executeCommand(info);
+		} else {
+			// Custom String Commands
+			Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
+			while(stringIter.hasNext()) {
+				StringCommand stringNext = stringIter.next();
+				// Verify user has access to this command
+				if(info.senderLevel >= stringNext.getPermissionLevel() &&
+						coreWord.equalsIgnoreCase(stringNext.getTrigger()) &&
+						stringNext.getAvailability()) {
+					stringNext.executeCommand(info);
+				}
 			}
 		}
 	}

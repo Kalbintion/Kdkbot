@@ -214,6 +214,10 @@ public class Channel {
 	}
 	
 	public void sendMessage(String message) {
+		if(message.startsWith("/")) {
+			sendRawMessage(message);
+			return;
+		}
 		String msgPrefix = cfgChan.getSetting("msgPrefix");
 		String msgSuffix = cfgChan.getSetting("msgSuffix");
 		if(msgPrefix.length() > 0) { msgPrefix += " "; } // Append a space

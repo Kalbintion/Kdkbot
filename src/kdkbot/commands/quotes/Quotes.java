@@ -80,7 +80,7 @@ public class Quotes extends Command {
 				Kdkbot.instance.sendChanMessage(channel, "There are " + quotes.size() + " quotes.");
 				break;
 			case "list":
-				Kdkbot.instance.sendChanMessage(channel, "You are see all available quotes by visiting http://tfk.zapto.org/kdkbot/?p=channels&c=" + info.channel.replace("#", "") + "&t=q");
+				Kdkbot.instance.sendChanMessage(channel, "You can see all available quotes by visiting http://tfk.zapto.org/kdkbot/?p=channels&c=" + info.channel.replace("#", "") + "&t=q");
 				break;
 			case "random":
 				Random rnd = new Random();
@@ -105,6 +105,7 @@ public class Quotes extends Command {
 				} catch(NumberFormatException|IndexOutOfBoundsException e) {
 					
 				}
+				break;
 		}
 	}
 

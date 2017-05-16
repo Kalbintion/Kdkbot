@@ -137,6 +137,8 @@ public class MessageParser {
 		toParse = toParse.replace("%LOGIN%", info.login);
 		toParse = toParse.replace("%HOSTNAME%", info.hostname);
 		
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		
 		// Random Number Generator Variables
 		Random rnd = new Random();
 		
@@ -152,6 +154,7 @@ public class MessageParser {
 		
 		// If it was all replaced, we can default to removing them completely (should remove stray %ARGS%)
 		toParse = toParse.replace("%ARGS%", "");
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Command replacement
 		Matcher pattern_cmd_matches = PATTERN_MAP.get("cmd").matcher(toParse);
@@ -169,6 +172,7 @@ public class MessageParser {
 				toParse = toParse.replace(result, "No command found for " + argID);
 			}
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Arg specificity
 		Matcher pattern_args_matches = PATTERN_MAP.get("argN").matcher(toParse);
@@ -188,6 +192,7 @@ public class MessageParser {
 				toParse = toParse.replace("%ARGS:" + argID + "%", args[argIDInt]);
 			}
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter specificity
 		Matcher pattern_cntr_matches = PATTERN_MAP.get("cntr").matcher(toParse);
@@ -209,6 +214,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace("%CNTR:" + cntrID + "%", Integer.toString(cntr.value));
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter++ Specificity
 		Matcher pattern_cntrpp_matches = PATTERN_MAP.get("cntr++").matcher(toParse);
@@ -234,6 +240,7 @@ public class MessageParser {
 			// Force a counter save
 			Kdkbot.CHANS.get(info.channel).commands.counters.saveCounters();
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter-- Specificity
 		Matcher pattern_cntrmm_matches = PATTERN_MAP.get("cntr--").matcher(toParse);
@@ -258,6 +265,7 @@ public class MessageParser {
 			// Force a counter save
 			Kdkbot.CHANS.get(info.channel).commands.counters.saveCounters();
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Channel Users
 		Matcher pattern_chanuser_replace_matches = PATTERN_MAP.get("chanuser").matcher(toParse);
@@ -269,6 +277,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, randomUser.getNick());
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		Matcher pattern_chanuser_idx_replace_matches = PATTERN_MAP.get("chanuserIdx").matcher(toParse);
 		while(pattern_chanuser_idx_replace_matches.find()) {
@@ -279,6 +288,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, users[idx].getNick());
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		
 		// Case methods
@@ -289,6 +299,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, result.substring("%UPPER:".length(), result.length()-1).toUpperCase());
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Lower
 		Matcher pattern_lower_replace_matches = PATTERN_MAP.get("lower").matcher(toParse);
@@ -297,6 +308,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, result.substring("%LOWER:".length(), result.length()-1).toLowerCase());
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Leet
 		Matcher pattern_leet_replace_matches = PATTERN_MAP.get("leet").matcher(toParse);
@@ -306,6 +318,7 @@ public class MessageParser {
 			messagePiece = charTransform(LEET_MAP, messagePiece);
 			toParse = toParse.replace(result, messagePiece);
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Flip
 		Matcher pattern_flip_replace_matches = PATTERN_MAP.get("flip").matcher(toParse);
@@ -315,6 +328,7 @@ public class MessageParser {
 			messagePiece = charTransform(FLIP_MAP, messagePiece);
 			toParse = toParse.replace(result, messagePiece);
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Hash
 		Matcher pattern_hash_replace_matches = PATTERN_MAP.get("hash").matcher(toParse);
@@ -330,6 +344,7 @@ public class MessageParser {
 				toParse = toParse.replace(result, e.getMessage());
 			}
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Reverse String (ie: abc, cba)
 		Matcher pattern_reverse_replace_matches = PATTERN_MAP.get("reverse").matcher(toParse);
@@ -338,6 +353,7 @@ public class MessageParser {
 			String messagePiece = result.substring("%REVERSE:".length(), result.length()-1);
 			toParse = toParse.replace(result, new StringBuilder(messagePiece).reverse().toString());
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Pick
 		Matcher pattern_pick_replace_matches = PATTERN_MAP.get("pick").matcher(toParse);
@@ -349,6 +365,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, messageParts[new Random().nextInt(messageParts.length)]);
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Replace specificity
 		Matcher pattern_replace_matches = PATTERN_MAP.get("replace").matcher(toParse);
@@ -370,6 +387,7 @@ public class MessageParser {
 			
 			System.out.println("toParse: " + toParse);
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 				
 		// Join
 		Matcher pattern_join_replace_matches = PATTERN_MAP.get("join").matcher(toParse);
@@ -392,6 +410,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, sb.toString());
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 						
 		// YTURL
 		Matcher pattern_yturl_replace_matches = PATTERN_MAP.get("yturl").matcher(info.message);
@@ -408,6 +427,7 @@ public class MessageParser {
 
 			toParse = toParse.replace(result, urlResult);
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// URL
 		Matcher pattern_url_replace_matches = PATTERN_MAP.get("url").matcher(info.message);
@@ -427,6 +447,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, urlResult);
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Pagetitle
 		Matcher pattern_pagetitle_replace_matches = PATTERN_MAP.get("pagetitle").matcher(toParse);
@@ -439,6 +460,7 @@ public class MessageParser {
 			System.out.println(messagePiece);
 			toParse = toParse.replace(result, kdkbot.webinterface.Webpage.getWebpageTitle(messagePiece));
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Math
 		Matcher pattern_math_replace_matches = PATTERN_MAP.get("math").matcher(toParse);
@@ -454,6 +476,7 @@ public class MessageParser {
 			}
 			
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Random Basic replacement
 		toParse = toParse.replace("%RND%", Integer.toString(rnd.nextInt()));
@@ -470,6 +493,7 @@ public class MessageParser {
 
 			toParse = toParse.replace(result, Integer.toString(rnd.nextInt(maxValue)));
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Advanced replacement (specifying min and max values)
 		Matcher pattern_rnd_min_max_matches = PATTERN_MAP.get("rndMinMax").matcher(toParse);
@@ -485,15 +509,20 @@ public class MessageParser {
 
 			toParse = toParse.replace(result, Integer.toString(rnd.nextInt(maxValue - minValue + 1) + minValue));
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		
 		// We've gone through all of the percent-args, we can clear the remaining ones now
 		Iterator<Entry<String, Pattern>> patternItr = PATTERN_MAP.entrySet().iterator();
 		while (patternItr.hasNext()) {
 			Map.Entry<String, Pattern> pair = patternItr.next();
-			Pattern obj = (Pattern) pair.getValue();
-			toParse = toParse.replaceAll(obj.toString(), "");
+			if(pair.getKey() != "url" && pair.getKey() != "yturl") {
+				Pattern obj = (Pattern) pair.getValue();
+				toParse = toParse.replaceAll(obj.toString(), "");
+				
+			}
 		}
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 
 		return toParse;
 	}

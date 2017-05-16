@@ -40,7 +40,7 @@ public class Commands {
 	private InternalCommand cmdStatus = new InternalCommand("status", 1);
 	private InternalCommand cmdGame = new InternalCommand("game", 1);
 	private InternalCommand cmdGiveaway = new InternalCommand("giveaway", 3);
-	private InternalCommand cmdQuotes = new InternalCommand("quotes", 1);
+	private InternalCommand cmdQuotes = new InternalCommand("quote", 1);
 	private InternalCommand cmdAma = new InternalCommand("ama", 1);
 	private InternalCommand cmdTimers = new InternalCommand("timers", 3);
 	private InternalCommand cmdUrban = new InternalCommand("urban", 1);
@@ -52,7 +52,7 @@ public class Commands {
 	private InternalCommand cmdCommands = new InternalCommand("commands", 1);
 	private InternalCommand cmdUptime = new InternalCommand("uptime", 1);
 	private InternalCommand cmdViewers = new InternalCommand("viewers", 1);
-	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdForward, cmdFilter, cmdTimer, cmdHost, cmdUnhost, cmdStatus, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
+	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdForward, cmdFilter, cmdTimer, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -176,6 +176,7 @@ public class Commands {
 								} else if(args[1].startsWith("active")) {
 									args[2] = String.valueOf(Boolean.parseBoolean(args[2]));
 									chan.cfgChan.setSetting(args[1], args[2]);
+									System.out.println("Setting " + args[1] + " to " + args[2] + " parsed as " + String.valueOf(Boolean.parseBoolean(args[2])));
 									cmd.setAvailability(Boolean.parseBoolean(args[2]));
 								}
 								validCommand = true;
@@ -232,7 +233,7 @@ public class Commands {
 				    cmdForward.getAvailability() &&
 					coreWord.equalsIgnoreCase(cmdForward.getTrigger())) {
 			if(args.length >= 2) {
-				String toChan = args[1];
+				String toChan = args[1].toLowerCase();
 				if(!toChan.startsWith("#")) {
 					toChan = "#" + toChan;
 				}
@@ -246,7 +247,7 @@ public class Commands {
 					chan.forwarders.add(new Forwarder(toChan));
 					toChanObj.forwarders.add(new Forwarder(info.channel));
 				} else {
-					chan.sendMessage(info.sender + ": This bot is not in that channel.");
+					chan.sendMessage(info.sender + ": This bot is not in that channel. Have them join my channel and type !join");
 				}
 				
 			} else {
@@ -260,7 +261,7 @@ public class Commands {
 					(coreWord.equalsIgnoreCase("afwd")
 				  || coreWord.equalsIgnoreCase("acceptforward"))) {
 			if(args.length >= 2) {
-				String toAuthorize = args[1];
+				String toAuthorize = args[1].toLowerCase();
 				if(!toAuthorize.startsWith("#")) { toAuthorize = "#" + toAuthorize; }
 				
 				Channel fromChan = Kdkbot.instance.getChannel(toAuthorize);
@@ -279,7 +280,7 @@ public class Commands {
 					(coreWord.equalsIgnoreCase("dfwd")
 				  || coreWord.equalsIgnoreCase("denyforward"))) {
 			if(args.length >= 2) {
-				String toDeny = args[1];
+				String toDeny = args[1].toLowerCase();
 				if(!toDeny.startsWith("#")) { toDeny = "#" + toDeny; }
 				
 				Channel fromChan = Kdkbot.instance.getChannel(toDeny);
@@ -298,7 +299,7 @@ public class Commands {
 					(coreWord.equalsIgnoreCase("sfwd")
 				  || coreWord.equalsIgnoreCase("stopforward"))) {
 			if(args.length >= 2) {
-				String toStop = args[1];
+				String toStop = args[1].toLowerCase();
 				if(!toStop.startsWith("#")) { toStop = "#" + toStop; }
 				
 				Channel fromChan = Kdkbot.instance.getChannel(toStop);

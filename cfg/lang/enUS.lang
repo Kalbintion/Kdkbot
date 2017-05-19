@@ -1,0 +1,7 @@
+log.onDisconnect=Bot has disconnected. Will be attempting to re-join.
+log.retryNumber=Reconnection retry %1$s
+log.nickInUse=Could not re-connect due to nickname already in use.
+log.failedToResolve=Failed to resolve host for %1$s.
+log.ircException=Could not reconnect to the irc server, disallowed.
+twitter.disconnectStatus=I have disconnected from twitch! Attempting to reconnect. #kdkbot
+twitter.reconnectStatus=I have successfully reconnected! #kdkbot

@@ -24,10 +24,12 @@ import twitter4j.conf.ConfigurationBuilder;
 import kdkbot.channel.*;
 import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.*;
+import kdkbot.language.*;
 
 public class Kdkbot extends PircBot {
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
 	public static Kdkbot instance;
+	public static String botLanguage = "enUS";
 	
 	public Config botCfg = new Config(FileSystems.getDefault().getPath("./cfg/settings.cfg"));
 	public ArrayList<String> msgIgnoreList = new ArrayList<String>();
@@ -128,7 +130,7 @@ public class Kdkbot extends PircBot {
 
 			try {
 				if((retryAttempts - 1) % 100 == 0) {
-					status.updateStatus("I have disconnected from twitch! Attempting to reconnect. #kdkbot");
+					status.updateStatus(Translate.getTranslate("twitter.disconnectStatus", botLanguage));
 				}
 				
 				this.reconnect();
@@ -142,13 +144,13 @@ public class Kdkbot extends PircBot {
 				
 				hasReconnected = true;
 			} catch (NickAlreadyInUseException e) {
-				logger.logln("Could not re-connect due to nickname already in use.");
+				logger.logln(Translate.getTranslate("log.nickInUse", botLanguage));
 			} catch (UnknownHostException e) {
-				logger.logln("Failed to resolve host for " + botCfg.getSetting("irc") + ".");
+				logger.logln(String.format(Translate.getTranslate("log.failedToResolve", botLanguage), botCfg.getSetting("irc")));
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (IrcException e) {
-				logger.logln("Could not reconnect to the irc server, disallowed.");
+				logger.logln(Translate.getTranslate("log.ircException", botLanguage));
 			} catch (TwitterException e) {
 				
 			}
@@ -167,7 +169,7 @@ public class Kdkbot extends PircBot {
 		} while(!hasReconnected);
 		
 		try {
-			status.updateStatus("I have successfully reconnected! #kdkbot");
+			status.updateStatus(Translate.getTranslate("twitter.reconnectStatus", botLanguage));
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}
@@ -383,6 +385,8 @@ public class Kdkbot extends PircBot {
     			System.gc();
     		} else if(info.message.startsWith("&&ytviews ")) {
     			Kdkbot.instance.sendMessage(info.channel, "Video views: " + kdkbot.api.youtube.YoutubeAPI.getNumberOfVideoViews(info.getSegments(2)[1]));
+    		} else if(info.message.startsWith("&&formattest")) {
+    			Kdkbot.instance.sendMessage(info.channel, String.format("%1$s", 3));
     		}
     	}
     }

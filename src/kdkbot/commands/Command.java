@@ -1,6 +1,7 @@
 package kdkbot.commands;
 
 import kdkbot.Kdkbot;
+import kdkbot.MessageInfo;
 
 public abstract class Command {
 	private Kdkbot instance;
@@ -137,4 +138,6 @@ public abstract class Command {
 	public void setLastCall(int time) {
 		lastCall = time;
 	}
+	
+
 }

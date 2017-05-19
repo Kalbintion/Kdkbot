@@ -16,7 +16,7 @@ public class Channel {
 	public String channel;
 	// private Economy economy;
 	public ArrayList<Forwarder> forwarders = new ArrayList<Forwarder>();
-	public String commandPrefix = "|";
+	public String commandPrefix = "!";
 	public Filters filters;
 	public Stats stats;
 	

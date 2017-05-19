@@ -96,13 +96,13 @@ public class Quotes extends Command {
 				try {
 					int quoteIndex = Integer.parseInt(args[1]);
 					
-					String quote = quotes.get(quoteIndex);
+					String quote = quotes.get(String.valueOf(quoteIndex));
 					if(quote != null) {
-						Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[2] + ": " + quote);
+						Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[1] + ": " + quote);
 					} else {
-						Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[2] + " does not exist.");
+						Kdkbot.instance.sendChanMessage(channel, "Quote #" + args[1] + " does not exist.");
 					}
-				} catch(NumberFormatException|IndexOutOfBoundsException e) {
+				} catch(NumberFormatException e) {
 					
 				}
 				break;

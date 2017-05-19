@@ -33,6 +33,9 @@ public class Commands {
 	private InternalCommand cmdPerm = new InternalCommand("perm", 3);
 	private InternalCommand cmdPermit = new InternalCommand("permit", 3);
 	private InternalCommand cmdForward = new InternalCommand("fwd", 4);
+	private InternalCommand cmdAForward = new InternalCommand("a" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
+	private InternalCommand cmdDForward = new InternalCommand("d" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
+	private InternalCommand cmdSForward = new InternalCommand("s" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
 	private InternalCommand cmdFilter = new InternalCommand("filter", 5);
 	private InternalCommand cmdTimer = new InternalCommand("timer", 3);
 	private InternalCommand cmdHost = new InternalCommand("host", 3);
@@ -52,7 +55,7 @@ public class Commands {
 	private InternalCommand cmdCommands = new InternalCommand("commands", 1);
 	private InternalCommand cmdUptime = new InternalCommand("uptime", 1);
 	private InternalCommand cmdViewers = new InternalCommand("viewers", 1);
-	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdForward, cmdFilter, cmdTimer, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
+	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdForward, cmdAForward, cmdDForward, cmdFilter, cmdTimer, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -223,7 +226,15 @@ public class Commands {
 					}
 					break;
 				case "get":
-					chan.sendMessage("The user " + args[2] + " is set to " + chan.getSenderRank(args[2]));
+					int iRank = chan.getSenderRank(args[2]);
+					String rank = rankIntToName(chan.getSenderRank(args[2]));
+					try {
+						Integer.parseInt(rank);
+						chan.sendMessage("The user " + args[2] + " is set to " + rank);
+					} catch(NumberFormatException e) {
+						chan.sendMessage("The user " + args[2] + " is set to " + rank + " [" + iRank + "]");
+					}
+					
 					break;
 			}
 		}
@@ -277,8 +288,7 @@ public class Commands {
 		// Forwarder - Authorization - Deny
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 				     cmdForward.getAvailability() && 
-					(coreWord.equalsIgnoreCase("dfwd")
-				  || coreWord.equalsIgnoreCase("denyforward"))) {
+					coreWord.equalsIgnoreCase("dfwd")) {
 			if(args.length >= 2) {
 				String toDeny = args[1].toLowerCase();
 				if(!toDeny.startsWith("#")) { toDeny = "#" + toDeny; }
@@ -296,8 +306,7 @@ public class Commands {
 		// Forwarder - Stop
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 				     cmdForward.getAvailability() && 
-					(coreWord.equalsIgnoreCase("sfwd")
-				  || coreWord.equalsIgnoreCase("stopforward"))) {
+					coreWord.equalsIgnoreCase(cmdSForward.getTrigger())) {
 			if(args.length >= 2) {
 				String toStop = args[1].toLowerCase();
 				if(!toStop.startsWith("#")) { toStop = "#" + toStop; }
@@ -571,6 +580,29 @@ public class Commands {
 				} catch (NumberFormatException e) {
 					return 0;
 				}
+		}
+	}
+	
+	public static String rankIntToName(int rank) {
+		switch(rank) {
+			case 1:
+				return "normal";
+			case 2:
+				return "regular";
+			case 3:
+				return "moderator";
+			case 4:
+				return "super moderator";
+			case 5:
+				return "channel operator";
+			case Integer.MAX_VALUE:
+				return "max";
+			case Integer.MIN_VALUE:
+				return "min";
+			case 0:
+				return "nobody";
+			default:
+				return String.valueOf(rank);
 		}
 	}
 	

@@ -1,5 +1,7 @@
 package kdkbot.commands;
 
+import kdkbot.MessageInfo;
+
 /*
  * Class wrapper for the Command interface
  */
@@ -43,5 +45,17 @@ public class InternalCommand extends Command {
 	
 	public String getDefaultTrigger() {
 		return this.defaultTrigger;
+	}
+	
+	public int getDefaultTriggerInt() {
+		return Integer.parseInt(this.defaultTrigger);
+	}
+	
+	/**
+	 * Message handler for command parsing
+	 * @param info
+	 */
+	public void handleMessage(MessageInfo info) {
+		return;
 	}
 }

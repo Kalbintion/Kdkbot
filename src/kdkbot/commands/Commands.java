@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
-import kdkbot.api.urban.UrbanAPI;
+import kdkbot.api.urban.API;
 import kdkbot.channel.Channel;
 import kdkbot.channel.Forwarder;
 import kdkbot.commands.messagetimer.Timers;
@@ -14,6 +14,9 @@ import kdkbot.commands.counters.*;
 import kdkbot.commands.custom.*;
 import kdkbot.commands.giveaway.Giveaway;
 import kdkbot.commands.stats.Stats;
+
+// TODO: Change Commands list to level 1
+
 
 public class Commands {
 	// Necessary variable for instance referencing
@@ -37,7 +40,6 @@ public class Commands {
 	private InternalCommand cmdDForward = new InternalCommand("d" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
 	private InternalCommand cmdSForward = new InternalCommand("s" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
 	private InternalCommand cmdFilter = new InternalCommand("filter", 5);
-	private InternalCommand cmdTimer = new InternalCommand("timer", 3);
 	private InternalCommand cmdHost = new InternalCommand("host", 3);
 	private InternalCommand cmdUnhost = new InternalCommand("unhost", 3);
 	private InternalCommand cmdStatus = new InternalCommand("status", 1);
@@ -55,7 +57,7 @@ public class Commands {
 	private InternalCommand cmdCommands = new InternalCommand("commands", 1);
 	private InternalCommand cmdUptime = new InternalCommand("uptime", 1);
 	private InternalCommand cmdViewers = new InternalCommand("viewers", 1);
-	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdForward, cmdAForward, cmdDForward, cmdFilter, cmdTimer, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
+	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -116,6 +118,9 @@ public class Commands {
 		// These commands are bot-room specific
 		Kdkbot.instance.dbg.writeln(this, "Kdkbot nick is: " + Kdkbot.instance.getNick());
 		Kdkbot.instance.dbg.writeln(this, "Channel is: " + info.channel);
+		
+		Kdkbot.instance.dbg.writeln(this, "Timer trigger word: " + cmdTimers.getTrigger());
+		Kdkbot.instance.dbg.writeln(this, "Trigger permission level: " + cmdTimers.getPermissionLevel());
 		if(info.channel.equalsIgnoreCase("#" + Kdkbot.instance.getNick())) {
 			Kdkbot.instance.dbg.writeln(this, "Running through bot specific channel commands");
 			if (coreWord.equalsIgnoreCase("join")) {
@@ -342,7 +347,7 @@ public class Commands {
 		else if (info.senderLevel >= cmdUrban.getPermissionLevel() &&
 					cmdUrban.getAvailability() &&
 					coreWord.equalsIgnoreCase(cmdUrban.getTrigger())) {
-			chan.sendMessage(UrbanAPI.getTopDefinition(info.getSegments(2)[1]));
+			chan.sendMessage(API.getTopDefinition(info.getSegments(2)[1]));
 		}
 		// Quotes
 		else if (info.senderLevel >= cmdQuotes.getPermissionLevel() &&
@@ -352,7 +357,6 @@ public class Commands {
 		}
 		// Stats - Time
 		else if(info.senderLevel >= cmdTime.getPermissionLevel() &&
-					cmdTime.getAvailability() &&
 					coreWord.equalsIgnoreCase(cmdTime.getTrigger())) {
 			info.message = "stats time " + info.message;
 			stats.executeCommand(info);
@@ -414,7 +418,8 @@ public class Commands {
 		// Timers
 		else if(info.senderLevel >= cmdTimers.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase(cmdTimers.getTrigger())) {
-			timers.executeCommand(info);	
+			System.out.println("Triggered timers section");
+			timers.executeCommand(info);
 		}
 		// Game
 		else if(info.senderLevel >= 1 &&

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import kdkbot.channel.Channel;
+
 public class MessageInfo {
 	public String channel;
 	public String sender;
@@ -71,5 +73,9 @@ public class MessageInfo {
 	 */
 	public String getURLFromMessage() {
 		return getURLsFromMessage().get(0);
+	}
+	
+	public Channel getChannel() {
+		return Kdkbot.instance.getChannel(this.channel);
 	}
 }

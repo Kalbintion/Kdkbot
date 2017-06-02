@@ -1,7 +1,6 @@
 package kdkbot.commands;
 
 import kdkbot.Kdkbot;
-import kdkbot.MessageInfo;
 
 public abstract class Command {
 	private Kdkbot instance;

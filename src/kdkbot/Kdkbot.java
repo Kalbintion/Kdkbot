@@ -82,7 +82,7 @@ public class Kdkbot extends PircBot {
 				this.connect(botCfg.getSetting("irc"), Integer.parseInt(botCfg.getSetting("port")), "oauth:" + botCfg.getSetting("oauth"));
 				connectionSent = true;
 			} catch(UnknownHostException e) {
-				logger.logln("Failed to resolve host for " + botCfg.getSetting("irc") + ". Retrying in 10 seconds.");
+				logger.logln(String.format(Translate.getTranslate("log.failedToResolveDelay", botLanguage), botCfg.getSetting("irc")));
 				Thread.sleep(10 * 1000); // 10s * 1000ms
 			}
 		} while (connectionSent = false);
@@ -178,7 +178,6 @@ public class Kdkbot extends PircBot {
 	/**
 	 * Event handler for connecting (successfully) to a server
 	 */
-	@Override
 	public void onConnect() {
 		// Re-establishes JOIN/LEAVE msges per Twitch IRCv3 implementation
 		sendRawLine("CAP REQ :twitch.tv/membership");
@@ -188,7 +187,6 @@ public class Kdkbot extends PircBot {
 	 * Overrides the PIRC implementation of logging to console for purposes of logging to file as well.
 	 * @param line The line in which will be logged
 	 */
-    @Override
 	public void log(String line) {
     	super.log(line);
         
@@ -277,7 +275,7 @@ public class Kdkbot extends PircBot {
 			return -1;
 		} else {
 			// Join channel
-			this.sendMessage(channel, "Joining channel " + channel);
+			this.sendMessage(channel, String.format(Translate.getTranslate("channel.join", botLanguage), channel));
 			CHANS.put(channel, new Channel(this, channel));
 			
 			// Add channel to settings cfg
@@ -297,7 +295,7 @@ public class Kdkbot extends PircBot {
 					cmdIn.close();
 					cmdOut.close();
 				} catch (IOException e) {
-					chan.sendMessage("Couldn't initialize default commands!");
+					chan.sendMessage(Translate.getTranslate("channel.badInitialize", botLanguage));
 				}
 			} // else we don't need to attempt to create a new instance for the channels commands
 			
@@ -368,25 +366,27 @@ public class Kdkbot extends PircBot {
     		} else if(info.message.startsWith("&&color ")) {
     			String colorArgs[] = info.message.split(" ");
     			this.sendMessage(info.channel, "/color " + colorArgs[1]);
-    			this.sendMessage(info.channel, "Changed color to " + colorArgs[1]);
+    			this.sendMessage(info.channel, String.format(Translate.getTranslate("bot.mastercommands.color", botLanguage), colorArgs[1]));
     		} else if(info.message.startsWith("&&status ")) {
     			try {
 					Kdkbot.status.updateStatus(info.message.substring("&&status ".length()));
-					Kdkbot.instance.sendMessage(info.channel, "Updated my twitter status.");
+					Kdkbot.instance.sendMessage(info.channel, Translate.getTranslate("bot.mastercommands.status", botLanguage));
 				} catch (TwitterException e) {
-					Kdkbot.instance.sendMessage(info.channel, "Failed to update my twitter status. " + e.getMessage());
+					Kdkbot.instance.sendMessage(info.channel, String.format(Translate.getTranslate("bot.mastercommands.statusFail", botLanguage), e.getMessage()));
 					e.printStackTrace();
 				}
     		} else if(info.message.startsWith("&&ram?")) {
-    			Kdkbot.instance.sendMessage(info.channel, "My current ram usage is estimated to be at in KB: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024);
+    			Kdkbot.instance.sendMessage(info.channel, String.format(Translate.getTranslate("bot.mastercommands.ram", botLanguage), (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024));
     		} else if(info.message.startsWith("&&gc")) {
-    			Kdkbot.instance.sendMessage(info.channel, "Telling java to collect garbage...");
+    			Kdkbot.instance.sendMessage(info.channel, Translate.getTranslate("bot.mastercommands.gc", botLanguage));
     			System.gc();
     			System.gc();
     		} else if(info.message.startsWith("&&ytviews ")) {
-    			Kdkbot.instance.sendMessage(info.channel, "Video views: " + kdkbot.api.youtube.YoutubeAPI.getNumberOfVideoViews(info.getSegments(2)[1]));
+    			Kdkbot.instance.sendMessage(info.channel, "Video views: " + kdkbot.api.youtube.API.getNumberOfVideoViews(info.getSegments(2)[1]));
     		} else if(info.message.startsWith("&&formattest")) {
     			Kdkbot.instance.sendMessage(info.channel, String.format("%1$s", 3));
+    		} else if(info.message.startsWith("&&wfmtest ")) {
+    			Kdkbot.instance.sendMessage(info.channel, kdkbot.api.warframe.API.Market.getSellStats(info.getSegments(2)[1]).toString());
     		}
     	}
     }

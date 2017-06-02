@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import org.jibble.pircbot.User;
 
+import com.google.gson.JsonObject;
+
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
@@ -56,8 +58,9 @@ public class MessageParser {
 		PATTERN_MAP.put("math", Pattern.compile("%MATH:.*?%"));
 		PATTERN_MAP.put("replace", Pattern.compile("%REPLACE:(.*?),(.{1,}),(.*?)%"));
 		PATTERN_MAP.put("ytviews_id", Pattern.compile("%YTVIEWS:.*?"));
+		PATTERN_MAP.put("wfm", Pattern.compile("%WFM:.*?%"));
 		// %YTURL% special condition pattern
-		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9]*)"));
+		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9-]*)"));
 		PATTERN_MAP.put("url", Pattern.compile("(https?\\:(?://|\\\\\\\\)[A-Za-z0-9\\./-]*)((?:/|\\\\\\\\)?|\\.(html?|php|asp))"));
 		
 		// Initialize LEET_MAP
@@ -420,7 +423,7 @@ public class MessageParser {
 			String urlResult = "";
 			
 			if(pattern_yturl_replace_matches.find()) {
-				urlResult = kdkbot.api.youtube.YoutubeAPI.baseURL + pattern_yturl_replace_matches.group("VidID");
+				urlResult = kdkbot.api.youtube.API.baseURL + pattern_yturl_replace_matches.group("VidID");
 			} else {
 				urlResult = "";
 			}
@@ -511,6 +514,26 @@ public class MessageParser {
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
+		// Warframe Market API Implementation
+		Matcher pattern_wfm_matches = PATTERN_MAP.get("wfm").matcher(toParse);
+		
+		while(pattern_wfm_matches.find()) {
+			String result = pattern_wfm_matches.group();
+			
+			String argValue = result.substring("%WFM:".length(), result.length()-1);
+			argValue = kdkbot.api.warframe.API.Market.camelCaseStr(argValue);
+			
+			JsonObject wfmRes = kdkbot.api.warframe.API.Market.getSellStats(argValue);
+			if(wfmRes == null) {
+				toParse = toParse.replace(result, "Couldn't find listings for '" + argValue + "'");
+			} else {
+				System.out.println(wfmRes.toString());
+				// Pretty-print the information
+				String out = argValue + " - Low: " + wfmRes.get("min") + ", High: " + wfmRes.get("max") + ", Avg: " + wfmRes.get("avg") + ", Amount: " + wfmRes.get("cnt") + ", # of Sellers: " + wfmRes.get("ppl");
+				toParse = toParse.replace(result, out);
+			}
+			
+		}
 		
 		// We've gone through all of the percent-args, we can clear the remaining ones now
 		Iterator<Entry<String, Pattern>> patternItr = PATTERN_MAP.entrySet().iterator();

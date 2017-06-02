@@ -106,7 +106,7 @@ public class Filter {
 	/**
 	 * Returns this Filter into a string formation, used for storing into a file.
 	 * This is in the format of the RegEx, Action and ActionInfo separated by two pipe (|) characters.
-	 * NOTE: This does impose the limit of not being able to be permitted to use two pipe characters
+	 * NOTE: This does impose the limit of not being able to be permitted to use two or more pipe characters
 	 * in the filters regex as this will cause the information to segment incorrectly when read.
 	 * 
 	 * Human Name||Action||Action Info||Ignores Permit||Regex

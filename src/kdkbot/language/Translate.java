@@ -11,10 +11,13 @@ public class Translate {
 	private static String lastLanguage;
 	
 	public static String getTranslate(String key, String language) {
+		System.out.println("key: " + key + " - lang: " + language);
 		if(!language.equalsIgnoreCase(lastLanguage)) {
-			langConfig = new Config(basePath + language);
+			langConfig = new Config(basePath + "\\" + language + ".lang");
+			langConfig.loadConfigContents();
 			lastLanguage = language;
 		}
+		System.out.println("cfgPath: " + basePath + "\\" + language + ".lang");
 		return langConfig.getSetting(key);
 	}
 	

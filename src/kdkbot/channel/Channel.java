@@ -31,6 +31,7 @@ public class Channel {
 	public HashMap<String, Integer> filterBypass = new HashMap<String, Integer>();
 	public boolean commandProcessing = true;
 	public boolean logChat = true;
+	public String language = "enUS";
 	
 	/**
 	 * Constructs a new channel instance with no references
@@ -88,6 +89,11 @@ public class Channel {
 				cfgChan.setSetting("msgSuffix", "");
 			}
 			
+			// Lang?
+			if(cfgChan.getSetting("lang") == null) {
+				cfgChan.setSetting("lang", "enUS");
+			}
+			
 			// Filters, Stats, etc
 			this.filters = new Filters(channel);
 			this.filters.loadFilters();
@@ -102,6 +108,7 @@ public class Channel {
 			this.loadSenderRanks();
 
 			this.commands = new Commands(channel, this);
+			this.language = cfgChan.getSetting("lang");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -141,6 +148,10 @@ public class Channel {
 	
 	public int getUserRank(String user) {
 		return this.senderRanks.get(user);
+	}
+	
+	public String getLang() {
+		return this.language;
 	}
 	
 	/**
@@ -237,6 +248,9 @@ public class Channel {
 	public void messageHandler(MessageInfo info) {
 		// User Stats
 		stats.handleMessage(info);
+		
+		// Timer msg counters update
+		commands.timers.updateTimerMessageCounters();
 		
 		// Begin filtering first before checking for command validity
 		ArrayList<Filter> fList = this.filters.getFilters();

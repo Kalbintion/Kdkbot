@@ -3,6 +3,7 @@ package kdkbot.filemanager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -161,24 +162,28 @@ public class Config {
 	 * Loads the configuration contents at the instances given file path location into
 	 * the instances provided values variable.
 	 */
-	public void loadConfigContents() throws Exception {
-		FileInputStream fis = new FileInputStream(this.filePath.toAbsolutePath().toString());
-		InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-		BufferedReader br = new BufferedReader(isr);
-		
-		String line;
-		while((line = br.readLine()) != null) {
-			String[] args = line.split("=");
-			if(args.length == 1)
-				this.values.put(args[0], null);
-			else
-				this.values.put(args[0], args[1]);
-		}
-		
+	public void loadConfigContents() {
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(this.filePath.toAbsolutePath().toString());
+			InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+			BufferedReader br = new BufferedReader(isr);
+			
+			String line;
+			while((line = br.readLine()) != null) {
+				String[] args = line.split("=");
+				if(args.length == 1)
+					this.values.put(args[0], null);
+				else
+					this.values.put(args[0], args[1]);
+			}
 
-		fis.close();
-		isr.close();
-		br.close();
+			fis.close();
+			isr.close();
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

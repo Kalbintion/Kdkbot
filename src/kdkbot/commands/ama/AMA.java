@@ -4,6 +4,7 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.*;
 import kdkbot.filemanager.Config;
+import kdkbot.language.Translate;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,14 +38,14 @@ public class AMA extends Command {
 				try {
 					String question = questions.get(Integer.parseInt(args[2]));
 					if(question != null) {
-						Kdkbot.instance.sendChanMessage(channel, "Question #" + args[2] + ": " + question);
+						Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("ama.gotQuestion", info.getChannel().getLang()), args[2], question));
 					} else {
-						Kdkbot.instance.sendChanMessage(channel, "Question #" + args[2] + " does not exist.");
+						Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("ama.dneQuestion", info.getChannel().getLang()), args[2]));
 					}
 				} catch(NumberFormatException e) {
-					Kdkbot.instance.sendChanMessage(channel, "That is not a number, therefore I cannot find the quote.");
+					Kdkbot.instance.sendChanMessage(info.channel, "That is not a number, therefore I cannot find the quote.");
 				} catch(IndexOutOfBoundsException e) {
-					Kdkbot.instance.sendChanMessage(channel, "The requested quote cannot be found.");
+					Kdkbot.instance.sendChanMessage(info.channel, "The requested quote cannot be found.");
 				}
 				break;
 			case "add":

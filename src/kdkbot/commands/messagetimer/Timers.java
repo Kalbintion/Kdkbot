@@ -115,7 +115,7 @@ public class Timers extends Command {
 									newFlags = t.flagsVals.toString();
 									Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Needs Live setting to: " + String.valueOf(Boolean.parseBoolean(args[4])));
 									break;
-								case "msgCount":
+								case "msgcount":
 									int msgCount = Integer.parseInt(args[4]);
 									if(msgCount <= 0) {
 										t.flagsVals.REQUIRES_MSG_COUNT = false;
@@ -139,6 +139,7 @@ public class Timers extends Command {
 			this.saveTimers();
 		}
 	}
+	
 	
 	/**
 	 * Updates all timers message amount

@@ -91,7 +91,7 @@ public class Log {
 			if(parts[i].startsWith("#")) {
 				// We can be sure this is the channel, since itll be the first we run into due to the format of the messages
 				// unless its "###"
-				if(parts[i].equalsIgnoreCase("###")) {
+				if(parts[i].equalsIgnoreCase("###") || text.contains("[DBG]")) {
 					return "internal";
 				} else {
 					return parts[i].substring(1).replace("\r", "").replace("\n", "");

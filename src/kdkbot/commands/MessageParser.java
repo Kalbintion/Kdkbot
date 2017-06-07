@@ -59,6 +59,7 @@ public class MessageParser {
 		PATTERN_MAP.put("replace", Pattern.compile("%REPLACE:(.*?),(.{1,}),(.*?)%"));
 		PATTERN_MAP.put("ytviews_id", Pattern.compile("%YTVIEWS:.*?"));
 		PATTERN_MAP.put("wfm", Pattern.compile("%WFM:.*?%"));
+		PATTERN_MAP.put("wfs", Pattern.compile("%WFS:.*?%"));
 		// %YTURL% special condition pattern
 		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9-]*)"));
 		PATTERN_MAP.put("url", Pattern.compile("(https?\\:(?://|\\\\\\\\)[A-Za-z0-9\\./-]*)((?:/|\\\\\\\\)?|\\.(html?|php|asp))"));
@@ -533,6 +534,52 @@ public class MessageParser {
 				toParse = toParse.replace(result, out);
 			}
 			
+		}
+		
+		// Warframe Scaling API Implementation
+		Matcher pattern_wfs_matches = PATTERN_MAP.get("wfs").matcher(toParse);
+		
+		while(pattern_wfs_matches.find()) {
+			String result = pattern_wfs_matches.group();
+			
+			String[] argsVals = result.substring("%WFS:".length(), result.length()-1).split(",");
+					
+			if(argsVals.length < 4) {
+				toParse = toParse.replace(result, ""); // Not enough Args
+			} else {
+				String scaleType = argsVals[0];
+				int baseStat = Integer.parseInt(argsVals[1]);
+				int baseLevel = Integer.parseInt(argsVals[2]);
+				int curLevel = Integer.parseInt(argsVals[3]);
+				
+				System.out.println("scaleType: " + scaleType + ", baseStat: " + baseStat + ", baseLevel: " + baseLevel + ", curLevel: " + curLevel);
+				
+				String mathResult = "DID NOT COMPUTE";
+				switch(scaleType) {
+					case "health":
+					case "hp":
+						mathResult = kdkbot.api.warframe.API.Scaling.scaleHealth(baseStat, baseLevel, curLevel);
+						break;
+					case "armor":
+						mathResult = kdkbot.api.warframe.API.Scaling.scaleArmor(baseStat, baseLevel, curLevel);
+						break;
+					case "shields":
+						mathResult = kdkbot.api.warframe.API.Scaling.scaleShield(baseStat, baseLevel, curLevel);
+						break;
+					case "damage":
+					case "dmg":
+						mathResult = kdkbot.api.warframe.API.Scaling.scaleDamage(baseStat, baseLevel, curLevel);
+						break;
+					case "affinity":
+					case "xp":
+						mathResult = kdkbot.api.warframe.API.Scaling.scaleAffinity(baseStat, baseLevel, curLevel);
+						break;
+				}
+				
+				System.out.println(mathResult);
+				
+				toParse = toParse.replace(result, mathResult);
+			}
 		}
 		
 		// We've gone through all of the percent-args, we can clear the remaining ones now

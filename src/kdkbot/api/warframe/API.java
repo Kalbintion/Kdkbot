@@ -16,9 +16,93 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.Config;
 
 public final class API {
+	public static class Scaling {
+		private static String FORMULA_HEALTH = "base*(1+(curLevel-baseLevel)^2*0.015)";
+		private static String FORMULA_SHIELD = "base*(1+(curLevel-baseLevel)^2*0.0075)";
+		private static String FORMULA_ARMOR = "base*(1+(curLevel-baseLevel)^1.75*0.005)";
+		private static String FORMULA_DAMAGE = "base*(1+(curLevel-baseLevel)^1.55*0.015)";
+		private static String FORMULA_AFFINITY = "base*(1+curLevel^0.5*0.1425)";
+		
+		/**
+		 * Scales up the health value of an entity found in Warframe based on the formula:
+		 * 	base*(1+(curLevel-baseLevel)^2*0.015)
+		 * @param base The base stat
+		 * @param baseLevel The base level
+		 * @param curLevel The current level
+		 * @return A string representing a double with the calculated value
+		 */
+		public static String scaleHealth(int base, int baseLevel, int curLevel) {
+			return String.valueOf(MessageParser.eval(prepFormula(FORMULA_HEALTH, base, baseLevel, curLevel)));
+		}
+		
+		/**
+		 * Scales up the shield value of an entity found in Warframe based on the formula:
+		 * 	base*(1+(curLevel-baseLevel)^2*0.0075)
+		 * @param base The base stat
+		 * @param baseLevel The base level
+		 * @param curLevel The current level
+		 * @return A string representing a double with the calculated value
+		 */
+		public static String scaleShield(int base, int baseLevel, int curLevel) {
+			return String.valueOf(MessageParser.eval(prepFormula(FORMULA_SHIELD, base, baseLevel, curLevel)));
+		}
+		
+		/**
+		 * Scales up the armor value of an entity found in Warframe based on the formula:
+		 * 	base*(1+(curLevel-baseLevel)^1.75*0.005)
+		 * @param base The base stat
+		 * @param baseLevel The base level
+		 * @param curLevel The current level
+		 * @return A string representing a double with the calculated value
+		 */
+		public static String scaleArmor(int base, int baseLevel, int curLevel) {
+			return String.valueOf(MessageParser.eval(prepFormula(FORMULA_ARMOR, base, baseLevel, curLevel)));
+		}
+		
+		/**
+		 * Scales up the damage value of an entity found in Warframe based on the formula:
+		 * 	base*(1+(curLevel-baseLevel)^1.55*0.015)
+		 * @param base The base stat
+		 * @param baseLevel The base level
+		 * @param curLevel The current level
+		 * @return A string representing a double with the calculated value
+		 */
+		public static String scaleDamage(int base, int baseLevel, int curLevel) {
+			return String.valueOf(MessageParser.eval(prepFormula(FORMULA_DAMAGE, base, baseLevel, curLevel)));			
+		}
+		
+		/**
+		 * Scales up the damage value of an entity found in Warframe based on the formula:
+		 * 	floor(base*(1+curLevel^0.5*0.1425))
+		 * @param base The base stat
+		 * @param baseLevel The base level
+		 * @param curLevel The current level
+		 * @return A string representing a double with the calculated value
+		 */
+		public static String scaleAffinity(int base, int baseLevel, int curLevel) {
+			return String.valueOf(Math.floor(MessageParser.eval(prepFormula(FORMULA_AFFINITY, base, baseLevel, curLevel))));			
+		}
+		
+		/**
+		 * Preps one of the scaling formulas for use with Warframe values.
+		 * @param formula The formula to modify with the values
+		 * @param base The base stat
+		 * @param baseLevel The base level
+		 * @param curLevel The current level
+		 * @return A string with the modification to the provided formula and values, to be parsed by an evaluator
+		 */
+		private static String prepFormula(String formula, int base, int baseLevel, int curLevel) {
+			formula = formula.replaceAll("baseLevel", String.valueOf(baseLevel));
+			formula = formula.replaceAll("base", String.valueOf(base));
+			formula = formula.replaceAll("curLevel", String.valueOf(curLevel));
+			return formula;
+		}
+	}
+	
 	public static class Wiki {
 		private static String cfgBase = "/cfg/api/wf/";
 		public static Config cfg = new Config(cfgBase + "info.cfg");
@@ -142,7 +226,7 @@ public final class API {
 			return ws;
 		}
 		
-		// === ENEMYSTATS METHODS
+		// ENEMYSTATS METHODS
 		
 		public static String getEnemyHealth(String enemyName) {
 			return getEnemyStats(enemyName).health;
@@ -185,16 +269,36 @@ public final class API {
 		}
 	}
 	
+	/**Warframe.Market API Portion
+	 * API URL FORMAT: http://warframe.market/api/get_orders/%ITEM_TYPE%/%ITEM_NAME%
+	 * 
+	 * NOTE: This API is *not* public and may change at any time with no backwards compatibility.
+	 * 
+	 * @author KDK
+	 *
+	 */
 	public static class Market {
-		// Warframe.Market API Portion
-		// API URL FORMAT: http://warframe.market/api/get_orders/%ITEM_TYPE%/%ITEM_NAME%
-		private static String[] itemTypes = {"Void Trader", "Scene", "Set", "Blueprint", "Mod"};
+
+		// The types of "items" on the api system, these are derived from various look-ups on the site
+		private static String[] itemTypes = {"Set", "Blueprint", "Mod", "Void Trader", "Void Relic", "Scene", "Arcane Enhancements"};
+		
+		// Base url to the API, found via site function "make_request()"
 		private static String baseURL = "http://warframe.market/api/get_orders";
 		
+		/**
+		 * Gets the average price of everyone marked as online for a particular item.
+		 * @param lookupName The item name to look-up
+		 * @return A string representing a float of the average price (in platinum) of the item
+		 */
 		public static String getAveragePrice(String lookupName) {
 			return getSellStats(lookupName).get("avg").toString();
 		}
 
+		/**
+		 * Gets all selling stats about a particular thing
+		 * @param lookupName The item name to look-up
+		 * @return a JsonObject containing fields for the min value, max value, avg value, the number of ppl selling, the number of them being sold and the name of the item in its proper format
+		 */
 		public static JsonObject getSellStats(String lookupName) {
 			// document.getElementById("search-item");
 			// document.getElementsByTagName("button")[0].click();
@@ -243,6 +347,11 @@ public final class API {
 			return values;
 		}
 		
+		/**
+		 * Gets the results of an item from the Warframe.Market API system
+		 * @param lookupName The name to lookup
+		 * @return a JsonObject containing a parsed API response
+		 */
 		private static JsonObject getResults(String lookupName) {
 			JsonParser parser = new JsonParser();
 			JsonObject jobj = null;
@@ -269,6 +378,11 @@ public final class API {
 			return jobj;
 		}
 		
+		/**
+		 * Filters out offline and online-on-site people from an API call
+		 * @param toSearch The JsonObject containing the API response to filter from
+		 * @return A JsonArray containing only people who are online
+		 */
 		private static JsonArray getOnlyOnline(JsonObject toSearch) {
 			
 			JsonArray jArr = toSearch.getAsJsonObject("response").getAsJsonArray("sell");
@@ -287,13 +401,30 @@ public final class API {
 			return jArr;
 		}
 		
+		/**
+		 * Formats a string for Camel Case Styling, to be used within the warframe.market API
+		 * @param toFormat The string to format
+		 * @return A properly formatted string to be used with the API
+		 */
 		public static String camelCaseStr(String toFormat) {
 			toFormat = toFormat.toLowerCase();
 			
 			String[] parts = toFormat.split(" ");
 			toFormat = "";
 			for(String part : parts) {
-				toFormat += part.substring(0, 1).toUpperCase() + part.substring(1) + " ";
+				int idx = 0;
+				if(part.startsWith("(")) { idx++; } // (Veiled) case
+				if(part.contains("-")) { // "Medi-Pet Ray" etc case
+					String[] hyphenParts = part.split("-");
+					part = "";
+					for(String hyphenPart : hyphenParts) {
+						part += hyphenPart.substring(0, 1).toUpperCase() + hyphenPart.substring(1) + "-";
+					}
+					
+					part = part.substring(0, part.length() - 1); // Trim off excess hyphen
+				}
+				
+				toFormat += part.substring(0, idx + 1).toUpperCase() + part.substring(idx + 1) + " ";
 			}
 			
 			return toFormat.trim();

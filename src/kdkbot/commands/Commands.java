@@ -116,11 +116,6 @@ public class Commands {
 		Kdkbot.instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
 		
 		// These commands are bot-room specific
-		Kdkbot.instance.dbg.writeln(this, "Kdkbot nick is: " + Kdkbot.instance.getNick());
-		Kdkbot.instance.dbg.writeln(this, "Channel is: " + info.channel);
-		
-		Kdkbot.instance.dbg.writeln(this, "Timer trigger word: " + cmdTimers.getTrigger());
-		Kdkbot.instance.dbg.writeln(this, "Trigger permission level: " + cmdTimers.getPermissionLevel());
 		if(info.channel.equalsIgnoreCase("#" + Kdkbot.instance.getNick())) {
 			Kdkbot.instance.dbg.writeln(this, "Running through bot specific channel commands");
 			if (coreWord.equalsIgnoreCase("join")) {

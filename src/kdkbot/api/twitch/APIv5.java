@@ -278,7 +278,8 @@ public class APIv5 {
 		String res = getStreamObject(clientID, channelID);
 		JsonParser parser = new JsonParser();
 		JsonObject jObj = parser.parse(res).getAsJsonObject();
-		if(jObj.get("stream") == null || jObj.get("stream").toString().toLowerCase().contains("null")) { return false; } else { return true; }
+
+		if(jObj.get("stream") == null || jObj.get("stream").toString().equalsIgnoreCase("null")) { return false; } else { return true; }
 	}
 	
 	/**

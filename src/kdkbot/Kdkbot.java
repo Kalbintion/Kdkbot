@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 
 import org.jibble.pircbot.*;
 
+import com.google.gson.JsonObject;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -73,8 +75,8 @@ public class Kdkbot extends PircBot {
 		this.setName(botCfg.getSetting("nick"));
 		this._verbose = Boolean.parseBoolean(botCfg.getSetting("verbose"));
 		this.setVerbose(_verbose);
-		
-		@SuppressWarnings("unused")
+
+		@SuppressWarnings("unused") // Is it really unused? Is it really?
 		boolean connectionSent = false;
 		
 		do {
@@ -387,6 +389,13 @@ public class Kdkbot extends PircBot {
     			Kdkbot.instance.sendMessage(info.channel, String.format("%1$s", 3));
     		} else if(info.message.startsWith("&&wfmtest ")) {
     			Kdkbot.instance.sendMessage(info.channel, kdkbot.api.warframe.API.Market.getSellStats(info.getSegments(2)[1]).toString());
+    		} else if(info.message.startsWith("&&jsontest")) {
+    			JsonObject tempObj = new JsonObject();
+    			tempObj.addProperty("stream", "null");
+    			Kdkbot.instance.sendMessage(info.channel, "Json Test: " + tempObj.get("stream").toString());
+    			Kdkbot.instance.sendMessage(info.channel, "Json Test: " + tempObj.get("stream").toString().equalsIgnoreCase("\"null\""));
+    		} else if(info.message.startsWith("&&livejsontest ")) {
+    			kdkbot.api.twitch.APIv5.isStreamerLive(getClientID(), getChannel("#taitfox").getUserID());
     		}
     	}
     }

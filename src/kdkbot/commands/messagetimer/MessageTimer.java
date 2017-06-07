@@ -4,6 +4,7 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.MessageParser;
 
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,21 +61,34 @@ public class MessageTimer extends TimerTask {
 	 */
 	@Override
 	public void run() {
+		Kdkbot.instance.dbg.writeln(this, "Running scheduled task id " + this.timerID + " for channel " + this.channel);
+		
 		MessageInfo info = new MessageInfo(channel, "", message, "", "", 0);
 		Kdkbot.instance.dbg.writeln(this, "Flags: " + this.flags);
 		if (this.flagsVals.REQUIRES_LIVE) {
 			if(!kdkbot.api.twitch.APIv5.isStreamerLive(Kdkbot.instance.getClientID(), Kdkbot.instance.getChannel(channel).getUserID())) {
+				Kdkbot.instance.dbg.writeln(this, "Timer failed. Streamer isn't live. Channel: " + this.channel + ", id: " + this.timerID);
 				return; // Streamer isn't live, we arnt going to send message
 			}
 		}
 		
-		if (this.flagsVals.REQUIRES_MSG_COUNT && Integer.parseInt(this.flagsVals.REQUIRES_MSG_COUNT_AMT) >= this.flagsVals.MSGES_SINCE_LAST_TRIGGER) {
+		if (this.flagsVals.REQUIRES_MSG_COUNT && Integer.parseInt(this.flagsVals.REQUIRES_MSG_COUNT_AMT) > this.flagsVals.MSGES_SINCE_LAST_TRIGGER) {
+			this.flagsVals.MSGES_SINCE_LAST_TRIGGER = 0; // Reset msges count, even if the timer didnt get to run
+			Kdkbot.instance.dbg.writeln(this, "Timer failed. Not enough messages. Channel: " + this.channel + ", id: " + this.timerID);
 			return; // Not enough messages have been sent for this to trigger again
 		}
 
 		Kdkbot.instance.dbg.writeln(this, "Triggered timer " + this.timerID + ", all conditions met");
 		this.flagsVals.MSGES_SINCE_LAST_TRIGGER = 0; // Reset msges count, even if we're not using it
 		Kdkbot.instance.sendMessage(channel, MessageParser.parseMessage(message, info));
+		
+		if(flagsVals.RANDOM_MODIFIER) {
+			Random rng = new Random();
+			System.out.println("ID: " + timerID + ", RNG_MAX: " + flagsVals.RANDOM_MODIFIER_MAX);
+			int rni = rng.nextInt(Integer.parseInt(flagsVals.RANDOM_MODIFIER_MAX));
+			
+			timer.schedule(this, (delay + rni) * 1000, delay * 1000);
+		}
 	}
 	
 	/**
@@ -112,6 +126,9 @@ public class MessageTimer extends TimerTask {
 						flags.REQUIRES_MSG_COUNT = true;
 						flags.REQUIRES_MSG_COUNT_AMT = parts[1];
 						break;
+					case "RANDOM_MODIFIER":
+						flags.RANDOM_MODIFIER = true;
+						flags.RANDOM_MODIFIER_MAX = parts[1];
 				}
 			} // Else we have an invalid flag setting
 		}
@@ -124,6 +141,8 @@ public class MessageTimer extends TimerTask {
 		public boolean REQUIRES_MSG_COUNT = false;
 		public String REQUIRES_MSG_COUNT_AMT = "0";
 		public int MSGES_SINCE_LAST_TRIGGER = 0;
+		public boolean RANDOM_MODIFIER = false;
+		public String RANDOM_MODIFIER_MAX = "0";
 		
 		@Override
 		public String toString() {
@@ -134,6 +153,10 @@ public class MessageTimer extends TimerTask {
 			
 			if(REQUIRES_MSG_COUNT) {
 				out += "REQUIRES_MSG_COUNT=" + REQUIRES_MSG_COUNT_AMT + "+";
+			}
+			
+			if(RANDOM_MODIFIER) {
+				out += "RANDOM_MODIFIER=" + RANDOM_MODIFIER_MAX + "+";
 			}
 			
 			return out;

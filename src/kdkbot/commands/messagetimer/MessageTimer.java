@@ -2,6 +2,7 @@ package kdkbot.commands.messagetimer;
 
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
+import kdkbot.channel.Channel;
 import kdkbot.commands.MessageParser;
 
 import java.util.Random;
@@ -77,6 +78,15 @@ public class MessageTimer extends TimerTask {
 			Kdkbot.instance.dbg.writeln(this, "Timer failed. Not enough messages. Channel: " + this.channel + ", id: " + this.timerID);
 			return; // Not enough messages have been sent for this to trigger again
 		}
+		
+		if (this.flagsVals.REQUIRES_GAME) {
+			Channel chan = Kdkbot.instance.getChannel(this.channel);
+			String retrievedGame = kdkbot.api.twitch.APIv5.getChannelGame(Kdkbot.instance.botCfg.getSetting("oauth"), chan.getUserID()).replaceAll("\"", "");
+			if(!this.flagsVals.REQUIRES_GAME_NAME.equalsIgnoreCase(retrievedGame)) {
+				Kdkbot.instance.dbg.writeln(this, "Timer failed. Game did not match. Match: " + retrievedGame + ", To: " + this.flagsVals.REQUIRES_GAME_NAME + ", Channel: " + this.channel + ", id: " + this.timerID);
+				return;
+			}
+		}
 
 		Kdkbot.instance.dbg.writeln(this, "Triggered timer " + this.timerID + ", all conditions met");
 		this.flagsVals.MSGES_SINCE_LAST_TRIGGER = 0; // Reset msges count, even if we're not using it
@@ -129,6 +139,9 @@ public class MessageTimer extends TimerTask {
 					case "RANDOM_MODIFIER":
 						flags.RANDOM_MODIFIER = true;
 						flags.RANDOM_MODIFIER_MAX = parts[1];
+					case "REQUIRES_GAME":
+						flags.REQUIRES_GAME = true;
+						flags.REQUIRES_GAME_NAME = parts[1];
 				}
 			} // Else we have an invalid flag setting
 		}
@@ -143,6 +156,8 @@ public class MessageTimer extends TimerTask {
 		public int MSGES_SINCE_LAST_TRIGGER = 0;
 		public boolean RANDOM_MODIFIER = false;
 		public String RANDOM_MODIFIER_MAX = "0";
+		public boolean REQUIRES_GAME = false;
+		public String REQUIRES_GAME_NAME = "";
 		
 		@Override
 		public String toString() {
@@ -157,6 +172,10 @@ public class MessageTimer extends TimerTask {
 			
 			if(RANDOM_MODIFIER) {
 				out += "RANDOM_MODIFIER=" + RANDOM_MODIFIER_MAX + "+";
+			}
+			
+			if(REQUIRES_GAME) {
+				out += "REQUIRES_GAME=" + REQUIRES_GAME_NAME;
 			}
 			
 			return out;

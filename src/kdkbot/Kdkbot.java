@@ -388,7 +388,7 @@ public class Kdkbot extends PircBot {
     		} else if(info.message.startsWith("&&formattest")) {
     			Kdkbot.instance.sendMessage(info.channel, String.format("%1$s", 3));
     		} else if(info.message.startsWith("&&wfmtest ")) {
-    			Kdkbot.instance.sendMessage(info.channel, kdkbot.api.warframe.API.Market.getSellStats(info.getSegments(2)[1]).toString());
+    			Kdkbot.instance.sendMessage(info.channel, kdkbot.api.warframe.API.Market.getSellStatsDynamic(info.getSegments(2)[1]).toString());
     		} else if(info.message.startsWith("&&jsontest")) {
     			JsonObject tempObj = new JsonObject();
     			tempObj.addProperty("stream", "null");

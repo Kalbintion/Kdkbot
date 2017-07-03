@@ -61,7 +61,7 @@ public class MessageParser {
 		PATTERN_MAP.put("wfm", Pattern.compile("%WFM:.*?%"));
 		PATTERN_MAP.put("wfs", Pattern.compile("%WFS:.*?%"));
 		// %YTURL% special condition pattern
-		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9-]*)"));
+		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9-_]*)"));
 		PATTERN_MAP.put("url", Pattern.compile("(https?\\:(?://|\\\\\\\\)[A-Za-z0-9\\./-]*)((?:/|\\\\\\\\)?|\\.(html?|php|asp))"));
 		
 		// Initialize LEET_MAP
@@ -522,15 +522,14 @@ public class MessageParser {
 			String result = pattern_wfm_matches.group();
 			
 			String argValue = result.substring("%WFM:".length(), result.length()-1);
-			argValue = kdkbot.api.warframe.API.Market.camelCaseStr(argValue);
 			
-			JsonObject wfmRes = kdkbot.api.warframe.API.Market.getSellStats(argValue);
+			JsonObject wfmRes = kdkbot.api.warframe.API.Market.getSellStatsDynamic(argValue);
 			if(wfmRes == null) {
 				toParse = toParse.replace(result, "Couldn't find listings for '" + argValue + "'");
 			} else {
 				System.out.println(wfmRes.toString());
 				// Pretty-print the information
-				String out = argValue + " - Low: " + wfmRes.get("min") + ", High: " + wfmRes.get("max") + ", Avg: " + wfmRes.get("avg") + ", Amount: " + wfmRes.get("cnt") + ", # of Sellers: " + wfmRes.get("ppl");
+				String out = wfmRes.get("name").toString().replaceAll("\"", "") + " [" + wfmRes.get("status").toString().replaceAll("\"", "") + "] - Low: " + wfmRes.get("min") + ", High: " + wfmRes.get("max") + ", Med: " + wfmRes.get("median") + ", Avg: " + wfmRes.get("avg") + ", Amount: " + wfmRes.get("cnt") + ", # of Sellers: " + wfmRes.get("ppl");
 				toParse = toParse.replace(result, out);
 			}
 			
@@ -595,11 +594,6 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 
 		return toParse;
-	}
-	
-	public static void debugPatternMatcher(Pattern pattern, Matcher matcher) {
-		Kdkbot.instance.dbg.writeln(MessageParser.class, "Pattern: " + pattern.toString());
-		Kdkbot.instance.dbg.writeln(MessageParser.class, "Matcher: " + matcher.toString());
 	}
 	
 	/**

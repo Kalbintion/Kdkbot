@@ -28,5 +28,8 @@ twitterOAuthConsumer=
 twitterOAuthConsumerSecret=
 
 # Web Settings
+webEnabled=true
 webLocation=C:\Web Server\kdkbot\
+watcherLocation=C:\Projects\Java\kdkbot\cfg\webWatcher\
+watcherFile=watcher.txt
 redirectURI=http://example.com/authenticate

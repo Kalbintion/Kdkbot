@@ -140,6 +140,19 @@ public class Timers extends Command {
 										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Requires Game to no longer be required.");
 									}
 									break;
+								case "reqtitle":
+									if(args.length >= 4) {
+										t.flagsVals.REQUIRES_IN_TITLE = true;
+										t.flagsVals.REQUIRES_IN_TITLE_TEXT = args[4];
+										newFlags = t.flagsVals.toString();
+										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Requires In Title to need " + args[4]);
+									} else {
+										t.flagsVals.REQUIRES_IN_TITLE = false;
+										t.flagsVals.REQUIRES_IN_TITLE_TEXT = "";
+										newFlags = t.flagsVals.toString();
+										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Requires In Title to no longer be required.");
+									}
+									break;
 							}
 
 							iter.remove();

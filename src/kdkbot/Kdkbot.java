@@ -40,6 +40,7 @@ public class Kdkbot extends PircBot {
 	private Pattern logIgnores;
 	private Log logger;
 	public Debugger dbg;
+	private WebInterfaceWatcher webWatcher;
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
@@ -114,6 +115,14 @@ public class Kdkbot extends PircBot {
 			  .setOAuthAccessTokenSecret(botCfg.getSetting("twitterOAuthSecret"));
 			TwitterFactory tf = new TwitterFactory(cb.build());
 			status = tf.getInstance();
+		}
+		
+		// Setup web related info
+		if (Boolean.parseBoolean(botCfg.getSetting("webEnabled"))) {
+			System.out.println("Enabled Web Watcher.");
+			System.out.println("Watching @ " + botCfg.getSetting("watcherLocation"));
+			webWatcher = new WebInterfaceWatcher(botCfg.getSetting("watcherLocation"), botCfg.getSetting("watcherFile"));
+			webWatcher.watch();
 		}
 	}
 

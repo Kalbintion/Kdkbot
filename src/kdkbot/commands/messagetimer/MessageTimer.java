@@ -158,6 +158,8 @@ public class MessageTimer extends TimerTask {
 		public String RANDOM_MODIFIER_MAX = "0";
 		public boolean REQUIRES_GAME = false;
 		public String REQUIRES_GAME_NAME = "";
+		public boolean REQUIRES_IN_TITLE = false;
+		public String REQUIRES_IN_TITLE_TEXT = "";
 		
 		@Override
 		public String toString() {
@@ -175,7 +177,11 @@ public class MessageTimer extends TimerTask {
 			}
 			
 			if(REQUIRES_GAME) {
-				out += "REQUIRES_GAME=" + REQUIRES_GAME_NAME;
+				out += "REQUIRES_GAME=" + REQUIRES_GAME_NAME + "+";
+			}
+			
+			if(REQUIRES_IN_TITLE) {
+				out+= "REQUIRES_IN_TITLE=" + REQUIRES_IN_TITLE_TEXT + "+";
 			}
 			
 			return out;

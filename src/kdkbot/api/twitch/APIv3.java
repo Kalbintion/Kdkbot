@@ -21,6 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+@Deprecated
 public final class APIv3 {
 	private static String URL_BASE = "https://api.twitch.tv/kraken/";
 	private static String URL_CHANNELS = URL_BASE + "channels/";

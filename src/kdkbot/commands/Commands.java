@@ -55,7 +55,7 @@ public class Commands {
 	private InternalCommand cmdBits = new InternalCommand("bits", 0);
 	private InternalCommand cmdSeen = new InternalCommand("seen", 1);
 	private InternalCommand cmdCommands = new InternalCommand("commands", 1);
-	private InternalCommand cmdUptime = new InternalCommand("uptime", 1);
+	private InternalCommand cmdUptime = new InternalCommand("uptime", 0);
 	private InternalCommand cmdViewers = new InternalCommand("viewers", 1);
 	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
@@ -455,17 +455,12 @@ public class Commands {
 			String[] parts = info.getSegments(2);
 			if(parts.length > 1) {
 				String channel = parts[1];
-				if(!kdkbot.api.twitch.APIv5.isStreamerLive(Kdkbot.instance.getClientID(), chan.getUserID())) {
-					if(kdkbot.api.twitch.APIv5.isEditorOf(chan.getAccessToken(), chan.getUserID())) {
-						chan.sendRawMessage("/host " + channel);
-						chan.sendMessage("Now hosting: " + channel);
-					} else {
-						chan.sendMessage("Cannot send host request! Bot isn't an editor of this channel.");
-					}
+				if(kdkbot.api.twitch.APIv5.isEditorOf(chan.getAccessToken(), chan.getUserID())) {
+					chan.sendRawMessage("/host " + channel);
+					chan.sendMessage("Now hosting: " + channel);
 				} else {
-					chan.sendMessage("Cannot send host request! Stream is live!");
-				}
-				
+					chan.sendMessage("Cannot send host request! Bot isn't an editor of this channel.");
+				}				
 			} else {
 				// We are looking up who the channel is hosting, we need to get user id then get the host target
 				String hostTarget = kdkbot.api.twitch.APIv5.getHostTarget(Kdkbot.instance.getClientID(), chan.getUserID());

@@ -105,227 +105,228 @@ public class StringCommands {
 	}
 	
 	public void executeCommand(MessageInfo info) {
-		if(info.getSegments().length > 1) {
-			switch(info.getSegments()[1]) {
-				case "add":
-				case "new":
-					if(info.senderLevel >= 3 ) {
-						String[] csArgs = info.message.split(" ", 5);
-						Kdkbot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
-						for(int i = 0 ; i < csArgs.length; i++) {
-							Kdkbot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
-						}
-						Kdkbot.instance.getChannel(channel).sendMessage(addCommand(csArgs[2], csArgs[4], csArgs[3]));
+		String[] args = info.getSegments();
+		String subCmd = "";
+		if(args.length <= 1) { subCmd = "list"; } else { subCmd = args[1]; }
+		switch(subCmd) {
+			case "add":
+			case "new":
+				if(info.senderLevel >= 3 ) {
+					String[] csArgs = info.message.split(" ", 5);
+					Kdkbot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+					for(int i = 0 ; i < csArgs.length; i++) {
+						Kdkbot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 					}
-					break;
-				case "view":
-					if(info.senderLevel >= 3) {
-						String[] csArgs = info.message.split(" ", 4);
-						Kdkbot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
-						for(int i = 0 ; i < csArgs.length; i++) {
-							Kdkbot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+					Kdkbot.instance.getChannel(channel).sendMessage(addCommand(csArgs[2], csArgs[4], csArgs[3]));
+				}
+				break;
+			case "view":
+				if(info.senderLevel >= 3) {
+					String[] csArgs = info.message.split(" ", 4);
+					Kdkbot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+					for(int i = 0 ; i < csArgs.length; i++) {
+						Kdkbot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+					}
+					
+					String trigger = csArgs[2];
+					String type = csArgs[3];
+					
+					Iterator<StringCommand> strCmdIter = commands.iterator();
+					while(strCmdIter.hasNext()) {
+						StringCommand strCmd = strCmdIter.next();
+						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
+							if(type.equalsIgnoreCase("available")) {
+								Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s availability is set to " + strCmd.getAvailability());
+							} else if(type.equalsIgnoreCase("level")) {
+								Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s permission level is set to " + strCmd.getPermissionLevel());
+							} else if(type.equalsIgnoreCase("message") || type.equalsIgnoreCase("msg")) {
+								Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s message is set to: " + strCmd.messageToSend);
+							}
+							break;
 						}
-						
-						String trigger = csArgs[2];
-						String type = csArgs[3];
-						
-						Iterator<StringCommand> strCmdIter = commands.iterator();
-						while(strCmdIter.hasNext()) {
-							StringCommand strCmd = strCmdIter.next();
-							if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
-								if(type.equalsIgnoreCase("available")) {
-									Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s availability is set to " + strCmd.getAvailability());
-								} else if(type.equalsIgnoreCase("level")) {
-									Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s permission level is set to " + strCmd.getPermissionLevel());
+					}
+				}
+				break;
+			case "edit":
+				if(info.senderLevel >= 3) {
+					String[] csArgs = info.message.split(" ", 5);
+					Kdkbot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+					for(int i = 0 ; i < csArgs.length; i++) {
+						Kdkbot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+					}
+					
+					String trigger = csArgs[2]; // command trigger
+					String type = csArgs[3]; // command edit method
+					String toValue = csArgs[4];
+					
+					Iterator<StringCommand> strCmdIter = commands.iterator();
+					while(strCmdIter.hasNext()) {
+						StringCommand strCmd = strCmdIter.next();
+						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
+							if(info.senderLevel >= strCmd.getPermissionLevel()) {
+								if(type.equalsIgnoreCase("trigger")) {
+									Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
+									strCmd.setTrigger(toValue);
+								} else if(type.equalsIgnoreCase("rank")) {
+									Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
+									strCmd.setPermissionLevel(Integer.parseInt(toValue));
 								} else if(type.equalsIgnoreCase("message")) {
-									Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s message is set to: " + strCmd.messageToSend);
-								}
-								break;
-							}
-						}
-					}
-					break;
-				case "edit":
-					if(info.senderLevel >= 3) {
-						String[] csArgs = info.message.split(" ", 5);
-						Kdkbot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
-						for(int i = 0 ; i < csArgs.length; i++) {
-							Kdkbot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
-						}
-						
-						String trigger = csArgs[2]; // command trigger
-						String type = csArgs[3]; // command edit method
-						String toValue = csArgs[4];
-						
-						Iterator<StringCommand> strCmdIter = commands.iterator();
-						while(strCmdIter.hasNext()) {
-							StringCommand strCmd = strCmdIter.next();
-							if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
-								if(info.senderLevel >= strCmd.getPermissionLevel()) {
-									if(type.equalsIgnoreCase("trigger")) {
-										Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
-										strCmd.setTrigger(toValue);
-									} else if(type.equalsIgnoreCase("rank")) {
-										Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
-										strCmd.setPermissionLevel(Integer.parseInt(toValue));
-									} else if(type.equalsIgnoreCase("message")) {
-										Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s message.");
-										strCmd.messageToSend = toValue;
-									} else if(type.equalsIgnoreCase("available")) {
-										try {
-											boolean bool = Boolean.parseBoolean(csArgs[4]);
-											Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
-											strCmd.setAvailability(bool);
-										} catch(Exception e) {
-											Kdkbot.instance.getChannel(channel).sendMessage("Unable to discern " + csArgs[4] + " as a true/false value.");
-										}
+									Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s message.");
+									strCmd.messageToSend = toValue;
+								} else if(type.equalsIgnoreCase("available")) {
+									try {
+										boolean bool = Boolean.parseBoolean(csArgs[4]);
+										Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
+										strCmd.setAvailability(bool);
+									} catch(Exception e) {
+										Kdkbot.instance.getChannel(channel).sendMessage("Unable to discern " + csArgs[4] + " as a true/false value.");
 									}
-								} else {
-									Kdkbot.instance.getChannel(channel).sendMessage(info.sender + ", you do not have the required permission to change this command.");
 								}
-								break;
+							} else {
+								Kdkbot.instance.getChannel(channel).sendMessage(info.sender + ", you do not have the required permission to change this command.");
 							}
+							break;
 						}
-						this.saveCommands();
 					}
-					break;
-				case "remove":
-					if(info.senderLevel >= 3) {
-						Kdkbot.instance.getChannel(channel).sendMessage(removeCommand(info.getSegments()[2]));
-						this.saveCommands();
-					}
-					break;
-				case "list":
-					Kdkbot.instance.getChannel(channel).sendMessage("You can get this channels list of commands by visiting: tfk.zapto.org/kdkbot/?p=channels&t=c&channel=" + channel.replace("#", ""));
-					break;
-				case "listx":
-					// commands list [custom] <rank>
-					ArrayList<String> commands = new ArrayList<String>();
-					
-					// Output message standard
-					StringBuilder outMessage = new StringBuilder(400);
+					this.saveCommands();
+				}
+				break;
+			case "remove":
+				if(info.senderLevel >= 3) {
+					Kdkbot.instance.getChannel(channel).sendMessage(removeCommand(info.getSegments()[2]));
+					this.saveCommands();
+				}
+				break;
+			case "list":
+				Kdkbot.instance.getChannel(channel).sendMessage("You can get this channels list of commands by visiting: tfk.zapto.org/kdkbot/?p=channels&t=c&channel=" + channel.replace("#", ""));
+				break;
+			case "listx":
+				// commands list [custom] <rank>
+				ArrayList<String> commands = new ArrayList<String>();
+				
+				// Output message standard
+				StringBuilder outMessage = new StringBuilder(400);
 
-					// Hardcoded commands - need a better situation here
-					String[] additionalCommands = {"", "ama, counter, commands list, quote get, ", "ama, counter, multi, ", "commands, quote, perm, ", "", ""};
-					ArrayList<String> defaultCommands = new ArrayList<String>();
-					
-					try {
-						List<String> defaultCommandsContents = defaults.getConfigContents();
-						Iterator<String> defaultCommandsIter = defaultCommandsContents.iterator();
-						while(defaultCommandsIter.hasNext()) {
-							String defaultCommandsStr = defaultCommandsIter.next();
-							String[] defaultCommandsParts = defaultCommandsStr.split("\\|");
-							// We're only interested in storing the command name itself @ position 2
-							defaultCommands.add(defaultCommandsParts[2]);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
+				// Hardcoded commands - need a better situation here
+				String[] additionalCommands = {"", "ama, counter, commands list, quote get, ", "ama, counter, multi, ", "commands, quote, perm, ", "", ""};
+				ArrayList<String> defaultCommands = new ArrayList<String>();
+				
+				try {
+					List<String> defaultCommandsContents = defaults.getConfigContents();
+					Iterator<String> defaultCommandsIter = defaultCommandsContents.iterator();
+					while(defaultCommandsIter.hasNext()) {
+						String defaultCommandsStr = defaultCommandsIter.next();
+						String[] defaultCommandsParts = defaultCommandsStr.split("\\|");
+						// We're only interested in storing the command name itself @ position 2
+						defaultCommands.add(defaultCommandsParts[2]);
 					}
-					
-					boolean customCommandsOnly = false;
-					int commandRank = 0;
-					
-					switch(info.getSegments().length) {
-						case 2:
-							// commands list (To give only user permitted commands, shows all commands usable by user by default)
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				boolean customCommandsOnly = false;
+				int commandRank = 0;
+				
+				switch(info.getSegments().length) {
+					case 2:
+						// commands list (To give only user permitted commands, shows all commands usable by user by default)
+						commandRank = Integer.MIN_VALUE;
+						break;
+					case 3:
+						// commands list [custom] OR commands list <rank>
+						if(info.getSegments()[2].equalsIgnoreCase("c") || info.getSegments()[2].equalsIgnoreCase("custom")) {
+							// commands list [custom]
+							customCommandsOnly = true;
 							commandRank = Integer.MIN_VALUE;
-							break;
-						case 3:
-							// commands list [custom] OR commands list <rank>
-							if(info.getSegments()[2].equalsIgnoreCase("c") || info.getSegments()[2].equalsIgnoreCase("custom")) {
-								// commands list [custom]
-								customCommandsOnly = true;
-								commandRank = Integer.MIN_VALUE;
-							} else {
-								// commands list <rank>
-								String commandRankStr = info.getSegments()[2];
-								commandRank = Commands.rankNameToInt(commandRankStr);
-							}
-							break;
-						case 4:
-							// commands list [custom] <rank>
-							if(info.getSegments()[2].equalsIgnoreCase("c") || info.getSegments()[2].equalsIgnoreCase("custom")) {
-								customCommandsOnly = true;
-							} else {
-								Kdkbot.instance.sendMessage(info.channel, info.sender + ": You did not specify a valid custom (or 'c') arguments! Given: " + info.getSegments()[2]);
-								break;
-							}
-							String commandRankStr = info.getSegments()[3];
+						} else {
+							// commands list <rank>
+							String commandRankStr = info.getSegments()[2];
 							commandRank = Commands.rankNameToInt(commandRankStr);
-					}
-					
-					// How should the rest of the message be formatted to indicate what was requested?
-					if(customCommandsOnly) {
-						// Showing custom commands
-						outMessage.append("Custom commands ");
-					} else {
-						outMessage.append("Commands ");
-					}
-					
-					// for <user> @ rank?
-					if(commandRank == Integer.MAX_VALUE) {
-						// We're showing all commands
-						outMessage.append(" at all ranks: ");
-					} else if(commandRank == Integer.MIN_VALUE) {
-						// We're showing commands available to the sender
-						outMessage.append(" available to " + info.sender + ": ");
-					} else {
-						// We're showing commands @ a particular rank
-						outMessage.append(" available @ rank " + commandRank + ": ");
-					}
-					
-					// Do we add the built-in commands to the list or no?
-					if(!customCommandsOnly) {
-						int senderRankTemp = commandRank;
-						while(senderRankTemp > 0) {
-							if(senderRankTemp >= additionalCommands.length){
-								senderRankTemp--;
-							} else {
-								outMessage.append(additionalCommands[senderRankTemp--]);
-							}
+						}
+						break;
+					case 4:
+						// commands list [custom] <rank>
+						if(info.getSegments()[2].equalsIgnoreCase("c") || info.getSegments()[2].equalsIgnoreCase("custom")) {
+							customCommandsOnly = true;
+						} else {
+							Kdkbot.instance.sendMessage(info.channel, info.sender + ": You did not specify a valid custom (or 'c') arguments! Given: " + info.getSegments()[2]);
+							break;
+						}
+						String commandRankStr = info.getSegments()[3];
+						commandRank = Commands.rankNameToInt(commandRankStr);
+				}
+				
+				// How should the rest of the message be formatted to indicate what was requested?
+				if(customCommandsOnly) {
+					// Showing custom commands
+					outMessage.append("Custom commands ");
+				} else {
+					outMessage.append("Commands ");
+				}
+				
+				// for <user> @ rank?
+				if(commandRank == Integer.MAX_VALUE) {
+					// We're showing all commands
+					outMessage.append(" at all ranks: ");
+				} else if(commandRank == Integer.MIN_VALUE) {
+					// We're showing commands available to the sender
+					outMessage.append(" available to " + info.sender + ": ");
+				} else {
+					// We're showing commands @ a particular rank
+					outMessage.append(" available @ rank " + commandRank + ": ");
+				}
+				
+				// Do we add the built-in commands to the list or no?
+				if(!customCommandsOnly) {
+					int senderRankTemp = commandRank;
+					while(senderRankTemp > 0) {
+						if(senderRankTemp >= additionalCommands.length){
+							senderRankTemp--;
+						} else {
+							outMessage.append(additionalCommands[senderRankTemp--]);
 						}
 					}
-					
-					// Now we need to get the rest of the commands
-					if(commandRank == Integer.MAX_VALUE) {
-						// Grab all the commands
-						commands = this.getListOfCommands(0, GetLevels.INCLUDE_ALL);
-					} else if(commandRank == Integer.MIN_VALUE) {
-						// Get commands for user
-						commands = this.getListOfCommands(info.senderLevel, GetLevels.INCLUDE_LOWER);
-					} else {
-						// We are getting commands for a particular rank
-						commands = this.getListOfCommands(commandRank, GetLevels.INCLUDE_EQUALS);
-					}
-					
-					// Sort the list
-					Collections.sort(commands);
-					
-					// Lets iterate through that now.
-					Iterator<String> commandIter = commands.iterator();
-					while(commandIter.hasNext()) {
-						String nextCommand = commandIter.next();
-						if(!defaultCommands.contains(nextCommand)) {
-							if(outMessage.length() + nextCommand.length() > 400) {
-								// Length too long, send message and reset string
-								Kdkbot.instance.getChannel(channel).sendMessage(outMessage.toString());
-								outMessage = new StringBuilder(400);
-							} else {
-								outMessage.append(nextCommand + ", ");
-							}
+				}
+				
+				// Now we need to get the rest of the commands
+				if(commandRank == Integer.MAX_VALUE) {
+					// Grab all the commands
+					commands = this.getListOfCommands(0, GetLevels.INCLUDE_ALL);
+				} else if(commandRank == Integer.MIN_VALUE) {
+					// Get commands for user
+					commands = this.getListOfCommands(info.senderLevel, GetLevels.INCLUDE_LOWER);
+				} else {
+					// We are getting commands for a particular rank
+					commands = this.getListOfCommands(commandRank, GetLevels.INCLUDE_EQUALS);
+				}
+				
+				// Sort the list
+				Collections.sort(commands);
+				
+				// Lets iterate through that now.
+				Iterator<String> commandIter = commands.iterator();
+				while(commandIter.hasNext()) {
+					String nextCommand = commandIter.next();
+					if(!defaultCommands.contains(nextCommand)) {
+						if(outMessage.length() + nextCommand.length() > 400) {
+							// Length too long, send message and reset string
+							Kdkbot.instance.getChannel(channel).sendMessage(outMessage.toString());
+							outMessage = new StringBuilder(400);
+						} else {
+							outMessage.append(nextCommand + ", ");
 						}
 					}
-					
-					// Trim off last two characters and 
-					// Finally send the last bit of info to the channel
-					if(outMessage.length() > 2) {
-						Kdkbot.instance.getChannel(channel).sendMessage(outMessage.substring(0, outMessage.length() - 2));
-					} else {
-						// We shouldnt have a message to send
-					}
-					break;
+				}
+				
+				// Trim off last two characters and 
+				// Finally send the last bit of info to the channel
+				if(outMessage.length() > 2) {
+					Kdkbot.instance.getChannel(channel).sendMessage(outMessage.substring(0, outMessage.length() - 2));
+				} else {
+					// We shouldnt have a message to send
+				}
+				break;
 			}
-		}
 	}
 	
 	/**

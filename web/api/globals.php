@@ -39,6 +39,10 @@
 		}
 	}
 	
+	function verifyTwitchLogin($session) {
+		
+	}
+	
 	class Channel {
 		public $baseLocation;
 		

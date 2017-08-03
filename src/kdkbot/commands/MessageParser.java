@@ -19,6 +19,7 @@ import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
 import kdkbot.commands.counters.Counter;
 import kdkbot.commands.custom.StringCommand;
+import kdkbot.api.*;
 
 /**
  * Class responsible for parsing custom command (StringCommand) messages
@@ -60,6 +61,8 @@ public class MessageParser {
 		PATTERN_MAP.put("ytviews_id", Pattern.compile("%YTVIEWS:.*?"));
 		PATTERN_MAP.put("wfm", Pattern.compile("%WFM:.*?%"));
 		PATTERN_MAP.put("wfs", Pattern.compile("%WFS:.*?%"));
+		PATTERN_MAP.put("game", Pattern.compile("%GAME:.*?%"));
+		PATTERN_MAP.put("title", Pattern.compile("%TITLE:.*?%"));
 		// %YTURL% special condition pattern
 		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9-_]*)"));
 		PATTERN_MAP.put("url", Pattern.compile("(https?\\:(?://|\\\\\\\\)[A-Za-z0-9\\./-]*)((?:/|\\\\\\\\)?|\\.(html?|php|asp))"));
@@ -579,6 +582,33 @@ public class MessageParser {
 				
 				toParse = toParse.replace(result, mathResult);
 			}
+		}
+		
+		// GAME - Gets Game of a given username
+		Matcher pattern_game_matches = PATTERN_MAP.get("game").matcher(toParse);
+		
+		while(pattern_game_matches.find()) {
+			String result = pattern_game_matches.group();
+			
+			String user = result.substring("%GAME:".length(), result.length() -1);
+			
+			String game = kdkbot.api.twitch.APIv5.getChannelGameId(Kdkbot.instance.getClientID(), kdkbot.api.twitch.APIv5.getUserID(Kdkbot.instance.getClientID(), user));
+			
+			toParse = toParse.replace(result, game);
+		}
+		
+		// TITLE - Gets title of a given username
+		Matcher pattern_title_matches = PATTERN_MAP.get("title").matcher(toParse);
+		
+		while(pattern_title_matches.find()) {
+			String result = pattern_title_matches.group();
+
+			String user = result.substring("%TITLE:".length(), result.length() -1);
+			
+			String status = kdkbot.api.twitch.APIv5.getChannelStatusId(Kdkbot.instance.getClientID(), kdkbot.api.twitch.APIv5.getUserID(Kdkbot.instance.getClientID(), user));
+			
+			toParse = toParse.replace(result, status);
+			
 		}
 		
 		// We've gone through all of the percent-args, we can clear the remaining ones now

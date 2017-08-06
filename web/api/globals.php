@@ -10,11 +10,21 @@
 		}
 	}
 	
+	function isUserLoggedIn() {
+		if(isset($_COOKIE['PHPSESSID']) && isset($_SESSION['USER'])) {
+			return true;
+		}
+		return false;
+	}
+	
+	function getUserName() {
+	}
+	
 	/* Gets the base configuration setting location found in the settings.ini file
 	 * Returns a string of what was found for a particular value. May return null.
 	 */
 	function getBaseConfigSetting() {
-		$ini_contents = parse_ini_file("../cfg/settings.ini", true);
+		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
 		return $ini_contents["Bot"]["cfgLocation"];
 	}
 	

@@ -17,7 +17,7 @@ foreach($cfgFileLines as $cfgFileLine) {
 if(!isset($_GET['code'])) { die(); }
 
 // Compile the parameters we need
-$params = ['client_id' => $clientID, 'client_secret' => $clientSecret, 'grant_type' => 'authorization_code', 'redirect_uri' => $redirectionURI, 'code' => $_GET['code']];
+$params = ['client_id' => $clientID, 'client_secret' => $clientSecret, 'code' => $_GET['code'], 'grant_type' => 'authorization_code', 'redirect_uri' => $redirectionURI, 'state' => $_GET['state']];
 
 // echo "<pre>PARAMS: " . print_r($params, true) . "</pre>";
 
@@ -34,7 +34,7 @@ curl_close($ch);
 
 // echo "<pre>OAUTH: " . print_r($oAuth, true) . "</pre>";
 
-// We need to store these tokens in the event we need them for later, but we need to get the channel they belong to first
+// We need to store these tokens for later, but we need to get the channel they belong to first
 if(isset($oAuth['access_token'])) {
 	$userData = json_decode(file_get_contents('https://api.twitch.tv/kraken?oauth_token=' . $oAuth['access_token']), true);
 } else {
@@ -60,10 +60,15 @@ if($username !== "") {
 	$data = "";
 }
 
+// print_r("Data: ". $data);
+
 if($data == "" || file_put_contents($userCfgFile, $data) === false) {
 	echo "<div class=\"boxError\">We could not add the information required to kdkbot. Please try again. If the issue persists, please contact the webmaster.</div>";
 } else {
-	echo "<div class=\"boxSuccess\">You have successfully permitted kdkbot access to your channel information.</div>";
+	echo "<div class=\"boxSuccess\">You have successfully logged in. You can access your <a href=\"?p=user_manage\">Channel Settings here</a></div>";
 }
+
+$_SESSION['TOKEN'] = $oAuth['refresh_token'];
+$_SESSION['USER'] = $username;
 
 ?>

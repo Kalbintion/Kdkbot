@@ -1,4 +1,36 @@
-<div class="boxWarning"><center><img src="https://cdnd.icons8.com/wp-content/uploads/2015/06/under-construction-2.gif" width="120px" height="100px"><br /><br />This website is currently under construction! If you are here for a channels list of commands, feel free to click "Channels" above and select the appropriate channel!</center></div>
+<!--  <div class="boxWarning"><center><img src="https://cdnd.icons8.com/wp-content/uploads/2015/06/under-construction-2.gif" width="120px" height="100px"><br /><br />This website is currently under construction! If you are here for a channels list of commands, feel free to click "Channels" above and select the appropriate channel!</center></div>
+
+
+<hr>-->
+
+<div class="boxNews">
+<div class="boxNewsDate">6 Aug, 2017 - Discord Server</div>
+<div class="boxNewsContent">Need help with kdkbot? Feel free to ask on the <a href="https://discord.gg/RqsncAV">Discord</a> server.<br />
+The channel management system is being written still, bit of a slow progress but you can see some pictures of the current development on discord and on kdkbot's <a href="twitter.com/kdkbot">Twitter</a>.
+<br />
+- Kalbintion
+</div>
+</div>
+
+<hr>
+
+<div class="boxNews">
+<div class="boxNewsDate">4 Aug, 2017 - Planned Feature</div>
+<div class="boxNewsContent">This website is getting an overhaul! Not only will the button to login authorize kdkbot for your channel it will also offer means to manage your channel without the need of constant commands! This feature is currently a WIP and will be announced on <a href="twitter.com/kdkbot">Twitter</a> and on <a href="https://discord.gg/RqsncAV">Discord</a> when the feature is complete.
+<br />
+- Kalbintion
+</div>
+</div>
+
+<hr>
+
+<div class="boxNews">
+<div class="boxNewsDate">3 Aug, 2017 - New Percent-Args</div>
+<div class="boxNewsContent">Two new percent-args have been added. One for getting the game set by a user and one for their title. These are %GAME:<i>user</i>% and %TITLE:<i>user</i>% respectively. Great for raid, shoutouts, etc commands!
+<br />
+- Kalbintion
+</div>
+</div>
 
 <hr>
 

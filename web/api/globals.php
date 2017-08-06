@@ -10,14 +10,22 @@
 		}
 	}
 	
+	/* Determines if a user is logged into the website by verifying the PHPSESSID
+	 * with the stored one. And if they do not match, they're not logged in.
+	 * 
+	 * NOTE: Webservers should disallow access to /web/temp/ entirely to prevent
+	 *       session ID stealing
+	 */
 	function isUserLoggedIn() {
 		if(isset($_COOKIE['PHPSESSID']) && isset($_SESSION['USER'])) {
-			return true;
+			if(file_exists("./temp/" . $_SESSION['USER'])) {
+				$saved_id = file_get_contents("./temp/" . $_SESSION['USER']);
+				if($saved_id === $_COOKIE['PHPSESSID']) {
+					return true;
+				}
+			}
 		}
 		return false;
-	}
-	
-	function getUserName() {
 	}
 	
 	/* Gets the base configuration setting location found in the settings.ini file

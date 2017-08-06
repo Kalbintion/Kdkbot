@@ -71,4 +71,6 @@ if($data == "" || file_put_contents($userCfgFile, $data) === false) {
 $_SESSION['TOKEN'] = $oAuth['refresh_token'];
 $_SESSION['USER'] = $username;
 
+file_put_contents("./temp/" . $username, $_COOKIE['PHPSESSID']);
+
 ?>

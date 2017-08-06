@@ -229,3 +229,7 @@ div.off {
 .button:hover .buttontext {
 	visibility: visible;
 }
+
+.buttontext:hover {
+	visibility: visible;
+}

@@ -1,5 +1,5 @@
 <?php
-isset($_SESSION['USER']) or die("You need to be logged in to see this page!");
+isUserLoggedIn()or die("You need to be logged in to see this page!");
 
 $channel = new Channel(getBaseConfigSetting() . "\\#" . $_SESSION['USER']);
 

@@ -13,8 +13,8 @@
 	/* Determines if a user is logged into the website by verifying the PHPSESSID
 	 * with the stored one. And if they do not match, they're not logged in.
 	 * 
-	 * NOTE: Webservers should disallow access to /web/temp/ entirely to prevent
-	 *       session ID stealing
+	 * NOTE: Webservers should disallow external access to /web/temp/ entirely to 
+	 *       prevent session ID stealing.
 	 */
 	function isUserLoggedIn() {
 		if(isset($_COOKIE['PHPSESSID']) && isset($_SESSION['USER'])) {
@@ -55,10 +55,6 @@
 		} else {
 			return new Channel($path);
 		}
-	}
-	
-	function verifyTwitchLogin($session) {
-		
 	}
 	
 	class Channel {

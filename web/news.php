@@ -4,6 +4,16 @@
 <hr>-->
 
 <div class="boxNews">
+<div class="boxNewsDate">7 Aug, 2017 - Channel Stats</div>
+<div class="boxNewsContent">Channel stats were available for public viewing before but they were for some reason hidden! Forgot to add a link apparently. Also, the channel gui panel now gives this same list! Will be used to manage them in the future to reset, delete, and maybe more features.
+<br />
+- Kalbintion
+</div>
+</div>
+
+<hr>
+
+<div class="boxNews">
 <div class="boxNewsDate">6 Aug, 2017 - Discord Server</div>
 <div class="boxNewsContent">Need help with kdkbot? Feel free to ask on the <a href="https://discord.gg/RqsncAV">Discord</a> server.<br />
 The channel management system is being written still, bit of a slow progress but you can see some pictures of the current development on discord and on kdkbot's <a href="twitter.com/kdkbot">Twitter</a>.

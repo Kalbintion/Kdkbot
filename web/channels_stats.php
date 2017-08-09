@@ -3,6 +3,7 @@
 	if(file_exists($filPath)) {
 		$fil = file_get_contents($filPath);
 		$stats = explode("\r\n", $fil);
+		
 		asort($stats);
 		// return (this.userName + ":" + this.firstJoin + ":" + this.timeSpent + ":" + this.messageCount + ":" + 
 		//         this.lastJoin + ":" + this.lastLeave + ":" + this.characterCount + ":" + this.bitsCount + ":" + this.bitsDate);
@@ -40,9 +41,14 @@
 					<th>Bits Count</th>
 					<th>Last Seen<br />(DD/MM/YYYY)</th>
 				</tr>";
-		for ($i = $idx_start; $i <= $idx_start + $idx_limit; $i++) {
-			if(isset($stats[$i]) && $stats[$i] !== "") {
-				$stat_segments = explode(":", $stats[$i]);
+		
+		$startShowing = $idx_start;
+		$stopShowing = $idx_start + $idx_limit;
+		$currentNumber = 0;
+		
+		foreach($stats as $stat) {
+			if($currentNumber >= $startShowing && $currentNumber <= $stopShowing && isset($stat) && $stat !== "") {
+				$stat_segments = explode(":", $stat);
 				echo "<tr>
 						<td>" . $stat_segments[0] . "</td>
 						<td>" . implode("<br />", explode(" ", unixToTimestamp($stat_segments[1]), 2)) . "</td>
@@ -53,6 +59,7 @@
 						<td>" . implode("<br />", explode(" ", unixToTimestamp($stat_segments[5]), 2)). "</td>
 					</tr>";
 			}
+			$currentNumber++;
 		}
 		if(count($stats) <= 1) { 
 			echo "<tr><td colspan=\"2\">There are no quotes for this channel :(</td></tr>";

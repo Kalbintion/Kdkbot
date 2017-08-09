@@ -86,7 +86,8 @@
 					<center><img width=\"50px\" height=\"50px\" src=\"$imgURL\"></center><br />
 					<center><a href=\"http://twitch.tv/$channel\">$channel</a><br />
 						<a href=\"?p=channels&c=$channel&t=c\">Commands</a><br />
-						<a href=\"?p=channels&c=$channel&t=q\">Quotes</a>
+						<a href=\"?p=channels&c=$channel&t=q\">Quotes</a><br />
+						<a href=\"?p=channels&c=$channel&t=s\">Stats</a>
 					</center><br />
 				</div>";
 		}

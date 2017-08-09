@@ -32,7 +32,7 @@ $auth_url = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&cl
 			<li class="menuButton"><a href="?p=basecommands">Base Commands</a></li>
 			<?php 
 				if(!isUserLoggedIn()) {
-					echo "<li class=\"menuButton\"><a href=\"$auth_url\">Authorize</a></li>";
+					echo "<li class=\"menuButton\"><a href=\"$auth_url\">Login</a></li>";
 				} else {
 					echo "<li class=\"menuButton\"><a href=\"?p=manage\">Channel</a></li>";
 					echo "<li class=\"menuButton\"><a href=\"?p=logout\">Logout</a></li>";
@@ -42,6 +42,7 @@ $auth_url = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&cl
 		</ul>
 	</div>
 	<div class="contentBody">
+		<br />
 		<?PHP
 			if(isset($_GET['p'])) {
 				$p = str_replace(".", "", $_GET['p']);
@@ -56,8 +57,10 @@ $auth_url = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&cl
 				include("error.php");
 			}
 		?>
+		<br /><br />
 	</div>	
 	<div class="contentFooter">
+		<br /><br />
 		&copy; 2017 Kalbintion. All Rights Reserved.
 	</div>
 	<br />

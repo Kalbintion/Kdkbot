@@ -36,6 +36,10 @@
 		return $ini_contents["Bot"]["cfgLocation"];
 	}
 	
+	function qChannelUpdate($channel, $type) {
+		
+	}
+	
 	function getChannelLocation($channel) {
 		if(!startsWith($channel, "#")) {
 			$channel = "#" . $channel;
@@ -55,6 +59,19 @@
 		} else {
 			return new Channel($path);
 		}
+	}
+	
+	function getLogLocation($channel) {
+		$path = getBaseConfigSetting();
+		$settings_contents = file_get_contents($path . "\\settings.cfg");
+		$lines = explode("\r\n", $settings_contents);
+		foreach($lines as $line) {
+			$parts = explode("=", $line, 2);
+			if($parts[0] === "logChatLocation") {
+				return $parts[1] . $channel . "\\";
+			}
+		}
+		return false;
 	}
 	
 	class Channel {

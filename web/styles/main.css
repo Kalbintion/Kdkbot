@@ -208,6 +208,10 @@ div.off {
 	background-color: rgba(66,0,0,0.5) !important;
 }
 
+div.incomplete {
+	background-color: rgba(66,66,0,0.5) !important;
+}
+
 .button .buttontext {
 	visibility: hidden;
 	width: 120px;
@@ -232,4 +236,26 @@ div.off {
 
 .buttontext:hover {
 	visibility: visible;
+}
+
+div.logItem {
+	float: left;
+	margin: 10px;
+	padding: 15px;
+	border: 1px solid white;
+	border-radius: 15px;
+}
+
+div.logItem:hover {
+	background-color: rgba(0,99,0,0.5);
+}
+
+pre.chatHistory {
+	padding: 5px;
+	margin: 5px;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
 }

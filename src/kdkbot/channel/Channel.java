@@ -50,49 +50,7 @@ public class Channel {
 			this.channel = channel;
 			this.baseConfigLocation = "./cfg/" + channel + "/";
 		
-			cfgChan = new Config(this.baseConfigLocation + "channel.cfg");
-			cfgChan.verifyExists();
-			cfgChan.loadConfigContents();
-			
-			cfgTokens = new Config(this.baseConfigLocation + "tokens.cfg");
-			cfgTokens.verifyExists();
-			cfgTokens.loadConfigContents();
-			
-			// Command Processing?
-			if(cfgChan.getSetting("commandProcessing") == null) {
-				cfgChan.setSetting("commandProcessing", Boolean.TRUE.toString());
-			}
-			
-			this.commandProcessing = Boolean.parseBoolean(cfgChan.getSetting("commandProcessing"));
-			
-			// Command Prefix?
-			if(cfgChan.getSetting("commandPrefix") == null) {
-				cfgChan.setSetting("commandPrefix", "|");
-			}
-			
-			this.commandPrefix = cfgChan.getSetting("commandPrefix");
-			
-			// Log Chat?
-			if(cfgChan.getSetting("logChat") == null) {
-				cfgChan.setSetting("logChat", "true");
-			}
-			
-			this.logChat = Boolean.parseBoolean(cfgChan.getSetting("logChat"));
-			
-			// Message Prefix?
-			if(cfgChan.getSetting("msgPrefix") == null) {
-				cfgChan.setSetting("msgPrefix", "");
-			}
-			
-			// Mesage Suffix?
-			if(cfgChan.getSetting("msgSuffix") == null) {
-				cfgChan.setSetting("msgSuffix", "");
-			}
-			
-			// Lang?
-			if(cfgChan.getSetting("lang") == null) {
-				cfgChan.setSetting("lang", "enUS");
-			}
+			this.reload();
 			
 			// Filters, Stats, etc
 			this.filters = new Filters(channel);
@@ -111,6 +69,60 @@ public class Channel {
 			this.language = cfgChan.getSetting("lang");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void reload() {
+		cfgChan = new Config(this.baseConfigLocation + "channel.cfg");
+		try {
+			cfgChan.verifyExists();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		cfgChan.loadConfigContents();
+		
+		cfgTokens = new Config(this.baseConfigLocation + "tokens.cfg");
+		try {
+			cfgTokens.verifyExists();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		cfgTokens.loadConfigContents();
+		
+		// Command Processing?
+		if(cfgChan.getSetting("commandProcessing") == null) {
+			cfgChan.setSetting("commandProcessing", Boolean.TRUE.toString());
+		}
+		
+		this.commandProcessing = Boolean.parseBoolean(cfgChan.getSetting("commandProcessing"));
+		
+		// Command Prefix?
+		if(cfgChan.getSetting("commandPrefix") == null) {
+			cfgChan.setSetting("commandPrefix", "|");
+		}
+		
+		this.commandPrefix = cfgChan.getSetting("commandPrefix");
+		
+		// Log Chat?
+		if(cfgChan.getSetting("logChat") == null) {
+			cfgChan.setSetting("logChat", "true");
+		}
+		
+		this.logChat = Boolean.parseBoolean(cfgChan.getSetting("logChat"));
+		
+		// Message Prefix?
+		if(cfgChan.getSetting("msgPrefix") == null) {
+			cfgChan.setSetting("msgPrefix", "");
+		}
+		
+		// Mesage Suffix?
+		if(cfgChan.getSetting("msgSuffix") == null) {
+			cfgChan.setSetting("msgSuffix", "");
+		}
+		
+		// Lang?
+		if(cfgChan.getSetting("lang") == null) {
+			cfgChan.setSetting("lang", "enUS");
 		}
 	}
 	

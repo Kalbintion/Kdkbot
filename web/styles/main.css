@@ -138,6 +138,11 @@ table.minTable input, table.minTable select {
 	width: 100%;
 }
 
+table.minTable input[type="checkbox"] {
+	text-align: left !important;
+	width: auto !important;
+}
+
 table.minTable input:hover, table.minTable select:hover {
 	background-color: #333;
 	color: white;

@@ -65,7 +65,7 @@ if($username !== "") {
 if($data == "" || file_put_contents($userCfgFile, $data) === false) {
 	echo "<div class=\"boxError\">We could not add the information required to kdkbot. Please try again. If the issue persists, please contact the webmaster.</div>";
 } else {
-	echo "<div class=\"boxSuccess\">You have successfully logged in. You can access your <a href=\"?p=user_manage\">Channel Settings here</a></div>";
+	echo "<div class=\"boxSuccess\">You have successfully logged in. You can access your <a href=\"?p=manage\">Channel Settings here</a></div>";
 }
 
 $_SESSION['TOKEN'] = $oAuth['refresh_token'];

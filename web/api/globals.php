@@ -37,7 +37,13 @@
 	}
 	
 	function qChannelUpdate($channel, $type) {
+		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
+		$watcher_loc = $ini_contents["Bot"]["watcherLocation"];
 		
+		$qContents = file_get_contents($watcher_loc);
+		$qContents .= "$channel=$type\r\n";
+		
+		file_put_contents($watcher_loc, $qContents);
 	}
 	
 	function getChannelLocation($channel) {

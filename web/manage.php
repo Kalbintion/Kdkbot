@@ -10,7 +10,7 @@
 <div style="margin: auto auto; width: 75%;">
 
 <a href="?p=manage/channel">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/home-icon.png">
 <span class="buttonname">Channel Settings</span>
 <span class="buttontext">Incomplete. Does not currently save. Manage basic channel information such as command prefix, etc.</span>

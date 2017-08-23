@@ -9,8 +9,13 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
+import kdkbot.Kdkbot;
+import kdkbot.channel.Channel;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -69,19 +74,38 @@ public class WebInterfaceWatcher {
 	
 	private void parseFileEvents() {
 		// Read the file contents
-			String contents;
-			try {
-				contents = new String(Files.readAllBytes(Paths.get(this.path.toAbsolutePath() + "\\" + this.fileName)));
-				JsonParser parser = new JsonParser();
-				JsonObject jObj = parser.parse(contents).getAsJsonObject();
+		String contents;
+		
+		try {
+			boolean actuallyUpdated = false;
+			contents = new String(Files.readAllBytes(Paths.get(this.path.toAbsolutePath() + "\\" + this.fileName)));
+			String[] lines = contents.split("\r\n");
+			for(int i = 0; i < lines.length; i++) {
+				System.out.println(contents);
+				String[] parts = lines[i].split("=", 2);
 				
-				String channel = jObj.get("channel").toString();
-				String type = jObj.get("updateType").toString();
-				String targetFile = jObj.get("targetFile").toString();
-				String targetContents = jObj.get("targetContents").toString();
+				if(parts.length < 2) { continue; }
 				
-			} catch (IOException e) {
+				actuallyUpdated = true;
 				
+				String channel = parts[0];
+				String type = parts[1];
+				
+				Channel chan = Kdkbot.instance.getChannel(channel);
+				if(chan == null) { System.out.println("Couldnt find channel object for " + channel); continue; }
+				switch(type) {
+					case "channel":
+						chan.reload();
+						break;
+				}
 			}
+			
+			if(actuallyUpdated) {
+				// Clear file contents after having gone through update process
+				Files.write(Paths.get(this.path.toAbsolutePath() + "\\" + this.fileName), "".getBytes());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -268,7 +268,11 @@ public class Kdkbot extends PircBot {
     
     public Channel getChannel(String channel) {
     	dbg.writeln(this, "Requested for channel object for channel " + channel);
-
+    		
+    	if(!channel.startsWith("#")) {
+    		channel = "#" + channel;
+    	}
+    	
     	return Kdkbot.CHANS.get(channel);
     }
     

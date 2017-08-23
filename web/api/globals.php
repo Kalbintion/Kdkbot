@@ -5,9 +5,15 @@
 	function startsWith($haystack, $needle) {
 		if(substr($haystack, 0, strlen($needle)) === $needle) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
+	}
+	
+	function contains($haystack, $needle) {
+		if (strpos($haystack, $needle) !== false) {
+			return true;
+		}
+		return false;
 	}
 	
 	/* Determines if a user is logged into the website by verifying the PHPSESSID
@@ -34,6 +40,20 @@
 	function getBaseConfigSetting() {
 		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
 		return $ini_contents["Bot"]["cfgLocation"];
+	}
+	
+	/* 
+	 * Gets the base bot configuration settings back into the bot
+	 */
+	function getBaseConfigContents() {
+		return file_get_contents(getBaseConfigSetting() . "\settings.cfg");
+	}
+	
+	/*
+	 * Puts the base bot configuration settings back into the bot
+	 */
+	function putBaseConfigContents($data) {
+		file_put_contents(getBaseConfigSetting() . "\settings.cfg", $data);
 	}
 	
 	function qChannelUpdate($channel, $type) {

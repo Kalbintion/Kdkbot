@@ -66,7 +66,6 @@ $channelObj = getChannelSettings();
 
 
 echo "
-<br />
 <form action=\"?p=manage/channel\" method=\"post\">
 <input type=\"hidden\" value=\"".$_SESSION['USER']."\" name=\"update\" />
 <h1>Channel Information For: " . $_SESSION['USER'] . "</h1>
@@ -110,5 +109,7 @@ echo "
 <tr>
 	<td style=\"text-align: center;\" colspan=\"2\"><input type=\"submit\" value=\"Save Changes\" /></td>
 </tr>
-</table>";
+</table>
+</form>
+<br />";
 ?>

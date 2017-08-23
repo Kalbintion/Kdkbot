@@ -9,6 +9,14 @@
 </div>
 <div style="margin: auto auto; width: 75%;">
 
+<a href="?p=manage/jl">
+<div class="button">
+<img src="./imgs/door_opened1600.png">
+<span class="buttonname">Join/Leave</span>
+<span class="buttontext">Incomplete. Visit twitch.tv/kdkbot to have him !join or !leave in the meantime. Have kdkbot join or leave your channel.</span>
+</div>
+</a>
+
 <a href="?p=manage/channel">
 <div class="button">
 <img src="./imgs/home-icon.png">

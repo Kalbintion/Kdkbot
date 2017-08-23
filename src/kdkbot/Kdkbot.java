@@ -215,7 +215,7 @@ public class Kdkbot extends PircBot {
     	int senderRank = 0;
     	if(curChan != null) { senderRank = curChan.getSenderRank(sender); }
     	MessageInfo info = new MessageInfo(channel, sender, "#JOIN", login, hostname, senderRank);
-    	curChan.extraHandler(info);
+    	if(curChan != null) { curChan.extraHandler(info); }
     }
     
     /**
@@ -323,6 +323,10 @@ public class Kdkbot extends PircBot {
      * @param channel The channel to leave
      */
     public void exitChannel(String channel) {
+    	if (! channel.startsWith("#")) {
+    		channel = "#" + channel;
+    	}
+    	
 		// Leave channel
 		this.partChannel(channel);
 		

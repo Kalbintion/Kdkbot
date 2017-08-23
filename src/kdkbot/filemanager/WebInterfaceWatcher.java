@@ -50,12 +50,9 @@ public class WebInterfaceWatcher {
 				WatchEvent<Path> ev = (WatchEvent<Path>) event;
 				Path fileName = ev.context();
 				
-				System.out.println(kind.name() + ": " + fileName);
-				
 				if (kind == OVERFLOW || !fileName.toString().equalsIgnoreCase(this.fileName)) {
 					continue;
 				} else {
-					System.out.println("FOR " + kind + ": " + fileName);
 					parseFileEvents();
 				}
 			}
@@ -87,15 +84,23 @@ public class WebInterfaceWatcher {
 				String type = parts[1];
 				
 				Channel chan = Kdkbot.instance.getChannel(channel);
-				if(chan == null) { System.out.println("Couldnt find channel object for " + channel); continue; }
+				if(chan == null && !type.equalsIgnoreCase("join") && !type.equalsIgnoreCase("leave")) { System.out.println("Couldnt find channel object for " + channel); continue; }
 				switch(type) {
 					case "channel":
 						chan.reload();
 						break;
+					case "leave":
+						Kdkbot.instance.exitChannel(channel);
+						System.out.println("Left Channel");
+						break;
+					case "join":
+						Kdkbot.instance.enterChannel(channel);
+						System.out.println("Joined Channel");
+						break;
 				}
 			}
 			
-			if(actuallyUpdated) {
+			if(actuallyUpdated) { // Prevents infinite update loop
 				// Clear file contents after having gone through update process
 				Files.write(Paths.get(this.path.toAbsolutePath() + "\\" + this.fileName), "".getBytes());
 			}

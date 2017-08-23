@@ -19,7 +19,6 @@ import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
 import kdkbot.commands.counters.Counter;
 import kdkbot.commands.custom.StringCommand;
-import kdkbot.api.*;
 
 /**
  * Class responsible for parsing custom command (StringCommand) messages

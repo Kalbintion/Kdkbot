@@ -124,6 +124,11 @@ public class Quotes extends Command {
 	
 	public void loadQuotes() {
 		try {
+			if(quotes.size() > 0) {
+				// Re-clear quotes list before loading again
+				quotes.clear();
+			}
+			
 			List<String> lines = cfg.getConfigContents();
 			Iterator<String> lineItero = lines.iterator();
 			while(lineItero.hasNext()) {

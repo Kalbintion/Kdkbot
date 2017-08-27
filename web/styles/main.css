@@ -130,7 +130,7 @@ table.minTable caption {
 	font-size: 5em;
 }
 
-table.inputs2 input, table.inputs2 select {
+table.inputs2 input, table.inputs2 select, table.inputs2 textarea {
 	background-color: black;
 	color: white;
 	border: 1px solid white;
@@ -147,6 +147,10 @@ table.inputs2 input[type="submit"] {
 }
 
 table.inputs2 input[type="button"] {
+	width: 100%;
+}
+
+table.inputs2 textarea {
 	width: 100%;
 }
 

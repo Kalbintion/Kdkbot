@@ -15,3 +15,12 @@ function addNewUser() {
 	
 	$tbl.appendChild($ntr);
 }
+
+function addNewQuote() {
+	$tbl = document.getElementById("quoteTable");
+	$ntr = document.createElement("tr");
+	
+	$ntr.innerHTML = "<tr><td><input style=\"width: 80px;\" type=\"number\" name=\"id[]\" value=\"\"></td><td><textarea name=\"quote[]\"></textarea></td></tr>\r\n";
+	
+	$tbl.appendChild($ntr);
+}

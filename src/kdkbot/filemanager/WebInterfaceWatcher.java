@@ -100,6 +100,9 @@ public class WebInterfaceWatcher {
 					case "perms":
 						chan.loadSenderRanks();
 						break;
+					case "quotes":
+						chan.commands.quotes.loadQuotes();
+						break;
 				}
 			}
 			

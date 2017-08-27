@@ -50,7 +50,7 @@
 </a>
 
 <a href="?p=manage/quotes">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/116597-matte-blue-and-white-square-icon-alphanumeric-quote-close2.png">
 <span class="buttonname">Quotes</span>
 <span class="buttontext">Incomplete. Manage quotes that have been added in the channel</span>

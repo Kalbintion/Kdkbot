@@ -56,7 +56,7 @@ echo "
 			<td colspan=\"2\"><input type=\"submit\" value=\"Submit\" /></td>
 		</tr>
 		<tr>
-			<td colspan=\"2\"><input id=\"bottom\" type=\"button\" value=\"Add Command\" onClick=\"addNewUser()\" /></td>
+			<td colspan=\"2\"><input id=\"bottom\" type=\"button\" value=\"Add User\" onClick=\"addNewUser()\" /></td>
 		</tr>
 	</table>
 	</form>

@@ -130,7 +130,27 @@ table.minTable caption {
 	font-size: 5em;
 }
 
-table.minTable input, table.minTable select {
+table.inputs2 input, table.inputs2 select {
+	background-color: black;
+	color: white;
+	border: 1px solid white;
+	padding: 3px;
+}
+
+table.inputs2 input[type="checkbox"] {
+	text-align: left !important;
+	width: auto !important;
+}
+
+table.inputs2 input[type="submit"] {
+	width: 100%;
+}
+
+table.inputs2 input[type="button"] {
+	width: 100%;
+}
+
+table.inputs input, table.inputs select {
 	background-color: black;
 	color: white;
 	border: 1px solid white;
@@ -138,16 +158,16 @@ table.minTable input, table.minTable select {
 	width: 100%;
 }
 
-table.minTable input[type="checkbox"] {
+table.inputs input[type="checkbox"] {
 	text-align: left !important;
 	width: auto !important;
 }
 
-table.minTable input[type="number"] {
+table.inputs input[type="number"] {
 	width: 100px !important;
 }
 
-table.minTable input:hover, table.minTable select:hover {
+table.inputs input:hover, table.minTable select:hover {
 	background-color: #333;
 	color: white;
 	border: 1px solid white;

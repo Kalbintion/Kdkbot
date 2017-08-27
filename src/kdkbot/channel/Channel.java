@@ -208,6 +208,11 @@ public class Channel {
 	 */
 	public void loadSenderRanks() {
 		try {
+			if(senderRanks.size() > 0) { 
+				// Lets reset the ranks list since apparently it was already loaded
+				senderRanks.clear();
+			}
+			
 			List<String> strings = cfgPerms.getConfigContents();
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {

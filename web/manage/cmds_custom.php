@@ -29,7 +29,7 @@ echo "
 
 	<form action=\"?p=manage/cmds_custom\" method=\"post\">
 	<input type=\"hidden\" value=\"" . $_SESSION['USER'] . "\" name=\"update\" />
-	<table class=\"minTable table34\" id=\"cmdTable\">
+	<table class=\"minTable inputs table34\" id=\"cmdTable\">
 		<tr>
 			<td colspan=\"4\"><a href=\"#bottom\">Go To Bottom</a></td>
 		</tr>

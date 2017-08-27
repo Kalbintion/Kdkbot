@@ -75,7 +75,7 @@ echo "
 <input type=\"hidden\" value=\"".$_SESSION['USER']."\" name=\"update\" />
 <h1>Channel Information For: " . $_SESSION['USER'] . "</h1>
 <h1>Basic Channel Settings</h1>
-<table class=\"settings minTable table34\">
+<table class=\"inputs settings minTable table34\">
 <tr>
 	<td style=\"width: 200px; text-align: right;\">Command Processing</td>
 	<td><input name=\"commandProcessing\" type=\"checkbox\" checked=\"";

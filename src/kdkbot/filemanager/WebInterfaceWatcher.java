@@ -97,6 +97,9 @@ public class WebInterfaceWatcher {
 					case "cmds_cust":
 						chan.commands.commandStrings.loadCommands();
 						break;
+					case "perms":
+						chan.loadSenderRanks();
+						break;
 				}
 			}
 			

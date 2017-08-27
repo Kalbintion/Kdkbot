@@ -6,3 +6,12 @@ function addNewCommand() {
 	
 	$tbl.appendChild($ntr);
 }
+
+function addNewUser() {
+	$tbl = document.getElementById("permTable");
+	$ntr = document.createElement("tr");
+	
+	$ntr.innerHTML = "<tr><td><input type=\"text\" name=\"user[]\" value=\"\"></td><td><input type=\"number\" name=\"rank[]\" value=\"\" /></td></tr>";
+	
+	$tbl.appendChild($ntr);
+}

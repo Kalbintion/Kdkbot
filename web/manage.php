@@ -26,10 +26,10 @@
 </a>
 
 <a href="?p=manage/perms">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/Key-icon.png">
 <span class="buttonname">Permissions</span>
-<span class="buttontext">Incomplete. Does not currently save. Manage and review user permissions</span>
+<span class="buttontext">Manage and review user permission levels.</span>
 </div>
 </a>
 

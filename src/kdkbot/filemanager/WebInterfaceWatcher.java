@@ -73,7 +73,6 @@ public class WebInterfaceWatcher {
 			contents = new String(Files.readAllBytes(Paths.get(this.path.toAbsolutePath() + "\\" + this.fileName)));
 			String[] lines = contents.split("\r\n");
 			for(int i = 0; i < lines.length; i++) {
-				System.out.println(contents);
 				String[] parts = lines[i].split("=", 2);
 				
 				if(parts.length < 2) { continue; }
@@ -91,11 +90,12 @@ public class WebInterfaceWatcher {
 						break;
 					case "leave":
 						Kdkbot.instance.exitChannel(channel);
-						System.out.println("Left Channel");
 						break;
 					case "join":
 						Kdkbot.instance.enterChannel(channel);
-						System.out.println("Joined Channel");
+						break;
+					case "cmds_cust":
+						chan.commands.commandStrings.loadCommands();
 						break;
 				}
 			}

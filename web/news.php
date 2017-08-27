@@ -4,6 +4,26 @@
 <hr>-->
 
 <div class="boxNews">
+<div class="boxNewsDate">23 Aug, 2017 - Join/Leave, Other GUI work</div>
+<div class="boxNewsContent">A bug was found in the <a href="?p=manage/channel">Basic Channel Settings</a> page that will be addressed to resolve an issue with it. Work is being done on the <a href="?p=manage/cmds_custom">Custom Commands page</a> to start having you be able to edit it on the web! After that, additional work will be done on the various other systems to get them at least displaying the information. Note that while the web interface is available, commands for managing your channel will always be available.
+<br />
+- Kalbintion
+</div>
+</div>
+
+<hr>
+
+<div class="boxNews">
+<div class="boxNewsDate">22 Aug, 2017 - Basic Channel Settings GUI Page</div>
+<div class="boxNewsContent"><a href="?p=manage/channel">Basic channel settings</a> are now available to be edited once you have logged in and are 100% functional!
+<br />
+- Kalbintion
+</div>
+</div>
+
+<hr>
+
+<div class="boxNews">
 <div class="boxNewsDate">7 Aug, 2017 - Channel Stats</div>
 <div class="boxNewsContent">Channel stats were available for public viewing before but they were for some reason hidden! Forgot to add a link apparently. Also, the channel gui panel now gives this same list! Will be used to manage them in the future to reset, delete, and maybe more features.
 <br />

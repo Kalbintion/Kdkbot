@@ -20,6 +20,11 @@ if(isset($_POST['update'])) {
 		}
 	}
 	
+	// Bug fix due to OFF checkboxes not being sent via POST
+	if(!isset($_POST['commandProcessing'])) {
+		$_POST['commandProcessing'] = "off";
+	}
+	
 	foreach($channel_vars as $varName => $varValue) {
 		if($varName == "commandProcessing" || $varName == "logChat") {
 			if($_POST[$varName] == "on") { $_POST[$varName] = "true"; } else { $_POST[$varName] = "false"; }

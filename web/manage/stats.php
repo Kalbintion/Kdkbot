@@ -1,6 +1,6 @@
 <?php
-
 isUserLoggedIn() or die("You need to log in.");
+
 $channel = getChannelObject($_SESSION['USER']);
 $user_stats = file_get_contents($channel->pathStats());
 $stats = explode("\r\n", $user_stats);

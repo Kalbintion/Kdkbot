@@ -143,6 +143,10 @@ table.minTable input[type="checkbox"] {
 	width: auto !important;
 }
 
+table.minTable input[type="number"] {
+	width: 100px !important;
+}
+
 table.minTable input:hover, table.minTable select:hover {
 	background-color: #333;
 	color: white;

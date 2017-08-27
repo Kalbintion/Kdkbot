@@ -63,7 +63,7 @@ if($username !== "") {
 // print_r("Data: ". $data);
 
 if($data == "" || file_put_contents($userCfgFile, $data) === false) {
-	echo "<div class=\"boxError\">We could not add the information required to kdkbot. Please try again. If the issue persists, please contact the webmaster.</div>";
+	echo "<div class=\"boxError\">We could not currently log you in. Please try again later. If the issue persists, please contact the webmaster.</div>";
 } else {
 	echo "<div class=\"boxSuccess\">You have successfully logged in. You can access your <a href=\"?p=manage\">Channel Settings here</a></div>";
 }
@@ -71,6 +71,7 @@ if($data == "" || file_put_contents($userCfgFile, $data) === false) {
 $_SESSION['TOKEN'] = $oAuth['refresh_token'];
 $_SESSION['USER'] = $username;
 
-file_put_contents("./temp/" . $username, $_COOKIE['PHPSESSID']);
-
+if(isset($username) && $username <> "") {
+	file_put_contents("./temp/" . $username, $_COOKIE['PHPSESSID']);
+}
 ?>

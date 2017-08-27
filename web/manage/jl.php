@@ -34,6 +34,8 @@ if(isset($_GET['t'])) {
 		qChannelUpdate($_SESSION['USER'], "leave");
 	}
 }
+echo "<h1>Channel Information For: " . $_SESSION['USER'] . "</h1>
+<h1>Join/Leave</h1>";
 
 if(contains($cfgArr['channels'], "#" . $_SESSION['USER'])) {
 	echo "<a href=\"?p=manage/jl&t=l\">

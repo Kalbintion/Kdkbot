@@ -2,7 +2,7 @@
 <div style="margin: auto auto; width: 75%;">
 <h1>Channel Panel</h1>Elements in:
 <ul>
-<li>Green: Active and fully functional</li>
+<li>Green: Active and fully functional. Please report any bugs to the webmaster.</li>
 <li>Yellow: Incomplete and are not fully functional.</li>
 <li>Red: Unavailable at this time.</li>
 </ul>
@@ -13,7 +13,7 @@
 <div class="button">
 <img src="./imgs/door_opened1600.png">
 <span class="buttonname">Join/Leave</span>
-<span class="buttontext">Incomplete. Visit twitch.tv/kdkbot to have him !join or !leave in the meantime. Have kdkbot join or leave your channel.</span>
+<span class="buttontext">Have kdkbot join or leave your channel, you can still visit his channel to have him !join or !leave.</span>
 </div>
 </a>
 
@@ -21,7 +21,7 @@
 <div class="button">
 <img src="./imgs/home-icon.png">
 <span class="buttonname">Channel Settings</span>
-<span class="buttontext">Incomplete. Does not currently save. Manage basic channel information such as command prefix, etc.</span>
+<span class="buttontext">Manage basic channel information such as command prefix, etc.</span>
 </div>
 </a>
 
@@ -42,10 +42,10 @@
 </a>
 
 <a href="?p=manage/cmds_custom">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/notepad-icon.png">
 <span class="buttonname">Custom Commands</span>
-<span class="buttontext">Incomplete. Manage any custom commands added by !commands</span>
+<span class="buttontext">Manage any custom commands added by !commands</span>
 </div>
 </a>
 

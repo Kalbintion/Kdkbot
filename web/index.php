@@ -18,6 +18,7 @@ $auth_url = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&cl
 <meta charset="utf-8" />
 </head>
 <body>
+<script src="js/main.js"></script>
 <div class="contentMain">
 	<br />
 	<div class="contentHeader">

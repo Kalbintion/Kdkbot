@@ -39,6 +39,11 @@ public class StringCommands {
 	
 	public void loadCommands() {
 		try {
+			if(this.commands != null && this.commands.size() > 0) {
+				// We need to reset the list before reloading
+				this.commands.clear();
+			}
+			
 			Kdkbot.instance.dbg.writeln(this, "Starting load process...");
 			List<String> strings = config.getConfigContents();
 			Kdkbot.instance.dbg.writeln(this, "Loaded contents. Size: " + strings.size());

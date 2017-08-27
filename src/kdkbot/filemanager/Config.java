@@ -170,7 +170,7 @@ public class Config {
 			
 			String line;
 			while((line = br.readLine()) != null) {
-				String[] args = line.split("=");
+				String[] args = line.split("=", 2);
 				if(args.length == 1)
 					this.values.put(args[0], null);
 				else

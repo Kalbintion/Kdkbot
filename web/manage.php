@@ -53,7 +53,7 @@
 <div class="button">
 <img src="./imgs/116597-matte-blue-and-white-square-icon-alphanumeric-quote-close2.png">
 <span class="buttonname">Quotes</span>
-<span class="buttontext">Incomplete. Manage quotes that have been added in the channel</span>
+<span class="buttontext">Manage quotes that have been added in the channel</span>
 </div>
 </a>
 
@@ -106,10 +106,10 @@
 </a>
 
 <a href="?p=manage/ama">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/apple-touch-icon@2.png">
 <span class="buttonname">Ask Me Anything</span>
-<span class="buttontext">Incomplete. Manage and review ama questions</span>
+<span class="buttontext">Manage and review ama questions</span>
 </div>
 </a>
 

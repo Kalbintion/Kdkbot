@@ -4,6 +4,17 @@
 <hr>-->
 
 <div class="boxNews">
+<div class="boxNewsDate">26 Aug, 2017 - Quotes/Perms</div>
+<div class="boxNewsContent"><a href="?p=manage/perms">Permissions</a> and <a href="?p=manage/quotes">Quotes</a> are now manageable through the channel GUI panel.<br />
+Additional work is being done today to possibly finish up some of the other systems but no promises on this.
+<br />
+- Kalbintion
+</div>
+</div>
+
+<hr>
+
+<div class="boxNews">
 <div class="boxNewsDate">23 Aug, 2017 - Join/Leave, Other GUI work</div>
 <div class="boxNewsContent">A bug was found in the <a href="?p=manage/channel">Basic Channel Settings</a> page that will be addressed to resolve an issue with it. Work is being done on the <a href="?p=manage/cmds_custom">Custom Commands page</a> to start having you be able to edit it on the web! After that, additional work will be done on the various other systems to get them at least displaying the information. Note that while the web interface is available, commands for managing your channel will always be available.
 <br />

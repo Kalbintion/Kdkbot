@@ -1,9 +1,11 @@
 package kdkbot.commands;
 
+import java.nio.file.FileSystems;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -19,6 +21,7 @@ import kdkbot.MessageInfo;
 import kdkbot.channel.Channel;
 import kdkbot.commands.counters.Counter;
 import kdkbot.commands.custom.StringCommand;
+import kdkbot.filemanager.Config;
 
 /**
  * Class responsible for parsing custom command (StringCommand) messages
@@ -29,6 +32,7 @@ public class MessageParser {
 	private static HashMap<String, String> LEET_MAP = new HashMap<String, String>();
 	private static HashMap<String, String> FLIP_MAP = new HashMap<String, String>();
 	private static HashMap<String, Pattern> PATTERN_MAP = new HashMap<String, Pattern>();
+	private static HashMap<String, String> STEAM_MAP = new HashMap<String, String>();
 	
 	/**
 	 * Necessary information for regex patterns & character mappings
@@ -62,6 +66,7 @@ public class MessageParser {
 		PATTERN_MAP.put("wfs", Pattern.compile("%WFS:.*?%"));
 		PATTERN_MAP.put("game", Pattern.compile("%GAME:.*?%"));
 		PATTERN_MAP.put("title", Pattern.compile("%TITLE:.*?%"));
+		PATTERN_MAP.put("steam", Pattern.compile("%STEAM:.*?%"));
 		// %YTURL% special condition pattern
 		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9-_]*)"));
 		PATTERN_MAP.put("url", Pattern.compile("(https?\\:(?://|\\\\\\\\)[A-Za-z0-9\\./-]*)((?:/|\\\\\\\\)?|\\.(html?|php|asp))"));
@@ -127,6 +132,23 @@ public class MessageParser {
 		FLIP_MAP.put("9", "6");
 		FLIP_MAP.put("¯", "_");
 		FLIP_MAP.put("_", "¯");
+		
+		// STEAM MAP
+		// TODO: There has got to a better way to look up game id (appid) from name
+		Config steam_game_cfg = new Config(FileSystems.getDefault().getPath("./cfg/steam_map.cfg"));
+		try {
+			List<String> contents = steam_game_cfg.getConfigContents();
+			Iterator<String> iter = contents.iterator();
+			while(iter.hasNext()) {
+				String line = iter.next();
+				// Data format is: APPID=NAME
+				String[] parts = line.split("=", 2);
+				STEAM_MAP.put(parts[1], parts[0]);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
@@ -417,6 +439,15 @@ public class MessageParser {
 			toParse = toParse.replace(result, sb.toString());
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		
+		// STEAM
+		Matcher pattern_steam_replace_matches = PATTERN_MAP.get("steam").matcher(info.message);
+		while(pattern_steam_replace_matches.find()) {
+			String result = pattern_steam_replace_matches.group();
+			String game_name = result.substring("%STREAM:".length(), result.length()-1);
+			
+			
+		}
 						
 		// YTURL
 		Matcher pattern_yturl_replace_matches = PATTERN_MAP.get("yturl").matcher(info.message);
@@ -464,7 +495,7 @@ public class MessageParser {
 			
 			System.out.println(result);
 			System.out.println(messagePiece);
-			toParse = toParse.replace(result, kdkbot.webinterface.Webpage.getWebpageTitle(messagePiece));
+			toParse = toParse.replace(result, kdkbot.webinterface.Webpage.getWebpageContents(messagePiece));
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		

@@ -103,6 +103,9 @@ public class WebInterfaceWatcher {
 					case "quotes":
 						chan.commands.quotes.loadQuotes();
 						break;
+					case "amas":
+						chan.commands.amas.loadQuestions();
+						break;
 				}
 			}
 			

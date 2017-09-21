@@ -24,3 +24,12 @@ function addNewQuote() {
 	
 	$tbl.appendChild($ntr);
 }
+
+function addNewAMA() {
+	$tbl = document.getElementById("amaTable");
+	$ntr = document.createElement("tr");
+	
+	$ntr.innerHTML = "<tr><td><textarea name=\"question[]\"></textarea></td></tr>\r\n";
+	
+	$tbl.appendChild($ntr);
+}

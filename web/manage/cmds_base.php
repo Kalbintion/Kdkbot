@@ -47,12 +47,12 @@ echo "
 <h1>Channel Information For: " . $_SESSION['USER'] . "</h1>
 
 <h1>Base Commands</h1>
-<table class=\"settingsCmds minTable table34\">";
+<table class=\"settingsCmds inputs2 minTable\">";
 
 $baseCmdsObj = getBaseCommands();
 asort($baseCmdsObj);
 foreach($baseCmdsObj as $key=>$val) {
-	echo "<tr><td colspan=\"6\">$key</td></tr>";
+	echo "<tr><td colspan=\"6\"><h3>$key</h3></td></tr>";
 	echo "<tr>
 			<td>Trigger</td><td><input type=\"text\" name=\"trigger" . $key . "\" value=\"".$val['trigger']."\" /></td>
 			<td>Rank</td><td><input type=\"number\" name=\"rank".$key."\" value=\"".$val['rank']."\" /></td>

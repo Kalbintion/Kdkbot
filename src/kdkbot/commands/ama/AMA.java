@@ -104,6 +104,11 @@ public class AMA extends Command {
 	
 	public void loadQuestions() {
 		try {
+			if(questions.size() > 0) {
+				// Clear existing questions on loading
+				questions.clear();
+			}
+			
 			List<String> lines = cfg.getConfigContents();
 			Iterator<String> lineItero = lines.iterator();
 			while(lineItero.hasNext()) {

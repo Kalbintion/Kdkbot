@@ -12,7 +12,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-public class Webpage {
+public class Page {
 	public static String getWebpageContents(String url) {
 		try {
 			return getWebpageContents(new URL(url));

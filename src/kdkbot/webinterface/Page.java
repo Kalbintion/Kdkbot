@@ -49,7 +49,7 @@ public class Page {
 		Document doc;
 		try {
 			doc = Jsoup.connect(url).get();
-			Element ele = doc.select("title").get(0);
+			Element ele = doc.getElementsByTag("title").get(0);
 			return ele.text();
 		} catch (IOException e) {
 			return "";

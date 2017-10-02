@@ -87,6 +87,8 @@ public class Filters {
 	 */
 	public void loadFilters() {
 		try {
+			if(filters.size() > 0) { filters.clear(); } // Clear filters if needed
+			
 			List<String> sFilters = cfgFilters.getConfigContents();
 			Iterator<String> sIter = sFilters.iterator();
 			filters.clear();

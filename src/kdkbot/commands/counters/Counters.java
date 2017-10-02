@@ -26,6 +26,8 @@ public class Counters extends Command {
 	
 	public void loadCounters() {
 		try {
+			if (counters.size() > 0) { counters.clear(); } // Clear counters if needed
+			
 			Kdkbot.instance.dbg.writeln(this, "Starting load process...");
 			List<String> strings = config.getConfigContents();
 			Kdkbot.instance.dbg.writeln(this, "Loaded contents. Size: " + strings.size());

@@ -57,7 +57,8 @@ public class Commands {
 	private InternalCommand cmdCommands = new InternalCommand("commands", 1);
 	private InternalCommand cmdUptime = new InternalCommand("uptime", 0);
 	private InternalCommand cmdViewers = new InternalCommand("viewers", 1);
-	private InternalCommand[] cmdList = {cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
+	private InternalCommand cmdCounters = new InternalCommand("counter", 1);
+	private InternalCommand[] cmdList = {cmdCounters, cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -401,8 +402,8 @@ public class Commands {
 			amas.executeCommand(info);
 		}
 		// Counters
-		else if(info.senderLevel >= counters.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase(counters.getTrigger())) {
+		else if(info.senderLevel >= cmdCounters.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase(cmdCounters.getTrigger())) {
 			counters.executeCommand(info);
 		}
 		// Filters

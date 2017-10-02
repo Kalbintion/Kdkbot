@@ -493,7 +493,7 @@ public class MessageParser {
 			// messagePiece will contain the URL to look-up
 			String messagePiece = result.substring("%PAGETITLE:".length(), result.length()-1);
 
-			toParse = toParse.replace(result, kdkbot.webinterface.Page.getWebpageContents(messagePiece));
+			toParse = toParse.replace(result, kdkbot.webinterface.Page.getWebpageTitle(messagePiece));
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		

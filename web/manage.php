@@ -58,18 +58,18 @@
 </a>
 
 <a href="?p=manage/filters">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/filter_data.png">
 <span class="buttonname">Filters</span>
-<span class="buttontext">Incomplete. Manage chat filters that are used to ban, purge, or respond to user messages</span>
+<span class="buttontext">Manage chat filters that are used to ban, purge, or respond to user messages</span>
 </div>
 </a>
 
 <a href="?p=manage/counters">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/30162724-ed8b-4a46-93ca-37c4d4ab8d45.png">
 <span class="buttonname">Counters</span>
-<span class="buttontext">Incomplete. Manage and review channel counters</span>
+<span class="buttontext">Manage and review channel counters</span>
 </div>
 </a>
 

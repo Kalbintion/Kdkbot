@@ -33,3 +33,21 @@ function addNewAMA() {
 	
 	$tbl.appendChild($ntr);
 }
+
+function addNewFilter() {
+	$tbl = document.getElementById("filtersTable");
+	$ntr = document.createElement("tr");
+	
+	$ntr.innerHTML = "<tr><td><input type=\"text\" name=\"title[]\" value=\"\"></td><td><select name=\"type[]\"><option value=\"0\" selected>None</option><option value=\"1\">Purge</option><option value=\"2\">Timeout</option><option value=\"3\">Ban</option><option value=\"4\">Message</option></select></td><td><input type=\"text\" name=\"filter[]\" value=\"\"></td><td><input type=\"text\" name=\"message[]\" value=\"\"></td><td><select name=\"bypassable[]\"><option value=\"true\" selected>Yes</option><option value=\"false\">No</option></td></tr>\r\n";
+	
+	$tbl.appendChild($ntr);
+}
+
+function addNewCounter() {
+	$tbl = document.getElementById("countersTable");
+	$ntr = document.createElement("tr");
+	
+	$ntr.innerHTML = "<tr><td><input type=\"text\" name=\"name[]\" value=\"\" /></td><td><input type=\"number\" name=\"value[]\" value=\"\" /></td></tr>\r\n";
+	
+	$tbl.appendChild($ntr);
+}

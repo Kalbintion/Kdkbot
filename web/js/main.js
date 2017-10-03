@@ -53,5 +53,5 @@ function addNewCounter() {
 }
 
 function encodeText(obj) {
-	obj.value = obj.value.replace(/</g, "&lt;").replace(">", "&gt;");
+	obj.value = obj.value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

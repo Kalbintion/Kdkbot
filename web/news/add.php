@@ -3,7 +3,6 @@ isUserLoggedIn() or die("You need to be logged in to see this page!");
 isUserNewsMgr() or die("You are not a news manager of this bot!");
 
 if(isset($_POST['update'])) {
-	echo "<pre>".print_r($_POST, true)."</pre>";
 	$out = "
 			<div class=\"boxNews\">
 			<div class=\"boxNewsDate\">";
@@ -49,7 +48,7 @@ if(isset($_POST['update'])) {
 			}
 			
 	$out .= " - " . $_POST['title'] . "</div>
-			<div class=\"boxNewsContent\">". $_POST['content'] . "<br /><br />" . $_POST['sig'] . "</div></div>";
+			<div class=\"boxNewsContent\">". str_replace("&gt;", ">", str_replace("&lt;", "<", $_POST['content'])) . "<br /><br />" . $_POST['sig'] . "</div></div>";
 	
 	file_put_contents("./news-data/" . $_POST['date'], $out);
 }

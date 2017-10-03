@@ -5,7 +5,7 @@ isUserNewsMgr() or die("You are not a news manager of this bot!");
 if(isset($_POST['update'])) {
 	// We are updating a news item
 	$file = $_POST['update'];
-	if(file_put_contents("./news-data/" . $file, $_POST['content'])) {
+	if(file_put_contents("./news-data/" . $file, str_replace("&gt;", ">", str_replace("&lt;", "<", $_POST['content'])))) {
 		echo "<div class=\"boxSuccess\">Successfully updated news item.</div><br />";
 	} else {
 		echo "<div class=\"boxError\">Couldn't update news item. Please try again later.</div><br />";

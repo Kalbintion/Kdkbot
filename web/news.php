@@ -5,9 +5,11 @@
 $files = scandir("./news-data/", SCANDIR_SORT_DESCENDING);
 
 $limiter = 0;
+$limiter_max = getNewsLimiter();
+
 foreach($files as $file) {
 	if($file == "." || $file == "..") { continue; }
-	if($limiter < 10) {
+	if($limiter < $limiter_max) {
 		$data = file_get_contents("./news-data/" . $file);
 		echo $data;
 		echo "<hr>";

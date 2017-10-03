@@ -51,6 +51,13 @@
 		return false;
 	}
 	
+	/* Returns the maximum number of news elements to show on the news page
+	 */
+	function getNewsLimiter() {
+		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
+		return $ini_contents["Bot"]["newsLimiter"];
+	}
+	
 	/* Gets the base configuration setting location found in the settings.ini file
 	 * Returns a string of what was found for a particular value. May return null.
 	 */

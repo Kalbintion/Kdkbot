@@ -112,6 +112,12 @@ public class WebInterfaceWatcher {
 					case "counters":
 						chan.commands.counters.loadCounters();
 						break;
+					case "timers":
+						chan.commands.timers.loadTimers();
+						break;
+					case "cmds_base":
+						chan.commands.load();
+						break;
 				}
 			}
 			

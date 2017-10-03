@@ -26,6 +26,17 @@ public class Timers extends Command {
 	
 	public void loadTimers() {
 		try {
+			if(timers.size() > 0) {
+				// Stop all timers before clearing
+				Iterator<MessageTimer> iter = timers.iterator();
+				while(iter.hasNext()) {
+					MessageTimer nxt = iter.next();
+					nxt.stop();
+				}
+				
+				timers.clear();
+			}
+			
 			List<String> lines = cfg.getConfigContents();
 			Iterator<String> lineItero = lines.iterator();
 			while(lineItero.hasNext()) {

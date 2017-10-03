@@ -52,6 +52,15 @@ function addNewCounter() {
 	$tbl.appendChild($ntr);
 }
 
+function addNewTimer() {
+	$tbl = document.getElementById("timerTable");
+	$ntr = document.createElement("tr");
+	
+	$ntr.innerHTML = "<tr><td><input type=\"text\" name=\"name[]\"/></td><td><input type=\"number\" name=\"time[]\" max=\"10000\" min=\"1\"/></td><td><input type=\"text\" name=\"msg[]\" /></td><td><select name=\"flag_live[]\"><option value=\"true\" selected>Yes</option><option value=\"false\">No</option></td><td><input type=\"number\" name=\"flag_msg[]\" value=\"0\" min=\"0\" max=\"10000\"></td><td><input type=\"text\" name=\"flag_game[]\"></td></tr>\r\n";
+	
+	$tbl.appendChild($ntr);
+}
+
 function encodeText(obj) {
 	obj.value = obj.value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

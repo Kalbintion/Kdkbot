@@ -39,7 +39,42 @@ function getBaseCommands() {
 echo "<br />
 ";
 
-if(isset($_POST['update'])) { echo "UPDATE REQUEST FOUND"; echo "<br><pre>".print_r($_POST,true)."</pre>"; }
+if(isset($_POST['update'])) { 
+	// echo "UPDATE REQUEST FOUND"; echo "<br><pre>".print_r($_POST,true)."</pre>";
+	
+	$output = array();
+	
+	$channel = new Channel(getBaseConfigSetting() . "\\#" . $_SESSION['USER']);
+	$contents = file_get_contents($channel->pathChannel());
+	
+	$lines = explode("\r\n", $contents);
+	asort($lines);
+	
+	foreach($lines as $line) {
+		$parts = explode("=", $line, 2);
+		if(count($parts) >= 2) {
+			$output[$parts[0]] = $parts[1];
+		}
+	}
+	
+	foreach($_POST as $varName => $varValue) {
+		if($varName == "update") { continue; }
+		$output[$varName] = $_POST[$varName];
+	}
+	
+	$output_content = "";
+	
+	foreach($output as $key => $val) {
+		$output_content .= "$key=$val\r\n";
+	}
+	
+	if(file_put_contents($channel->pathChannel(), $output_content) === false) {
+		echo "<div class=\"boxError\">Couldn't update base commands. Please try again later.</div><br />";
+	} else {
+		echo "<div class=\"boxSuccess\">Successfully updated base commands.</div><br />";
+		qChannelUpdate($_SESSION['USER'], "cmds_base");
+	}
+}
 
 echo "
 <form action=\"?p=manage/cmds_base\" method=\"post\">

@@ -88,14 +88,18 @@ public class Commands {
 			
 			this.giveaway = new Giveaway(channel);
 			
-			for (InternalCommand cmd : cmdList) {
-				cmd.setAvailability(Boolean.parseBoolean(getInternalCommandSetting(cmd.getSettingSuffix(), "availability", cmd.getDefaultAvailable()).toString()));
-				cmd.setPermissionLevel(Integer.parseInt(getInternalCommandSetting(cmd.getSettingSuffix(), "rank", cmd.getDefaultLevel()).toString()));
-				cmd.setTrigger(getInternalCommandSetting(cmd.getSettingSuffix(), "trigger", cmd.getDefaultTrigger()).toString());
-			}
+			load();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void load() {
+		for (InternalCommand cmd : cmdList) {
+			cmd.setAvailability(Boolean.parseBoolean(getInternalCommandSetting(cmd.getSettingSuffix(), "availability", cmd.getDefaultAvailable()).toString()));
+			cmd.setPermissionLevel(Integer.parseInt(getInternalCommandSetting(cmd.getSettingSuffix(), "rank", cmd.getDefaultLevel()).toString()));
+			cmd.setTrigger(getInternalCommandSetting(cmd.getSettingSuffix(), "trigger", cmd.getDefaultTrigger()).toString());
 		}
 	}
 	

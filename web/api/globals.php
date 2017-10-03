@@ -9,11 +9,27 @@
 		return false;
 	}
 	
+	/* Determines if a given string (haystack) contains another string (needle).
+	 * Returns true if found, false otherwise
+	 */
+	function endsWith($haystack, $needle) {
+		if(substr($haystack, -strlen($needle), strlen($needle)) === $needle) {
+			return true;
+		}
+		return false;
+	}
+	
 	function contains($haystack, $needle) {
 		if (strpos($haystack, $needle) !== false) {
 			return true;
 		}
 		return false;
+	}
+	
+	/* Returns the parsed ini file contents
+	 */
+	function getCfgSettings() {
+		return parse_ini_file("./cfg/settings.ini", true);
 	}
 	
 	/* Determines if a user is logged into the website by verifying the PHPSESSID
@@ -39,7 +55,7 @@
 	 * username set in $_SESSION['USER'] is in the managers username list.
 	 */
 	function isUserNewsMgr() {
-		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
+		$ini_contents = getCfgSettings();
 		$managers = explode(",", $ini_contents["Bot"]["newsManagers"]);
 		
 		$to_find = $_SESSION['USER'];
@@ -54,7 +70,7 @@
 	/* Returns the maximum number of news elements to show on the news page
 	 */
 	function getNewsLimiter() {
-		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
+		$ini_contents = getCfgSettings();
 		return $ini_contents["Bot"]["newsLimiter"];
 	}
 	
@@ -62,12 +78,11 @@
 	 * Returns a string of what was found for a particular value. May return null.
 	 */
 	function getBaseConfigSetting() {
-		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
+		$ini_contents = getCfgSettings();
 		return $ini_contents["Bot"]["cfgLocation"];
 	}
 	
-	/* 
-	 * Gets the base bot configuration settings back into the bot
+	/* Gets the base bot configuration settings back into the bot
 	 */
 	function getBaseConfigContents() {
 		return file_get_contents(getBaseConfigSetting() . "\settings.cfg");
@@ -80,6 +95,8 @@
 		file_put_contents(getBaseConfigSetting() . "\settings.cfg", $data);
 	}
 	
+	/* Queues an update to the web watcher file
+	 */
 	function qChannelUpdate($channel, $type) {
 		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
 		$watcher_loc = $ini_contents["Bot"]["watcherLocation"];
@@ -90,6 +107,8 @@
 		file_put_contents($watcher_loc, $qContents);
 	}
 	
+	/* Returns the channel location based on configuration information for a given channel
+	 */
 	function getChannelLocation($channel) {
 		if(!startsWith($channel, "#")) {
 			$channel = "#" . $channel;

@@ -34,10 +34,10 @@
 </a>
 
 <a href="?p=manage/cmds_base">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/Command-Prompt-icon.png">
 <span class="buttonname">Base Commands</span>
-<span class="buttontext">Incomplete. Does not currently save. Manage base commands like !ama, !host, etc</span>
+<span class="buttontext">Manage base commands like !ama, !host, etc</span>
 </div>
 </a>
 
@@ -82,10 +82,10 @@
 </a>
 
 <a href="?p=manage/timers">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/timer-icon-27.png">
 <span class="buttonname">Timers</span>
-<span class="buttontext">Incomplete. Manage repeated messages that are sent to the channel</span>
+<span class="buttontext">Manage repeated messages that are sent to the channel</span>
 </div>
 </a>
 

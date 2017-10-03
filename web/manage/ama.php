@@ -31,7 +31,7 @@ echo "
 		
 	<form action=\"?p=manage/ama\" method=\"POST\">
 	<input type=\"hidden\" value=\"" . $_SESSION['USER'] . "\" name=\"update\" />
-	<table class=\"table34 minTable inputs2\" id=\"amaTable\">
+	<table class=\"table34 minTable inputs2\" id=\"timerTable\">
 	<tr>
 		<th style=\"width:80%;\">Question</th>
 	</tr>";

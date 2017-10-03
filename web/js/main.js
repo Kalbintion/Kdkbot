@@ -51,3 +51,7 @@ function addNewCounter() {
 	
 	$tbl.appendChild($ntr);
 }
+
+function encodeText(obj) {
+	obj.value = obj.value.replace(/</g, "&lt;").replace(">", "&gt;");
+}

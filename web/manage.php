@@ -113,5 +113,11 @@
 </div>
 </a>
 
+<?PHP
+if(isUserNewsMgr()) {
+	echo "<a href=\"?p=news/manage\"><div class=\"button\"><img src=\"./imgs/newspaper-1422025_960_720.png\"><span class=\"buttonname\">Front Page News</span><span class=\"buttontext\">Manage and review front page news</span></div></a>";
+}
+?>
+
 </div>
 <br style="clear: both;"/>

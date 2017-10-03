@@ -31,6 +31,23 @@
 				}
 			}
 		}
+		
+		return false;
+	}
+	
+	/* Determines if a user is a news manager of the website by verifying their
+	 * username set in $_SESSION['USER'] is in the managers username list.
+	 */
+	function isUserNewsMgr() {
+		$ini_contents = parse_ini_file("./cfg/settings.ini", true);
+		$managers = explode(",", $ini_contents["Bot"]["newsManagers"]);
+		
+		$to_find = $_SESSION['USER'];
+		
+		foreach($managers as $manager) {
+			if($manager == $to_find) { return true; }
+		}
+		
 		return false;
 	}
 	

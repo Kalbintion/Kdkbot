@@ -9,6 +9,7 @@ import kdkbot.*;
 import kdkbot.commands.*;
 import kdkbot.commands.filters.Filter;
 import kdkbot.commands.filters.Filters;
+import kdkbot.economy.Economy;
 import kdkbot.filemanager.Config;
 
 public class Channel {
@@ -19,6 +20,7 @@ public class Channel {
 	public String commandPrefix = "!";
 	public Filters filters;
 	public Stats stats;
+	public Economy economy;
 	
 	// Path & Config locations (set by Channel() init)
 	public String baseConfigLocation;
@@ -67,11 +69,15 @@ public class Channel {
 
 			this.commands = new Commands(channel, this);
 			this.language = cfgChan.getSetting("lang");
+			this.economy = new Economy(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Reloads channel configuration settings such as command prefix, tokens, etc
+	 */
 	public void reload() {
 		cfgChan = new Config(this.baseConfigLocation + "channel.cfg");
 		try {
@@ -126,42 +132,82 @@ public class Channel {
 		}
 	}
 	
+	/**
+	 * Joins the channel this channel object is assigned to
+	 */
 	public void joinChannel() {
 		Kdkbot.instance.joinChannel(this.channel);
 	}
 	
+	/**
+	 * Leaves the channel this channel object is assigned to
+	 */
 	public void leaveChannel() {
 		Kdkbot.instance.partChannel(this.channel);
 	}
 	
+	/**
+	 * Gets the channel object
+	 * @return This particular channel objects instance
+	 */
 	public String getChannel() {
 		return this.channel;
 	}
 	
+	/**
+	 * Leaves the channel this channel object is assigned to
+	 * @param reason The reason for leaving
+	 */
 	public void leaveChannel(String reason) {
 		Kdkbot.instance.partChannel(this.channel, reason);
 	}
 	
+	/**
+	 * Removes a user by kicking them through the normal IRC protocol
+	 * @param nick The nick to kick
+	 */
 	public void kickUser(String nick) {
 		Kdkbot.instance.kick(this.channel, nick);
 	}
 	
+	/**
+	 * Removes a user by kicking them through the normal IRC protocol
+	 * @param nick The nick to kick
+	 * @param reason The reason for the kick
+	 */
 	public void kickUser(String nick, String reason) {
 		Kdkbot.instance.kick(this.channel, nick, reason);
 	}
 
+	/**
+	 * Returns this channels command prefix used for commands
+	 * @return A string containing the text of the command prefix
+	 */
 	public String getCommandPrefix() {
 		return this.commandPrefix;
 	}
 	
+	/**
+	 * Sets this channels command prefix used for commands
+	 * @param commandPrefix The new command prefix
+	 */
 	public void setCommandPrefix(String commandPrefix) {
 		this.commandPrefix = commandPrefix;
 	}
 	
+	/**
+	 * Gets the rank (permission level) of a provided user
+	 * @param user The user to look up
+	 * @return an int of the users rank
+	 */
 	public int getUserRank(String user) {
 		return this.senderRanks.get(user);
 	}
 	
+	/**
+	 * Returns this channels language setting
+	 * @return
+	 */
 	public String getLang() {
 		return this.language;
 	}
@@ -200,7 +246,7 @@ public class Channel {
 	 */
 	public void setSenderRank(String target, int rank) {
 		senderRanks.put(target.toLowerCase(), rank);
-		this.saveSenderRanks(true);
+		this.saveSenderRanks();
 	}
 	
 	/**
@@ -232,15 +278,12 @@ public class Channel {
 	public void saveSenderRanks() {
 		cfgPerms.saveSettings();
 	}
+
 	
 	/**
-	 * 
-	 * @param sendReferenceMap
+	 * Sends a message to the channel, using channel specific settings
+	 * @param message The message to send
 	 */
-	public void saveSenderRanks(boolean sendReferenceMap) {
-		cfgPerms.saveSettings(this.senderRanks);
-	}
-	
 	public void sendMessage(String message) {
 		if(message.startsWith("/")) {
 			sendRawMessage(message);
@@ -254,13 +297,17 @@ public class Channel {
 		Kdkbot.instance.sendMessage(channel, msgPrefix + message + msgSuffix);
 	}
 	
+	/**
+	 * Sends a raw message to the channel, bypassing channel specific settings
+	 * @param message The message to send
+	 */
 	public void sendRawMessage(String message) {
 		Kdkbot.instance.sendMessage(channel, message);
 	}
 	
 	/**
-	 * 
-	 * @param info
+	 * Handles messages for this particular channel object
+	 * @param info Information regarding the message
 	 */
 	public void messageHandler(MessageInfo info) {
 		// User Stats
@@ -328,6 +375,9 @@ public class Channel {
 				this.commands.giveaway.addEntry(info.sender);
 			}
 		}
+		
+		// Forward it off to the economy system for handling
+		this.economy.handleMessage(info.sender, info.message);
 		
 		// Send the message off to the channels command processor
 		if(info.message.startsWith(this.commandPrefix)){

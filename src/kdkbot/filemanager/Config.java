@@ -72,7 +72,22 @@ public class Config {
 	 * @return the value, or null if not exists, of a given setting
 	 */
 	public String getSetting(String key) {
-		return this.values.get(key);
+		return getSetting(key, null);
+	}
+	
+	/**
+	 * Returns the setting with a given key value, if it does not exist it will return the provided default value
+	 * @param key The setting to look for
+	 * @param defaultVal the value to return if it does not exist
+	 * @return the value, or defaultVal provided in the event the key does not exist, of a given setting
+	 */
+	public String getSetting(String key, String defaultVal) {
+		if(this.values.containsKey(key)) {
+			return this.values.get(key);
+		} else {
+			setSetting(key, defaultVal);
+			return defaultVal;
+		}
 	}
 	
 	/**

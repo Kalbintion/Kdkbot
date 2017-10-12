@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.filemanager.Config;
 
@@ -125,6 +126,7 @@ public class Stats {
 			user.timeSpent += user.lastLeave - user.lastJoin;
 			
 			// TODO: Economy hooks into here for timespent credits
+			Kdkbot.instance.getChannel(this.channel).economy.handleTime(info.sender, user.lastLeave - user.lastJoin);
 		} else {
 			user.messageCount++;
 			user.characterCount += info.message.toCharArray().length;

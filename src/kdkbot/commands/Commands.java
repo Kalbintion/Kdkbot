@@ -14,6 +14,7 @@ import kdkbot.commands.counters.*;
 import kdkbot.commands.custom.*;
 import kdkbot.commands.giveaway.Giveaway;
 import kdkbot.commands.stats.Stats;
+import kdkbot.economy.Economy;
 
 // TODO: Change Commands list to level 1
 
@@ -58,7 +59,9 @@ public class Commands {
 	private InternalCommand cmdUptime = new InternalCommand("uptime", 0);
 	private InternalCommand cmdViewers = new InternalCommand("viewers", 1);
 	private InternalCommand cmdCounters = new InternalCommand("counter", 1);
-	private InternalCommand[] cmdList = {cmdCounters, cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
+	private InternalCommand cmdEconomy = new InternalCommand("economy", 3);
+	private InternalCommand cmdMoney = new InternalCommand("money", 0);
+	private InternalCommand[] cmdList = {cmdEconomy, cmdMoney, cmdCounters, cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -517,6 +520,17 @@ public class Commands {
 			} else {
 				chan.sendMessage("There are " + res + " viewers.");
 			}
+		}
+		// Economy
+		else if(info.senderLevel >= cmdEconomy.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase(cmdEconomy.getTrigger())) {
+			chan.sendMessage(this.chan.economy.handleMessage(info));
+		}
+		// Money Command
+		else if(info.senderLevel >= cmdMoney.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase(cmdMoney.getTrigger())) {
+			info.message = "economy money";
+			chan.sendMessage(this.chan.economy.handleMessage(info));
 		}
 		// Giveaway
 		else if(info.senderLevel >= giveaway.getPermissionLevel() &&

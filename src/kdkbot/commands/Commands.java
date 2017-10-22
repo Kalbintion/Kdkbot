@@ -61,7 +61,7 @@ public class Commands {
 	private InternalCommand cmdCounters = new InternalCommand("counter", 1);
 	private InternalCommand cmdEconomy = new InternalCommand("economy", 3);
 	private InternalCommand cmdMoney = new InternalCommand("money", 0);
-	private InternalCommand[] cmdList = {cmdEconomy, cmdMoney, cmdCounters, cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
+	private InternalCommand[] cmdList = {cmdGame, cmdStatus, cmdAma, cmdEconomy, cmdMoney, cmdCounters, cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance

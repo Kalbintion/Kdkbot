@@ -2,10 +2,11 @@
 include("./api/globals.php");
 
 session_start();
+$id = "";
 if(isset($_COOKIE['PHPSESSID'])) {
 	$id = $_COOKIE['PHPSESSID'];
 } else {
-	$id = session_create_id();
+	$id = session_regenerate_id();
 }
 
 // Create Auth URL for current session id
@@ -29,17 +30,17 @@ $auth_url = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&cl
 			<li class="menuButton"><a href="?p=">Home</a></li>
 			<li class="menuButton"><a href="?p=channels">Channels</a></li>
 			<li class="menuButton"><a href="https://github.com/Kalbintion/Kdkbot/wiki">Wiki</a></li>
-			<li class="menuButton"><a href="?p=contact">Contact Me</a></li>
 			<li class="menuButton"><a href="?p=basecommands">Base Commands</a></li>
 			<?php 
 				if(!isUserLoggedIn()) {
 					echo "<li class=\"menuButton\"><a href=\"$auth_url\">Login</a></li>";
 				} else {
-					echo "<li class=\"menuButton\"><a href=\"?p=manage\">Channel</a></li>";
+					echo "<li class=\"menuButton\"><a href=\"?p=manage\">Channel GUI</a></li>";
 					echo "<li class=\"menuButton\"><a href=\"?p=logout\">Logout</a></li>";
 				}
 				
 			?>
+			<li class="menuButton"><a href="?p=contact">Contact Me</a></li>
 		</ul>
 	</div>
 	<div class="contentBody">

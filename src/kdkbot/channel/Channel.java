@@ -104,7 +104,7 @@ public class Channel {
 		
 		// Command Prefix?
 		if(cfgChan.getSetting("commandPrefix") == null) {
-			cfgChan.setSetting("commandPrefix", "|");
+			cfgChan.setSetting("commandPrefix", "!");
 		}
 		
 		this.commandPrefix = cfgChan.getSetting("commandPrefix");

@@ -7,7 +7,7 @@ If you have any suggestions for feature requests, run into problems, or otherwis
 # Web System
 The website for this bot may be visited at http://tfk.zapto.org/kdkbot/
 
-The web interface was designed using [PHP 5.4.4](http://php.net/downloads.php) and [Abyss Web Server x1 (v 2.11.2)](https://aprelium.com/abyssws/).
+The web interface was designed using [PHP 7.1.8](http://php.net/downloads.php) and [Abyss Web Server x1 (v 2.11.2)](https://aprelium.com/abyssws/).
 
 # Dependencies
 This bot has multiple dependences:

@@ -14,3 +14,17 @@ twitter4j-4.0.4/*
 web/imgs-cache/*
 web/temp/*
 web/news-data/*
+cfg/ama.cfg
+cfg/channel.cfg
+cfg/cmds.cfg
+cfg/counters.cfg
+cfg/economy.cfg
+cfg/economy_costs_cmd.cfg
+cfg/economy_costs_title.cfg
+cfg/economy_users.cfg
+cfg/filters.cfg
+cfg/perms.cfg
+cfg/quotes.cfg
+cfg/stats.cfg
+cfg/timers.cfg
+cfg/tokens.cfg

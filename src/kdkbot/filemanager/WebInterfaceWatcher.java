@@ -106,7 +106,7 @@ public class WebInterfaceWatcher {
 					case "amas":
 						chan.commands.amas.loadQuestions();
 						break;
-					case "filter":
+					case "filters":
 						chan.filters.loadFilters();
 						break;
 					case "counters":

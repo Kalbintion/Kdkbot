@@ -27,6 +27,41 @@ public class Debugger {
 		}
 	}
 	
+	public void writeln(String message) {
+		writeln(getCallerClassName(), message);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getCallerClassName() {
+		StackTraceElement[] stEles = Thread.currentThread().getStackTrace();
+		for(int i =1; i<stEles.length; i++) {
+			StackTraceElement ste = stEles[i];
+			if(!ste.getClassName().equals(Debugger.class.getName()) && ste.getClassName().indexOf("java.lang.Thread")!=0) {
+				return ste.getClassName();
+			}
+		}
+		return null;
+	}
+	
+	public static String getCallerCallerClassName() {
+		StackTraceElement[] stEles = Thread.currentThread().getStackTrace();
+		String callerClassName = null;
+		for(int i=1; i <stEles.length; i++) {
+			StackTraceElement ste = stEles[i];
+			if(!ste.getClassName().equals(Debugger.class.getName()) && ste.getClassName().indexOf("java.lang.Thread") !=0) {
+				if(callerClassName==null) {
+					callerClassName = ste.getClassName();
+				} else if(!callerClassName.equals(ste.getClassName())) {
+					return ste.getClassName();
+				}
+			}
+		}
+		return null;
+	}
+	
 	private String parseClassName(Object obj) {
 		return parseClassName(obj, "[", "] ");
 	}

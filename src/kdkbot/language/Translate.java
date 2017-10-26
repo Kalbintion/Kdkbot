@@ -3,6 +3,7 @@ package kdkbot.language;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
+import kdkbot.Kdkbot;
 import kdkbot.filemanager.Config;
 
 public class Translate {
@@ -11,13 +12,15 @@ public class Translate {
 	private static String lastLanguage;
 	
 	public static String getTranslate(String key, String language) {
-		System.out.println("key: " + key + " - lang: " + language);
+		Kdkbot.instance.dbg.writeln("key: " + key + " - lang: " + language);
+		
 		if(!language.equalsIgnoreCase(lastLanguage)) {
 			langConfig = new Config(basePath + "\\" + language + ".lang");
 			langConfig.loadConfigContents();
 			lastLanguage = language;
 		}
-		System.out.println("cfgPath: " + basePath + "\\" + language + ".lang");
+		
+		Kdkbot.instance.dbg.writeln("cfgPath: " + basePath + "\\" + language + ".lang");
 		return langConfig.getSetting(key);
 	}
 	

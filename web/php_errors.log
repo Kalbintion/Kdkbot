@@ -1,6 +1,0 @@
-[19-Oct-2017 02:27:13 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function isUserLoggedIn() in C:\Projects\JAVA\Kdkbot\web\index.php:23
-Stack trace:
-#0 {main}
-  thrown in C:\Projects\JAVA\Kdkbot\web\index.php on line 23
-[19-Oct-2017 02:27:28 UTC] PHP Notice:  Undefined variable: id in C:\Projects\JAVA\Kdkbot\web\index.php on line 7
-[19-Oct-2017 02:27:52 UTC] PHP Notice:  Undefined index: state in C:\Projects\JAVA\Kdkbot\web\twitch.php on line 20

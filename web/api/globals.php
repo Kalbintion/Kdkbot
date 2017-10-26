@@ -174,6 +174,14 @@
 			return $this->baseLocation . "\\economy_users.cfg";
 		}
 		
+		public function pathEconomyCommands() {
+			return $this->baseLocation . "\\economy_costs_cmd.cfg";
+		}
+		
+		public function pathEconomyTitles() {
+			return $this->baseLocation . "\\economy_costs_title.cfg";
+		}
+		
 		public function pathFilters() {
 			return $this->baseLocation . "\\filters.cfg";
 		}

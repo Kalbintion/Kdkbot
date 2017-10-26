@@ -237,8 +237,16 @@ div.button img {
 	height: 100px;
 }
 
+div.off:hover {
+	background-color: rgba(99,0,0,0.5) !important;
+}
+
 div.off {
 	background-color: rgba(66,0,0,0.5) !important;
+}
+
+div.incomplete:hover {
+	background-color: rgba(99,99,0,0.5) !important;
 }
 
 div.incomplete {

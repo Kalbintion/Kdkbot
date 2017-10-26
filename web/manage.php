@@ -73,11 +73,11 @@
 </div>
 </a>
 
-<a href="#?p=manage/econ">
-<div class="button off">
+<a href="?p=manage/economy">
+<div class="button incomplete">
 <img src="./imgs/128-512.png">
 <span class="buttonname">Economy</span>
-<span class="buttontext"><b>UNAVAILABLE</b>. Manage and review channel economy system.</span>
+<span class="buttontext">Manage and review channel economy system.</span>
 </div>
 </a>
 

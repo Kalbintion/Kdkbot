@@ -28,3 +28,4 @@ cfg/quotes.cfg
 cfg/stats.cfg
 cfg/timers.cfg
 cfg/tokens.cfg
+web/php_errors.log

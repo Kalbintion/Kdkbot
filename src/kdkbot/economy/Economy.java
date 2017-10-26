@@ -32,6 +32,18 @@ public class Economy {
 			// Basics
 			this.channel = chan;
 			
+			load();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Economy(String channel) {
+		this(Kdkbot.instance.getChannel(channel));
+	}
+	
+	public void load() {
+		try {
 			// Initialize config file
 			this.cfg = new Config("./cfg/" + channel.channel + "/economy.cfg");
 			this.cfg.loadConfigContents();
@@ -61,10 +73,6 @@ public class Economy {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public Economy(String channel) {
-		this(Kdkbot.instance.getChannel(channel));
 	}
 
 	/**

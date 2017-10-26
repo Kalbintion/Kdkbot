@@ -118,6 +118,9 @@ public class WebInterfaceWatcher {
 					case "cmds_base":
 						chan.commands.load();
 						break;
+					case "economy":
+						chan.economy.load();
+						break;
 				}
 			}
 			

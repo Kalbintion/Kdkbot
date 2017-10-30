@@ -4,14 +4,6 @@ isUserLoggedIn()or die("You need to be logged in to see this page!");
 $channel = new Channel(getBaseConfigSetting() . "\\#" . $_SESSION['USER']);
 
 if(isset($_POST['update'])) {
-	echo "<pre>".print_r($_POST, true)."</pre>";
-	$output = array();
-	
-	foreach($_POST as $varName => $varValue) {
-		if($varName == "update") { continue; }
-		$output[$varName] = $_POST[$varName];
-	}
-	
 	$output_content = "";
 	
 	for($i=0; $i < count($_POST['users']); $i++) {

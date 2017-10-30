@@ -88,5 +88,24 @@ echo "<tr><td colspan=\"5\"><input type=\"submit\" value=\"Submit\" /></td></tr>
 			<td colspan=\"5\"><input id=\"bottom\" type=\"button\" value=\"Add Filter\" onClick=\"addNewFilter()\" /></td>
 		</tr>";
 	
-echo "</table></form>";
+echo "</table></form>
+
+
+<table class=\"minTable inputs2\">
+<tr>
+	<th>Add Common Filters</th>
+</tr>
+<tr>
+	<td>
+		<select id=\"existingFilters\" onChange=\"addExistingFilter(this)\">
+			<option value=\"null\" data-filter=\"\" data-name=\"\" data-type=\"\" data-bypassable=\"\" data-message=\"\">Select filter...</option>
+			<option value=\"anti-swear\" data-filter=\"\b(([a@]ss|butt?)-?(p[i!1]r[a@]t[e3]|j[[a@]@]bb[e3]r|b[a@]nd[i!1]t|b[a@]ng[e3]r|fuck[e3]r|g[o0()]bl[i!1]n|h[o0()]pp[e3]r|j[a@]ck[e3]r|l[i!1]ck[e3]r)|b[i!1]tcht[i!1]ts|br[o0()]th[e3]rfuck[e3]r|bumbl[e3]fuck|buttfuck([a@]|[e3]r)|n[i!1]gg?([e3]r|[a@])|b[e3][a@]n[e3]r|c[a@]rp[e3]tmunch[e3]r|ch[i!1]n(c|k)|(c[o0()]ck(j[o0()]ck[e3]y|kn[o0()]k[e3]r|m[a@]st[e3]r|m[o0()]ngl[e3]r|m[o0()]ngru[e3]l|m[o0()]nk[e3]y|munch[e3]r|sm[i!1]th|sm[o0()]k[e3]r?|sn[i!1]ff[e3]r|suck[e3]r))|c[o0()][o0()]n|cr[a@]ck[e3]r|(cum(guzzl[e3]r|j[o0()]ck[e3]y))|cuntl[i!1]ck[e3]r|d[i!1]ck(fuck([e3]r)?|m[o0()]ng[e3]r|suck([e3]r)?)|d[[i!1]y]k[e3]|d[o0()]uch[e3]w[a@]ffl[e3]|f[a@]g(b[a@]g|fuck[e3]r|g[i!1]t|g[o0()]t(c[o0()]ck)?|t[a@]rd)?|fl[a@]m[e3]r|fudg[e3]p[a@]ck[e3]r|g[a@]y(b[o0()]b|d[o0()]|fuck([i!1]st)?|l[o0()]rd|t[a@]rd|w[a@]d)|g[o0()][o0()]k|gu[i!1]d[o0()]|h[e3][e3]b|j[i!1]g[a@]b[o0()][o0()]|jungl[e3] ?bunny|l[e3]sb[o0()]|l[e3]zz[i!1][e3]|mcf[a@]gg?[[e3][o0()]]t|n[i!1]g[a@]b[o0()][o0()]|n[i!1]gl[e3]t|p[e3]n[i!1]s(b[a@]ng[e3]r|fuck[e3]r|puff[e3]r)|p[o0()]l[e3]sm[o0()]k[e3]r|p[o0()]ll[o0()]ck|qu[e3][e3]r(b[a@][i!1]t|h[o0()]l[e3])|s[a@]nd ?n[i!1]gg[[e3][a@]]r?|sp[i!1]ck|tw[a@]tw[a@]ffl[e3]|uncl[e3]fuck[e3]r|w[e3]tb[a@]ck|w[o0()]p)\b\" data-name=\"anti-swear\" data-type=\"purge\" data-bypassable=\"yes\" data-message=\"\">Anti-Swear</option>
+			<option value=\"link\" data-filter=\"(https?\:(?://|\\\\)[A-Za-z0-9\./-]*)((?:/|\\)?|\.(html?|php|asp))\" data-name=\"link\" data-type=\"message\" data-bypassable=\"yes\" data-message=\"Linked page: %PAGETITLE:%URL%%\">Link</option>
+			<option value=\"under-age\" data-filter=\"[iI]'?[mM] \b(?:1[0-7]|[0-9])\b y(ear|r)s?\" data-name=\"under-age\" data-type=\"purge\" data-bypassable=\"yes\" data-message=\"\">Under Age</option>
+		</select>
+	</td>
+</tr>
+</table>
+
+";
 ?>

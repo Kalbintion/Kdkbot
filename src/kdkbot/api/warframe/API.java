@@ -282,7 +282,6 @@ public final class API {
 	public static class Market {
 
 		// The types of "items" on the api system, these are derived from various look-ups on the site
-		private static String[] itemTypes = {"Set", "Blueprint", "Mod", "Void Trader", "Void Relic", "Syndicate", "Scene", "Arcane Enhancements"};
 		private static HashMap<String, String> renamedItems = new HashMap<String, String>();
 		
 		static {
@@ -290,7 +289,8 @@ public final class API {
 		}
 		
 		// Base url to the API, found via site function "make_request()"
-		private static String baseURL = "http://warframe.market/api/get_orders";
+		private static String baseURL = "https://api.warframe.market/v1/items";
+		private static String postURL = "orders";
 		
 		/**
 		 * Gets the average price of everyone marked as online for a particular item.
@@ -307,7 +307,7 @@ public final class API {
 		 * @return
 		 */
 		public static JsonObject getSellStats(String lookupName) {
-			lookupName = camelCaseStr(itemRenamed(lookupName));
+			lookupName = itemRenamed(lookupName).toLowerCase();
 			JsonObject allPpl = getResults(lookupName);
 
 			if (allPpl == null) { return null; }
@@ -320,8 +320,8 @@ public final class API {
 			JsonObject jStats = new JsonObject();
 			jOut.addProperty("name", lookupName);
 			
-			jStats.add("online", getStats(filterPeople("online", pplSelling)));
-			jStats.add("site", getStats(filterPeople("site",  pplSelling)));
+			jStats.add("online", getStats(filterPeople("ingame", pplSelling)));
+			jStats.add("site", getStats(filterPeople("online",  pplSelling)));
 			jStats.add("offline", getStats(filterPeople("offline",  pplSelling)));
 			
 			jOut.add("stats", jStats);
@@ -344,7 +344,7 @@ public final class API {
 				JsonElement nxt = iter.next();
 				
 				JsonObject tjObj = nxt.getAsJsonObject();
-				if(tjObj.get("online_ingame").toString().equalsIgnoreCase("true") || tjObj.get("online_status").toString().equalsIgnoreCase("true")) {
+				if(tjObj.get("status").toString().equalsIgnoreCase(filterType)) {
 					iter.remove();
 				}
 			}
@@ -387,13 +387,13 @@ public final class API {
 		 * @return a JsonObject containing fields for the min value, max value, avg value, the number of ppl selling, the number of them being sold and the name of the item in its proper format
 		 */
 		public static JsonObject getSellStatsDynamic(String lookupName) {
-			lookupName = camelCaseStr(itemRenamed(lookupName));
+			lookupName = itemRenamed(lookupName).toLowerCase();
 			JsonObject allPpl = getResults(lookupName);
 			if (allPpl == null) { return null; }
 			
-			JsonArray onlinePpl = getOnlyOnline(allPpl);
-			JsonArray offlinePpl = getOnlyOffline(allPpl);
-			JsonArray sitePpl = getOnlyOnlineSite(allPpl);
+			JsonArray onlinePpl = getOnly(allPpl, "ingame", "sell");
+			JsonArray offlinePpl = getOnly(allPpl, "offline", "sell");
+			JsonArray sitePpl = getOnly(allPpl, "online", "sell");
 			JsonArray toIterate = onlinePpl;
 			
 			JsonObject values = new JsonObject();
@@ -421,8 +421,8 @@ public final class API {
 			while(iter.hasNext()) {
 				JsonElement nxt = iter.next();
 				JsonObject jObj = nxt.getAsJsonObject();
-				int price = Integer.parseInt(jObj.get("price").toString());
-				int count = Integer.parseInt(jObj.get("count").toString());
+				int price = Integer.parseInt(jObj.get("platinum").toString());
+				int count = Integer.parseInt(jObj.get("quantity").toString());
 				
 				if(lowestPrice == -1 || price < lowestPrice) {
 					lowestPrice = price;
@@ -434,6 +434,7 @@ public final class API {
 
 				runningTotal += price;
 				numberOfItems += count;
+				
 				numberOfPeople++;
 			}
 		
@@ -446,12 +447,12 @@ public final class API {
 			if(numberOfPeople > 0) {
 				if(toIterate.size() % 2 == 0) {
 					// then we are even
-					int midPoint1 = Integer.parseInt(toIterate.get(midPoint).getAsJsonObject().get("price").toString());
-					int midPoint2 = Integer.parseInt(toIterate.get(midPoint + 1).getAsJsonObject().get("price").toString());
+					int midPoint1 = Integer.parseInt(toIterate.get(midPoint).getAsJsonObject().get("platinum").toString());
+					int midPoint2 = Integer.parseInt(toIterate.get(midPoint + 1).getAsJsonObject().get("platinum").toString());
 					values.addProperty("median", (midPoint1 + midPoint2) / 2);
 				} else {
 					// we are odd
-					values.addProperty("median", Integer.parseInt(toIterate.get(midPoint).getAsJsonObject().get("price").toString()));
+					values.addProperty("median", Integer.parseInt(toIterate.get(midPoint).getAsJsonObject().get("platinum").toString()));
 				}
 			} else {
 				values.addProperty("median", 0);
@@ -476,20 +477,12 @@ public final class API {
 			JsonObject jobj = null;
 			
 			try {
-				for (String itemType : itemTypes) {
-					
-					Connection conn = Jsoup.connect(baseURL + "/"  + itemType + "/" + lookupName);
-					Document doc;
-					doc = conn.ignoreContentType(true).get();
-					
-					jobj = parser.parse(doc.body().html()).getAsJsonObject();
-					
-					if(!jobj.get("code").toString().equalsIgnoreCase("200")) { // If we arnt getting a 200 (OK) response code, it isnt the right itemType
-						jobj = null;
-					} else {
-						break; // We found the right itemType lets return it
-					}
-				}
+				Connection conn = Jsoup.connect(baseURL + "/" + lookupName.replace(" ", "_") + "/" + postURL);
+				conn.timeout(10000);
+				Document doc;
+				doc = conn.ignoreContentType(true).get();
+				
+				jobj = parser.parse(doc.body().html()).getAsJsonObject();
 			} catch (IOException e) {
 				e.printStackTrace();
 				return null;
@@ -508,95 +501,31 @@ public final class API {
 			return parser.parse(toClone.toString()).getAsJsonArray();
 		}
 		
-		/**
-		 * Filters out offline and online-on-site people from an API call
-		 * @param toSearch The JsonObject containing the API response to filter from
-		 * @return A JsonArray containing only people who are online
-		 */
-		private static JsonArray getOnlyOnline(JsonObject toSearch) {
+		private static JsonArray getOnly(JsonObject toSearch, String filterStatus, String filterBuySell) {
 			JsonObject toSearchC = cloneJson(toSearch);
-			JsonArray jArr = toSearchC.getAsJsonObject("response").getAsJsonArray("sell");
-			
-			Iterator<JsonElement> iter = jArr.iterator();
-
-			while(iter.hasNext()) {
-				JsonElement nxt = iter.next();
-				
-				JsonObject tjObj = nxt.getAsJsonObject();
-				if(tjObj.get("online_ingame").toString().equalsIgnoreCase("false")) {
-					iter.remove();
-				}
-			}
-			
-			return jArr;
-		}
-		
-		private static JsonArray getOnlyOffline(JsonObject toSearch) {
-			JsonObject toSearchC = cloneJson(toSearch);
-			JsonArray jArr = toSearchC.getAsJsonObject("response").getAsJsonArray("sell");
+			JsonArray jArr = toSearchC.getAsJsonObject("payload").getAsJsonArray("orders");
 			
 			Iterator<JsonElement> iter = jArr.iterator();
 			
 			while(iter.hasNext()) {
 				JsonElement nxt = iter.next();
-				
 				JsonObject tjObj = nxt.getAsJsonObject();
-				if(tjObj.get("online_ingame").toString().equalsIgnoreCase("true") || tjObj.get("online_status").toString().equalsIgnoreCase("true")) {
+				JsonObject tjUser = tjObj.getAsJsonObject("user");
+				String tStatus = tjUser.get("status").toString().replaceAll("\"", "");
+				String tOrderType = tjObj.get("order_type").toString().replaceAll("\"", "");
+				
+				System.out.println("getOnly: " + tjObj.toString());
+				if(tStatus.equalsIgnoreCase(filterStatus) && tOrderType.equalsIgnoreCase(filterBuySell)) {
+					System.out.println("Kept previous user, matched criteria: " + filterStatus + " vs " + tStatus + ", " + filterBuySell + " vs " + tOrderType);
+				} else {
 					iter.remove();
+					System.out.println("Removed previous user, did not match criteria: " + filterStatus + " vs " + tStatus + ", " + filterBuySell + " vs " + tOrderType);
 				}
 			}
 			
 			return jArr;
 		}
-		
-		private static JsonArray getOnlyOnlineSite(JsonObject toSearch) {
-			JsonObject toSearchC = cloneJson(toSearch);
-			JsonArray jArr = toSearchC.getAsJsonObject("response").getAsJsonArray("sell");
-			
-			Iterator<JsonElement> iter = jArr.iterator();
-			
-			while(iter.hasNext()) {
-				JsonElement nxt = iter.next();
 				
-				JsonObject tjObj = nxt.getAsJsonObject();
-				if(tjObj.get("online_status").toString().equalsIgnoreCase("false")) {
-					iter.remove();
-				}
-			}
-			
-			return jArr;
-		}
-		
-		
-		/**
-		 * Formats a string for Camel Case Styling, to be used within the warframe.market API
-		 * @param toFormat The string to format
-		 * @return A properly formatted string to be used with the API
-		 */
-		public static String camelCaseStr(String toFormat) {
-			toFormat = toFormat.toLowerCase();
-			
-			String[] parts = toFormat.split(" ");
-			toFormat = "";
-			for(String part : parts) {
-				int idx = 0;
-				if(part.startsWith("(")) { idx++; } // (Veiled) case
-				if(part.contains("-")) { // "Medi-Pet Ray" etc case
-					String[] hyphenParts = part.split("-");
-					part = "";
-					for(String hyphenPart : hyphenParts) {
-						part += hyphenPart.substring(0, 1).toUpperCase() + hyphenPart.substring(1) + "-";
-					}
-					
-					part = part.substring(0, part.length() - 1); // Trim off excess hyphen
-				}
-				
-				toFormat += part.substring(0, idx + 1).toUpperCase() + part.substring(idx + 1) + " ";
-			}
-			
-			return toFormat.trim();
-		}
-		
 		/**
 		 * 
 		 * @param lookupName

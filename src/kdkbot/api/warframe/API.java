@@ -300,86 +300,6 @@ public final class API {
 		public static String getAveragePrice(String lookupName) {
 			return getSellStatsDynamic(lookupName).get("avg").toString();
 		}
-
-		/**
-		 * 
-		 * @param lookupName
-		 * @return
-		 */
-		public static JsonObject getSellStats(String lookupName) {
-			lookupName = itemRenamed(lookupName).toLowerCase();
-			JsonObject allPpl = getResults(lookupName);
-
-			if (allPpl == null) { return null; }
-			
-			JsonArray pplSelling = allPpl.getAsJsonObject("response").getAsJsonArray("sell");
-			
-			if (pplSelling == null) { return null; }
-			
-			JsonObject jOut = new JsonObject();
-			JsonObject jStats = new JsonObject();
-			jOut.addProperty("name", lookupName);
-			
-			jStats.add("online", getStats(filterPeople("ingame", pplSelling)));
-			jStats.add("site", getStats(filterPeople("online",  pplSelling)));
-			jStats.add("offline", getStats(filterPeople("offline",  pplSelling)));
-			
-			jOut.add("stats", jStats);
-			
-			return jOut;
-		}
-		
-		/**
-		 * 
-		 * @param filterType
-		 * @param peopleToFilter
-		 * @return
-		 */
-		private static JsonArray filterPeople(String filterType, JsonArray peopleToFilter) {
-			JsonArray toFilter = cloneJsonArr(peopleToFilter);
-			
-			Iterator<JsonElement> iter = toFilter.iterator();
-			
-			while(iter.hasNext()) {
-				JsonElement nxt = iter.next();
-				
-				JsonObject tjObj = nxt.getAsJsonObject();
-				if(tjObj.get("status").toString().equalsIgnoreCase(filterType)) {
-					iter.remove();
-				}
-			}
-			
-			return toFilter;
-		}
-		
-		/**
-		 * 
-		 * @param toStat
-		 * @return
-		 */
-		private static JsonObject getStats(JsonArray toStat) {
-			JsonObject jStats = new JsonObject();
-			
-			if (toStat == null) { return null; }
-			
-			// Default Stat Values
-			jStats.addProperty("priceLo", 0);
-			jStats.addProperty("priceHi", 0);
-			jStats.addProperty("totalPeople", toStat.size());
-			jStats.addProperty("median", 0);
-			jStats.addProperty("average", 0);
-			
-			Iterator<JsonElement> iter = toStat.iterator();
-			
-			
-			jStats.addProperty("median", toStat.get((int) Math.floor(toStat.size() / 2)).getAsJsonObject().get("price").toString());
-			
-			while(iter.hasNext()) {
-				
-			}
-			
-			return jStats;
-		}
 		
 		/**
 		 * Gets all selling stats about a particular thing
@@ -396,19 +316,54 @@ public final class API {
 			JsonArray sitePpl = getOnly(allPpl, "online", "sell");
 			JsonArray toIterate = onlinePpl;
 			
-			JsonObject values = new JsonObject();
-			values.addProperty("status", "Online");
-			
 			if(onlinePpl.size() <= 0) {
-				values.addProperty("status", "Site");
 				toIterate = sitePpl;
 			}
 			
 			if(sitePpl.size() <= 0) {
-				values.addProperty("status", "Offline");
 				toIterate = offlinePpl;
 			}
 			
+			JsonObject values = calculateStats(toIterate);
+
+			values.addProperty("name", camelCaseStr(lookupName));
+			values.addProperty("status", "Online");
+			if(onlinePpl.size() <= 0) { values.addProperty("status", "Site"); }
+			if(sitePpl.size() <= 0) { values.addProperty("status", "Offline"); }
+			
+			return values;
+		}
+		
+		public static JsonObject getBuyStatsDynamic(String lookupName) {
+			lookupName = itemRenamed(lookupName).toLowerCase();
+			JsonObject allPpl = getResults(lookupName);
+			if (allPpl == null) { return null; }
+			
+			JsonArray onlinePpl = getOnly(allPpl, "ingame", "buy");
+			JsonArray offlinePpl = getOnly(allPpl, "offline", "buy");
+			JsonArray sitePpl = getOnly(allPpl, "online", "buy");
+			JsonArray toIterate = onlinePpl;
+			
+			if(onlinePpl.size() <= 0) {
+				toIterate = sitePpl;
+			}
+			
+			if(sitePpl.size() <= 0) {
+				toIterate = offlinePpl;
+			}
+			
+			JsonObject values = calculateStats(toIterate);
+
+			values.addProperty("name", camelCaseStr(lookupName));
+			values.addProperty("status", "Online");
+			if(onlinePpl.size() <= 0) { values.addProperty("status", "Site"); }
+			if(sitePpl.size() <= 0) { values.addProperty("status", "Offline"); }
+			
+			return values;
+		}
+		
+		private static JsonObject calculateStats(JsonArray toParse) {
+			JsonObject values = new JsonObject();
 			
 			int runningTotal = 0;
 			int lowestPrice = -1;
@@ -416,7 +371,7 @@ public final class API {
 			int numberOfPeople = 0;
 			int numberOfItems = 0;
 			
-			Iterator<JsonElement> iter = toIterate.iterator();
+			Iterator<JsonElement> iter = toParse.iterator();
 			
 			while(iter.hasNext()) {
 				JsonElement nxt = iter.next();
@@ -442,17 +397,16 @@ public final class API {
 			values.addProperty("max", highestPrice);
 			values.addProperty("ppl", numberOfPeople);
 			values.addProperty("cnt", numberOfItems);
-			values.addProperty("name", lookupName);
-			int midPoint = toIterate.size() / 2;
+			int midPoint = toParse.size() / 2;
 			if(numberOfPeople > 0) {
-				if(toIterate.size() % 2 == 0) {
+				if(toParse.size() % 2 == 0) {
 					// then we are even
-					int midPoint1 = Integer.parseInt(toIterate.get(midPoint).getAsJsonObject().get("platinum").toString());
-					int midPoint2 = Integer.parseInt(toIterate.get(midPoint + 1).getAsJsonObject().get("platinum").toString());
+					int midPoint1 = Integer.parseInt(toParse.get(midPoint).getAsJsonObject().get("platinum").toString());
+					int midPoint2 = Integer.parseInt(toParse.get(midPoint + 1).getAsJsonObject().get("platinum").toString());
 					values.addProperty("median", (midPoint1 + midPoint2) / 2);
 				} else {
 					// we are odd
-					values.addProperty("median", Integer.parseInt(toIterate.get(midPoint).getAsJsonObject().get("platinum").toString()));
+					values.addProperty("median", Integer.parseInt(toParse.get(midPoint).getAsJsonObject().get("platinum").toString()));
 				}
 			} else {
 				values.addProperty("median", 0);
@@ -477,7 +431,7 @@ public final class API {
 			JsonObject jobj = null;
 			
 			try {
-				Connection conn = Jsoup.connect(baseURL + "/" + lookupName.replace(" ", "_") + "/" + postURL);
+				Connection conn = Jsoup.connect(baseURL + "/" + itemRenamed(lookupName).replaceAll(" ", "_").replaceAll("-", "_") + "/" + postURL);
 				conn.timeout(10000);
 				Document doc;
 				doc = conn.ignoreContentType(true).get();
@@ -496,11 +450,6 @@ public final class API {
 			return parser.parse(toClone.toString()).getAsJsonObject();
 		}
 		
-		private static JsonArray cloneJsonArr(JsonArray toClone) {
-			JsonParser parser = new JsonParser();
-			return parser.parse(toClone.toString()).getAsJsonArray();
-		}
-		
 		private static JsonArray getOnly(JsonObject toSearch, String filterStatus, String filterBuySell) {
 			JsonObject toSearchC = cloneJson(toSearch);
 			JsonArray jArr = toSearchC.getAsJsonObject("payload").getAsJsonArray("orders");
@@ -514,12 +463,10 @@ public final class API {
 				String tStatus = tjUser.get("status").toString().replaceAll("\"", "");
 				String tOrderType = tjObj.get("order_type").toString().replaceAll("\"", "");
 				
-				System.out.println("getOnly: " + tjObj.toString());
 				if(tStatus.equalsIgnoreCase(filterStatus) && tOrderType.equalsIgnoreCase(filterBuySell)) {
-					System.out.println("Kept previous user, matched criteria: " + filterStatus + " vs " + tStatus + ", " + filterBuySell + " vs " + tOrderType);
+					// Do Nothing
 				} else {
 					iter.remove();
-					System.out.println("Removed previous user, did not match criteria: " + filterStatus + " vs " + tStatus + ", " + filterBuySell + " vs " + tOrderType);
 				}
 			}
 			
@@ -537,14 +484,37 @@ public final class API {
 			Iterator<Map.Entry<String, String>> iter = renamedItems.entrySet().iterator();
 			while(iter.hasNext()) {
 				Map.Entry<String, String> nxt = iter.next();
-				System.out.println("lookup: " + lookupName + ", key: " + nxt.getKey() + ", val: " + nxt.getValue());
 				lookupName = lookupName.replace(nxt.getKey(), nxt.getValue());
 			}
-			System.out.println("lookup: " + lookupName);
 			return lookupName;
 		}
 		
+		/**
+		 * Formats a string for Camel Case Styling, for display purposes
+		 * @param toFormat The string to format
+		 * @return A properly formatted string to be used for display purposes
+		 */
+		public static String camelCaseStr(String toFormat) {
+			toFormat = toFormat.toLowerCase();
+			
+			String[] parts = toFormat.split(" ");
+			toFormat = "";
+			for(String part : parts) {
+				int idx = 0;
+				if(part.startsWith("(")) { idx++; } // (Veiled) case
+				if(part.contains("-")) { // "Medi-Pet Ray" etc case
+					String[] hyphenParts = part.split("-");
+					part = "";
+					for(String hyphenPart : hyphenParts) {
+						part += hyphenPart.substring(0, 1).toUpperCase() + hyphenPart.substring(1) + "-";
+					}
+					part = part.substring(0, part.length() - 1); // Trim off excess hyphen
+				}
+			
+				toFormat += part.substring(0, idx + 1).toUpperCase() + part.substring(idx + 1) + " ";
+			}
+			
+			return toFormat.trim();
+		}
 	}
-	
-
 }

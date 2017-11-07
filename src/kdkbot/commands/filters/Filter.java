@@ -22,7 +22,7 @@ public class Filter {
 	 * @param toFind The string REGEX pattern to use.
 	 */
 	public Filter(String toFind) {
-		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE));
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE + Pattern.UNICODE_CASE));
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class Filter {
 	 * @param ignoresPermit whether or not this filter ignores the permit system
 	 */
 	public Filter(String toFind, int action, String actionInfo, String humanName, boolean ignoresPermit) {
-		this(Pattern.compile(toFind), action, actionInfo, humanName, ignoresPermit);
+		this(Pattern.compile(toFind, Pattern.CASE_INSENSITIVE + Pattern.UNICODE_CASE), action, actionInfo, humanName, ignoresPermit);
 	}
 	
 	/**

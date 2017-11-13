@@ -10,6 +10,7 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.Commands;
 import kdkbot.filemanager.Config;
+import kdkbot.language.Translate;
 
 public class StringCommands {
 	public ArrayList<StringCommand> commands;
@@ -68,15 +69,15 @@ public class StringCommands {
 	public String addCommand(String trigger, String message, String level) {	
 		try {
 			StringCommand toAdd = new StringCommand(Kdkbot.instance, trigger, message, Integer.parseInt(level), true);
-			String outMsg = "Added new command " + trigger;
+			String outMsg = String.format(Translate.getTranslate("custom.add", Kdkbot.instance.getChannel(this.channel).getLang()), trigger);
 			if(getCommand(trigger) != null) {
-				outMsg = "Added additional command " + trigger + " - All instances of this will be executed!";
+				outMsg = String.format(Translate.getTranslate("custom.add.dupe", Kdkbot.instance.getChannel(this.channel).getLang()), trigger);
 			}
 			commands.add(toAdd);
 			this.saveCommands();
 			return outMsg;
 		} catch (NumberFormatException e) {
-			return "Failed to add command. " + level + " is not an integer. Syntax: commands new <trigger> <rank> <message>";
+			return String.format(Translate.getTranslate("custom.add.failed", Kdkbot.instance.getChannel(this.channel).getLang()), trigger);
 		}		
 	}
 	
@@ -87,10 +88,10 @@ public class StringCommands {
 			strCmd = strIter.next();
 			if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 				commands.remove(strCmd);
-				return "Removed command " + trigger;
+				String.format(Translate.getTranslate("custom.del", Kdkbot.instance.getChannel(this.channel).getLang()), trigger);
 			}
 		}
-		return "Couldn't find the command " + trigger;
+		return String.format(Translate.getTranslate("custom.del.failed", Kdkbot.instance.getChannel(this.channel).getLang()), trigger);
 	}
 	
 	public void saveCommands() {
@@ -141,11 +142,11 @@ public class StringCommands {
 						StringCommand strCmd = strCmdIter.next();
 						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 							if(type.equalsIgnoreCase("available")) {
-								Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s availability is set to " + strCmd.getAvailability());
+								Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.view.available", Kdkbot.instance.getChannel(this.channel).getLang()), strCmd.getTrigger(), strCmd.getAvailability()));
 							} else if(type.equalsIgnoreCase("level")) {
-								Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s permission level is set to " + strCmd.getPermissionLevel());
+								Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.view.level", Kdkbot.instance.getChannel(this.channel).getLang()), strCmd.getTrigger(), strCmd.getPermissionLevel()));
 							} else if(type.equalsIgnoreCase("message") || type.equalsIgnoreCase("msg")) {
-								Kdkbot.instance.getChannel(channel).sendMessage("The command " + strCmd.getTrigger() + "'s message is set to: " + strCmd.messageToSend);
+								Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.view.msg", Kdkbot.instance.getChannel(this.channel).getLang()), strCmd.getTrigger(), strCmd.messageToSend));
 							}
 							break;
 						}
@@ -170,25 +171,26 @@ public class StringCommands {
 						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 							if(info.senderLevel >= strCmd.getPermissionLevel()) {
 								if(type.equalsIgnoreCase("trigger")) {
-									Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + " to " + toValue);
+									Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.trigger", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender, strCmd.getTrigger(), toValue));
 									strCmd.setTrigger(toValue);
 								} else if(type.equalsIgnoreCase("rank")) {
-									Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s level from " + strCmd.getPermissionLevel() + " to " + toValue);
+									Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.rank", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue));
 									strCmd.setPermissionLevel(Integer.parseInt(toValue));
 								} else if(type.equalsIgnoreCase("message")) {
-									Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s message.");
+									Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.msg", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender, strCmd.getTrigger()));
 									strCmd.messageToSend = toValue;
 								} else if(type.equalsIgnoreCase("available")) {
 									try {
 										boolean bool = Boolean.parseBoolean(csArgs[4]);
-										Kdkbot.instance.getChannel(channel).sendMessage(info.sender + " has changed " + strCmd.getTrigger() + "'s availability to " + csArgs[4] + " from " + strCmd.getAvailability());
+										Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.available", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getAvailability()));
 										strCmd.setAvailability(bool);
 									} catch(Exception e) {
 										Kdkbot.instance.getChannel(channel).sendMessage("Unable to discern " + csArgs[4] + " as a true/false value.");
+										Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.available.fail", Kdkbot.instance.getChannel(this.channel).getLang()), csArgs[4]));
 									}
 								}
 							} else {
-								Kdkbot.instance.getChannel(channel).sendMessage(info.sender + ", you do not have the required permission to change this command.");
+								Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.fail", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender));
 							}
 							break;
 						}
@@ -203,7 +205,7 @@ public class StringCommands {
 				}
 				break;
 			case "list":
-				Kdkbot.instance.getChannel(channel).sendMessage("You can get this channels list of commands by visiting: tfk.zapto.org/kdkbot/?p=channels&t=c&channel=" + channel.replace("#", ""));
+				Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.list", info.getChannel().getLang()), channel.replace("#", "")));
 				break;
 			case "listx":
 				// commands list [custom] <rank>
@@ -254,7 +256,7 @@ public class StringCommands {
 						if(info.getSegments()[2].equalsIgnoreCase("c") || info.getSegments()[2].equalsIgnoreCase("custom")) {
 							customCommandsOnly = true;
 						} else {
-							Kdkbot.instance.sendMessage(info.channel, info.sender + ": You did not specify a valid custom (or 'c') arguments! Given: " + info.getSegments()[2]);
+							Kdkbot.instance.sendMessage(info.channel, String.format(Translate.getTranslate("custom.listx.fail", info.getChannel().getLang()), info.sender, info.getSegments()[2]));
 							break;
 						}
 						String commandRankStr = info.getSegments()[3];
@@ -264,21 +266,21 @@ public class StringCommands {
 				// How should the rest of the message be formatted to indicate what was requested?
 				if(customCommandsOnly) {
 					// Showing custom commands
-					outMessage.append("Custom commands ");
+					outMessage.append(Translate.getTranslate("custom.listx.prefix.a.1", info.getChannel().getLang()));
 				} else {
-					outMessage.append("Commands ");
+					outMessage.append(Translate.getTranslate("custom.listx.prefix.a.2", info.getChannel().getLang()));
 				}
 				
 				// for <user> @ rank?
 				if(commandRank == Integer.MAX_VALUE) {
 					// We're showing all commands
-					outMessage.append(" at all ranks: ");
+					outMessage.append(Translate.getTranslate("custom.listx.prefix.b.1", info.getChannel().getLang()));
 				} else if(commandRank == Integer.MIN_VALUE) {
 					// We're showing commands available to the sender
-					outMessage.append(" available to " + info.sender + ": ");
+					outMessage.append(String.format(Translate.getTranslate("custom.listx.prefix.b.2", info.getChannel().getLang()), info.sender));
 				} else {
 					// We're showing commands @ a particular rank
-					outMessage.append(" available @ rank " + commandRank + ": ");
+					outMessage.append(String.format(Translate.getTranslate("custom.listx.prefix.b.3", info.getChannel().getLang()), commandRank));
 				}
 				
 				// Do we add the built-in commands to the list or no?

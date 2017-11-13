@@ -6,6 +6,7 @@ import java.util.Random;
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.Command;
+import kdkbot.language.Translate;
 
 public class Giveaway extends Command {
 	private String channel;
@@ -31,70 +32,76 @@ public class Giveaway extends Command {
 			case "start":
 				// giveaway start <triggerword>
 				if(args.length < 3) {
-					Kdkbot.instance.sendChanMessage(channel, "Couldn't start giveaway! No keyword provided.");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.started.failed", info.getChannel().getLang()));
 				} else {
-					this.triggerWord = args[2];
-					start();
-					Kdkbot.instance.sendChanMessage(channel, "Giveaway started! Send a message with '" + triggerWord + "' to enter.");
+					start(args[2]);
+					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.started", info.getChannel().getLang()), args[2]));
 				}
 				break;
 			case "stop":
 				// giveaway stop
 				if(hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, "Giveaway stopped!");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.stopped", info.getChannel().getLang()));
 					stop();
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
 				}
 				break;
 			case "count":
 				if(hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, "Giveaway currently has " + numberOfEntries() + " people entered!");
+					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.entered.count", info.getChannel().getLang()), numberOfEntries()));
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+				}
+				break;
+			case "cancel":
+				if(hasStarted()) {
+					cancel();
+				} else {
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
 				}
 				break;
 			case "pick":
 				// giveaway pick [n]
 				if(hasStarted()) {
 					if(args.length < 3) {
-						Kdkbot.instance.sendChanMessage(channel, "Giveaway winner: " + pick());
+						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.winner", info.getChannel().getLang()), pick()));
 					} else {
 						// PickN
 						try {
 							int toPick = Integer.parseInt(args[2]);
-							Kdkbot.instance.sendChanMessage(channel, "Giveaway winners: " + pickN(toPick));
+							Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.winners", info.getChannel().getLang()), pickN(toPick)));
 						} catch (NumberFormatException e) {
-							Kdkbot.instance.sendChanMessage(channel, "Couldn't pick winners. Invalid number: " + args[2]);
+							Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.badnumber", info.getChannel().getLang()), args[2]));
 						}
 					}
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
 				}
 				break;
 			case "pickr":
 				// giveaway pickr [n]
 				if(hasStarted()) {
 					if(args.length < 3) {
-						Kdkbot.instance.sendChanMessage(channel, "Giveaway winner: " + pick(true));
+						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.winner", info.getChannel().getLang()), pick(true)));
 					} else {
 						// PickN(true)
 						try {
 							int toPick = Integer.parseInt(args[2]);
-							Kdkbot.instance.sendChanMessage(channel, "Giveaway winners: " + pickN(toPick, true));
+							Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.winners", info.getChannel().getLang()), pickN(toPick, true)));
 						} catch (NumberFormatException e) {
-							Kdkbot.instance.sendChanMessage(channel,  "Couldn't pick winners. Invalid number: " + args[2]);
+							Kdkbot.instance.sendChanMessage(channel,  String.format(Translate.getTranslate("giveaway.badnumber", info.getChannel().getLang()), args[2]));
 						}
 					}
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
 				}
 			case "reset":
 				if(hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, "Reset live giveaway entrants. People will need to re-enter giveaway.");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.reset.live", info.getChannel().getLang()));
 					entries.clear();
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, "Reset giveaway.");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.reset", info.getChannel().getLang()));
 					triggerWord = null;
 					entries.clear();
 				}
@@ -102,29 +109,39 @@ public class Giveaway extends Command {
 			case "add":
 				if(info.senderLevel >= 5) {
 					if(hasStarted()) {
-						Kdkbot.instance.sendChanMessage(channel, "Manually added user: " + args[2] + " to the entrants list.");
+						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.manual.add", info.getChannel().getLang()), args[2]));
 						addEntry(args[2]);
 					} else {
-						Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
+						Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
 					}
 				}
 				break;
 			case "remove":
 				if(info.senderLevel >= 5) {
 					if(hasStarted()) {
-						Kdkbot.instance.sendChanMessage(channel,  "Manually removed user: " + args[2] + " from the entrants list.");
+						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.manual.del", info.getChannel().getLang()), args[2]));
+						removeEntry(args[2]);
 					} else {
-						Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
+						Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
 					}
 				}
 				break;
 			case "pause":
 				if(hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, "Pausing the giveaway! Entries will no longer be allowed until resumed.");;
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.paused", info.getChannel().getLang()));;
 					pause();
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, "Giveaway hasn't started.");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
 				}
+				break;
+			case "resume":
+				if(!hasStarted()) {
+					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.resume", info.getChannel().getLang()), this.triggerWord));
+					resume();
+				} else {
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.alreadyStarted", info.getChannel().getLang()));
+				}
+				break;
 		}
 	}
 	
@@ -142,6 +159,14 @@ public class Giveaway extends Command {
 	 */
 	public void addEntry(String username) {
 		entries.add(username);
+	}
+	
+	/**
+	 * Removes a username from the entries pool
+	 * @param username The username to remove
+	 */
+	public void removeEntry(String username) {
+		entries.remove(username);
 	}
 	
 	/**
@@ -180,16 +205,7 @@ public class Giveaway extends Command {
 	 * @return The username of the person picked.
 	 */
 	public String pick(boolean removePicked) {
-		String user = "";
-		if(removePicked) {
-			do {
-				user = pick();
-			} while(pastPicked.contains(user));
-			pastPicked.add(user);
-		} else {
-			user = pick();
-		}
-		return user;
+		return pickN(1, removePicked);
 	}
 	
 	/**
@@ -198,27 +214,7 @@ public class Giveaway extends Command {
 	 * @return The usernames, separated by a comma and a space, that are picked.
 	 */
 	public String pickN(int number) {
-		if(number <= 0) { return ""; }
-		
-		ArrayList<String> winners = new ArrayList<String>();
-		if(number > entries.size()) {
-			number = entries.size();
-		}
-		
-		do {
-			String pickedUser = pick();
-			if(!winners.contains(pickedUser)) {
-				winners.add(pickedUser);
-			}
-		} while(winners.size() < number);
-		
-		StringBuilder sb = new StringBuilder();
-		for (String winner : winners) {
-			sb.append(winner);
-			sb.append(", ");
-		}
-		
-		return sb.toString().substring(0, sb.toString().length() - 2);
+		return pickN(number, false);
 	}
 	
 	/**
@@ -252,31 +248,109 @@ public class Giveaway extends Command {
 		return sb.toString().substring(0, sb.toString().length() - 2);
 	}
 	
+	/**
+	 * Stops giveaway from receiving additional entries and returns a winner
+	 * @return A string containing the name of the user who won the giveaway
+	 */
 	public String stopAndPick() {
 		if(hasStarted()) {
-			String user = pick();
 			stop();
-			return user;
+			return pick();
 		} else {
 			return null;
 		}
 	}
 	
+	/**
+	 * Picks a winner and writes it to a temporary file ('./cfg/#channel/giveaway.temp')
+	 */
+	public void pickWrite() {
+		pickWrite(false);
+	}
+	
+	/**
+	 * Picks a winner and writes it to a temporary file ('./cfg/#channel/giveaway.temp')
+	 * @param removePicked Removes picked winner from being picked again if true
+	 */
+	public void pickWrite(boolean removePicked) {
+		pickNWrite(1, removePicked);
+	}
+	
+	/**
+	 * Picks a winner and writes it to a temporary file ('./cfg/#channel/giveaway.temp')
+	 */
+	public void pickNWrite() {
+		pickNWrite(1, false);
+	}
+	
+	/**
+	 * Picks N winner(s) and writes it to a temporary file ('./cfg/#channel/giveaway.temp')
+	 * @param number The number of entrants to select
+	 */
+	public void pickNWrite(int number) {
+		pickNWrite(number, false);
+	}
+	
+	/**
+	 * Picks N winner(s) and writes it to a temporary file ('./cfg/#channel/giveaway.temp')
+	 * @param number The number of entrants to select
+	 * @param removePicked Removes picked winner from being picked again if true
+	 */
+	public void pickNWrite(int number, boolean removePicked) {
+		
+	}
+	
+	/**
+	 * Pauses the giveaway from receicing additional entries
+	 */
 	public void pause() {
 		this.started = false;
 	}
 	
+	/**
+	 * Resumes a giveaway
+	 */
 	public void resume() {
 		this.started = true;
 	}
 	
+	/**
+	 * Stops a giveaway from receiving additional entries, does not clear entrant or past list
+	 */
 	public void stop() {
 		this.started = false;
 	}
 	
+	/**
+	 * Starts a giveaway with no keyword and clears previous entries and past winners from prior giveaways
+	 */
 	public void start() {
+		start("");
+	}
+	
+	/**
+	 * Starts a giveaway with provided keyword and clears previous entries and past winners from prior giveaways
+	 * @param keyword
+	 */
+	public void start(String keyword) {
 		this.started = true;
+		this.triggerWord = keyword;
+		clear();
+	}
+	
+	/**
+	 * Clears entrants and past picked entrants from being in the giveaway
+	 */
+	public void clear() {
 		this.entries.clear();
 		this.pastPicked.clear();
+	}
+	
+	/**
+	 * Cancels a giveaway from receiving additional entrants and clears entrant and past picked lists
+	 */
+	public void cancel() {
+		this.started = false;
+		clear();
 	}
 }

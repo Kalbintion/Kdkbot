@@ -62,11 +62,26 @@ public class MessageParser {
 		PATTERN_MAP.put("math", Pattern.compile("%MATH:.*?%"));
 		PATTERN_MAP.put("replace", Pattern.compile("%REPLACE:(.*?),(.{1,}),(.*?)%"));
 		PATTERN_MAP.put("ytviews_id", Pattern.compile("%YTVIEWS:.*?"));
-		PATTERN_MAP.put("wfm", Pattern.compile("%WFM:.*?%"));
-		PATTERN_MAP.put("wfs", Pattern.compile("%WFS:.*?%"));
+		
+		// Warframe Patterns
+		PATTERN_MAP.put("wfm", Pattern.compile("%WFM:.*?%")); // Warframe.Market API
+		PATTERN_MAP.put("wfs", Pattern.compile("%WFS:.*?%")); // Warframe Scale API
+		PATTERN_MAP.put("wfn", Pattern.compile("%WFN%")); // Warframe News (Events)
+		PATTERN_MAP.put("wfnf", Pattern.compile("%WFNF%")); // Warframe News (Events) - First Only
+		PATTERN_MAP.put("wfa", Pattern.compile("%WFA%")); // Warframe Alerts
+		PATTERN_MAP.put("wfso", Pattern.compile("%WFSO%")); // Warframe Sorties
+		PATTERN_MAP.put("wfsy", Pattern.compile("%WFSY%")); // Warframe Syndicate
+		PATTERN_MAP.put("wfv", Pattern.compile("%WFV%")); // Warframe Active Missions (Void Fissures)
+		PATTERN_MAP.put("wfss", Pattern.compile("%WFSS%")); // Warframe Flash Sales (Market Sales)
+		PATTERN_MAP.put("wfi", Pattern.compile("%WFI%")); // Waframe Invasions
+		PATTERN_MAP.put("wfbad", Pattern.compile("%WFBAD%")); // Warframe Badlands (Dark Sectors)
+		PATTERN_MAP.put("wfb", Pattern.compile("%WFB%")); // Warframe Baro
+		PATTERN_MAP.put("wfd", Pattern.compile("%WFD%")); // Warframe Darvo
+		
 		PATTERN_MAP.put("game", Pattern.compile("%GAME:.*?%"));
 		PATTERN_MAP.put("title", Pattern.compile("%TITLE:.*?%"));
 		PATTERN_MAP.put("steam", Pattern.compile("%STEAM:.*?%"));
+		
 		// %YTURL% special condition pattern
 		PATTERN_MAP.put("yturl", Pattern.compile("(?:https?\\:(?://|\\\\\\\\))?(?:www\\.)?(?:youtu\\.be(?:\\\\|/)|youtube\\.com(?:\\\\|/)watch\\?v=)(?<VidID>[a-zA-Z0-9-_]*)"));
 		PATTERN_MAP.put("url", Pattern.compile("(https?\\:(?://|\\\\\\\\)[A-Za-z0-9\\./-]*)((?:/|\\\\\\\\)?|\\.(html?|php|asp))"));
@@ -159,17 +174,21 @@ public class MessageParser {
 	 */
 	public static String parseMessage(String toParse, MessageInfo info) {
 		String args[] = info.message.split(" ");
+		Matcher matches;
+		
 		// Static message replacements
 		toParse = toParse.replace("%USER%", info.sender);
 		toParse = toParse.replace("%CHAN%", info.channel);
 		toParse = toParse.replace("%LOGIN%", info.login);
 		toParse = toParse.replace("%HOSTNAME%", info.hostname);
-		
-		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
-		
+
 		// Random Number Generator Variables
 		Random rnd = new Random();
 		
+		// Random Basic replacement
+		toParse = toParse.replace("%RND%", Integer.toString(rnd.nextInt()));
+		
+		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Replace %ARGS% based information
 		if(args[0].length() + 1 < info.message.length()) {
@@ -185,10 +204,10 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Command replacement
-		Matcher pattern_cmd_matches = PATTERN_MAP.get("cmd").matcher(toParse);
+		matches = PATTERN_MAP.get("cmd").matcher(toParse);
 		
-		while(pattern_cmd_matches.find()) {
-			String result = pattern_cmd_matches.group();
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String argID = result.substring("%CMD:".length(), result.length()-1);
 			
@@ -203,10 +222,10 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Arg specificity
-		Matcher pattern_args_matches = PATTERN_MAP.get("argN").matcher(toParse);
+		matches = PATTERN_MAP.get("argN").matcher(toParse);
 		
-		while(pattern_args_matches.find()) {
-			String result = pattern_args_matches.group();
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String argID = result.substring("%ARGS:".length(), result.length()-1);
 			int argIDInt = Integer.parseInt(argID);
@@ -223,10 +242,10 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter specificity
-		Matcher pattern_cntr_matches = PATTERN_MAP.get("cntr").matcher(toParse);
+		matches = PATTERN_MAP.get("cntr").matcher(toParse);
 		
-		while(pattern_cntr_matches.find()) {
-			String result = pattern_cntr_matches.group();
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String cntrID = result.substring("%CNTR:".length(), result.length()-1);
 			
@@ -245,10 +264,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter++ Specificity
-		Matcher pattern_cntrpp_matches = PATTERN_MAP.get("cntr++").matcher(toParse);
-		while(pattern_cntrpp_matches.find()) {
-			System.out.println("Hit CNTR++");
-			String result = pattern_cntrpp_matches.group();
+		matches = PATTERN_MAP.get("cntr++").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String cntrID = result.substring("%CNTR++:".length(), result.length()-1);
 			
@@ -271,9 +289,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter-- Specificity
-		Matcher pattern_cntrmm_matches = PATTERN_MAP.get("cntr--").matcher(toParse);
-		while(pattern_cntrmm_matches.find()) {
-			String result = pattern_cntrmm_matches.group();
+		matches = PATTERN_MAP.get("cntr--").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String cntrID = result.substring("%CNTR--:".length(), result.length()-1);
 			
@@ -296,9 +314,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Channel Users
-		Matcher pattern_chanuser_replace_matches = PATTERN_MAP.get("chanuser").matcher(toParse);
-		while(pattern_chanuser_replace_matches.find()) {
-			String result = pattern_chanuser_replace_matches.group();
+		matches = PATTERN_MAP.get("chanuser").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			
 			User[] users = Kdkbot.instance.getUsers(info.channel);
 			User randomUser = users[rnd.nextInt(users.length)];
@@ -307,9 +325,10 @@ public class MessageParser {
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
-		Matcher pattern_chanuser_idx_replace_matches = PATTERN_MAP.get("chanuserIdx").matcher(toParse);
-		while(pattern_chanuser_idx_replace_matches.find()) {
-			String result = pattern_chanuser_idx_replace_matches.group();
+		// Channel Users IDX
+		matches = PATTERN_MAP.get("chanuserIdx").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			
 			User[] users = Kdkbot.instance.getUsers(info.channel);
 			int idx = Integer.parseInt(result.substring("%CHANUSER:".length(), result.length() -1));
@@ -321,27 +340,27 @@ public class MessageParser {
 		
 		// Case methods
 		// Upper
-		Matcher pattern_upper_replace_matches = PATTERN_MAP.get("upper").matcher(toParse);
-		while(pattern_upper_replace_matches.find()) {
-			String result = pattern_upper_replace_matches.group();
+		matches = PATTERN_MAP.get("upper").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			
 			toParse = toParse.replace(result, result.substring("%UPPER:".length(), result.length()-1).toUpperCase());
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Lower
-		Matcher pattern_lower_replace_matches = PATTERN_MAP.get("lower").matcher(toParse);
-		while(pattern_lower_replace_matches.find()) {
-			String result = pattern_lower_replace_matches.group();
+		matches = PATTERN_MAP.get("lower").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			
 			toParse = toParse.replace(result, result.substring("%LOWER:".length(), result.length()-1).toLowerCase());
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Leet
-		Matcher pattern_leet_replace_matches = PATTERN_MAP.get("leet").matcher(toParse);
-		while(pattern_leet_replace_matches.find()) {
-			String result = pattern_leet_replace_matches.group();
+		matches = PATTERN_MAP.get("leet").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			String messagePiece = result.substring("%LEET:".length(), result.length()-1);
 			messagePiece = charTransform(LEET_MAP, messagePiece);
 			toParse = toParse.replace(result, messagePiece);
@@ -349,9 +368,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Flip
-		Matcher pattern_flip_replace_matches = PATTERN_MAP.get("flip").matcher(toParse);
-		while(pattern_flip_replace_matches.find()) {
-			String result = pattern_flip_replace_matches.group();
+		matches = PATTERN_MAP.get("flip").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			String messagePiece = result.substring("%FLIP:".length(), result.length()-1);
 			messagePiece = charTransform(FLIP_MAP, messagePiece);
 			toParse = toParse.replace(result, messagePiece);
@@ -359,9 +378,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Hash
-		Matcher pattern_hash_replace_matches = PATTERN_MAP.get("hash").matcher(toParse);
-		while(pattern_hash_replace_matches.find()) {
-			String result = pattern_hash_replace_matches.group();
+		matches = PATTERN_MAP.get("hash").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			String messagePiece = result.substring("%HASH:".length(), result.length()-1);
 			String argParts[] = messagePiece.split(",", 2);
 			
@@ -375,18 +394,18 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Reverse String (ie: abc, cba)
-		Matcher pattern_reverse_replace_matches = PATTERN_MAP.get("reverse").matcher(toParse);
-		while(pattern_reverse_replace_matches.find()) {
-			String result = pattern_reverse_replace_matches.group();
+		matches = PATTERN_MAP.get("reverse").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			String messagePiece = result.substring("%REVERSE:".length(), result.length()-1);
 			toParse = toParse.replace(result, new StringBuilder(messagePiece).reverse().toString());
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Pick
-		Matcher pattern_pick_replace_matches = PATTERN_MAP.get("pick").matcher(toParse);
-		while(pattern_pick_replace_matches.find()) {
-			String result = pattern_pick_replace_matches.group();
+		matches = PATTERN_MAP.get("pick").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			String messagePiece = result.substring("%PICK:".length(), result.length()-1);
 			
 			String messageParts[] = messagePiece.split(",");
@@ -396,14 +415,14 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Replace specificity
-		Matcher pattern_replace_matches = PATTERN_MAP.get("replace").matcher(toParse);
+		matches = PATTERN_MAP.get("replace").matcher(toParse);
 		
-		while(pattern_replace_matches.find()) {
-			String result = pattern_replace_matches.group();
+		while(matches.find()) {
+			String result = matches.group();
 			
 			System.out.println("result: " + result);
 			
-			String[] messageParts = {pattern_replace_matches.group(1), pattern_replace_matches.group(2), pattern_replace_matches.group(3)};
+			String[] messageParts = {matches.group(1), matches.group(2), matches.group(3)};
 
 			System.out.println("messageParts: " + Arrays.toString(messageParts));
 			
@@ -418,9 +437,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 				
 		// Join
-		Matcher pattern_join_replace_matches = PATTERN_MAP.get("join").matcher(toParse);
-		while(pattern_join_replace_matches.find()) {
-			String result = pattern_join_replace_matches.group();
+		matches = PATTERN_MAP.get("join").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			String messageParts[] = result.substring("%JOIN:".length(), result.length()-1).split(",", 3);
 			
 			for (int i=0; i< messageParts.length; i++) {
@@ -439,16 +458,7 @@ public class MessageParser {
 			toParse = toParse.replace(result, sb.toString());
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
-		
-		// STEAM
-		Matcher pattern_steam_replace_matches = PATTERN_MAP.get("steam").matcher(info.message);
-		while(pattern_steam_replace_matches.find()) {
-			String result = pattern_steam_replace_matches.group();
-			String game_name = result.substring("%STREAM:".length(), result.length()-1);
-			
-			
-		}
-						
+								
 		// YTURL
 		Matcher pattern_yturl_replace_matches = PATTERN_MAP.get("yturl").matcher(info.message);
 		Matcher pattern_yturl_token_replace_matches = PATTERN_MAP.get("yturltoken").matcher(toParse);
@@ -487,9 +497,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Pagetitle
-		Matcher pattern_pagetitle_replace_matches = PATTERN_MAP.get("pagetitle").matcher(toParse);
-		while(pattern_pagetitle_replace_matches.find()) {
-			String result = pattern_pagetitle_replace_matches.group();
+		matches = PATTERN_MAP.get("pagetitle").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			// messagePiece will contain the URL to look-up
 			String messagePiece = result.substring("%PAGETITLE:".length(), result.length()-1);
 
@@ -498,9 +508,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Math
-		Matcher pattern_math_replace_matches = PATTERN_MAP.get("math").matcher(toParse);
-		while(pattern_math_replace_matches.find()) {
-			String result = pattern_math_replace_matches.group();
+		matches = PATTERN_MAP.get("math").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 			
 			// messagePiece will contain the math equation to evaluate
 			String messagePiece = result.substring("%MATH:".length(), result.length()-1);
@@ -513,14 +523,11 @@ public class MessageParser {
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
-		// Random Basic replacement
-		toParse = toParse.replace("%RND%", Integer.toString(rnd.nextInt()));
-		
 		// Advanced replacement (specifying max value)
-		Matcher pattern_rnd_max_matches = PATTERN_MAP.get("rndMax").matcher(toParse);
+		matches = PATTERN_MAP.get("rndMax").matcher(toParse);
 		
-		while(pattern_rnd_max_matches.find()) {
-			String result = pattern_rnd_max_matches.group();
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String argValues = result.substring("%RND:".length(), result.length()-1);
 			
@@ -531,10 +538,9 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Advanced replacement (specifying min and max values)
-		Matcher pattern_rnd_min_max_matches = PATTERN_MAP.get("rndMinMax").matcher(toParse);
-				
-		while(pattern_rnd_min_max_matches.find()) {
-			String result = pattern_rnd_min_max_matches.group();
+		matches = PATTERN_MAP.get("rndMinMax").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
 
 			String argValues = result.substring("%RND:".length(), result.length()-1);
 			String[] argParts = argValues.split(",");
@@ -547,10 +553,10 @@ public class MessageParser {
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Warframe Market API Implementation
-		Matcher pattern_wfm_matches = PATTERN_MAP.get("wfm").matcher(toParse);
+		matches = PATTERN_MAP.get("wfm").matcher(toParse);
 		
-		while(pattern_wfm_matches.find()) {
-			String result = pattern_wfm_matches.group();
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String argValue = result.substring("%WFM:".length(), result.length()-1);
 			
@@ -567,10 +573,10 @@ public class MessageParser {
 		}
 		
 		// Warframe Scaling API Implementation
-		Matcher pattern_wfs_matches = PATTERN_MAP.get("wfs").matcher(toParse);
+		matches = PATTERN_MAP.get("wfs").matcher(toParse);
 		
-		while(pattern_wfs_matches.find()) {
-			String result = pattern_wfs_matches.group();
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String[] argsVals = result.substring("%WFS:".length(), result.length()-1).split(",");
 					
@@ -612,11 +618,24 @@ public class MessageParser {
 			}
 		}
 		
-		// GAME - Gets Game of a given username
-		Matcher pattern_game_matches = PATTERN_MAP.get("game").matcher(toParse);
+		//PATTERN_MAP.put("wfn", Pattern.compile("%WFN%")); // Warframe News (Events)
+		//PATTERN_MAP.put("wfnf", Pattern.compile("%WFNF%")); // Warframe News (Events) - First Only
+		//PATTERN_MAP.put("wfa", Pattern.compile("%WFA%")); // Warframe Alerts
+		//PATTERN_MAP.put("wfso", Pattern.compile("%WFSO%")); // Warframe Sorties
+		//PATTERN_MAP.put("wfsy", Pattern.compile("%WFSY%")); // Warframe Syndicate
+		//PATTERN_MAP.put("wfv", Pattern.compile("%WFV%")); // Warframe Active Missions (Void Fissures)
+		//PATTERN_MAP.put("wfss", Pattern.compile("%WFSS%")); // Warframe Flash Sales (Market Sales)
+		//PATTERN_MAP.put("wfi", Pattern.compile("%WFI%")); // Waframe Invasions
+		//PATTERN_MAP.put("wfbad", Pattern.compile("%WFBAD%")); // Warframe Badlands (Dark Sectors)
+		//PATTERN_MAP.put("wfb", Pattern.compile("%WFB%")); // Warframe Baro
+		//PATTERN_MAP.put("wfd", Pattern.compile("%WFD%")); // Warframe Darvo
 		
-		while(pattern_game_matches.find()) {
-			String result = pattern_game_matches.group();
+		
+		// GAME - Gets Game of a given username
+		matches = PATTERN_MAP.get("game").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
 			
 			String user = result.substring("%GAME:".length(), result.length() -1);
 			

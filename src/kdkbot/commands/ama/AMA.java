@@ -43,47 +43,47 @@ public class AMA extends Command {
 						Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("ama.dneQuestion", info.getChannel().getLang()), args[2]));
 					}
 				} catch(NumberFormatException e) {
-					Kdkbot.instance.sendChanMessage(info.channel, "That is not a number, therefore I cannot find the quote.");
+					Kdkbot.instance.sendChanMessage(info.channel, Translate.getTranslate("ama.exNumberFormat", info.getChannel().getLang()));
 				} catch(IndexOutOfBoundsException e) {
-					Kdkbot.instance.sendChanMessage(info.channel, "The requested quote cannot be found.");
+					Kdkbot.instance.sendChanMessage(info.channel, Translate.getTranslate("ama.exIndexOutOfBounds", info.getChannel().getLang()));
 				}
 				break;
 			case "add":
 				questions.add(info.message.substring("ama add ".length()));
-				Kdkbot.instance.sendChanMessage(channel, "Question added.");
+				Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("ama.addedQuestion", info.getChannel().getLang()));
 				saveQuestions();
 				break;
 			case "remove":
 				questions.remove(args[1]);
-				Kdkbot.instance.sendChanMessage(channel, "Question #" + args[2] + " removed.");
+				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("ama.delQuestion", info.getChannel().getLang()), args[2]));
 				break;
 			case "save":
 				this.saveQuestions();
-				Kdkbot.instance.sendChanMessage(channel, "Manually saved question list for this channel.");
+				Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("ama.save", info.getChannel().getLang()));
 				break;
 			case "next":
 				if(questions.size() > 0) {
 					String question = this.questions.get(curIndex++);
-					Kdkbot.instance.sendChanMessage(channel, "Question: " + question);
+					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("ama.next", info.getChannel().getLang()), question));
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, "No more questions left!");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("ama.nextFail", info.getChannel().getLang()));
 				}
 				break;
 			case "index":
 				if(args.length < 3) {
-					Kdkbot.instance.sendChanMessage(channel, "Current index set to " + this.curIndex);
+					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("ama.cur.index", info.getChannel().getLang()), this.curIndex));
 				} else {
 					this.curIndex = Integer.parseInt(args[2]);
-					Kdkbot.instance.sendChanMessage(channel, "Set current question index to " + args[2]);
+					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("ama.set.index", info.getChannel().getLang()), args[2]));
 				}
 				break;
 			case "repeat":
 				if(questions.size() > 0) {
 					String question = this.questions.get(--curIndex);
 					curIndex++;
-					Kdkbot.instance.sendChanMessage(channel, "Question: " + question);
+					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("ama.repeat", info.getChannel().getLang()), question));
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, "No more questions left!");
+					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("ama.nextFail", info.getChannel().getLang()));
 				}
 				break;
 		}

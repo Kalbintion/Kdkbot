@@ -66,17 +66,18 @@ public class MessageTimer extends TimerTask {
 		
 		MessageInfo info = new MessageInfo(channel, "", message, "", "", 0);
 		Kdkbot.instance.dbg.writeln(this, "Flags: " + this.flags);
+
+		if (this.flagsVals.REQUIRES_MSG_COUNT && Integer.parseInt(this.flagsVals.REQUIRES_MSG_COUNT_AMT) > this.flagsVals.MSGES_SINCE_LAST_TRIGGER) {
+			this.flagsVals.MSGES_SINCE_LAST_TRIGGER = 0; // Reset msges count, even if the timer didnt get to run
+			Kdkbot.instance.dbg.writeln(this, "Timer failed. Not enough messages. Channel: " + this.channel + ", id: " + this.timerID);
+			return; // Not enough messages have been sent for this to trigger again
+		}
+		
 		if (this.flagsVals.REQUIRES_LIVE) {
 			if(!kdkbot.api.twitch.APIv5.isStreamerLive(Kdkbot.instance.getClientID(), Kdkbot.instance.getChannel(channel).getUserID())) {
 				Kdkbot.instance.dbg.writeln(this, "Timer failed. Streamer isn't live. Channel: " + this.channel + ", id: " + this.timerID);
 				return; // Streamer isn't live, we arnt going to send message
 			}
-		}
-		
-		if (this.flagsVals.REQUIRES_MSG_COUNT && Integer.parseInt(this.flagsVals.REQUIRES_MSG_COUNT_AMT) > this.flagsVals.MSGES_SINCE_LAST_TRIGGER) {
-			this.flagsVals.MSGES_SINCE_LAST_TRIGGER = 0; // Reset msges count, even if the timer didnt get to run
-			Kdkbot.instance.dbg.writeln(this, "Timer failed. Not enough messages. Channel: " + this.channel + ", id: " + this.timerID);
-			return; // Not enough messages have been sent for this to trigger again
 		}
 		
 		if (this.flagsVals.REQUIRES_GAME) {

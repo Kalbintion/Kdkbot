@@ -8,6 +8,7 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.Command;
 import kdkbot.filemanager.Config;
+import kdkbot.language.Translate;
 
 public class Timers extends Command {
 	private ArrayList<MessageTimer> timers;
@@ -71,7 +72,7 @@ public class Timers extends Command {
 					args = info.getSegments(5);
 					MessageTimer newTimer = new MessageTimer(info.channel, args[2], args[4], Long.parseLong(args[3]));
 					timers.add(newTimer);
-					Kdkbot.instance.sendChanMessage(info.channel, "Added new timer with id " + args[2] + " with a delay of " + args[3] + " seconds and a message of " + args[4]);
+					Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.new", info.getChannel().getLang()), args[2], args[3], args[4]));
 					break;
 				case "remove":
 				case "delete":
@@ -81,13 +82,13 @@ public class Timers extends Command {
 						if(t.timerID.equalsIgnoreCase(timerID)) {
 							t.stop();
 							timers.remove(t);
-							Kdkbot.instance.sendChanMessage(info.channel, "Deleted timer with id " + timerID);
+							Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.del", info.getChannel().getLang()), timerID));
 							found = true;
 							break;
 						}
 					}
 					if(!found)
-						Kdkbot.instance.sendChanMessage(info.channel, "Couldn't find timer with id " + timerID);
+						Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.del.fail", info.getChannel().getLang()), timerID));
 					break;
 				case "edit":
 					// Timers edit <id> <type> <newValue>
@@ -111,31 +112,31 @@ public class Timers extends Command {
 							switch(args[3].toLowerCase()) {
 								case "msg":
 									newMessage = args[4];
-									Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s message.");
+									Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.msg", info.getChannel().getLang()), timerID));
 									break;
 								case "delay":
 									newDelay = Long.parseLong(args[4]);
-									Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s delay to " + args[4] + " seconds.");
+									Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.delay", info.getChannel().getLang()), timerID, args[4]));
 									break;
 								case "flags":
 									newFlags = args[4];
-									Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flags.");
+									Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags", info.getChannel().getLang()), timerID));
 									break;
 								case "needslive":
 									t.flagsVals.REQUIRES_LIVE = Boolean.parseBoolean(args[4]);
 									newFlags = t.flagsVals.toString();
-									Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Needs Live setting to: " + String.valueOf(Boolean.parseBoolean(args[4])));
+									Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.needslive", info.getChannel().getLang()), timerID, args[4]));
 									break;
 								case "msgcount":
 									int msgCount = Integer.parseInt(args[4]);
 									if(msgCount <= 0) {
 										t.flagsVals.REQUIRES_MSG_COUNT = false;
 										newFlags =t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Message Count to no longer be required.");
+										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.msgcount.clear", info.getChannel().getLang()), timerID));
 									} else {
 										t.flagsVals.REQUIRES_MSG_COUNT_AMT = args[4];
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Message Count to no longer be required.");
+										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.msgcount", info.getChannel().getLang()), timerID, args[4]));
 									}
 									break;
 								case "reqgame":
@@ -143,12 +144,12 @@ public class Timers extends Command {
 										t.flagsVals.REQUIRES_GAME = true;
 										t.flagsVals.REQUIRES_GAME_NAME = args[4];
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Requires Game to need game " + args[4]);
+										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.reqgame", info.getChannel().getLang()), timerID, args[4]));
 									} else {
 										t.flagsVals.REQUIRES_GAME = false;
 										t.flagsVals.REQUIRES_GAME_NAME = "";
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Requires Game to no longer be required.");
+										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.reqgame.clear", info.getChannel().getLang()), timerID));
 									}
 									break;
 								case "reqtitle":
@@ -156,12 +157,12 @@ public class Timers extends Command {
 										t.flagsVals.REQUIRES_IN_TITLE = true;
 										t.flagsVals.REQUIRES_IN_TITLE_TEXT = args[4];
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Requires In Title to need " + args[4]);
+										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.reqtitle", info.getChannel().getLang()), timerID, args[4]));
 									} else {
 										t.flagsVals.REQUIRES_IN_TITLE = false;
 										t.flagsVals.REQUIRES_IN_TITLE_TEXT = "";
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, "Updated timer " + timerID + "'s flag Requires In Title to no longer be required.");
+										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.reqtitle.clear", info.getChannel().getLang()), timerID));
 									}
 									break;
 							}

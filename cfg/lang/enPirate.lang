@@ -1,0 +1,123 @@
+log.onDisconnect=Bot has disconnected. Will be attemptin' t' re-join.
+log.retryNumber=Reconnection retry %1$s
+log.nickInUse=Could nah re-connect due t' nickname already in use.
+log.failedToResolve=Failed t' resolve host fer %1$s.
+log.failedToResolveDelay=Failed t' resolve host fer %1$s. Retryin' in 10 seconds.
+log.ircException=Could nah reconnect t' th' irc server, disallowed.
+
+twitter.disconnectStatus=I 'ave disconnected from twitch! Attemptin' t' reconnect. #kdkbot
+twitter.reconnectStatus=I 'ave successfully reconnected! #kdkbot
+
+channel.join=Joinin' channel %1$s
+channel.badInitialize=Couldn't initialize default commands!
+
+bot.mastercommands.color=Changed color t' %1$s
+bot.mastercommands.status=Updated me twitter status.
+bot.mastercommands.statusFail=Failed t' update me twitter status. %1$s
+bot.mastercommands.gc=Tellin' java t' collect garbage...
+bot.mastercommands.ram=Me current ram usage be estimated t' be at in KB: %1$s
+
+ama.gotQuestion=Riddle #%1$s: %2$s
+ama.dneQuestion=Riddle #%1$s does nah exist.
+ama.addedQuestion=Riddle added.
+ama.exNumberFormat=That ain't a number, therefore I cannot find th' quote.
+ama.exIndexOutOfBounds=Th' requested quote cannot be found.
+ama.delQuestion=Riddle #%1$s scuttled.
+ama.save=Manually saved riddle list fer this channel.
+ama.next=Riddle: %1$s
+ama.nextFail=No more riddles left!
+ama.cur.index=Current index set t' %1$s
+ama.set.index=Set current riddle index t' %1$s
+ama.repeat=Riddle: %1$s
+
+counter.new.value=Added new counter called %1$s wit' value o' %2$s
+counter.new=Added new counter called %1$s wit' value o' 0
+counter.del=Removed counter %1$s
+counter.mod.add=Incremented %1$s by %2$s. Value be now %3$s
+counter.mod.sub=Decremented %1$s by %2$s. Value be now %3$s
+counter.mod.mul=Multiplied %1$s by %2$s. Value be now %3$s
+counter.mod.div=Divided %1$s by %2$s. Value be now %3$s
+counter.mod.get=Counter %1$s be set t' %2$s
+
+custom.add=Added new command %1$s
+custom.add.dupe=Added additional command %1$s - All instances o' this will be executed!
+custom.add.failed=Failed t' add command. %1$s ain't an integer. Syntax: commands new <trigger> <rank> <message>
+custom.del=Removed command %1$s
+custom.del.failed=Couldn't find th' command %1$s
+custom.view.available=Th' command %1$s's availability be set t' %2$s
+custom.view.level=Th' command %1$s's permission level be set t' %2$s
+custom.view.msg=Th' command %1$s's message be set t': %2$s
+custom.mod.trigger=%1$s has changed %2$s t' %3$s
+custom.mod.rank=%1$s has changed %2$s's level from %3$s t' %4$s
+custom.mod.msg=%1$s has changed %2$s's message.
+custom.mod.available=%1$s has changed %2$s's availability t' %3$s from %4$s
+custom.mod.available.fail=Unable t' discern %1$s as a true/false value.
+custom.mod.fail=%1$s, ye do nah 'ave th' required permission t' change this command.
+custom.list=Ye can get this channels list o' commands by visitin': tfk.zapto.org/kdkbot/?p=channels&t=c&c=%1$s
+custom.listx.fail=%1$s: Ye didn' specify a valid custom (or 'c') arguments! Given: %2$s
+custom.listx.prefix.a.1=Custom commands 
+custom.listx.prefix.a.2=Commands 
+custom.listx.prefix.b.1=at all ranks: 
+custom.listx.prefix.b.2=available t' %1$s: 
+custom.listx.prefix.b.3=available @ rank %1$s: 
+
+filters.add=Added a new filter named %1$s. %2$s
+filters.add.info= Use command 'filter edit <name> info <msg> t' add response message.
+filters.remove=Removed filter #%1$s
+filters.remove.fail=Provided index (%1$s) could nah be found due t' it bein' larger than th' number o' filters.
+filters.view.type=Filter %1$s's %2$s has value o' %3$s
+filters.view.regex=Filter %1$s's %2$s has value o' %3$s
+filters.view.info=Filter %1$s's %2$s has value o' %3$s
+filters.mod=Changed filter %1$s's %2$s value t': %3$s
+filters.size=Thar are %1$s filter(s) in this channel.
+
+giveaway.started=Giveaway started! Send a message wit' '%1$s' t' board.
+giveaway.started.failed=Couldn't start giveaway! No keyword provided.
+giveaway.stopped=Giveaway stopped!
+giveaway.hasntStarted=Giveaway hasn't started.
+giveaway.entered.count=Giveaway currently has %1$s scallywags boarded!
+giveaway.winner=Giveaway winner: %1$s
+giveaway.winners=Giveaway winners: %1$s
+giveaway.error.badnumber=Couldn't pick winners. Invalid number: %1$s
+giveaway.reset=Reset giveaway entrants.
+giveaway.reset.live=Reset live giveaway entrants. Scallywags will needs t' re-board giveaway.
+giveaway.manual.add=Manually added user: %1$s t' th' entrants list.
+giveaway.manual.del=Manually scuttled user: %1$s from th' entrants list.
+giveaway.paused=Pausin' th' giveaway! Entries will no longer be allowed 'til resumed.
+giveaway.alreadyStarted=Giveaway already active! Cannot resume.
+giveaway.resume=Resumed giveaway. Entrants may now board again usin' keyword: %1$s
+
+timers.new=Added new timer wit' id %1$s wit' a delay o' %2$s seconds 'n a message o' %3$s
+timers.del=Deleted timer wit' id %1$s
+timers.del.fail=Couldn't find timer wit' id %1$s
+timers.mod.msg=Updated timer %1$s's message.
+timers.mod.delay=Updated timer %1$s's delay t' %2$s seconds.
+timers.mod.flags=Updated timer %1$s's flags.
+timers.mod.flags.needslive=Updated timer %1$s's Jolly Roger Needs Live settin' t': %2$s
+timers.mod.flags.msgcount=Updated timer %1$s's Jolly Roger Message Count require %2$s.
+timers.mod.flags.msgcount.clear=Updated timer %1$s's Jolly Roger Message Count t' no longer be required.
+timers.mod.flags.reqgame=Updated timer %1$s's Jolly Roger Requires Game t' needs game %2$s
+timers.mod.flags.reqgame.clear=Updated timer %1$s's Jolly Roger Requires Game t' no longer be required.
+timers.mod.flags.reqtitle=Updated timer %1$s's Jolly Roger Requires In Title t' needs %2$s
+timers.mod.flags.reqtitle.clear=Updated timer %1$s's Jolly Roger Requires In Title t' no longer be required.
+
+quotes.get=Quote #%1$s: %2$s
+quotes.get.fail=Quote #%1$s does nah exist.
+quotes.exNFE=%1$s: That ain't a number, therefore I cannot find th' quote.
+quotes.exIOOB=%1$s: Th' requested quote cannot be found.
+quotes.add=Quote #%1$s added.
+quotes.del=Quote #%1$s scuttled.
+quotes.save=Manually saved quote list fer this channel.
+quotes.reload=Manually reloaded quote list fer this channel.
+quotes.size=Thar are %1$s quotes.
+quotes.list=Ye can see all available quotes by visitin' http://tfk.zapto.org/kdkbot/?p=channels&t=q&c=%1$s
+quotes.random=Quote #%1$s: %2$s
+
+stats.time=%1$s: Ye 'ave spent %2$s since %3$s
+stats.time.fail=%1$s: Ye 'ave yet t' spend enough time here t' 'ave been tracked!
+stats.msges=%1$s: Ye 'ave sent %2$s messages, containin' %3$s characters.
+stats.char=%1$s: Ye 'ave sent %2$s characters.
+stats.all=%1$s: Ye 'ave spent %2$s since %3$s, havin' sent %4$s messages containin' %5$s characters.
+stats.bits=%1$s: Ye 'ave nah yet used any cheers in here t' 'ave been tracked!
+stats.bits.fail=%1$s: Ye 'ave used %2$s bits here since %3$s
+stats.failed=Could nah loot user stats fer %1$s

@@ -120,4 +120,4 @@ stats.char=%1$s: You have sent %2$s characters.
 stats.all=%1$s: You have spent %2$s since %3$s, having sent %4$s messages containing %5$s characters.
 stats.bits=%1$s: You have not yet used any cheers in here to have been tracked!
 stats.bits.fail=%1$s: You have used %2$s bits here since %3$s
-stats.failed=Could not retriever user stats for %1$s
+stats.failed=Could not retrieve user stats for %1$s

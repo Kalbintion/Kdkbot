@@ -4,15 +4,19 @@ log.nickInUse=Could not re-connect due to nickname already in use.
 log.failedToResolve=Failed to resolve host for %1$s.
 log.failedToResolveDelay=Failed to resolve host for %1$s. Retrying in 10 seconds.
 log.ircException=Could not reconnect to the irc server, disallowed.
+
 twitter.disconnectStatus=I have disconnected from twitch! Attempting to reconnect. #kdkbot
 twitter.reconnectStatus=I have successfully reconnected! #kdkbot
+
 channel.join=Joining channel %1$s
 channel.badInitialize=Couldn't initialize default commands!
+
 bot.mastercommands.color=Changed color to %1$s
 bot.mastercommands.status=Updated my twitter status.
 bot.mastercommands.statusFail=Failed to update my twitter status. %1$s
 bot.mastercommands.gc=Telling java to collect garbage...
 bot.mastercommands.ram=My current ram usage is estimated to be at in KB: %1$s
+
 ama.gotQuestion=Question #%1$s: %2$s
 ama.dneQuestion=Question #%1$s does not exist.
 ama.addedQuestion=Question added.
@@ -22,6 +26,10 @@ ama.delQuestion=Question #%1$s removed.
 ama.save=Manually saved question list for this channel.
 ama.next=Question: %1$s
 ama.nextFail=No more questions left!
+ama.cur.index=Current index set to %1$s
+ama.set.index=Set current question index to %1$s
+ama.repeat=Question: %1$s
+
 giveaway.started=Giveaway started! Send a message with '%1$s' to enter.
 giveaway.started.failed=Couldn't start giveaway! No keyword provided.
 giveaway.stopped=Giveaway stopped!

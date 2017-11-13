@@ -112,3 +112,12 @@ quotes.reload=Manually reloaded quote list for this channel.
 quotes.size=There are %1$s quotes.
 quotes.list=You can see all available quotes by visiting http://tfk.zapto.org/kdkbot/?p=channels&t=q&c=%1$s
 quotes.random=Quote #%1$s: %2$s
+
+stats.time=%1$s: You have spent %2$s since %3$s
+stats.time.fail=%1$s: You have yet to spend enough time here to have been tracked!
+stats.msges=%1$s: You have sent %2$s messages, containing %3$s characters.
+stats.char=%1$s: You have sent %2$s characters.
+stats.all=%1$s: You have spent %2$s since %3$s, having sent %4$s messages containing %5$s characters.
+stats.bits=%1$s: You have not yet used any cheers in here to have been tracked!
+stats.bits.fail=%1$s: You have used %2$s bits here since %3$s
+stats.failed=Could not retriever user stats for %1$s

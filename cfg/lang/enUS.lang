@@ -61,6 +61,16 @@ custom.listx.prefix.b.1=at all ranks:
 custom.listx.prefix.b.2=available to %1$s: 
 custom.listx.prefix.b.3=available @ rank %1$s: 
 
+filters.add=Added a new filter named %1$s. %2$s
+filters.add.info= Use command 'filter edit <name> info <msg> to add response message.
+filters.remove=Removed filter #%1$s
+filters.remove.fail=Provided index (%1$s) could not be found due to it being larger than the number of filters.
+filters.view.type=Filter %1$s's %2$s has value of %3$s
+filters.view.regex=Filter %1$s's %2$s has value of %3$s
+filters.view.info=Filter %1$s's %2$s has value of %3$s
+filters.mod=Changed filter %1$s's %2$s value to: %3$s
+filters.size=There are %1$s filter(s) in this channel.
+
 giveaway.started=Giveaway started! Send a message with '%1$s' to enter.
 giveaway.started.failed=Couldn't start giveaway! No keyword provided.
 giveaway.stopped=Giveaway stopped!
@@ -76,3 +86,17 @@ giveaway.manual.del=Manually removed user: %1$s from the entrants list.
 giveaway.paused=Pausing the giveaway! Entries will no longer be allowed until resumed.
 giveaway.alreadyStarted=Giveaway already active! Cannot resume.
 giveaway.resume=Resumed giveaway. Entrants may now enter again using keyword: %1$s
+
+timers.new=Added new timer with id %1$s with a delay of %2$s seconds and a message of %3$s
+timers.del=Deleted timer with id %1$s
+timers.del.fail=Couldn't find timer with id %1$s
+timers.mod.msg=Updated timer %1$s's message.
+timers.mod.delay=Updated timer %1$s's delay to %2$s seconds.
+timers.mod.flags=Updated timer %1$s's flags.
+timers.mod.flags.needslive=Updated timer %1$s's flag Needs Live setting to: %2$s
+timers.mod.flags.msgcount=Updated timer %1$s's flag Message Count require %2$s.
+timers.mod.flags.msgcount.clear=Updated timer %1$s's flag Message Count to no longer be required.
+timers.mod.flags.reqgame=Updated timer %1$s's flag Requires Game to need game %2$s
+timers.mod.flags.reqgame.clear=Updated timer %1$s's flag Requires Game to no longer be required.
+timers.mod.flags.reqtitle=Updated timer %1$s's flag Requires In Title to need %2$s
+timers.mod.flags.reqtitle.clear=Updated timer %1$s's flag Requires In Title to no longer be required.

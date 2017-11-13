@@ -39,6 +39,28 @@ counter.mod.mul=Multiplied %1$s by %2$s. Value is now %3$s
 counter.mod.div=Divided %1$s by %2$s. Value is now %3$s
 counter.mod.get=Counter %1$s is set to %2$s
 
+custom.add=Added new command %1$s
+custom.add.dupe=Added additional command %1$s - All instances of this will be executed!
+custom.add.failed=Failed to add command. %1$s is not an integer. Syntax: commands new <trigger> <rank> <message>
+custom.del=Removed command %1$s
+custom.del.failed=Couldn't find the command %1$s
+custom.view.available=The command %1$s's availability is set to %2$s
+custom.view.level=The command %1$s's permission level is set to %2$s
+custom.view.msg=The command %1$s's message is set to: %2$s
+custom.mod.trigger=%1$s has changed %2$s to %3$s
+custom.mod.rank=%1$s has changed %2$s's level from %3$s to %4$s
+custom.mod.msg=%1$s has changed %2$s's message.
+custom.mod.available=%1$s has changed %2$s's availability to %3$s from %4$s
+custom.mod.available.fail=Unable to discern %1$s as a true/false value.
+custom.mod.fail=%1$s, you do not have the required permission to change this command.
+custom.list=You can get this channels list of commands by visiting: tfk.zapto.org/kdkbot/?p=channels&t=c&c=%1$s
+custom.listx.fail=%1$s: You did not specify a valid custom (or 'c') arguments! Given: %2$s
+custom.listx.prefix.a.1=Custom commands 
+custom.listx.prefix.a.2=Commands 
+custom.listx.prefix.b.1=at all ranks: 
+custom.listx.prefix.b.2=available to %1$s: 
+custom.listx.prefix.b.3=available @ rank %1$s: 
+
 giveaway.started=Giveaway started! Send a message with '%1$s' to enter.
 giveaway.started.failed=Couldn't start giveaway! No keyword provided.
 giveaway.stopped=Giveaway stopped!

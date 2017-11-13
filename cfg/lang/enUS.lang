@@ -100,3 +100,15 @@ timers.mod.flags.reqgame=Updated timer %1$s's flag Requires Game to need game %2
 timers.mod.flags.reqgame.clear=Updated timer %1$s's flag Requires Game to no longer be required.
 timers.mod.flags.reqtitle=Updated timer %1$s's flag Requires In Title to need %2$s
 timers.mod.flags.reqtitle.clear=Updated timer %1$s's flag Requires In Title to no longer be required.
+
+quotes.get=Quote #%1$s: %2$s
+quotes.get.fail=Quote #%1$s does not exist.
+quotes.exNFE=%1$s: That is not a number, therefore I cannot find the quote.
+quotes.exIOOB=%1$s: The requested quote cannot be found.
+quotes.add=Quote #%1$s added.
+quotes.del=Quote #%1$s removed.
+quotes.save=Manually saved quote list for this channel.
+quotes.reload=Manually reloaded quote list for this channel.
+quotes.size=There are %1$s quotes.
+quotes.list=You can see all available quotes by visiting http://tfk.zapto.org/kdkbot/?p=channels&t=q&c=%1$s
+quotes.random=Quote #%1$s: %2$s

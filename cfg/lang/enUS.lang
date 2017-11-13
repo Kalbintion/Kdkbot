@@ -30,6 +30,15 @@ ama.cur.index=Current index set to %1$s
 ama.set.index=Set current question index to %1$s
 ama.repeat=Question: %1$s
 
+counter.new.value=Added new counter called %1$s with value of %2$s
+counter.new=Added new counter called %1$s with value of 0
+counter.del=Removed counter %1$s
+counter.mod.add=Incremented %1$s by %2$s. Value is now %3$s
+counter.mod.sub=Decremented %1$s by %2$s. Value is now %3$s
+counter.mod.mul=Multiplied %1$s by %2$s. Value is now %3$s
+counter.mod.div=Divided %1$s by %2$s. Value is now %3$s
+counter.mod.get=Counter %1$s is set to %2$s
+
 giveaway.started=Giveaway started! Send a message with '%1$s' to enter.
 giveaway.started.failed=Couldn't start giveaway! No keyword provided.
 giveaway.stopped=Giveaway stopped!

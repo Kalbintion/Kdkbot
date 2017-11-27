@@ -77,6 +77,7 @@ public class MessageParser {
 		PATTERN_MAP.put("wfbad", Pattern.compile("%WFBAD%")); // Warframe Badlands (Dark Sectors)
 		PATTERN_MAP.put("wfb", Pattern.compile("%WFB%")); // Warframe Baro
 		PATTERN_MAP.put("wfd", Pattern.compile("%WFD%")); // Warframe Darvo
+		PATTERN_MAP.put("wfdr", Pattern.compile("%WFDR%")); // Warframe Darvo - Readable
 		
 		PATTERN_MAP.put("game", Pattern.compile("%GAME:.*?%"));
 		PATTERN_MAP.put("title", Pattern.compile("%TITLE:.*?%"));
@@ -618,6 +619,7 @@ public class MessageParser {
 			}
 		}
 		
+		// TODO: Implement various Warframe parsers
 		//PATTERN_MAP.put("wfn", Pattern.compile("%WFN%")); // Warframe News (Events)
 		//PATTERN_MAP.put("wfnf", Pattern.compile("%WFNF%")); // Warframe News (Events) - First Only
 		//PATTERN_MAP.put("wfa", Pattern.compile("%WFA%")); // Warframe Alerts
@@ -629,6 +631,26 @@ public class MessageParser {
 		//PATTERN_MAP.put("wfbad", Pattern.compile("%WFBAD%")); // Warframe Badlands (Dark Sectors)
 		//PATTERN_MAP.put("wfb", Pattern.compile("%WFB%")); // Warframe Baro
 		//PATTERN_MAP.put("wfd", Pattern.compile("%WFD%")); // Warframe Darvo
+		//PATTERN_MAP.put("wfdr", Pattern.compile("%WFDR%")); // Warframe Darvo - Readable
+		
+		// Warframe Darvo
+		matches = PATTERN_MAP.get("wfd").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getDailyDeal());
+		}
+		
+		
+		// Warframe Darvo - Readable
+		matches = PATTERN_MAP.get("wfdr").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getDailyDealReadable());
+		}
 		
 		
 		// GAME - Gets Game of a given username

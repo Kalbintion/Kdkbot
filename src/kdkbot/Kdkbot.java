@@ -366,9 +366,18 @@ public class Kdkbot extends PircBot {
     		} else if(info.message.startsWith("&&debug enable")) {
     			dbg.enable();
     			this.sendMessage(info.channel, "Enabled internal debug messages");
+    		} else if (info.message.startsWith("&&ClrLangCache")) { 
+    			Translate.resetLanguageCache();
+    			this.sendMessage(info.channel, "Reset language cache");
     		} else if(info.message.startsWith("&&stop")) {
     			this.disconnect();
     			System.exit(0);
+    		} else if(info.message.startsWith("&&wfdata")) {
+    			kdkbot.api.warframe.API.Warframe.getData();
+    		} else if(info.message.startsWith("&&wfdaily")) {
+    			this.sendMessage(info.channel, kdkbot.api.warframe.API.Warframe.getDailyDeal());
+    		} else if(info.message.startsWith("&&wfddtest")) {
+    			this.sendMessage(info.channel, kdkbot.api.warframe.API.Warframe.getDailyDealReadable());
     		} else if(info.message.startsWith("&&echo " )) {
     			String messageToSend = info.message.substring("&&echo ".length());
     			this.sendMessage(info.channel, messageToSend);
@@ -438,5 +447,22 @@ public class Kdkbot extends PircBot {
     		// In the event an invalid channel is provided, we don't care, toss away the request.
     		return;
     	}
+    }
+    
+    /**
+     * Sends a message through a channels sendMessage function
+     * @param channel The channel to find, and consequently send the message through
+     * @param key The key to find in a channels language file
+     * @param formatArgs The format args
+     */
+    public void sendChanMessageTrans(String channel, String key, Object... formatArgs) {
+    	try {
+    		Channel chan = getChannel(channel);
+	    	chan.sendMessage(String.format(Translate.getTranslate(key, chan.getLang()), formatArgs));
+    	} catch(NullPointerException e) {
+    		// In the event an invalid channel is provided, we don't care, toss away the request.
+    		return;
+    	}
+    	
     }
 }

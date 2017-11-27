@@ -75,7 +75,19 @@ public class MessageInfo {
 		return getURLsFromMessage().get(0);
 	}
 	
+	/**
+	 * Returns the channel object this message instance belongs to
+	 * @return A channel object containing the channel object reference
+	 */
 	public Channel getChannel() {
 		return Kdkbot.instance.getChannel(this.channel);
+	}
+	
+	/**
+	 * Returns the channel language value this message instance belongs to
+	 * @return A string containing the language code
+	 */
+	public String getChannelLang() {
+		return getChannel().getLang();
 	}
 }

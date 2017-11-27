@@ -8,7 +8,6 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.Command;
 import kdkbot.filemanager.Config;
-import kdkbot.language.Translate;
 
 public class Timers extends Command {
 	private ArrayList<MessageTimer> timers;
@@ -72,7 +71,7 @@ public class Timers extends Command {
 					args = info.getSegments(5);
 					MessageTimer newTimer = new MessageTimer(info.channel, args[2], args[4], Long.parseLong(args[3]));
 					timers.add(newTimer);
-					Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.new", info.getChannel().getLang()), args[2], args[3], args[4]));
+					Kdkbot.instance.sendChanMessageTrans(channel, "timers.new", args[2], args[3], args[4]);
 					break;
 				case "remove":
 				case "delete":
@@ -82,13 +81,13 @@ public class Timers extends Command {
 						if(t.timerID.equalsIgnoreCase(timerID)) {
 							t.stop();
 							timers.remove(t);
-							Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.del", info.getChannel().getLang()), timerID));
+							Kdkbot.instance.sendChanMessageTrans(channel, "timers.del", timerID);
 							found = true;
 							break;
 						}
 					}
 					if(!found)
-						Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.del.fail", info.getChannel().getLang()), timerID));
+						Kdkbot.instance.sendChanMessageTrans(channel, "timers.del.fail", timerID);
 					break;
 				case "edit":
 					// Timers edit <id> <type> <newValue>
@@ -112,31 +111,31 @@ public class Timers extends Command {
 							switch(args[3].toLowerCase()) {
 								case "msg":
 									newMessage = args[4];
-									Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.msg", info.getChannel().getLang()), timerID));
+									Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.msg", timerID);
 									break;
 								case "delay":
 									newDelay = Long.parseLong(args[4]);
-									Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.delay", info.getChannel().getLang()), timerID, args[4]));
+									Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.delay", timerID, args[4]);
 									break;
 								case "flags":
 									newFlags = args[4];
-									Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags", info.getChannel().getLang()), timerID));
+									Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.flags", timerID);
 									break;
 								case "needslive":
 									t.flagsVals.REQUIRES_LIVE = Boolean.parseBoolean(args[4]);
 									newFlags = t.flagsVals.toString();
-									Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.needslive", info.getChannel().getLang()), timerID, args[4]));
+									Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.flags.needslive", timerID, args[4]);
 									break;
 								case "msgcount":
 									int msgCount = Integer.parseInt(args[4]);
 									if(msgCount <= 0) {
 										t.flagsVals.REQUIRES_MSG_COUNT = false;
 										newFlags =t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.msgcount.clear", info.getChannel().getLang()), timerID));
+										Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.flags.msgcount.clear", timerID);
 									} else {
 										t.flagsVals.REQUIRES_MSG_COUNT_AMT = args[4];
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.msgcount", info.getChannel().getLang()), timerID, args[4]));
+										Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.flags.msgcount", timerID, args[4]);
 									}
 									break;
 								case "reqgame":
@@ -144,12 +143,12 @@ public class Timers extends Command {
 										t.flagsVals.REQUIRES_GAME = true;
 										t.flagsVals.REQUIRES_GAME_NAME = args[4];
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.reqgame", info.getChannel().getLang()), timerID, args[4]));
+										Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.flags.reqgame", timerID, args[4]);
 									} else {
 										t.flagsVals.REQUIRES_GAME = false;
 										t.flagsVals.REQUIRES_GAME_NAME = "";
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.reqgame.clear", info.getChannel().getLang()), timerID));
+										Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.flags.reqgame.clear", timerID);
 									}
 									break;
 								case "reqtitle":
@@ -157,12 +156,12 @@ public class Timers extends Command {
 										t.flagsVals.REQUIRES_IN_TITLE = true;
 										t.flagsVals.REQUIRES_IN_TITLE_TEXT = args[4];
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.reqtitle", info.getChannel().getLang()), timerID, args[4]));
+										Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.flags.reqtitle", timerID, args[4]);
 									} else {
 										t.flagsVals.REQUIRES_IN_TITLE = false;
 										t.flagsVals.REQUIRES_IN_TITLE_TEXT = "";
 										newFlags = t.flagsVals.toString();
-										Kdkbot.instance.sendChanMessage(info.channel, String.format(Translate.getTranslate("timers.mod.flags.reqtitle.clear", info.getChannel().getLang()), timerID));
+										Kdkbot.instance.sendChanMessageTrans(channel, "timers.mod.flags.reqtitle.clear", timerID);
 									}
 									break;
 							}

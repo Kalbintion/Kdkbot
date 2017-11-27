@@ -7,7 +7,6 @@ import java.util.TimeZone;
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.channel.UserStat;
-import kdkbot.language.Translate;
 
 public class Stats {
 	private String channel;
@@ -32,25 +31,25 @@ public class Stats {
 		switch(subCmd) {
 			case "time":
 				if(userstat.firstJoin == 0) {
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("stats.time.fail", info.getChannel().getLang()), info.sender));
+					Kdkbot.instance.sendChanMessageTrans(channel, "stats.time.fail", info.sender);
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("stats.time", info.getChannel().getLang()), info.sender, getDurationTime(userstat), getFirstJoinDate(userstat)));
+					Kdkbot.instance.sendChanMessageTrans(channel, "stats.time", info.sender, getDurationTime(userstat), getFirstJoinDate(userstat));
 				}
 				break;
 			case "msges":
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("stats.msges", info.getChannel().getLang()), info.sender, getMessageCount(userstat), getCharacterCount(userstat)));		
+				Kdkbot.instance.sendChanMessageTrans(channel, "stats.msges", info.sender, getMessageCount(userstat), getCharacterCount(userstat));		
 				break;
 			case "char":
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("stats.char", info.getChannel().getLang()), info.sender, getCharacterCount(userstat)));
+				Kdkbot.instance.sendChanMessageTrans(channel, "stats.char",info.sender, getCharacterCount(userstat));
 				break;
 			case "all":
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("stats.all", info.getChannel().getLang()), info.sender, getDurationTime(userstat), getFirstJoinDate(userstat), getMessageCount(userstat), getCharacterCount(userstat)));
+				Kdkbot.instance.sendChanMessageTrans(channel, "stats.all", info.sender, getDurationTime(userstat), getFirstJoinDate(userstat), getMessageCount(userstat), getCharacterCount(userstat));
 				break;
 			case "bits":
 				if(userstat.bitsDate == 0) {
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("stats.bits.fail", info.getChannel().getLang()), info.sender));
+					Kdkbot.instance.sendChanMessageTrans(channel, "stats.bits.fail", info.sender);
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("stats.bits", info.getChannel().getLang()), info.sender, getBitCount(userstat), getFirstBitDate(userstat)));
+					Kdkbot.instance.sendChanMessageTrans(channel, "stats.bits", info.sender, getBitCount(userstat), getFirstBitDate(userstat));
 				}
 				break;
 		}
@@ -61,7 +60,7 @@ public class Stats {
 	}
 	
 	public void failedToFind(MessageInfo info) {
-		Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("stats.failed", info.getChannel().getLang()), info.sender));
+		Kdkbot.instance.sendChanMessageTrans(channel, "stats.failed", info.sender);
 	}
 
 	public String getFirstJoinDate(UserStat user) {

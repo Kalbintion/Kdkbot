@@ -8,7 +8,6 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.Command;
 import kdkbot.filemanager.Config;
-import kdkbot.language.Translate;
 
 public class Counters extends Command {
 	public ArrayList<Counter> counters;
@@ -96,10 +95,10 @@ public class Counters extends Command {
 				if(info.senderLevel >= 2) {
 					if(args.length > 3) {
 						this.addCounter(args[2], amount);
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("counter.new.value", info.getChannel().getLang()), args[2], args[3]));
+						Kdkbot.instance.sendChanMessageTrans(channel, "counter.new.value", args[2], args[3]);
 					} else {
 						this.addCounter(args[2], 0);
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("counter.new", info.getChannel().getLang()), args[2], args[3]));
+						Kdkbot.instance.sendChanMessageTrans(channel, "counter.new", args[2], args[3]);
 					}
 				}
 				break;
@@ -107,7 +106,7 @@ public class Counters extends Command {
 			case "remove":
 				if(info.senderLevel >= 2) {
 					this.removeCounter(args[2]);
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("counter.del", info.getChannel().getLang()), args[2]));
+					Kdkbot.instance.sendChanMessageTrans(channel, "counter.del", args[2]);
 				}
 				break;
 			case "+":
@@ -116,7 +115,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.addValue(amount);
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("counter.mod.add", info.getChannel().getLang()), args[2], amount, cntr.value));
+						Kdkbot.instance.sendChanMessageTrans(channel, "counter.mod.add", args[2], amount, cntr.value);
 					}
 				}
 				break;
@@ -126,7 +125,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.subtractValue(amount);
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("counter.mod.sub", info.getChannel().getLang()), args[2], amount, cntr.value));
+						Kdkbot.instance.sendChanMessageTrans(channel, "counter.mod.sub", args[2], amount, cntr.value);
 					}
 				}
 				break;
@@ -136,7 +135,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.multiplyValue(amount);
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("counter.mod.mul", info.getChannel().getLang()), args[2], amount, cntr.value));
+						Kdkbot.instance.sendChanMessageTrans(channel, "counter.mod.mul", args[2], amount, cntr.value);
 					}
 				}
 				break;
@@ -146,7 +145,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.divideValue(amount);
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("counter.mod.div", info.getChannel().getLang()), args[2], amount, cntr.value));
+						Kdkbot.instance.sendChanMessageTrans(channel, "counter.mod.div", args[2], amount, cntr.value);
 					}
 				}
 				break;
@@ -155,7 +154,7 @@ public class Counters extends Command {
 				while(cntrIter.hasNext()) {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("counter.mod.get", info.getChannel().getLang()), cntr.name, cntr.value));
+						Kdkbot.instance.sendChanMessageTrans(channel, "counter.mod.get", cntr.name, cntr.value);
 					}
 				}
 				break;

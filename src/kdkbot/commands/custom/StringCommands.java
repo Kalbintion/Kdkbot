@@ -142,11 +142,11 @@ public class StringCommands {
 						StringCommand strCmd = strCmdIter.next();
 						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 							if(type.equalsIgnoreCase("available")) {
-								Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.view.available", Kdkbot.instance.getChannel(this.channel).getLang()), strCmd.getTrigger(), strCmd.getAvailability()));
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.view.available", strCmd.getTrigger(), strCmd.getAvailability());
 							} else if(type.equalsIgnoreCase("level")) {
-								Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.view.level", Kdkbot.instance.getChannel(this.channel).getLang()), strCmd.getTrigger(), strCmd.getPermissionLevel()));
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.view.available", strCmd.getTrigger(), strCmd.getPermissionLevel());
 							} else if(type.equalsIgnoreCase("message") || type.equalsIgnoreCase("msg")) {
-								Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.view.msg", Kdkbot.instance.getChannel(this.channel).getLang()), strCmd.getTrigger(), strCmd.messageToSend));
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.view.available", strCmd.getTrigger(), strCmd.messageToSend);
 							}
 							break;
 						}
@@ -171,26 +171,25 @@ public class StringCommands {
 						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 							if(info.senderLevel >= strCmd.getPermissionLevel()) {
 								if(type.equalsIgnoreCase("trigger")) {
-									Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.trigger", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender, strCmd.getTrigger(), toValue));
+									Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.trigger", info.sender, strCmd.getTrigger(), toValue);
 									strCmd.setTrigger(toValue);
 								} else if(type.equalsIgnoreCase("rank")) {
-									Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.rank", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue));
+									Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.rank", info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue);
 									strCmd.setPermissionLevel(Integer.parseInt(toValue));
 								} else if(type.equalsIgnoreCase("message")) {
-									Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.msg", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender, strCmd.getTrigger()));
+									Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.msg", info.sender, strCmd.getTrigger());
 									strCmd.messageToSend = toValue;
 								} else if(type.equalsIgnoreCase("available")) {
 									try {
 										boolean bool = Boolean.parseBoolean(csArgs[4]);
-										Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.available", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getAvailability()));
+										Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.available",info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getAvailability());
 										strCmd.setAvailability(bool);
 									} catch(Exception e) {
-										Kdkbot.instance.getChannel(channel).sendMessage("Unable to discern " + csArgs[4] + " as a true/false value.");
-										Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.available.fail", Kdkbot.instance.getChannel(this.channel).getLang()), csArgs[4]));
+										Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.available.fail", csArgs[4]);
 									}
 								}
 							} else {
-								Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.mod.fail", Kdkbot.instance.getChannel(this.channel).getLang()), info.sender));
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.fail", info.sender);
 							}
 							break;
 						}
@@ -200,12 +199,12 @@ public class StringCommands {
 				break;
 			case "remove":
 				if(info.senderLevel >= 3) {
-					Kdkbot.instance.getChannel(channel).sendMessage(removeCommand(info.getSegments()[2]));
+					Kdkbot.instance.sendChanMessage(channel, removeCommand(info.getSegments()[2]));
 					this.saveCommands();
 				}
 				break;
 			case "list":
-				Kdkbot.instance.getChannel(channel).sendMessage(String.format(Translate.getTranslate("custom.list", info.getChannel().getLang()), channel.replace("#", "")));
+				Kdkbot.instance.sendChanMessageTrans(channel, "custom.list", channel.replace("#", ""));
 				break;
 			case "listx":
 				// commands list [custom] <rank>

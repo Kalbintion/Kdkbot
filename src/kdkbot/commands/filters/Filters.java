@@ -142,7 +142,7 @@ public class Filters {
 							newAdditionalInfo = Translate.getTranslate("filters.add.info", info.getChannel().getLang());
 							break;
 					}
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.add", info.getChannel().getLang()), parts[3], newAdditionalInfo));
+					Kdkbot.instance.sendChanMessageTrans(channel, "filters.add", parts[3], newAdditionalInfo);
 					saveFilters();
 				break;
 			case "remove":
@@ -152,7 +152,7 @@ public class Filters {
 					int idx = Integer.parseInt(parts[2]);
 					
 					this.filters.remove(idx);
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.remove", info.getChannel().getLang()), parts[2]));
+					Kdkbot.instance.sendChanMessageTrans(channel, "filters.remove", parts[2]);
 				} catch(NumberFormatException e) {
 					// We must be dealing with a human name
 					Iterator<Filter> it = this.filters.iterator();
@@ -160,13 +160,13 @@ public class Filters {
 						Filter nxt = it.next();
 						if(nxt.humanName.equalsIgnoreCase(parts[2])) {
 							it.remove();
-							Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.remove", info.getChannel().getLang()), parts[2]));
+							Kdkbot.instance.sendChanMessageTrans(channel, "filters.remove", parts[2]);
 							break;
 						}
 					}
 				} catch(IndexOutOfBoundsException e) {
 					// IOOB exception
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.remove.fail", info.getChannel().getLang()), parts[2]));
+					Kdkbot.instance.sendChanMessageTrans(channel, "filters.remove.fail", parts[2]);
 				}
 				
 				saveFilters();
@@ -178,13 +178,13 @@ public class Filters {
 				
 				switch(parts[3]) {
 					case "type":
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.view.type", info.getChannel().getLang()), parts[2], parts[3], toView.action));
+						Kdkbot.instance.sendChanMessageTrans(channel, "filters.view.type", parts[2], parts[3], toView.action);
 						break;
 					case "regex":
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.view.regex", info.getChannel().getLang()), parts[2], parts[3], toView.toFind.toString()));
+						Kdkbot.instance.sendChanMessageTrans(channel, "filters.view.regex", parts[2], parts[3], toView.toFind.toString());
 						break;
 					case "info":
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.view.info", info.getChannel().getLang()), parts[2], parts[3], toView.actionInfo));
+						Kdkbot.instance.sendChanMessageTrans(channel, "filters.view.info", parts[2], parts[3], toView.actionInfo);
 						break;
 				}
 				break;
@@ -209,7 +209,7 @@ public class Filters {
 					case "flag":
 						// Toggles flag values based on <new_value>
 				}
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.mod", info.getChannel().getLang()), parts[2], parts[3], parts[4]));
+				Kdkbot.instance.sendChanMessageTrans(channel, "filters.mod", parts[2], parts[3], parts[4]);
 				saveFilters();
 				break;
 			case "save":
@@ -218,7 +218,7 @@ public class Filters {
 					// |filter reload
 				break;
 			case "size":
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("filters.size", info.getChannel().getLang()), filters.size()));
+				Kdkbot.instance.sendChanMessageTrans(channel, "filters.size", filters.size());
 				break;
 		}
 	}

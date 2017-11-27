@@ -6,7 +6,6 @@ import java.util.Random;
 import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.Command;
-import kdkbot.language.Translate;
 
 public class Giveaway extends Command {
 	private String channel;
@@ -32,76 +31,76 @@ public class Giveaway extends Command {
 			case "start":
 				// giveaway start <triggerword>
 				if(args.length < 3) {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.started.failed", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.started.failed");
 				} else {
 					start(args[2]);
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.started", info.getChannel().getLang()), args[2]));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.started", args[2]);
 				}
 				break;
 			case "stop":
 				// giveaway stop
 				if(hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.stopped", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.stopped");
 					stop();
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "count":
 				if(hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.entered.count", info.getChannel().getLang()), numberOfEntries()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.entered.count", numberOfEntries());
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "cancel":
 				if(hasStarted()) {
 					cancel();
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "pick":
 				// giveaway pick [n]
 				if(hasStarted()) {
 					if(args.length < 3) {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.winner", info.getChannel().getLang()), pick()));
+						Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.winner", pick());
 					} else {
 						// PickN
 						try {
 							int toPick = Integer.parseInt(args[2]);
-							Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.winners", info.getChannel().getLang()), pickN(toPick)));
+							Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.winners", pickN(toPick));
 						} catch (NumberFormatException e) {
-							Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.badnumber", info.getChannel().getLang()), args[2]));
+							Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.badnumber", args[2]);
 						}
 					}
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "pickr":
 				// giveaway pickr [n]
 				if(hasStarted()) {
 					if(args.length < 3) {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.winner", info.getChannel().getLang()), pick(true)));
+						Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.winner", pick(true));
 					} else {
 						// PickN(true)
 						try {
 							int toPick = Integer.parseInt(args[2]);
-							Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.winners", info.getChannel().getLang()), pickN(toPick, true)));
+							Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.winners", pickN(toPick, true));
 						} catch (NumberFormatException e) {
-							Kdkbot.instance.sendChanMessage(channel,  String.format(Translate.getTranslate("giveaway.badnumber", info.getChannel().getLang()), args[2]));
+							Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.badnumber", args[2]);
 						}
 					}
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 			case "reset":
 				if(hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.reset.live", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.reset.live");
 					entries.clear();
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.reset", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.reset");
 					triggerWord = null;
 					entries.clear();
 				}
@@ -109,37 +108,37 @@ public class Giveaway extends Command {
 			case "add":
 				if(info.senderLevel >= 5) {
 					if(hasStarted()) {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.manual.add", info.getChannel().getLang()), args[2]));
+						Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.manual.add", args[2]);
 						addEntry(args[2]);
 					} else {
-						Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+						Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 					}
 				}
 				break;
 			case "remove":
 				if(info.senderLevel >= 5) {
 					if(hasStarted()) {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.manual.del", info.getChannel().getLang()), args[2]));
+						Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.manual.del", args[2]);
 						removeEntry(args[2]);
 					} else {
-						Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+						Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 					}
 				}
 				break;
 			case "pause":
 				if(hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.paused", info.getChannel().getLang()));;
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.paused");;
 					pause();
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.hasntStarted", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "resume":
 				if(!hasStarted()) {
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("giveaway.resume", info.getChannel().getLang()), this.triggerWord));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.resume", this.triggerWord);
 					resume();
 				} else {
-					Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("giveaway.alreadyStarted", info.getChannel().getLang()));
+					Kdkbot.instance.sendChanMessageTrans(channel, "giveaway.alreadyStarted");
 				}
 				break;
 		}

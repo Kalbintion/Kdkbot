@@ -4,7 +4,6 @@ import kdkbot.Kdkbot;
 import kdkbot.MessageInfo;
 import kdkbot.commands.*;
 import kdkbot.filemanager.Config;
-import kdkbot.language.Translate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,42 +45,42 @@ public class Quotes extends Command {
 				try {
 					String quote = quotes.get(args[2]);
 					if(quote != null) {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.get", info.getChannel().getLang()), args[2], quote));
+						Kdkbot.instance.sendChanMessageTrans(channel, "quotes.get", args[2], quote);
 					} else {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.get.fail", info.getChannel().getLang()), args[2]));
+						Kdkbot.instance.sendChanMessageTrans(channel, "quotes.get.fail", args[2]);
 					}
 					
 				} catch(NumberFormatException e) {
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.exNFE", info.getChannel().getLang()), info.sender));
+					Kdkbot.instance.sendChanMessageTrans(channel, "quotes.exNFE",info.sender);
 				} catch(IndexOutOfBoundsException e) {
-					Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.exIOOB", info.getChannel().getLang()), info.sender));
+					Kdkbot.instance.sendChanMessageTrans(channel, "quotes.exIOOB", info.sender);
 				}
 				break;
 			case "add":
 				quotes.put(Integer.toString(++lastIndex), info.message.substring("quote add ".length()));
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.add", info.getChannel().getLang()), lastIndex));
+				Kdkbot.instance.sendChanMessageTrans(channel, "quotes.add", lastIndex);
 				saveQuotes();
 				break;
 			case "remove":
 				quotes.remove(args[2]);
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.del", info.getChannel().getLang()), args[2]));
+				Kdkbot.instance.sendChanMessageTrans(channel, "quotes.del", args[2]);
 				break;
 			case "save":
 				this.saveQuotes();
-				Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("quotes.save", info.getChannel().getLang()));
+				Kdkbot.instance.sendChanMessageTrans(channel, "quotes.save");
 				break;
 			case "reload":
 				this.quotes = new HashMap<String, String>();
 				this.loadQuotes();
-				Kdkbot.instance.sendChanMessage(channel, Translate.getTranslate("quotes.reload", info.getChannel().getLang()));
+				Kdkbot.instance.sendChanMessageTrans(channel, "quotes.reload");
 			case "count":
 			case "amount":
 			case "total":
 			case "size":
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.size", info.getChannel().getLang()), quotes.size()));
+				Kdkbot.instance.sendChanMessageTrans(channel, "quotes.size", quotes.size());
 				break;
 			case "list":
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.list", info.getChannel().getLang()), info.channel.replace("#", "")));
+				Kdkbot.instance.sendChanMessageTrans(channel, "quotes.list", info.channel.replace("#", ""));
 				break;
 			case "random":
 				Random rnd = new Random();
@@ -90,7 +89,7 @@ public class Quotes extends Command {
 					quoteNum = rnd.nextInt(this.quotes.size() + 1);
 				} while(quotes.get(Integer.toString(quoteNum)) == null);
 				
-				Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.random", info.getChannel().getLang()), quoteNum, quotes.get(Integer.toString(quoteNum))));
+				Kdkbot.instance.sendChanMessageTrans(channel, "quotes.random", quoteNum, quotes.get(Integer.toString(quoteNum)));
 				
 				break;
 			default:
@@ -99,9 +98,9 @@ public class Quotes extends Command {
 					
 					String quote = quotes.get(String.valueOf(quoteIndex));
 					if(quote != null) {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.get", info.getChannel().getLang()), args[1], quote));
+						Kdkbot.instance.sendChanMessageTrans(channel, "quotes.get", args[1], quote);
 					} else {
-						Kdkbot.instance.sendChanMessage(channel, String.format(Translate.getTranslate("quotes.get.fail", info.getChannel().getLang()), args[1]));
+						Kdkbot.instance.sendChanMessageTrans(channel, "quotes.get.fail", args[1]);
 					}
 				} catch(NumberFormatException e) {
 					
@@ -119,6 +118,7 @@ public class Quotes extends Command {
 		return true;
 	}
 	
+	@SuppressWarnings("unlikely-arg-type")
 	public String getQuote(int index) {
 		return quotes.get(index);
 	}

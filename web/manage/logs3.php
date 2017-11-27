@@ -54,7 +54,7 @@ if(isset($_GET['log'])) {
 	echo "<h1>Log Files for ".$_SESSION['USER']."</h1>";
 	foreach($items as $item) {
 		if($item !== ".." && $item !== ".") {
-			echo "<a href=\"?p=manage/logs2&log=".$item."\"><div class=\"logItem\">$item</div></a>";
+			echo "<a href=\"?p=manage/logs3&log=".$item."\"><div class=\"logItem\">$item</div></a>";
 		}
 	}
 	

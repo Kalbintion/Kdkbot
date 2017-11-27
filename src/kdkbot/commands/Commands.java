@@ -14,10 +14,8 @@ import kdkbot.commands.counters.*;
 import kdkbot.commands.custom.*;
 import kdkbot.commands.giveaway.Giveaway;
 import kdkbot.commands.stats.Stats;
-import kdkbot.economy.Economy;
 
 // TODO: Change Commands list to level 1
-
 
 public class Commands {
 	// Necessary variable for instance referencing
@@ -169,6 +167,12 @@ public class Commands {
 						chan.cfgChan.setSetting("msgSuffix", "");
 					} else {
 						chan.cfgChan.setSetting("msgSuffix", args[2]);
+					}
+				} else if(args[1].equalsIgnoreCase("lang")) {
+					if(args.length < 3) {
+						chan.cfgChan.setSetting("lang", "enUS");
+					} else {
+						chan.cfgChan.setSetting("lang", args[2]);
 					}
 				} else if(args[1].equalsIgnoreCase("get")) {
 					chan.sendMessage(chan.cfgChan.getSetting(args[2].toLowerCase()));

@@ -2,6 +2,7 @@
 	if(isset($_GET['clearCache'])) {
 		if($_GET['clearCache'] == "true") {
 			// We need to clear image cache before doing anything
+			// NOTE: THIS PROCESS WILL HANG SERVER UNTIL FILES ARE DONE DOWNLOADING
 			$files = scandir("./imgs-cache/");
 			foreach($files as $file) {
 				if(!in_array($file, ["..", "."])) {
@@ -65,7 +66,7 @@
 				if(isset($profileData["logo"])) {
 					$imgURL = $profileData["logo"];
 				} else {
-					$imgURL = "https://static-cdn.jtvnw.net/jtv-static/404_preview-45x45.png";
+					$imgURL = "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
 				}
 				
 				// We know they have(n't) a logo, so lets grab it

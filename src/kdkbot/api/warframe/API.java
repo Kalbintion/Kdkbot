@@ -20,8 +20,164 @@ import com.google.gson.JsonParser;
 
 import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.Config;
+import kdkbot.language.Translate;
 
 public final class API {
+	/**
+	 * Provides an interface to the (semi-)official warframe API
+	 * NOTE: Uses file in ./cfg/lang/enWFUN.lang for purposes of 
+	 * 		 internal unique names found on warframes API to human readable names
+	 * @author KDK
+	 *
+	 */
+	public static class Warframe {
+		private static String BASE_URL = "http://content.warframe.com/dynamic/worldState.php";
+		
+		/**
+		 * Returns the latest news items
+		 * @return String array containing all news items and their links
+		 */
+		public static String[] getAllEvents() {
+			JsonObject allData = getData();
+			JsonArray eventData = allData.get("Events").getAsJsonArray();
+			
+			JsonArray outData = new JsonArray();
+			
+			for(JsonElement jEvent : eventData) {
+				JsonObject objOut = new JsonObject();
+				JsonObject objEvent = jEvent.getAsJsonObject();
+				
+				
+			}
+			
+			return null;
+		}
+		
+		public static String getAllEventsReadable() {
+			return null;
+		}
+		
+		/**
+		 * Returns only the first news item
+		 * @return String containing the latest news item and link to it
+		 */
+		public static String getFirstEvent() {
+			JsonObject allData = getData();
+			
+			return null;
+		}
+		
+		public static String[] getAllAlerts() {
+			JsonObject allData = getData();
+			
+			return null;
+		}
+		
+		public static String getAllAlertsReadable() {
+			return null;
+		}
+		
+		public static String[] getAllSorties() {
+			JsonObject allData = getData();
+			
+			return null;
+		}
+		
+		public static String getAllSortiesReadable() {
+			return null;
+		}
+		
+		public static String[] getAllInvasions() {
+			JsonObject allData = getData();
+			
+			return null;
+		}
+		
+		public static String getAllInvasionsReadable() {
+			return null;
+		}
+		
+		public static String[] getBaroItems() {
+			JsonObject allData = getData();
+			
+			return null;
+		}
+		
+		public static String getBaroItemsReadable() {
+			return null;
+		}
+		
+		public static String getDailyDeal() {
+			JsonObject data = getDailyDealHelper();
+			
+			return data.toString();
+		}
+		
+		public static String getDailyDealReadable() {
+			JsonObject data = getDailyDealHelper();
+			return getReadableName(data.get("name").toString()) + " " + data.get("curPrice") + " [" + data.get("oriPrice") + "] " + data.get("curAmount") + "/" + data.get("oriAmount");
+		}
+		
+		private static JsonObject getDailyDealHelper() {
+			JsonObject allData = getData();
+			JsonObject data = allData.get("DailyDeals").getAsJsonArray().get(0).getAsJsonObject();
+			
+			JsonObject retData = new JsonObject();
+			retData.add("name", data.get("StoreItem"));
+			retData.add("curPrice", data.get("Discount"));
+			retData.add("oriPrice", data.get("OriginalPrice"));
+			retData.add("curAmount", data.get("AmountSold"));
+			retData.add("oriAmount", data.get("AmountTotal"));
+			
+			return retData;
+		}
+		
+		public static String getWorldSeed() {
+			JsonObject allData = getData();
+			
+			return allData.get("data").toString();
+		}
+		
+		public static JsonObject getData() {
+			JsonParser parser = new JsonParser();
+			JsonObject jobj = null;
+			
+			try {
+				Connection conn = Jsoup.connect(BASE_URL);
+				conn.timeout(10000);
+				Document doc;
+				doc = conn.ignoreContentType(true).get();
+				
+				jobj = parser.parse(doc.body().html()).getAsJsonObject();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+			
+			System.out.println(jobj.toString());
+			
+			return jobj;
+		}
+		
+		/**
+		 * Retrieves the human-readable name from a unique name
+		 * @param uniqueName The unique name to get the real name for
+		 * @return The real name, if found, of the item
+		 */
+		private static String getReadableName(String uniqueName) {
+			uniqueName = uniqueName.replaceAll("\"", "");
+			String ret = Translate.getTranslate(uniqueName, "enWFUN");
+			
+			// Set translation of this object to itself for future correction
+			if(ret.equalsIgnoreCase("null")) {
+				Translate.setTranslate(uniqueName, "enWFUN", uniqueName);
+				ret = uniqueName;
+			}
+			
+			return ret;
+		}
+	}
+	
 	public static class Scaling {
 		private static String FORMULA_HEALTH = "base*(1+(curLevel-baseLevel)^2*0.015)";
 		private static String FORMULA_SHIELD = "base*(1+(curLevel-baseLevel)^2*0.0075)";
@@ -272,12 +428,12 @@ public final class API {
 	}
 	
 	/**Warframe.Market API Portion
-	 * API URL FORMAT: http://warframe.market/api/get_orders/%ITEM_TYPE%/%ITEM_NAME%
+	 * API URL FORMAT: https://api.warframe.market/v1/items/%ITEM_NAME%/orders
 	 * 
-	 * NOTE: This API is *not* public and may change at any time with no backwards compatibility.
+	 * NOTE: The site API is *not* officially public and may change at any time with
+	 *       no backwards compatibility. Possible breakings may happen on site updates
 	 * 
 	 * @author KDK
-	 *
 	 */
 	public static class Market {
 

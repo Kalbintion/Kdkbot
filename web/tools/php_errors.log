@@ -1,0 +1,30 @@
+[14-Nov-2017 11:20:13 UTC] PHP Notice:  Undefined index: time in C:\Projects\JAVA\Kdkbot\web\tools\timer.php on line 13
+[14-Nov-2017 11:25:52 UTC] PHP Parse error:  syntax error, unexpected ':', expecting ',' or ';' in C:\Projects\JAVA\Kdkbot\web\tools\timer.php on line 32
+[14-Nov-2017 11:31:04 UTC] PHP Parse error:  syntax error, unexpected '\' (T_NS_SEPARATOR), expecting ',' or ';' in C:\Projects\JAVA\Kdkbot\web\tools\timer.php on line 41
+[14-Nov-2017 11:38:20 UTC] PHP Warning:  A non-numeric value encountered in C:\Projects\JAVA\Kdkbot\web\tools\timer.php on line 56
+[14-Nov-2017 11:38:20 UTC] PHP Warning:  A non-numeric value encountered in C:\Projects\JAVA\Kdkbot\web\tools\timer.php on line 56
+[14-Nov-2017 20:12:47 UTC] PHP Parse error:  syntax error, unexpected 'audio' (T_STRING), expecting ',' or ';' in C:\Projects\JAVA\Kdkbot\web\tools\audio.php on line 10
+[14-Nov-2017 20:17:41 UTC] PHP Notice:  Undefined variable: _SESSION in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:17:41 UTC] PHP Warning:  include(.update): failed to open stream: No such file or directory in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:17:41 UTC] PHP Warning:  include(): Failed opening '.update' for inclusion (include_path='.;C:\php\pear') in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:17:59 UTC] PHP Notice:  Undefined variable: _SESSION in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 20:17:59 UTC] PHP Warning:  include(.update): failed to open stream: No such file or directory in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 20:17:59 UTC] PHP Warning:  include(): Failed opening '.update' for inclusion (include_path='.;C:\php\pear') in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 20:21:04 UTC] PHP Notice:  Undefined variable: _SESSION in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 20:21:04 UTC] PHP Warning:  include(.update): failed to open stream: No such file or directory in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 20:21:04 UTC] PHP Warning:  include(): Failed opening '.update' for inclusion (include_path='.;C:\php\pear') in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 20:21:24 UTC] PHP Notice:  Undefined variable: _SESSION in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:21:24 UTC] PHP Warning:  include(.update): failed to open stream: No such file or directory in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:21:24 UTC] PHP Warning:  include(): Failed opening '.update' for inclusion (include_path='.;C:\php\pear') in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:21:35 UTC] PHP Notice:  Undefined variable: _SESSION in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:21:35 UTC] PHP Warning:  include(.update): failed to open stream: No such file or directory in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:21:35 UTC] PHP Warning:  include(): Failed opening '.update' for inclusion (include_path='.;C:\php\pear') in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:21:54 UTC] PHP Notice:  Undefined variable: _SESSION in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:21:54 UTC] PHP Warning:  include(.update): failed to open stream: No such file or directory in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:21:54 UTC] PHP Warning:  include(): Failed opening '.update' for inclusion (include_path='.;C:\php\pear') in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 7
+[14-Nov-2017 20:22:17 UTC] PHP Notice:  Undefined variable: _SESSION in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 20:22:17 UTC] PHP Warning:  include(.update): failed to open stream: No such file or directory in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 20:22:17 UTC] PHP Warning:  include(): Failed opening '.update' for inclusion (include_path='.;C:\php\pear') in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 22:40:29 UTC] PHP Notice:  Undefined variable: _SESSION in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 22:40:29 UTC] PHP Warning:  include(.update): failed to open stream: No such file or directory in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8
+[14-Nov-2017 22:40:29 UTC] PHP Warning:  include(): Failed opening '.update' for inclusion (include_path='.;C:\php\pear') in C:\Projects\JAVA\Kdkbot\web\tools\audio-executor.php on line 8

@@ -100,7 +100,7 @@ echo "
 </tr>
 <tr>
 	<td style=\"width: 200px; text-align: right;\">Language</td>
-	<td><select name=\"lang\"><option value=\"enUS\">English - US</option></select></td>
+	<td><select name=\"lang\"><option value=\"enUS\">English - US</option><option value=\"enPirate\">English - Pirate</option></select></td>
 </tr>
 <tr>
 	<td style=\"width: 200px; text-align: right;\">Log Chat</td>

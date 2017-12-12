@@ -45,10 +45,10 @@ public class Parser {
 		dictionary.add(new DictionaryItem("wfdr", 1));
 	}
 	
-	private static int ATOM_NOT_STARTED = 0;
-	private static int ATOM_STARTED = 1;
-	private static int ATOM_DATA_ENDED = ATOM_NOT_STARTED;
-	private static int ATOM_READING_ARGS = 2;
+	private static final int ATOM_NOT_STARTED = 0;
+	private static final int ATOM_STARTED = 1;
+	private static final int ATOM_DATA_ENDED = ATOM_NOT_STARTED;
+	private static final int ATOM_READING_ARGS = 2;
 	
 	public static void parse(String toParse) {
 		int ch = 0; // Current character index
@@ -64,12 +64,12 @@ public class Parser {
 		while(ch < toParse.length()) {
 			if(atomState == ATOM_READING_ARGS) {
 				System.out.println("DBG: atomState: " + atomState + ", atomOpened: " + atomOpened);
-				if(toParse.charAt(ch) == atomVarEnd && atomOpened == 0) {
+				if(toParse.charAt(ch) == atomVarEnd && atomOpened == 1) {
 					atomState = ATOM_DATA_ENDED; // We've ended the data, we can print info acquired
 					System.out.println("Atom: " + readAtom + ", Args: " + readAtomArgs);
 					readAtom = "";
 					readAtomArgs = "";
-				} else if(toParse.charAt(ch) == atomVarEnd && atomOpened >= 0) {
+				} else if(toParse.charAt(ch) == atomVarEnd && atomOpened > 1) {
 					System.out.println("DBG: atomVarEnd found, atomOpened: " + atomOpened);
 					readAtomArgs += toParse.charAt(ch);
 					atomOpened--;
@@ -78,6 +78,9 @@ public class Parser {
 					}
 				} else {
 					readAtomArgs += toParse.charAt(ch);
+					if(toParse.charAt(ch) == atomStartChar) {
+						atomOpened++;
+					}
 				}
 			} else if(atomState == ATOM_STARTED) {
 				System.out.println("DBG: atomState: " + atomState + ", atomOpened: " + atomOpened);

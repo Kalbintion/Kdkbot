@@ -33,6 +33,7 @@ public class MessageParser {
 	private static HashMap<String, String> FLIP_MAP = new HashMap<String, String>();
 	private static HashMap<String, Pattern> PATTERN_MAP = new HashMap<String, Pattern>();
 	private static HashMap<String, String> STEAM_MAP = new HashMap<String, String>();
+	private static HashMap<String, String> MORSE_MAP = new HashMap<String, String>();
 	
 	/**
 	 * Necessary information for regex patterns & character mappings
@@ -148,6 +149,43 @@ public class MessageParser {
 		FLIP_MAP.put("9", "6");
 		FLIP_MAP.put("¯", "_");
 		FLIP_MAP.put("_", "¯");
+		
+		MORSE_MAP.put("A", ".-");
+		MORSE_MAP.put("B", "-...");
+		MORSE_MAP.put("C", "-.-.");
+		MORSE_MAP.put("D", "-..");
+		MORSE_MAP.put("E", ".");
+		MORSE_MAP.put("F", "..-.");
+		MORSE_MAP.put("G", "--.");
+		MORSE_MAP.put("H", "....");
+		MORSE_MAP.put("I", "..");
+		MORSE_MAP.put("J", ".---");
+		MORSE_MAP.put("K", "-.-");
+		MORSE_MAP.put("L", ".-..");
+		MORSE_MAP.put("M", "--");
+		MORSE_MAP.put("N", "-.");
+		MORSE_MAP.put("O", "---");
+		MORSE_MAP.put("P", ".--.");
+		MORSE_MAP.put("Q", "--.-");
+		MORSE_MAP.put("R", ".-.");
+		MORSE_MAP.put("S", "...");
+		MORSE_MAP.put("T", "-");
+		MORSE_MAP.put("U", "..-");
+		MORSE_MAP.put("V", "...-");
+		MORSE_MAP.put("W", ".--");
+		MORSE_MAP.put("X", "-..-");
+		MORSE_MAP.put("Y", "-.--");
+		MORSE_MAP.put("Z", "--..");
+		MORSE_MAP.put("1", ".----");
+		MORSE_MAP.put("2", "..---");
+		MORSE_MAP.put("3", "...--");
+		MORSE_MAP.put("4", "....-");
+		MORSE_MAP.put("5", ".....");
+		MORSE_MAP.put("6", "-....");
+		MORSE_MAP.put("7", "--...");
+		MORSE_MAP.put("8", "---..");
+		MORSE_MAP.put("9", "----.");
+		MORSE_MAP.put("0", "-----");
 		
 		// STEAM MAP
 		// TODO: There has got to a better way to look up game id (appid) from name

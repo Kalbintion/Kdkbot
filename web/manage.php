@@ -74,7 +74,7 @@
 </a>
 
 <a href="?p=manage/economy">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/128-512.png">
 <span class="buttonname">Economy</span>
 <span class="buttontext">Manage and review channel economy system.</span>

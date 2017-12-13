@@ -111,6 +111,15 @@ function addNewTimer() {
 	$tbl.appendChild($ntr);
 }
 
+function addNewEconCmd() {
+	$tbl = document.getElementById("econCmdTable");
+	$ntr = document.createElement("tr");
+	
+	$ntr.innerHTML = "<tr><td><input type=\"text\" name=\"commands[]\"/></td><td><input type=\"number\" name=\"values[]\" value=\"0\" /></td></tr>";
+	
+	$tbl.appendChild($ntr);
+}
+
 function encodeText(obj) {
 	obj.value = obj.value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

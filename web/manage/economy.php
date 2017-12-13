@@ -18,7 +18,7 @@
 </a>
 
 <a href="?p=manage/economy/settings">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/home-icon.png">
 <span class="buttonname">Economy Settings</span>
 <span class="buttontext">Manage basic economy settings like name, amounts for actions, etc</span>
@@ -26,7 +26,7 @@
 </a>
 
 <a href="?p=manage/economy/users">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/Key-icon.png">
 <span class="buttonname">Users</span>
 <span class="buttontext">Manage and review users currency amounts.</span>
@@ -34,7 +34,7 @@
 </a>
 
 <a href="?p=manage/economy/commands">
-<div class="button incomplete">
+<div class="button">
 <img src="./imgs/Command-Prompt-icon.png">
 <span class="buttonname">Command Costs</span>
 <span class="buttontext">Manage command costs.</span>

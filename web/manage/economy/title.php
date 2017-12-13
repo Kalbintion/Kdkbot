@@ -30,7 +30,7 @@ foreach($lines as $line) {
 }
 
 echo "
-<form action=\"?p=manage/economy/users\" method=\"post\">
+<form action=\"?p=manage/economy/title\" method=\"post\">
 <input type=\"hidden\" value=\"".$_SESSION['USER']."\" name=\"update\" />
 <center><a href=\"?p=manage/economy\">Back</a></center>
 <center><h1>Economy User Settings</h1></center>

@@ -15,8 +15,6 @@ import kdkbot.commands.custom.*;
 import kdkbot.commands.giveaway.Giveaway;
 import kdkbot.commands.stats.Stats;
 
-// TODO: Change Commands list to level 1
-
 public class Commands {
 	// Necessary variable for instance referencing
 	public Channel chan;
@@ -97,6 +95,7 @@ public class Commands {
 	}
 	
 	public void load() {
+		chan.cfgChan.loadConfigContents(); // Force reload of channel config contents
 		for (InternalCommand cmd : cmdList) {
 			cmd.setAvailability(Boolean.parseBoolean(getInternalCommandSetting(cmd.getSettingSuffix(), "availability", cmd.getDefaultAvailable()).toString()));
 			cmd.setPermissionLevel(Integer.parseInt(getInternalCommandSetting(cmd.getSettingSuffix(), "rank", cmd.getDefaultLevel()).toString()));
@@ -425,7 +424,6 @@ public class Commands {
 		// Timers
 		else if(info.senderLevel >= cmdTimers.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase(cmdTimers.getTrigger())) {
-			System.out.println("Triggered timers section");
 			timers.executeCommand(info);
 		}
 		// Game

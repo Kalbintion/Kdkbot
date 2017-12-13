@@ -2,6 +2,7 @@ package kdkbot.api.warframe;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,7 +38,7 @@ public final class API {
 		 * Returns the latest news items
 		 * @return String array containing all news items and their links
 		 */
-		public static String[] getAllEvents() {
+		public static ArrayList<String> getAllEvents() {
 			JsonObject allData = getData();
 			JsonArray eventData = allData.get("Events").getAsJsonArray();
 			
@@ -46,15 +47,57 @@ public final class API {
 			for(JsonElement jEvent : eventData) {
 				JsonObject objOut = new JsonObject();
 				JsonObject objEvent = jEvent.getAsJsonObject();
+				JsonArray tjArr = objEvent.get("Messages").getAsJsonArray();
 				
+				// Search for 'en' code Messages label containing news item label in English
+				for(JsonElement tjEle  : tjArr) {
+					JsonObject tjoEle = tjEle.getAsJsonObject();
+					if(tjoEle.get("LanguageCode").toString().replaceAll("\"", "").equalsIgnoreCase("en")) {
+						objOut.add("Message", tjoEle.get("Message"));
+					}
+				}
+
+				// Add news item link
+				objOut.add("Link", objOut.get("Prop"));
 				
+				// Add news item date
+				objOut.add("Date", objEvent.get("Date").getAsJsonObject().get("$date").getAsJsonObject().get("$numberLong"));
+				
+				if(objOut.has("Message")) {
+					outData.add(objOut);
+				}
 			}
 			
-			return null;
+			ArrayList<String> out = new ArrayList<String>();
+			
+			for(JsonElement jOutData : outData) {
+				out.add(jOutData.toString());
+			}
+			
+			return out;
 		}
 		
 		public static String getAllEventsReadable() {
-			return null;
+			ArrayList<String> allEvents = getAllEvents();
+			// Message, Link, Date
+			JsonParser parser = new JsonParser();
+			String out = "";
+			
+			
+			Iterator<String> iter = allEvents.iterator();
+			while(iter.hasNext()) {
+				String nxt = iter.next();
+				
+				JsonObject jObj = parser.parse(nxt).getAsJsonObject();
+				
+				out += kdkbot.commands.stats.Stats.unixToTimestamp(Long.parseLong(jObj.get("Date").toString().replaceAll("\"", "")) / 1000, "dd/MM") + ": ";
+				out += jObj.get("Message").toString().replaceAll("\"", "") + " | ";
+			
+			}
+			
+			if(out.endsWith(" | ")) { out = out.substring(0, out.length() - " | ".length()); }
+			
+			return out;
 		}
 		
 		/**
@@ -62,29 +105,133 @@ public final class API {
 		 * @return String containing the latest news item and link to it
 		 */
 		public static String getFirstEvent() {
-			JsonObject allData = getData();
+			ArrayList<String> allEvents = getAllEvents();
+			String nxt = allEvents.get(0);
+			JsonParser parser = new JsonParser();
+			JsonObject jObj = parser.parse(nxt).getAsJsonObject();
 			
-			return null;
+			String out = "";
+			out += kdkbot.commands.stats.Stats.unixToTimestamp(Long.parseLong(jObj.get("Date").toString().replaceAll("\"", "")) / 1000, "dd/MM") + ": " + jObj.get("Message").toString().replaceAll("\"", "");
+			
+			return out;
 		}
 		
-		public static String[] getAllAlerts() {
+		public static ArrayList<String> getAllAlerts() {
 			JsonObject allData = getData();
+			JsonArray eventData = allData.get("Alerts").getAsJsonArray();
 			
-			return null;
+			JsonArray outData = new JsonArray();
+			
+			for(JsonElement jEvent : eventData) {
+				JsonObject objOut = new JsonObject();
+				JsonObject objEvent = jEvent.getAsJsonObject();
+
+				objOut.add("Type", objEvent.get("MissionInfo").getAsJsonObject().get("missionType"));
+				objOut.add("Faction", objEvent.get("MissionInfo").getAsJsonObject().get("faction"));
+				objOut.add("Location", objEvent.get("MissionInfo").getAsJsonObject().get("location"));
+				objOut.add("LevelMin", objEvent.get("MissionInfo").getAsJsonObject().get("minEnemyLevel"));
+				objOut.add("LevelMax", objEvent.get("MissionInfo").getAsJsonObject().get("maxEnemyLevel"));
+				objOut.add("CreditReward", objEvent.get("MissionInfo").getAsJsonObject().get("missionReward").getAsJsonObject().get("credits"));
+				objOut.add("ItemRewards", objEvent.get("MissionInfo").getAsJsonObject().get("missionReward").getAsJsonObject().get("items"));
+				
+				outData.add(objOut);
+			}
+			
+			ArrayList<String> out = new ArrayList<String>();
+			
+			for(JsonElement jOutData : outData) {
+				out.add(jOutData.toString());
+			}
+			
+			return out;
 		}
 		
 		public static String getAllAlertsReadable() {
-			return null;
+			ArrayList<String> allEvents = getAllAlerts();
+			// Message, Link, Date
+			JsonParser parser = new JsonParser();
+			String out = "";
+			
+			
+			Iterator<String> iter = allEvents.iterator();
+			while(iter.hasNext()) {
+				String nxt = iter.next();
+				
+				JsonObject jObj = parser.parse(nxt).getAsJsonObject();
+				
+				out += jObj.get("Location").toString().replaceAll("\"", "") + " - ";
+				out += convertTagMissionType(jObj.get("Type").toString().replaceAll("\"", "")) + " (";
+				out += convertTagFactionType(jObj.get("Faction").toString().replaceAll("\"", "")) + ") ";
+				out += jObj.get("LevelMin").toString().replaceAll("\"", "") + "-";
+				out += jObj.get("LevelMax").toString().replaceAll("\"", "") + " | ";
+			
+			}
+			
+			if(out.endsWith(" | ")) { out = out.substring(0, out.length() - " | ".length()); }
+			
+			return out;
 		}
 		
-		public static String[] getAllSorties() {
+		public static ArrayList<String> getAllSorties() {
 			JsonObject allData = getData();
+			JsonArray eventData = allData.get("Sorties").getAsJsonArray();
 			
-			return null;
+			JsonArray outData = new JsonArray();
+			
+			for(JsonElement jEvent : eventData) {
+				JsonObject objOut = new JsonObject();
+				JsonObject objEvent = jEvent.getAsJsonObject();
+
+				int i = 1;
+				JsonArray tjArr = objEvent.get("Variants").getAsJsonArray();
+				for(JsonElement tjaEle : tjArr) {
+					JsonObject tjaObj = tjaEle.getAsJsonObject();
+					objOut.add("Mission" + i, tjaObj.get("missionType"));
+					objOut.add("MissionMod" + i, tjaObj.get("modifierType"));
+					objOut.add("Location" + i, tjaObj.get("node"));
+					objOut.add("Tileset" + i, tjaObj.get("tileset"));					
+					i++;
+				}
+				
+				objOut.add("Boss", objEvent.get("Boss"));
+				
+				outData.add(objOut);
+			}
+			
+			ArrayList<String> out = new ArrayList<String>();
+			
+			for(JsonElement jOutData : outData) {
+				out.add(jOutData.toString());
+			}
+			
+			return out;
 		}
 		
 		public static String getAllSortiesReadable() {
-			return null;
+			ArrayList<String> allEvents = getAllSorties();
+			// Boss, MissionX, MissionModX, LocationX, TilesetX
+			JsonParser parser = new JsonParser();
+			String out = "";
+			
+			
+			Iterator<String> iter = allEvents.iterator();
+			while(iter.hasNext()) {
+				String nxt = iter.next();
+				
+				JsonObject jObj = parser.parse(nxt).getAsJsonObject();
+				
+				out += convertTagSortieBoss(jObj.get("Boss").toString().replaceAll("\"", "")) + " | ";
+				
+				for(int i = 1; i <= 3; i++) {
+					out += jObj.get("Location" + i).toString().replaceAll("\"", "") + " - ";
+					out += convertTagMissionType(jObj.get("Mission" + i).toString().replaceAll("\"", "")) + " (";
+					out += convertTagModifierType(jObj.get("MissionMod" + i).toString().replaceAll("\"", "")) + ") | ";
+				}
+			}
+			
+			if(out.endsWith(" | ")) { out = out.substring(0, out.length() - " | ".length()); }
+			
+			return out;
 		}
 		
 		public static String[] getAllInvasions() {
@@ -175,6 +322,39 @@ public final class API {
 			}
 			
 			return ret;
+		}
+		
+		private static String convertTagSortieBoss(String sortieBossTag) {
+			sortieBossTag = sortieBossTag.replace("SORTIE_BOSS_", "").toLowerCase();
+			sortieBossTag = sortieBossTag.substring(0,1).toUpperCase() + sortieBossTag.substring(1);
+			return sortieBossTag;
+		}
+		
+		private static String convertTagMissionType(String missionTypeTag) {
+			switch(missionTypeTag) {
+				case "MT_INTEL":
+					return "Spy";
+				case "MT_EVACUATION":
+					return "Defection";
+				case "MT_TERRITORY":
+					return "Interception";
+				default:
+					missionTypeTag = missionTypeTag.replace("MT_", "").toLowerCase().replaceAll("_", " ");
+					missionTypeTag = Market.camelCaseStr(missionTypeTag);
+					return missionTypeTag;
+			}
+		}
+		
+		private static String convertTagModifierType(String modifierTypeTag) {
+			modifierTypeTag = modifierTypeTag.replace("SORTIE_MODIFIER_", "").toLowerCase().replaceAll("_", " ");
+			modifierTypeTag = Market.camelCaseStr(modifierTypeTag);
+			return modifierTypeTag;
+		}
+		
+		private static String convertTagFactionType(String factionTypeTag) {
+			factionTypeTag = factionTypeTag.replace("FC_", "").toLowerCase().replaceAll("_", " ");
+			factionTypeTag = Market.camelCaseStr(factionTypeTag);
+			return factionTypeTag;
 		}
 	}
 	

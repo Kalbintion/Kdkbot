@@ -672,19 +672,104 @@ public class MessageParser {
 			}
 		}
 		
-		// TODO: Implement various Warframe parsers
-		//PATTERN_MAP.put("wfn", Pattern.compile("%WFN%")); // Warframe News (Events)
-		//PATTERN_MAP.put("wfnf", Pattern.compile("%WFNF%")); // Warframe News (Events) - First Only
-		//PATTERN_MAP.put("wfa", Pattern.compile("%WFA%")); // Warframe Alerts
-		//PATTERN_MAP.put("wfso", Pattern.compile("%WFSO%")); // Warframe Sorties
-		//PATTERN_MAP.put("wfsy", Pattern.compile("%WFSY%")); // Warframe Syndicate
-		//PATTERN_MAP.put("wfv", Pattern.compile("%WFV%")); // Warframe Active Missions (Void Fissures)
-		//PATTERN_MAP.put("wfss", Pattern.compile("%WFSS%")); // Warframe Flash Sales (Market Sales)
-		//PATTERN_MAP.put("wfi", Pattern.compile("%WFI%")); // Waframe Invasions
-		//PATTERN_MAP.put("wfbad", Pattern.compile("%WFBAD%")); // Warframe Badlands (Dark Sectors)
-		//PATTERN_MAP.put("wfb", Pattern.compile("%WFB%")); // Warframe Baro
-		//PATTERN_MAP.put("wfd", Pattern.compile("%WFD%")); // Warframe Darvo
-		//PATTERN_MAP.put("wfdr", Pattern.compile("%WFDR%")); // Warframe Darvo - Readable
+		// Warframe News (Events)
+		matches = PATTERN_MAP.get("wfn").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe News (Events) replacement
+			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getAllEventsReadable());
+		}
+				
+		// Warframe News (Events) - First Only
+		matches = PATTERN_MAP.get("wfnf").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe News (Events) - First Only replacement
+			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getFirstEvent());
+		}
+				
+		// Warframe Alerts
+		matches = PATTERN_MAP.get("wfa").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe Alerts replacement
+			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getAllAlertsReadable());
+		}
+		
+		// Warframe Sorties
+		matches = PATTERN_MAP.get("wfso").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe Sorties replacement
+			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getAllSortiesReadable());
+		}
+		
+		// Warframe Syndicate
+		matches = PATTERN_MAP.get("wfsy").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe Syndicate replacement
+			toParse = toParse.replace(result, "");
+		}
+		
+		// Warframe Active Missions (Void Fissures)
+		matches = PATTERN_MAP.get("wfv").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe Active Missions (Void Fissures) replacement
+			toParse = toParse.replace(result, "");
+		}
+				
+		// Warframe Flash Sales (Market Sales)
+		matches = PATTERN_MAP.get("wfss").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe Flash Sales (Market Sales) replacement
+			toParse = toParse.replace(result, "");
+		}
+		
+		// Warframe Invasions
+		matches = PATTERN_MAP.get("wfi").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe Invasions replacement
+			toParse = toParse.replace(result, "");
+		}
+		
+		// Warframe Badlands (Dark Sectors)
+		matches = PATTERN_MAP.get("wfbad").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			// TODO: Implement Warframe Badlands replacement
+			toParse = toParse.replace(result, "");
+		}
+		
+		// Warframe Baro
+		matches = PATTERN_MAP.get("wfb").matcher(toParse);
+		
+		while(matches.find()) {
+			String result = matches.group();
+			
+			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getBaroItemsReadable());
+		}
 		
 		// Warframe Darvo
 		matches = PATTERN_MAP.get("wfd").matcher(toParse);

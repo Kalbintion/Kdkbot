@@ -61,6 +61,7 @@ public class MessageParser {
 		PATTERN_MAP.put("urltoken", Pattern.compile("%URL%"));
 		PATTERN_MAP.put("join", Pattern.compile("%JOIN:.*?,.*?,.*?%"));
 		PATTERN_MAP.put("math", Pattern.compile("%MATH:.*?%"));
+		PATTERN_MAP.put("seq", Pattern.compile("%SEQ:(.*?),.*?%"));
 		PATTERN_MAP.put("replace", Pattern.compile("%REPLACE:(.*?),(.{1,}),(.*?)%"));
 		PATTERN_MAP.put("ytviews_id", Pattern.compile("%YTVIEWS:.*?"));
 		
@@ -395,6 +396,20 @@ public class MessageParser {
 			toParse = toParse.replace(result, result.substring("%LOWER:".length(), result.length()-1).toLowerCase());
 		}
 		Kdkbot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		
+		// Sequence (Seq)
+		matches = PATTERN_MAP.get("seq").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
+			String seqID = matches.group(1);
+			String[] seqParts = result.substring("%SEQ:".length(), result.length() - 1).split(",");
+			int seqCur = info.getChannel().getMsgSeq(seqID) + 1;
+			if(seqCur >= seqParts.length) { seqCur %= seqParts.length; }
+			String out = seqParts[seqCur];
+			info.getChannel().setAddMsgSeq(seqID, seqParts.length - 1);
+			
+			toParse = toParse.replace(result, out);
+		}
 		
 		// Leet
 		matches = PATTERN_MAP.get("leet").matcher(toParse);

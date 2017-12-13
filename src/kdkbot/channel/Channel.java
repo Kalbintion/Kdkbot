@@ -27,6 +27,7 @@ public class Channel {
 	public Config cfgPerms;
 	public Config cfgChan;
 	public Config cfgTokens;
+	public Config cfgSequenceMessages;
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
 	// Other Vars
@@ -67,9 +68,14 @@ public class Channel {
 			cfgPerms = new Config("./cfg/" + channel + "/perms.cfg");
 			this.loadSenderRanks();
 
+			instance.dbg.writeln(this, "Attempting to load message sequence values.");
+			cfgSequenceMessages = new Config("./cfg/" + channel + "/msgseq.cfg");
+			cfgSequenceMessages.loadConfigContents();
+			
 			this.commands = new Commands(channel, this);
 			this.language = cfgChan.getSetting("lang");
 			this.economy = new Economy(this);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -462,5 +468,36 @@ public class Channel {
 			cfgTokens.setSetting("userID", userID);
 		}
 		return userID;
+	}
+	
+	/**
+	 * Sets and Adds (by 1) to the particular id up to a limiting value provided by max
+	 * @param id The id to set
+	 * @param max The max value it should ever be set to before rolling over
+	 */
+	public void setAddMsgSeq(String id, int max) {
+		setMsgSeq(id, String.valueOf((getMsgSeq(id) + 1) % max));
+	}
+	
+	/**
+	 * Sets a particular id to a new value for sequential messages
+	 * @param id The id to set
+	 * @param value The new value it should be set to
+	 */
+	public void setMsgSeq(String id, String value) {
+		cfgSequenceMessages.setSetting(id, value);
+	}
+	
+	/**
+	 * Returns an int pertaining to which part of the sequential message system it is on
+	 * @param id The id to look-up
+	 * @return an int containing the string index
+	 */
+	public int getMsgSeq(String id) {
+		try {
+			return Integer.parseInt(cfgSequenceMessages.getSetting(id));
+		} catch(NumberFormatException e) {
+			return 0;
+		}
 	}
 }

@@ -270,12 +270,15 @@ public class APIv5 {
 	
 	/**
 	 * Determines if the provided channel is live or not.
+	 * TODO: Verify NPE is resolved
 	 * @param clientID The Twitch Client ID for the bot
 	 * @param channelID The channel id to look up
 	 * @return True if the channel is live, false otherwise
 	 */
 	public static boolean isStreamerLive(String clientID, String channelID) {
 		String res = getStreamObject(clientID, channelID);
+		if(res == null) { return false; }
+		
 		JsonParser parser = new JsonParser();
 		JsonObject jObj = parser.parse(res).getAsJsonObject();
 

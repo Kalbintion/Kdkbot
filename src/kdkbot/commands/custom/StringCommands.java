@@ -144,9 +144,9 @@ public class StringCommands {
 							if(type.equalsIgnoreCase("available")) {
 								Kdkbot.instance.sendChanMessageTrans(channel, "custom.view.available", strCmd.getTrigger(), strCmd.getAvailability());
 							} else if(type.equalsIgnoreCase("level")) {
-								Kdkbot.instance.sendChanMessageTrans(channel, "custom.view.available", strCmd.getTrigger(), strCmd.getPermissionLevel());
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.view.level", strCmd.getTrigger(), strCmd.getPermissionLevel());
 							} else if(type.equalsIgnoreCase("message") || type.equalsIgnoreCase("msg")) {
-								Kdkbot.instance.sendChanMessageTrans(channel, "custom.view.available", strCmd.getTrigger(), strCmd.messageToSend);
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.view.msg", strCmd.getTrigger(), strCmd.messageToSend);
 							}
 							break;
 						}

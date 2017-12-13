@@ -24,6 +24,9 @@ if(isset($_POST['update'])) {
 		if($_POST['flag_game'][$i] != "") {
 			$flags_out .= "REQUIRES_GAME=" . $_POST['flag_game'][$i] . "+";
 		}
+		if($_POST['flag_title'][$i] != "") {
+			$flags_out .= "REQUIRES_IN_TITLE=" . $_POST['flag_title'][$i] . "+";
+		}
 		
 		if(endsWith($flags_out, "+")) { $flags_out = substr($flags_out, 0, -1); }
 		
@@ -55,7 +58,7 @@ echo "
 	<table class=\"minTable inputs2\" id=\"timerTable\">
 	<tr>
 		<th colspan=\"3\">&nbsp;</th>
-		<th colspan=\"3\">Flags</th>
+		<th colspan=\"4\">Flags</th>
 	</tr>
 	<tr>
 		<th>Name</th>
@@ -64,6 +67,7 @@ echo "
 		<th>Reqs<br/>Live</th>
 		<th>Reqs Message<br />Count</th>
 		<th>Reqs Game</th>
+		<th>Reqs In Title</th>
 	</tr>";
 
 	$i = 0; $j = 0;
@@ -77,6 +81,7 @@ echo "
 			$flag_live = false;
 			$flag_msg = 0;
 			$flag_game = "";
+			$flag_title = "";
 			
 			foreach($flags as $flag) {
 				$flag_parts = explode("=", $flag, 2);
@@ -89,6 +94,9 @@ echo "
 						break;
 					case "REQUIRES_GAME":
 						$flag_game = explode("=", $flag, 2)[1];
+						break;
+					case "REQUIRES_IN_TITLE":
+						$flag_title = explode("=", $flag, 2)[1];
 						break;
 				}
 			}
@@ -105,6 +113,7 @@ echo "
 			echo "</td>
 					<td><input type=\"number\" name=\"flag_msg[]\" value=\"$flag_msg\" min=\"0\" max=\"10000\"></td>
 					<td><input type=\"text\" name=\"flag_game[]\" value=\"$flag_game\"></td>
+					<td><input type=\"text\" name=\"flag_title[]\" value=\"$flag_title\"></td>
 				</tr>\r\n";
 		}
 		

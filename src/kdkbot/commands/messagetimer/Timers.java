@@ -93,6 +93,7 @@ public class Timers extends Command {
 					// Timers edit <id> <type> <newValue>
 					args = info.getSegments(5); // Must limit the amount of contents, otherwise newValue could be wrong
 					timerID = args[2];
+					Kdkbot.instance.dbg.writeln(this, "Looking to edit timer w/ id: " + timerID);
 					// Lets find that timer!
 					Iterator<MessageTimer> iter = timers.iterator();
 					while(iter.hasNext()) {
@@ -102,11 +103,12 @@ public class Timers extends Command {
 							// Timer found, need to stop it, create a new timer, and then add a new MessageTimer with the changed value
 							t.stop();
 							
+							Kdkbot.instance.dbg.writeln(this, "ID Found for editing.");
+							
 							String newTimerID = t.timerID;
 							String newMessage = t.message;
 							long newDelay = t.delay;
 							String newFlags = t.flags;
-							
 							
 							switch(args[3].toLowerCase()) {
 								case "msg":

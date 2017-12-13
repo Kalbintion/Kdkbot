@@ -140,9 +140,15 @@ public class MessageTimer extends TimerTask {
 					case "RANDOM_MODIFIER":
 						flags.RANDOM_MODIFIER = true;
 						flags.RANDOM_MODIFIER_MAX = parts[1];
+						break;
 					case "REQUIRES_GAME":
 						flags.REQUIRES_GAME = true;
 						flags.REQUIRES_GAME_NAME = parts[1];
+						break;
+					case "REQUIRES_IN_TITLE":
+						flags.REQUIRES_IN_TITLE = true;
+						flags.REQUIRES_IN_TITLE_TEXT = parts[1];
+						break;
 				}
 			} // Else we have an invalid flag setting
 		}
@@ -181,6 +187,7 @@ public class MessageTimer extends TimerTask {
 				out += "REQUIRES_GAME=" + REQUIRES_GAME_NAME + "+";
 			}
 			
+			// TODO: Implement flag on site
 			if(REQUIRES_IN_TITLE) {
 				out+= "REQUIRES_IN_TITLE=" + REQUIRES_IN_TITLE_TEXT + "+";
 			}

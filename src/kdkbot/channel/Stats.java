@@ -121,11 +121,10 @@ public class Stats {
 			user.lastJoin = info.timestamp;
 		} else if(info.message.contains("#PART") && user.firstJoin >= 0) {
 			// This is to prevent in-use channels w/ users from getting #PART's timestamp in having existed time in the channel. Essentially enforcing a firstJoin to happen before #PARTS are considered
-			
 			user.lastLeave = info.timestamp;
 			user.timeSpent += user.lastLeave - user.lastJoin;
 			
-			// TODO: Economy hooks into here for timespent credits
+			// Economy hook
 			Kdkbot.instance.getChannel(this.channel).economy.handleTime(info.sender, user.lastLeave - user.lastJoin);
 		} else {
 			user.messageCount++;

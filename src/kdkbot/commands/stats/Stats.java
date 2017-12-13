@@ -128,7 +128,7 @@ public class Stats {
 	 * @param format The format of the timestamp
 	 * @return the formatted date, per /format/ param
 	 */
-	public String unixToTimestamp(long value, String format) {
+	public static String unixToTimestamp(long value, String format) {
 		return unixToTimestamp(value, format, TimeZone.getTimeZone("GMT-6"));
 	}
 	
@@ -139,7 +139,7 @@ public class Stats {
 	 * @param zone The timezone to format the date for
 	 * @return the formatted date, per /format/ param
 	 */
-	public String unixToTimestamp(long value, String format, TimeZone zone) {
+	public static String unixToTimestamp(long value, String format, TimeZone zone) {
 		Date date = new Date(value);
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		sdf.setTimeZone(zone);

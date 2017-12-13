@@ -219,6 +219,16 @@ public class Commands {
 		
 		// Command Processing Breaking
 		if(!chan.commandProcessing) { return; }
+
+		// Command Cost Checking
+		if(chan.economy.commandHasPrice(coreWord)) {
+			double command_price = chan.economy.getCommandPrice(coreWord);
+			if(chan.economy.hasAtLeast(info.sender, String.valueOf(command_price))) {
+				chan.economy.spendMoney(info.sender, command_price);
+			} else {
+				return; // User doesnt have necessary funds to spend on command, return.
+			}
+		}
 		
 		// Permission Ranks
 		if (info.senderLevel >= cmdPerm.getPermissionLevel() &&

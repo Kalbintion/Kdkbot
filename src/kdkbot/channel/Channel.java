@@ -386,7 +386,7 @@ public class Channel {
 		this.economy.handleMessage(info.sender, info.message);
 		
 		// Send the message off to the channels command processor
-		if(info.message.startsWith(this.commandPrefix)){
+		if(info.message.startsWith(this.commandPrefix)) {
 			this.commands.commandHandler(info);
 		}
 		

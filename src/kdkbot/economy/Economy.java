@@ -122,8 +122,8 @@ public class Economy {
 	 * @param user The name of the user to take amount away from
 	 * @param amount The amount to take away
 	 */
-	public void spendMoney(String user, int amount) {
-		
+	public void spendMoney(String user, double amount) {
+		setUserAmount(user, getUserAmount(user) - amount);
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class Economy {
 	 * @return True if the user has at least that amount, false if they do not
 	 */
 	public boolean hasAtLeast(String user, String amount) {
-		return hasAtLeast(user, Integer.parseInt(amount));
+		return hasAtLeast(user, Double.parseDouble(amount));
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class Economy {
 	 * @param amount The minimum amount the user needs to succeed
 	 * @return True if the user has at least that amount, false if they do not
 	 */
-	public boolean hasAtLeast(String user, int amount) {
+	public boolean hasAtLeast(String user, double amount) {
 		if(getUserAmount(user) >= amount) {
 			return true;
 		}
@@ -210,6 +210,32 @@ public class Economy {
 	}
 	
 	/**
+	 * Determines if a particular command has a price in the channel
+	 * @param command The command to look-up
+	 * @return True if the command does have a price (non-zero), false otherwise
+	 */
+	public boolean commandHasPrice(String command) {
+		String cmdCostStr = costs_cmd.getSetting(command);
+		if(cmdCostStr == null) { return false; }
+		
+		double cmdCost = Double.parseDouble(costs_cmd.getSetting(command));
+		return (cmdCost != 0) ? true : false;
+	}
+	
+	/**
+	 * Returns the amount a particular command costs, if it has one.
+	 * @param command The command to look-up
+	 * @return The amount, as a double, the command costs, 0 otherwise.
+	 */
+	public double getCommandPrice(String command) {
+		if(commandHasPrice(command)) {
+			return Double.parseDouble(costs_cmd.getSetting(command));
+		} else {
+			return 0d;
+		}
+	}
+	
+	/**
 	 * Returns a formatted string for the amount of money based on the channels settings
 	 * @param amount The amount used to format
 	 * @return The formatted string containing some sort of monetary symbol and the amount
@@ -248,7 +274,7 @@ public class Economy {
 		if(args.length <= 1) { return ""; }
 		switch(args[1]) {
 			case "money":
-				return "You have " + getUserAmount(info.sender) + " " + this.currencyName;
+				return "You have " + compileCurrency(getUserAmount(info.sender)) + " " + this.currencyName;
 			case "perLetter":
 				if(args.length >= 2) {
 					setAmount("letter", args[2]);
@@ -297,6 +323,7 @@ public class Economy {
 					String command = args[2];
 					String value = args[3];
 					costs_cmd.setSetting(command, value);
+					return "Set command " + command + " to cost " + value + ".";
 				} else {
 					return "Not enough arguments. Please supply the command and new value.";
 				}

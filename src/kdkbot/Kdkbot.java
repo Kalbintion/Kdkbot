@@ -70,6 +70,11 @@ public class Kdkbot extends PircBot {
 		
 		// Setup the debugger instance
 		this.dbg = new Debugger(false);
+		if(botCfg.getSetting("enableDebug", "0").equalsIgnoreCase("0")) {
+			dbg.disable();
+		} else { 
+			dbg.enable();
+		}
 		
 		// Setup this bot
 		this.setEncoding("UTF-8");

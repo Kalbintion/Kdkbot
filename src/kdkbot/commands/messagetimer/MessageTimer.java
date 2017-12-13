@@ -187,7 +187,6 @@ public class MessageTimer extends TimerTask {
 				out += "REQUIRES_GAME=" + REQUIRES_GAME_NAME + "+";
 			}
 			
-			// TODO: Implement flag on site
 			if(REQUIRES_IN_TITLE) {
 				out+= "REQUIRES_IN_TITLE=" + REQUIRES_IN_TITLE_TEXT + "+";
 			}

@@ -374,6 +374,9 @@ public class Kdkbot extends PircBot {
     		} else if (info.message.startsWith("&&ClrLangCache")) { 
     			Translate.resetLanguageCache();
     			this.sendMessage(info.channel, "Reset language cache");
+    		} else if(info.message.startsWith("&&ReloadNodeData")) {
+    			kdkbot.api.warframe.InternalTranslator.reloadNodeData();
+    			this.sendMessage(info.channel, "Reloaded node data for Warframe");
     		} else if(info.message.startsWith("&&stop")) {
     			this.disconnect();
     			System.exit(0);

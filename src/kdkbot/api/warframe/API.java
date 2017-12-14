@@ -159,7 +159,7 @@ public final class API {
 				
 				JsonObject jObj = parser.parse(nxt).getAsJsonObject();
 				
-				out += jObj.get("Location").toString().replaceAll("\"", "") + " - ";
+				out += InternalTranslator.getSolNodeName(jObj.get("Location").toString().replaceAll("\"", "")) + " - ";
 				out += convertTagMissionType(jObj.get("Type").toString().replaceAll("\"", "")) + " (";
 				out += convertTagFactionType(jObj.get("Faction").toString().replaceAll("\"", "")) + ") ";
 				out += jObj.get("LevelMin").toString().replaceAll("\"", "") + "-";
@@ -223,7 +223,61 @@ public final class API {
 				out += convertTagSortieBoss(jObj.get("Boss").toString().replaceAll("\"", "")) + " | ";
 				
 				for(int i = 1; i <= 3; i++) {
-					out += jObj.get("Location" + i).toString().replaceAll("\"", "") + " - ";
+					out += InternalTranslator.getSolNodeName(jObj.get("Location" + i).toString().replaceAll("\"", "")) + " - ";
+					out += convertTagMissionType(jObj.get("Mission" + i).toString().replaceAll("\"", "")) + " (";
+					out += convertTagModifierType(jObj.get("MissionMod" + i).toString().replaceAll("\"", "")) + ") | ";
+				}
+			}
+			
+			if(out.endsWith(" | ")) { out = out.substring(0, out.length() - " | ".length()); }
+			
+			return out;
+		}
+		
+		public static ArrayList<String> getAllFissures() {
+			JsonObject allData = getData();
+			JsonArray eventData = allData.get("ActiveMissions").getAsJsonArray();
+			
+			JsonArray outData = new JsonArray();
+			
+			for(JsonElement jEvent : eventData) {
+				JsonObject objOut = new JsonObject();
+				JsonObject objEvent = jEvent.getAsJsonObject();
+
+				objOut.add("Location", objEvent.get("Node"));
+				objOut.add("Modifier", objEvent.get("Modifier"));
+				
+				outData.add(objOut);
+			}
+			
+			ArrayList<String> out = new ArrayList<String>();
+			
+			for(JsonElement jOutData : outData) {
+				out.add(jOutData.toString());
+			}
+			
+			return out;
+		}
+		
+		public static String getAllFissuresReadable() {
+			ArrayList<String> allEvents = getAllFissures();
+			// Location, Modifier
+			JsonParser parser = new JsonParser();
+			String out = "";
+			
+			
+			Iterator<String> iter = allEvents.iterator();
+			while(iter.hasNext()) {
+				String nxt = iter.next();
+				
+				JsonObject jObj = parser.parse(nxt).getAsJsonObject();
+				
+				out += 
+				
+				out += convertTagSortieBoss(jObj.get("Boss").toString().replaceAll("\"", "")) + " | ";
+				
+				for(int i = 1; i <= 3; i++) {
+					out += InternalTranslator.getSolNodeName(jObj.get("Location" + i).toString().replaceAll("\"", "")) + " - ";
 					out += convertTagMissionType(jObj.get("Mission" + i).toString().replaceAll("\"", "")) + " (";
 					out += convertTagModifierType(jObj.get("MissionMod" + i).toString().replaceAll("\"", "")) + ") | ";
 				}
@@ -300,9 +354,7 @@ public final class API {
 				e.printStackTrace();
 				return null;
 			}
-			
-			System.out.println(jobj.toString());
-			
+
 			return jobj;
 		}
 		

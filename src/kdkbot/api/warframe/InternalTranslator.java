@@ -14,13 +14,6 @@ public class InternalTranslator {
 	
 	static {
 		reloadNodeData();
-		
-		// Load all data into solNodesMap for faster SolNode ID => Name lookups (Costs extra RAM)
-		Iterator<NodeData> iter = solNodes.iterator();
-		while(iter.hasNext()) {
-			NodeData nxt = iter.next();
-			solNodesMap.put(nxt.getNodeID(), nxt.getNodeName());
-		}
 	}
 	
 	public static void reloadNodeData() {
@@ -55,6 +48,15 @@ public class InternalTranslator {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		
+		if(solNodesMap.size() > 0) { solNodesMap.clear(); }
+		
+		// Load all data into solNodesMap for faster SolNode ID => Name lookups (Costs extra RAM)
+		Iterator<NodeData> iter = solNodes.iterator();
+		while(iter.hasNext()) {
+			NodeData nxt = iter.next();
+			solNodesMap.put(nxt.getNodeID(), nxt.getNodeName());
 		}
 	}
 	

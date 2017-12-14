@@ -1,13 +1,14 @@
-SolNode17|Proteus (Neptune)|Defense|Corpus
+SolNode17|Proteus (Neptune)|Defense|Corpus|27|32|Corpus Ship
 SolNode34|Sycorax (Uranus)|Exterminate|Grineer|24|26|Grineer Sealab
-SolNode58|Hellas (Mars)
-SolNode66|Unda (Venus)
-SolNode76|Hydra (Pluto)
-SolNode130|Lares (Mercury)
-SolNode140|Kiste (Ceres)
+SolNode58|Hellas (Mars)|Extermiante|Grineer|8|10|Grineer Settlement
+SolNode66|Unda (Venus)|Spy|Corpus|4|6|Corpus Outpost
+SolNode76|Hydra (Pluto)|Capture|Corpus|30|34|Corpus Ship
+SolNode130|Lares (Mercury)|Defense|Infestation|6|11|Grineer Asteroid
+SolNode140|Kiste (Ceres)|Mobile Defense|Grineer|13|15|Grineer Shipyard
 SolNode162|Isos (Eris)|Capture|Infested|32|36|Infested Ship
 SolNode167|Oestrus (Eris)|Infested Salvage|Infested|34|38|Infested Ship
-SolNode173|Solium (Eris)
-SolNode177|Kappa (Sedna)
-SolNode217|Orias (Europa)
-SolNode903|Erpo (Earth)
+SolNode173|Solium (Eris)|Mobile Defense|Infested|34|38|Infested Ship
+SolNode177|Kappa (Sedna)|Spy|Grineer|34|38|Grineer Galleon
+SolNode189|Naga (Sedna)|Rescue|Grineer|30|34|Grineer Galleon
+SolNode217|Orias (Europa)|Rescue|Corpus|20|22|Corpus Ice Planet
+SolNode903|Erpo (Earth)|Mobile Defense|Grineer|1|6|Free Space

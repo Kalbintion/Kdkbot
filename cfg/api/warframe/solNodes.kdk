@@ -2,10 +2,13 @@ SolNode10|Thebe (Jupiter)
 SolNode11|Tharsis (Mars)
 SolNode15|Pacific (Earth)
 SolNode17|Proteus (Neptune)|Defense|Corpus|27|32|Corpus Ship
+SolNode22|Tessera (Venus)
 SolNode34|Sycorax (Uranus)|Exterminate|Grineer|24|26|Grineer Sealab
 SolNode36|Martialis (Mars)|Rescue|Grineer|10|12|Grineer Settlement
 SolNode38|Minthe (Pluto)
+SolNode39|Everest (Earth)
 SolNode48|Regna (Pluto)|Rescue|Corpus|34|38|Corpus Outpost
+SolNode56|Cypress (Pluto)
 SolNode58|Hellas (Mars)|Extermiante|Grineer|8|10|Grineer Settlement
 SolNode66|Unda (Venus)|Spy|Corpus|4|6|Corpus Outpost
 SolNode76|Hydra (Pluto)|Capture|Corpus|30|34|Corpus Ship
@@ -13,9 +16,14 @@ SolNode79|Cambria (Earth)|Spy|Grineer|2|4|Grineer Forest
 SolNode82|Calypso (Saturn)|Sabotage|Grineer|24|26|Grineer Galleon
 SolNode83|Cressida (Uranus)|Mobile Defense|Grineer|25|27|Grineer Sealab
 SolNode96|Titan (Saturn)
+SolNode97|Amalthea (Jupiter)
+SolNode100|Elara (Jupiter)
 SolNode109|Linea (Venus)
+SolNode114|Puck (Uranus)
+SolNode118|Laomedeia (Neptune)
 SolNode119|Caloris (Mercury)|Rescue|Grineer|6|8|Grineer Asteroid
 SolNode130|Lares (Mercury)|Defense|Infestation|6|11|Grineer Asteroid
+SolNode131|Pallas (Ceres)
 SolNode138|Ludi (Ceres)
 SolNode140|Kiste (Ceres)|Mobile Defense|Grineer|13|15|Grineer Shipyard
 SolNode149|Casta (Ceres)|Defense|Grineer|12|17|Grineer Shipyard
@@ -26,6 +34,8 @@ SolNode173|Solium (Eris)|Mobile Defense|Infested|34|38|Infested Ship
 SolNode177|Kappa (Sedna)|Spy|Grineer|34|38|Grineer Galleon
 SolNode184|Rusalka (Sedna)
 SolNode189|Naga (Sedna)|Rescue|Grineer|30|34|Grineer Galleon
+SolNode195|Hydron (Sedna)
+SolNode209|Morax (Europa)
 SolNode217|Orias (Europa)|Rescue|Corpus|20|22|Corpus Ice Planet
 SolNode400|Teshub (Void)|Exterminate|Orokin|10|15|Orokin Tower
 SolNode412|Mithra (Void)|Interception|Orokin|40|45|Orokin Tower
@@ -34,3 +44,5 @@ SolNode902|Montes (Venus)
 SolNode903|Erpo (Earth)|Mobile Defense|Grineer|1|6|Free Space
 SolNode908|Salacia (Neptune)|Mobile Defense|Corpus|27|32|Corpus Ship (Archwing)
 SettlementNode1|Roche (Phobos)|Exterminate|Corpus|10|12|Corpus Ship
+SettlementNode2|Skyresh (Phobos)
+SettlementNode14|Shklovsky (Phobos)

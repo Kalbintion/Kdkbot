@@ -1,48 +1,72 @@
-SolNode10|Thebe (Jupiter)
-SolNode11|Tharsis (Mars)
-SolNode15|Pacific (Earth)
+SolNode2|Aphrodite (Venus)|Mobile Defense|Corpus|6|8|Corpus Outpsot
+SolNode4|Acheron (Pluto)|Exterminate|Corpus|34|38|Corpus Ship
+SolNode10|Thebe (Jupiter)|Sabotage|Corpus|18|20|Corpus Gas City
+SolNode11|Tharsis (Mars)|Hijack|Corpus|8|10|Corpus Ice Planet
+SolNode15|Pacific (Earth)|Rescue|Grineer|3|6|Grineer Galleon
 SolNode17|Proteus (Neptune)|Defense|Corpus|27|32|Corpus Ship
-SolNode22|Tessera (Venus)
+SolNode22|Tessera (Venus)|Defense|Corpus|3|8|Corpus Outpost
+SolNode33|Ariel (Uranus)|Capture|Grineer|25|27|Grineer Sealab
 SolNode34|Sycorax (Uranus)|Exterminate|Grineer|24|26|Grineer Sealab
 SolNode36|Martialis (Mars)|Rescue|Grineer|10|12|Grineer Settlement
-SolNode38|Minthe (Pluto)
-SolNode39|Everest (Earth)
+SolNode38|Minthe (Pluto)|Mobile Defense|Corpus|30|34|Corpus Outpost
+SolNode39|Everest (Earth)|Excavation|Grineer|1|6|Grineer Forest
+SolNode41|Arval (Mars)|Spy|Grineer|9|11|Grineer Settlement
 SolNode48|Regna (Pluto)|Rescue|Corpus|34|38|Corpus Outpost
-SolNode56|Cypress (Pluto)
+SolNode56|Cypress (Pluto)|Sabotage|Corpus|34|38|Corpus Ship
+SolNode57|Sao (Neptune)|Sabotage|Corpus|29|31|Corpus Outpost
 SolNode58|Hellas (Mars)|Extermiante|Grineer|8|10|Grineer Settlement
 SolNode66|Unda (Venus)|Spy|Corpus|4|6|Corpus Outpost
+SolNode67|Dione (Saturn)|Spy|Grineer|21|23|Grineer Asteroid
+SolNode68|Vallis (Mars)|Mobile Defense|Grineer|11|13|Grineer Galleon
+SolNode72|Outer Terminus (Pluto)|Defense|Corpus|30|40|Corpus Outpost
+SolNode74|Carme (Jupiter)|Mobile Defense|Corpus|16|18|Corpus Gas City
 SolNode76|Hydra (Pluto)|Capture|Corpus|30|34|Corpus Ship
 SolNode79|Cambria (Earth)|Spy|Grineer|2|4|Grineer Forest
 SolNode82|Calypso (Saturn)|Sabotage|Grineer|24|26|Grineer Galleon
 SolNode83|Cressida (Uranus)|Mobile Defense|Grineer|25|27|Grineer Sealab
-SolNode96|Titan (Saturn)
-SolNode97|Amalthea (Jupiter)
-SolNode100|Elara (Jupiter)
-SolNode109|Linea (Venus)
-SolNode114|Puck (Uranus)
-SolNode118|Laomedeia (Neptune)
+SolNode96|Titan (Saturn)|Survival|Grineer|21|26|Grineer Galleon
+SolNode97|Amalthea (Jupiter)|Spy|Corpus|17|19|Corpus Gas City
+SolNode100|Elara (Jupiter)|Survival|Corpus|15|20|Corpus Gas City
+SolNode109|Linea (Venus)|Rescue|Corpus|5|7|Corpus Outpost
+SolNode114|Puck (Uranus)|Exterminate|Grineer|27|29|Grineer Sealab
+SolNode118|Laomedeia (Neptune)|Spy|Corpus|30|32|Corpus Ice Planet
 SolNode119|Caloris (Mercury)|Rescue|Grineer|6|8|Grineer Asteroid
 SolNode130|Lares (Mercury)|Defense|Infestation|6|11|Grineer Asteroid
-SolNode131|Pallas (Ceres)
-SolNode138|Ludi (Ceres)
+SolNode131|Pallas (Ceres)|Exterminate|Grineer|12|14|Grineer Shipyard
+SolNode132|Bode (Ceres)|Spy|Grineer|12|14|Grineer Shipyard
+SolNode138|Ludi (Ceres)|Hijack|Grineer|15|17|Grineer Shipyard
 SolNode140|Kiste (Ceres)|Mobile Defense|Grineer|13|15|Grineer Shipyard
 SolNode149|Casta (Ceres)|Defense|Grineer|12|17|Grineer Shipyard
 SolNode162|Isos (Eris)|Capture|Infested|32|36|Infested Ship
 SolNode166|Nimus (Eris)|Survival|Infested|30|40|Infested Ship
 SolNode167|Oestrus (Eris)|Infested Salvage|Infested|34|38|Infested Ship
 SolNode173|Solium (Eris)|Mobile Defense|Infested|34|38|Infested Ship
+SolNode175|Naeglar (Eris)|Hive Sabotage|Infested|30|34|Infested Ship
 SolNode177|Kappa (Sedna)|Spy|Grineer|34|38|Grineer Galleon
-SolNode184|Rusalka (Sedna)
+SolNode184|Rusalka (Sedna)|Capture|Grineer|32|36|Grineer Galleon
+SolNode188|Kelpie (Sedna)
 SolNode189|Naga (Sedna)|Rescue|Grineer|30|34|Grineer Galleon
-SolNode195|Hydron (Sedna)
-SolNode209|Morax (Europa)
+SolNode195|Hydron (Sedna)|Defense|Grineer|30|40|Grineer Galleon
+SolNode196|Charybdis (Sedna)|Mobile Defense|Grineer|34|38|Grineer Galleon
+SolNode204|Armaros (Europa)|Exterminate|Infested|18|20|Infested Ship
+SolNode209|Morax (Europa)|Mobile Defense|Corpus|18|20|Corpus Ice Planet
+SolNode215|Valac (Europa)|Spy|Corpus|18|20|Corpus Ship
 SolNode217|Orias (Europa)|Rescue|Corpus|20|22|Corpus Ice Planet
 SolNode400|Teshub (Void)|Exterminate|Orokin|10|15|Orokin Tower
+SolNode402|Taranis (Void)|Defense|Orokin|10|15|Orokin Tower
+SolNode404|Stribog (Void)|Sabotage|Orokin|20|25|Orokin Tower
+SolNode406|Ukko (Void)|Capture|Orokin|30|35|Orokin Tower
+SolNode408|Belenus (Void)|Defense|Orokin|30|35|Orokin Tower
+SolNode410|Aten (Void)|Mobile Defense|Orokin|40|45|Orokin Tower
 SolNode412|Mithra (Void)|Interception|Orokin|40|45|Orokin Tower
 SolNode745|Tamu (Kuva Fortress)|Defense|Grineer|32|34|Grineer Asteroid Fortress
-SolNode902|Montes (Venus)
+SolNode902|Montes (Venus)|Exterminate|Corpus|3|8|Corpus Ship (Archwing)
 SolNode903|Erpo (Earth)|Mobile Defense|Grineer|1|6|Free Space
+SolNode904|Syrtis (Mars)
+SolNode907|Caelus (Uranus)|Interception|Grineer|24|29|Free Space
 SolNode908|Salacia (Neptune)|Mobile Defense|Corpus|27|32|Corpus Ship (Archwing)
 SettlementNode1|Roche (Phobos)|Exterminate|Corpus|10|12|Corpus Ship
-SettlementNode2|Skyresh (Phobos)
-SettlementNode14|Shklovsky (Phobos)
+SettlementNode2|Skyresh (Phobos)|Capture|Corpus|12|14|Corpus Ship
+SettlementNode12|Monolith (Phobos)
+SettlementNode14|Shklovsky (Phobos)|Spy|Corpus|11|13|Corpus Ship
+SettlementNode15|Sharpless (Phobos)|Mobile Defense|Corpus|11|13|Corpus Ship

@@ -11,8 +11,10 @@ SolNode17|Proteus (Neptune)|Defense|Corpus|27|32|Corpus Ship
 SolNode18|Rhea (Saturn)|Interception|Grineer|21|26|Grineer Asteroid
 SolNode19|Enceladus (Saturn)|Sabotage|Grineer|23|25|Grineer Asteroid
 SolNode20|Telesto (Saturn)|Exterminate|Grineer|22|24|Grineer Galleon
+SolNode21|Narcissus (Pluto)|Exterminate|Corpus|32|36|Corpus Outpost
 SolNode22|Tessera (Venus)|Defense|Corpus|3|8|Corpus Outpost
 SolNode23|Cytherean (Venus)|Interception|Corpus|3|8|Corpus Ship
+SolNode24|Oro (Earth)|Assassination|Grineer|20|25|Grineer Forest
 SolNode31|Anthe (Saturn)|Rescue|Grineer|22|24|Grineer Galleon
 SolNode32|Tethys (Saturn)|Assassination|Grineer|24|26|Grineer Galleon
 SolNode33|Ariel (Uranus)|Capture|Grineer|25|27|Grineer Sealab
@@ -36,6 +38,8 @@ SolNode64|Umbriel (Uranus)|Interception|Grineer|24|29|Grineer Sealab
 SolNode66|Unda (Venus)|Spy|Corpus|4|6|Corpus Outpost
 SolNode67|Dione (Saturn)|Spy|Grineer|21|23|Grineer Asteroid
 SolNode68|Vallis (Mars)|Mobile Defense|Grineer|11|13|Grineer Galleon
+SolNode69|Ophelia (Uranus)|Survival|Grineer|24|29|Grineer Sealab
+SolNode70|Cassini (Saturn)|Capture|Grineer|21|23|Grineer Galleon
 SolNode72|Outer Terminus (Pluto)|Defense|Corpus|30|40|Corpus Outpost
 SolNode73|Ananke (Jupiter)|Capture|Corpus|16|18|Corpus Gas City
 SolNode74|Carme (Jupiter)|Mobile Defense|Corpus|16|18|Corpus Gas City
@@ -49,6 +53,7 @@ SolNode88|Adrastea (Jupiter)|Sabotage|Corpus|18|20|Corpus Gas City
 SolNode89|Mariana (Earth)|Exterminate|Grineer|1|3|Grineer Sealab
 SolNode96|Titan (Saturn)|Survival|Grineer|21|26|Grineer Galleon
 SolNode97|Amalthea (Jupiter)|Spy|Corpus|17|19|Corpus Gas City
+SolNode99|War (Mars)|Assassination|Grineer|11|13|Grineer Settlement
 SolNode100|Elara (Jupiter)|Survival|Corpus|15|20|Corpus Gas City
 SolNode102|Oceanum (Pluto)|Spy|Corpus|32|36|Corpus Outpost
 SolNode103|M Prime (Mercury)|Exterminate|Infested|7|9|Grineer Asteroid
@@ -65,6 +70,7 @@ SolNode128|E Gate (Venus)|Exterminate|Corpus|3|5|Corpus Outpost
 SolNode130|Lares (Mercury)|Defense|Infestation|6|11|Grineer Asteroid
 SolNode131|Pallas (Ceres)|Exterminate|Grineer|12|14|Grineer Shipyard
 SolNode132|Bode (Ceres)|Spy|Grineer|12|14|Grineer Shipyard
+SolNode137|Nuovo (Ceres)|Rescue|Grineer|13|15|Grineer Shipyard
 SolNode138|Ludi (Ceres)|Hijack|Grineer|15|17|Grineer Shipyard
 SolNode139|Lex (Ceres)|Capture|Grineer|14|16|Grineer Shipyard
 SolNode140|Kiste (Ceres)|Mobile Defense|Grineer|13|15|Grineer Shipyard
@@ -80,6 +86,7 @@ SolNode173|Solium (Eris)|Mobile Defense|Infested|34|38|Infested Ship
 SolNode175|Naeglar (Eris)|Hive Sabotage|Infested|30|34|Infested Ship
 SolNode177|Kappa (Sedna)|Spy|Grineer|34|38|Grineer Galleon
 SolNode184|Rusalka (Sedna)|Capture|Grineer|32|36|Grineer Galleon
+SolNode185|Berehynia (Sedna)|Interception|Grineer|30|40|Grineer Shipyard
 SolNode187|Selkie (Sedna)|Survival|Grineer|30|40|Grineer Asteroid
 SolNode188|Kelpie (Sedna)|Sabotage|Grineer|36|40|Grineer Galleon
 SolNode189|Naga (Sedna)|Rescue|Grineer|30|34|Grineer Galleon

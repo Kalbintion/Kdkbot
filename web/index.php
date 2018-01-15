@@ -11,7 +11,7 @@ if(isset($_COOKIE['PHPSESSID'])) {
 }
 
 // Create Auth URL for current session id
-$auth_url = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=gia5fjuorx23n2e0wyfiii0soafxop0&redirect_uri=http%3A%2F%2Ftfk.zapto.org%2Fkdkbot%2F%3Fp%3Dtwitch&scope=channel_read+channel_editor+channel_commercial+channel_subscriptions&state=$id&forceverify=true";
+$auth_url = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=gia5fjuorx23n2e0wyfiii0soafxop0&redirect_uri=http%3A%2F%2Ftfk.zapto.org%2Fkdkbot%2F%3Fp%3Dtwitch&scope=channel_read+channel_editor+channel_commercial+channel_subscriptions+chat_login&state=$id&forceverify=true";
 ?>
 <html>
 <head>

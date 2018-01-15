@@ -1,5 +1,6 @@
 <?php 
 include("./api/globals.php");
+include("./api/helpers.php");
 
 session_start();
 $id = "";

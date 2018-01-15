@@ -59,6 +59,14 @@ if(isset($_POST['update'])) {
 	
 	foreach($_POST as $varName => $varValue) {
 		if($varName == "update") { continue; }
+		if(startsWith("available", $varName)) {
+			if($_POST[$varName] == "on") {
+				$_POST[$varName] = "true";
+			} else {
+				$_POST[$varName] = "false";
+			}
+		}
+		
 		$output[$varName] = $_POST[$varName];
 	}
 	

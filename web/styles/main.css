@@ -13,6 +13,10 @@ h1 {
 	text-align: center;
 }
 
+h1 a {
+	text-decoration: none;
+}
+
 .contentMain {
 	width: 80%;
 	margin-left: auto;
@@ -154,7 +158,7 @@ table.inputs2 textarea {
 	width: 100%;
 }
 
-table.inputs input, table.inputs select {
+table.inputs input, table.inputs select, table.inputs textarea {
 	background-color: black;
 	color: white;
 	border: 1px solid white;
@@ -288,6 +292,19 @@ div.logItem {
 }
 
 div.logItem:hover {
+	background-color: rgba(0,99,0,0.5);
+}
+
+div.menuItem {
+	float: left;
+	margin: 10px;
+	padding: 15px;
+	border: 1px solid white;
+	border-radius: 15px;
+	width: fit-content !important;
+}
+
+div.menuItem:hover {
 	background-color: rgba(0,99,0,0.5);
 }
 

@@ -338,6 +338,7 @@ public class Channel {
 					}
 				}
 				switch(filter.action) {
+					//TODO: Modify log to actually send log data to the right channel for viewing purposes later
 					case 1:
 						Kdkbot.instance.dbg.writeln(this, "Attempting to purge user due to filter");
 						Kdkbot.instance.log("Attempting to purge user " + info.sender + " due to filter #" + filterIndex);

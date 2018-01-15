@@ -729,7 +729,7 @@ public class MessageParser {
 			String result = matches.group();
 			
 			// TODO: Implement Warframe Active Missions (Void Fissures) replacement
-			toParse = toParse.replace(result, "");
+			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getAllFissuresReadable());
 		}
 				
 		// Warframe Flash Sales (Market Sales)

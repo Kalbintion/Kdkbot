@@ -113,6 +113,14 @@
 </div>
 </a>
 
+<a href="?p=manage/tools">
+<div class="button incomplete">
+<img src"./Blank_120.png">
+<span class="buttonname">Tools</span>
+<span class="buttontext">Manage and use various tools</span>
+</div>
+</a>
+
 <?PHP
 if(isUserNewsMgr()) {
 	echo "<a href=\"?p=news/manage\"><div class=\"button\"><img src=\"./imgs/newspaper-1422025_960_720.png\"><span class=\"buttonname\">Front Page News</span><span class=\"buttontext\">Manage and review front page news</span></div></a>";

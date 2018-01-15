@@ -87,8 +87,8 @@ public class StringCommands {
 		while(strIter.hasNext()) {
 			strCmd = strIter.next();
 			if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
-				commands.remove(strCmd);
-				String.format(Translate.getTranslate("custom.del", Kdkbot.instance.getChannel(this.channel).getLang()), trigger);
+				strIter.remove();
+				return String.format(Translate.getTranslate("custom.del", Kdkbot.instance.getChannel(this.channel).getLang()), trigger);
 			}
 		}
 		return String.format(Translate.getTranslate("custom.del.failed", Kdkbot.instance.getChannel(this.channel).getLang()), trigger);

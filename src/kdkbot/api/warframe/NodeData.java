@@ -1,21 +1,36 @@
 package kdkbot.api.warframe;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Class holding data found in every node (sector) in Warframe
  * @author KDK
  *
  */
 public class NodeData {
-	private String node_id;
-	private String readable_name;
-	private String mission_type;
-	private String faction_type;
-	private String tileset_name;
-	private int min_level;
-	private int max_level;
+	private String node_id = "";
+	private String readable_name = "";
+	private String mission_type = "";
+	private String faction_type = "";
+	private String tileset_name = "";
+	private int min_level = 0;
+	private int max_level = 0;
+	private ArrayList<String> node_previous;
+	private ArrayList<String> node_next;
+	private String planet_name = "";
+	private String sector_name = "";
 	
+	public NodeData() {
+		
+	}
+		
 	public NodeData(String id, String readable) {
 		this(id, readable, "", "", 0, 0, "");
+	}
+	
+	public NodeData(String id, String readable, String missionType) {
+		this(id, readable, missionType, "", 0, 0, "");
 	}
 	
 	public NodeData(String id, String readable, String missionType, String faction) {
@@ -23,6 +38,10 @@ public class NodeData {
 	}
 	
 	public NodeData(String id, String readable, String missionType, String faction, int minLevel, int maxLevel, String tileset) {
+		this(id, readable, missionType, faction, 0, 0, tileset, "", "");
+	}
+	
+	public NodeData(String id, String readable, String missionType, String faction, int minLevel, int maxLevel, String tileset, String prevNode, String nextNodes) {
 		node_id = id;
 		readable_name = readable;
 		mission_type = missionType;
@@ -30,6 +49,10 @@ public class NodeData {
 		tileset_name = tileset;
 		min_level = minLevel;
 		max_level = maxLevel;
+		node_previous = new ArrayList<String>(Arrays.asList(prevNode.split(",")));
+		node_next = new ArrayList<String>(Arrays.asList(nextNodes.split(",")));
+		planet_name = readable_name.split(" \\(")[1].replaceAll("\\)", "");
+		sector_name = readable_name.split(" \\(")[0];
 	}
 	
 	public int getMinLevel() {
@@ -66,5 +89,21 @@ public class NodeData {
 	
 	public String getTileset() {
 		return tileset_name;
+	}
+	
+	public ArrayList<String> previousNode() {
+		return node_previous;
+	}
+	
+	public ArrayList<String> nextNode() {
+		return node_next;
+	}
+	
+	public String getSectorName() {
+		return planet_name;
+	}
+	
+	public String getPlanetName() {
+		return sector_name;
 	}
 }

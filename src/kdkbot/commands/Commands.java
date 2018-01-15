@@ -230,6 +230,8 @@ public class Commands {
 			}
 		}
 		
+		Kdkbot.instance.dbg.writeln("Hit past command cost checking");
+		
 		// Permission Ranks
 		if (info.senderLevel >= cmdPerm.getPermissionLevel() &&
 				cmdPerm.getAvailability() && 
@@ -501,8 +503,8 @@ public class Commands {
 			}
 		}
 		// Stream Uptime
-		else if(info.senderLevel >= 1 &&
-				coreWord.equalsIgnoreCase("uptime")) {
+		else if(info.senderLevel >= cmdUptime.getPermissionLevel() &&
+				coreWord.equalsIgnoreCase(cmdUptime.getTrigger())) {
 			String getChan = chan.channel;
 			String[] parts = info.getSegments(2);
 			if(parts.length > 1) {
@@ -635,6 +637,14 @@ public class Commands {
 	private Object getInternalCommandSetting(String settingSuffix, String settingType, Object defaultValue) {
 		if(chan.cfgChan.getSetting(settingType + settingSuffix.toLowerCase()) == null) {
 			chan.cfgChan.setSetting(settingType + settingSuffix.toLowerCase(), defaultValue.toString());
+		}
+		
+		String data = chan.cfgChan.getSetting(settingType + settingSuffix.toLowerCase());
+		
+		if(settingType.equalsIgnoreCase("availability")) {
+			if(data.equalsIgnoreCase("on")) {
+				chan.cfgChan.setSetting(settingType + settingSuffix.toLowerCase(), "true");
+			}
 		}
 		
 		return chan.cfgChan.getSetting(settingType + settingSuffix.toLowerCase());

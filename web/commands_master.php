@@ -14,24 +14,6 @@
 	<td><i>debug enable</i> will enable debug messages to the console. <i>debug disable</i> will disable them.</td>
 </tr>
 <tr>
-	<td>msgdupe</td>
-	<td>Master</td>
-	<td>Always</td>
-	<td><i>msgdupe from to</i> will duplicate messages received from the given channel name (<i>from</i>) and send them to the <i>to</i> channel.</td>
-</tr>
-<tr>
-	<td>msgdupeto</td>
-	<td>Master</td>
-	<td>Always</td>
-	<td><i>msgdupeto to</i> will duplciate messages received from the channel the command is used and send them to the <i>to</i> channel.</td>
-</tr>
-<tr>
-	<td>msgbreakall</td>
-	<td>Master</td>
-	<td>Always</td>
-	<td><i>msgbreakall</i> ceases all message duplications between all channels</td>
-</tr>
-<tr>
 	<td>exit</td>
 	<td>Master</td>
 	<td>Always</td>

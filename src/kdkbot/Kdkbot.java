@@ -380,12 +380,6 @@ public class Kdkbot extends PircBot {
     		} else if(info.message.startsWith("&&stop")) {
     			this.disconnect();
     			System.exit(0);
-    		} else if(info.message.startsWith("&&wfdata")) {
-    			kdkbot.api.warframe.API.Warframe.getData();
-    		} else if(info.message.startsWith("&&wfdaily")) {
-    			this.sendMessage(info.channel, kdkbot.api.warframe.API.Warframe.getDailyDeal());
-    		} else if(info.message.startsWith("&&wfddtest")) {
-    			this.sendMessage(info.channel, kdkbot.api.warframe.API.Warframe.getDailyDealReadable());
     		} else if(info.message.startsWith("&&echo " )) {
     			String messageToSend = info.message.substring("&&echo ".length());
     			this.sendMessage(info.channel, messageToSend);
@@ -417,19 +411,6 @@ public class Kdkbot extends PircBot {
     			Kdkbot.instance.sendMessage(info.channel, Translate.getTranslate("bot.mastercommands.gc", botLanguage));
     			System.gc();
     			System.gc();
-    		} else if(info.message.startsWith("&&ytviews ")) {
-    			Kdkbot.instance.sendMessage(info.channel, "Video views: " + kdkbot.api.youtube.API.getNumberOfVideoViews(info.getSegments(2)[1]));
-    		} else if(info.message.startsWith("&&formattest")) {
-    			Kdkbot.instance.sendMessage(info.channel, String.format("%1$s", 3));
-    		} else if(info.message.startsWith("&&wfmtest ")) {
-    			Kdkbot.instance.sendMessage(info.channel, kdkbot.api.warframe.API.Market.getSellStatsDynamic(info.getSegments(2)[1]).toString());
-    		} else if(info.message.startsWith("&&jsontest")) {
-    			JsonObject tempObj = new JsonObject();
-    			tempObj.addProperty("stream", "null");
-    			Kdkbot.instance.sendMessage(info.channel, "Json Test: " + tempObj.get("stream").toString());
-    			Kdkbot.instance.sendMessage(info.channel, "Json Test: " + tempObj.get("stream").toString().equalsIgnoreCase("\"null\""));
-    		} else if(info.message.startsWith("&&livejsontest ")) {
-    			kdkbot.api.twitch.APIv5.isStreamerLive(getClientID(), getChannel("#taitfox").getUserID());
     		}
     	}
     }

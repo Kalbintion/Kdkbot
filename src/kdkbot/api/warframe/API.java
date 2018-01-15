@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -160,8 +161,8 @@ public final class API {
 				JsonObject jObj = parser.parse(nxt).getAsJsonObject();
 				
 				out += InternalTranslator.getSolNodeName(jObj.get("Location").toString().replaceAll("\"", "")) + " - ";
-				out += convertTagMissionType(jObj.get("Type").toString().replaceAll("\"", "")) + " (";
-				out += convertTagFactionType(jObj.get("Faction").toString().replaceAll("\"", "")) + ") ";
+				out += InternalTranslator.convertTagMissionType(jObj.get("Type").toString().replaceAll("\"", "")) + " (";
+				out += InternalTranslator.convertTagFactionType(jObj.get("Faction").toString().replaceAll("\"", "")) + ") ";
 				out += jObj.get("LevelMin").toString().replaceAll("\"", "") + "-";
 				out += jObj.get("LevelMax").toString().replaceAll("\"", "") + " | ";
 			
@@ -220,12 +221,12 @@ public final class API {
 				
 				JsonObject jObj = parser.parse(nxt).getAsJsonObject();
 				
-				out += convertTagSortieBoss(jObj.get("Boss").toString().replaceAll("\"", "")) + " | ";
+				out += InternalTranslator.convertTagSortieBoss(jObj.get("Boss").toString().replaceAll("\"", "")) + " | ";
 				
 				for(int i = 1; i <= 3; i++) {
 					out += InternalTranslator.getSolNodeName(jObj.get("Location" + i).toString().replaceAll("\"", "")) + " - ";
-					out += convertTagMissionType(jObj.get("Mission" + i).toString().replaceAll("\"", "")) + " (";
-					out += convertTagModifierType(jObj.get("MissionMod" + i).toString().replaceAll("\"", "")) + ") | ";
+					out += InternalTranslator.convertTagMissionType(jObj.get("Mission" + i).toString().replaceAll("\"", "")) + " (";
+					out += InternalTranslator.convertTagModifierType(jObj.get("MissionMod" + i).toString().replaceAll("\"", "")) + ") | ";
 				}
 			}
 			
@@ -246,6 +247,18 @@ public final class API {
 
 				objOut.add("Location", objEvent.get("Node"));
 				objOut.add("Modifier", objEvent.get("Modifier"));
+
+				long timeStart = Long.parseLong(objEvent.get("Activation").getAsJsonObject().get("$date").getAsJsonObject().get("$numberLong").getAsString().replaceAll("\"", ""));
+				long timeEnd = Long.parseLong(objEvent.get("Expiry").getAsJsonObject().get("$date").getAsJsonObject().get("$numberLong").getAsString().replaceAll("\"", ""));
+				long worldTime = getWorldTime();
+				
+				objOut.add("TimeStart", objEvent.get("Activation").getAsJsonObject().get("$date"));
+				objOut.add("TimeEnd", objEvent.get("Expiry").getAsJsonObject().get("$date"));
+				
+				objOut.addProperty("TimeDuration", Math.floor((timeEnd - timeStart) / 1000));
+				objOut.addProperty("TimeLeft", Math.floor((timeEnd / 1000) - worldTime));
+				objOut.addProperty("TimeLeftRead", formatTime((long) Math.floor((timeEnd / 1000) - worldTime)));
+				objOut.addProperty("TimeWorld", worldTime);
 				
 				outData.add(objOut);
 			}
@@ -269,18 +282,17 @@ public final class API {
 			Iterator<String> iter = allEvents.iterator();
 			while(iter.hasNext()) {
 				String nxt = iter.next();
+				System.out.println("[DBG] [WF] [API] [WF] " + nxt);
 				
 				JsonObject jObj = parser.parse(nxt).getAsJsonObject();
 				
-				out += 
+				String solNode = jObj.get("Location").toString().replaceAll("\"", "");
+				String nodeMod = InternalTranslator.convertVoidTierType(jObj.get("Modifier").toString().replaceAll("\"", ""));
+				NodeData solNodeData = InternalTranslator.getSolNodeData(solNode);
+				if(solNodeData == null) { solNodeData = new NodeData(solNode, solNode + " (" + solNode + ")", "Unknown"); }
 				
-				out += convertTagSortieBoss(jObj.get("Boss").toString().replaceAll("\"", "")) + " | ";
+				out += solNodeData.getNodeName() + " " + solNodeData.getMissionType() + " - " +	nodeMod + " - " + jObj.get("TimeLeftRead").toString().replace("\"", "") +" | ";
 				
-				for(int i = 1; i <= 3; i++) {
-					out += InternalTranslator.getSolNodeName(jObj.get("Location" + i).toString().replaceAll("\"", "")) + " - ";
-					out += convertTagMissionType(jObj.get("Mission" + i).toString().replaceAll("\"", "")) + " (";
-					out += convertTagModifierType(jObj.get("MissionMod" + i).toString().replaceAll("\"", "")) + ") | ";
-				}
 			}
 			
 			if(out.endsWith(" | ")) { out = out.substring(0, out.length() - " | ".length()); }
@@ -316,7 +328,7 @@ public final class API {
 		
 		public static String getDailyDealReadable() {
 			JsonObject data = getDailyDealHelper();
-			return getReadableName(data.get("name").toString()) + " " + data.get("curPrice") + " [" + data.get("oriPrice") + "] " + data.get("curAmount") + "/" + data.get("oriAmount");
+			return InternalTranslator.getReadableName(data.get("name").toString()) + " " + data.get("curPrice") + " [" + data.get("oriPrice") + "] " + data.get("curAmount") + "/" + data.get("oriAmount");
 		}
 		
 		private static JsonObject getDailyDealHelper() {
@@ -339,6 +351,12 @@ public final class API {
 			return allData.get("data").toString();
 		}
 		
+		public static long getWorldTime() {
+			JsonObject allData = getData();
+			
+			return Long.parseLong(allData.get("Time").toString().replaceAll("\"", ""));
+		}
+		
 		public static JsonObject getData() {
 			JsonParser parser = new JsonParser();
 			JsonObject jobj = null;
@@ -357,56 +375,22 @@ public final class API {
 
 			return jobj;
 		}
-		
-		/**
-		 * Retrieves the human-readable name from a unique name
-		 * @param uniqueName The unique name to get the real name for
-		 * @return The real name, if found, of the item
-		 */
-		private static String getReadableName(String uniqueName) {
-			uniqueName = uniqueName.replaceAll("\"", "");
-			String ret = Translate.getTranslate(uniqueName, "enWFUN");
+
+		public static String formatTime(long seconds) {
+			int sec = 0, min = 0, hr = 0;
 			
-			// Set translation of this object to itself for future correction
-			if(ret.equalsIgnoreCase("null")) {
-				Translate.setTranslate(uniqueName, "enWFUN", uniqueName);
-				ret = uniqueName;
+			while(seconds > 0) {
+				seconds--;
+				sec++;
+				if(sec >= 60) { sec = 0; min++; }
+				if(min >= 60) { min = 0; hr++; }
 			}
 			
-			return ret;
-		}
-		
-		private static String convertTagSortieBoss(String sortieBossTag) {
-			sortieBossTag = sortieBossTag.replace("SORTIE_BOSS_", "").toLowerCase();
-			sortieBossTag = sortieBossTag.substring(0,1).toUpperCase() + sortieBossTag.substring(1);
-			return sortieBossTag;
-		}
-		
-		private static String convertTagMissionType(String missionTypeTag) {
-			switch(missionTypeTag) {
-				case "MT_INTEL":
-					return "Spy";
-				case "MT_EVACUATION":
-					return "Defection";
-				case "MT_TERRITORY":
-					return "Interception";
-				default:
-					missionTypeTag = missionTypeTag.replace("MT_", "").toLowerCase().replaceAll("_", " ");
-					missionTypeTag = Market.camelCaseStr(missionTypeTag);
-					return missionTypeTag;
-			}
-		}
-		
-		private static String convertTagModifierType(String modifierTypeTag) {
-			modifierTypeTag = modifierTypeTag.replace("SORTIE_MODIFIER_", "").toLowerCase().replaceAll("_", " ");
-			modifierTypeTag = Market.camelCaseStr(modifierTypeTag);
-			return modifierTypeTag;
-		}
-		
-		private static String convertTagFactionType(String factionTypeTag) {
-			factionTypeTag = factionTypeTag.replace("FC_", "").toLowerCase().replaceAll("_", " ");
-			factionTypeTag = Market.camelCaseStr(factionTypeTag);
-			return factionTypeTag;
+			String out = "";
+			if( hr > 0) { out += hr + "h "; }
+			if(min > 0) { out += min + "m "; }
+			if(sec > 0) { out += sec + "s "; }
+			return out;
 		}
 	}
 	

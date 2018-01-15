@@ -1,31 +1,4 @@
 <?PHP
-	/* Determines if a given string (haystack) contains another string (needle).
-	 * Returns true if found, false otherwise
-	 */
-	function startsWith($haystack, $needle) {
-		if(substr($haystack, 0, strlen($needle)) === $needle) {
-			return true;
-		}
-		return false;
-	}
-	
-	/* Determines if a given string (haystack) contains another string (needle).
-	 * Returns true if found, false otherwise
-	 */
-	function endsWith($haystack, $needle) {
-		if(substr($haystack, -strlen($needle), strlen($needle)) === $needle) {
-			return true;
-		}
-		return false;
-	}
-	
-	function contains($haystack, $needle) {
-		if (strpos($haystack, $needle) !== false) {
-			return true;
-		}
-		return false;
-	}
-	
 	/* Returns the parsed ini file contents
 	 */
 	function getCfgSettings() {

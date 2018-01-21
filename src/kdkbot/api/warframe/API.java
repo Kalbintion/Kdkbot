@@ -1,6 +1,5 @@
 package kdkbot.api.warframe;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -24,12 +22,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.MalformedJsonException;
 
-import kdkbot.Kdkbot;
 import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.Config;
-import kdkbot.language.Translate;
 
 public final class API {
 	/**
@@ -805,6 +800,7 @@ public final class API {
 		 * @param lookupName The name to lookup
 		 * @return a JsonObject containing a parsed API response
 		 */
+		@SuppressWarnings("finally")
 		private static JsonObject getResults(String lookupName) {
 			JsonParser parser = new JsonParser();
 			JsonObject jobj = null;
@@ -815,18 +811,14 @@ public final class API {
 				request.connect();
 
 				jobj = parser.parse(new InputStreamReader((InputStream) request.getContent())).getAsJsonObject();
-			} catch (MalformedJsonException e) {
-				jobj = new JsonObject();
-				jobj.addProperty("Error", "Could not properly retrieve information. Malformed JSON.");
-			} catch (EOFException e) {
-				jobj = new JsonObject();
-				jobj.addProperty("Error", "Could not properly retrieve information. End of File.");
+				
+				return jobj;
 			} catch (IOException e) {
 				jobj = new JsonObject();
 				jobj.addProperty("Error", "Could not properly retrieve information. IOException.");
+			} finally {
+				return jobj;
 			}
-			
-			return jobj;
 		}
 
 		private static JsonObject cloneJson(JsonObject toClone) {

@@ -16,8 +16,6 @@ import java.util.regex.Pattern;
 
 import org.jibble.pircbot.*;
 
-import com.google.gson.JsonObject;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;

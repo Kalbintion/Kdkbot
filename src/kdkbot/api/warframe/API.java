@@ -1,7 +1,12 @@
 package kdkbot.api.warframe;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,7 +24,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.MalformedJsonException;
 
+import kdkbot.Kdkbot;
 import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.Config;
 import kdkbot.language.Translate;
@@ -803,15 +810,20 @@ public final class API {
 			JsonObject jobj = null;
 			
 			try {
-				Connection conn = Jsoup.connect(baseURL + "/" + itemRenamed(lookupName).replaceAll(" ", "_").replaceAll("-", "_") + "/" + postURL);
-				conn.timeout(10000);
-				Document doc;
-				doc = conn.ignoreContentType(true).get();
-				
-				jobj = parser.parse(doc.body().html()).getAsJsonObject();
+				URL url = new URL(baseURL + "/" + itemRenamed(lookupName).replaceAll(" ", "_").replaceAll("-", "_") + "/" + postURL);
+				HttpURLConnection request = (HttpURLConnection) url.openConnection();
+				request.connect();
+
+				jobj = parser.parse(new InputStreamReader((InputStream) request.getContent())).getAsJsonObject();
+			} catch (MalformedJsonException e) {
+				jobj = new JsonObject();
+				jobj.addProperty("Error", "Could not properly retrieve information. Malformed JSON.");
+			} catch (EOFException e) {
+				jobj = new JsonObject();
+				jobj.addProperty("Error", "Could not properly retrieve information. End of File.");
 			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
+				jobj = new JsonObject();
+				jobj.addProperty("Error", "Could not properly retrieve information. IOException.");
 			}
 			
 			return jobj;

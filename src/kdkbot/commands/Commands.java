@@ -263,6 +263,7 @@ public class Commands {
 		}
 		
 		// Forwarders
+		// TODO: Allow channels to auto-authorize chat forwarding
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 				    cmdForward.getAvailability() &&
 					coreWord.equalsIgnoreCase(cmdForward.getTrigger())) {

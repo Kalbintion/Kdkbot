@@ -653,6 +653,7 @@ public class MessageParser {
 					case "armor":
 						mathResult = kdkbot.api.warframe.API.Scaling.scaleArmor(baseStat, baseLevel, curLevel);
 						break;
+					case "shield":
 					case "shields":
 						mathResult = kdkbot.api.warframe.API.Scaling.scaleShield(baseStat, baseLevel, curLevel);
 						break;

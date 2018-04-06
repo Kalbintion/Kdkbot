@@ -116,5 +116,15 @@ echo "
 </tr>
 </table>
 </form>
+
+<table class=\"inputs settings minTable table34\">
+	<tr>
+		<td colspan=\"2\">Chat Verification Key</td>
+	</tr>
+	<tr>
+		<td><input readonly type=\"password\" onfocus=\"this.type='text'\" onblur=\"this.type=\'password\'\" value=\"???????????\"></td>
+		<td>This key will be used to authorize other users to use this account for chat logins. Do not share. Click to show.</td>
+	</tr>
+</table>
 <br />";
 ?>

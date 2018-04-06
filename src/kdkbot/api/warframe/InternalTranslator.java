@@ -14,6 +14,7 @@ public class InternalTranslator {
 	public static ArrayList<NodeData> solNodes = new ArrayList<NodeData>();
 	public static HashMap<String, String> solNodesMap = new HashMap<String, String>();
 	public static HashMap<String, String> itmNodes = new HashMap<String, String>();
+	public static HashMap<String, String> marketReplace = new HashMap<String, String>();
 	
 	static {
 		reloadNodeData();
@@ -24,11 +25,14 @@ public class InternalTranslator {
 	 */
 	public static void reloadNodeData() {
 		String last_line = "";
+		Config cfg;
+		List<String> data;
+		Iterator<String> iter;
 		
 		try {
-			Config cfg = new Config("./cfg/api/warframe/solNodes.kdk");
-			List<String> data = cfg.getConfigContents();
-			Iterator<String> iter = data.iterator();
+			cfg = new Config("./cfg/api/warframe/solNodes.kdk");
+			data = cfg.getConfigContents();
+			iter = data.iterator();
 			
 			if(solNodes.size() > 0) { solNodes.clear(); }
 			
@@ -59,8 +63,38 @@ public class InternalTranslator {
 				
 				solNodes.add(new NodeData(nodeID, nodeName, nodeMission, nodeFaction, nodeMinLvl, nodeMaxLvl, nodeTileset, nodePrev, nodeNext));
 			}
+			
+
+
+			
 		} catch (Exception e) {
 			Kdkbot.instance.dbg.writeln("Error parsing line in ./cfg/api/warframe/solNodes.kdk");
+			Kdkbot.instance.dbg.writeln("Line: " + last_line);
+			Kdkbot.instance.dbg.writeln(e.getMessage());
+			Kdkbot.instance.dbg.writeln(e.getStackTrace().toString());
+		}
+		
+		try {
+			if(marketReplace.size() > 0) { marketReplace.clear(); }
+			
+			cfg = new Config("./cfg/api/warframe/marketRenames.kdk");
+			data = cfg.getConfigContents();
+			iter = data.iterator();
+			
+			while(iter.hasNext()) {
+				String nxt = iter.next();
+				last_line = nxt;
+				String[] parts = nxt.split("\\|");
+				//    0  1
+				// From|To
+				
+				String from = parts[0];
+				String to = parts[1];
+				
+				marketReplace.put(from, to);
+			}
+		} catch (Exception e) {
+			Kdkbot.instance.dbg.writeln("Error parsing line in ./cfg/api/warframe/marketRenames.kdk");
 			Kdkbot.instance.dbg.writeln("Line: " + last_line);
 			Kdkbot.instance.dbg.writeln(e.getMessage());
 			Kdkbot.instance.dbg.writeln(e.getStackTrace().toString());
@@ -69,9 +103,9 @@ public class InternalTranslator {
 		if(solNodesMap.size() > 0) { solNodesMap.clear(); }
 		
 		// Load all data into solNodesMap for faster SolNode ID => Name lookups (Costs extra RAM)
-		Iterator<NodeData> iter = solNodes.iterator();
-		while(iter.hasNext()) {
-			NodeData nxt = iter.next();
+		Iterator<NodeData> nIter = solNodes.iterator();
+		while(nIter.hasNext()) {
+			NodeData nxt = nIter.next();
 			solNodesMap.put(nxt.getNodeID(), nxt.getNodeName());
 		}
 	}
@@ -172,6 +206,10 @@ public class InternalTranslator {
 		factionTypeTag = factionTypeTag.replace("FC_", "").toLowerCase().replaceAll("_", " ");
 		factionTypeTag = Market.camelCaseStr(factionTypeTag);
 		return factionTypeTag;
+	}
+	
+	public static String marketConvert(String target) {
+		return target;
 	}
 	
 	/**

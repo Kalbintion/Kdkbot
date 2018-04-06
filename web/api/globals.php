@@ -55,6 +55,11 @@
 		return $ini_contents["Bot"]["cfgLocation"];
 	}
 	
+	function getBaseConfigSettingAny($section, $name) {
+		$ini_contents = getCfgSettings();
+		return $ini_contents[$section][$name];
+	}
+	
 	/* Gets the base bot configuration settings back into the bot
 	 */
 	function getBaseConfigContents() {

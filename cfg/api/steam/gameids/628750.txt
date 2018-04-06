@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">aMAZE 2</div>

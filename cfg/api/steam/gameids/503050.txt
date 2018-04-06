@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Heroes from the Past: Joan of Arc</div>

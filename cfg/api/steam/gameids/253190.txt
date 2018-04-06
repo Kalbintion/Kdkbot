@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Kingdom Wars 2: Battles</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Metal Soldiers 2</div>

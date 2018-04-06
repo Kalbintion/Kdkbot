@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">The Painter's Playground - Digital Art Booklet</div>

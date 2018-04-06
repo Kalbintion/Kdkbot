@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Bloo Kid 2</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Beast Pets</div>

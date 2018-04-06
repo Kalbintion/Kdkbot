@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">MXGP2 - The Official Motocross Videogame Compact</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">X: Beyond the Frontier</div>

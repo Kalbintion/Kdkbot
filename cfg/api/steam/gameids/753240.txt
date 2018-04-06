@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">CG the Seven Virus Knights</div>

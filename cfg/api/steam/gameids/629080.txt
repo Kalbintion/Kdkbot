@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Beyond: Light Advent Collector's Edition</div>

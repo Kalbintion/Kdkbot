@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">MyWorld - Frozen Kingdom</div>

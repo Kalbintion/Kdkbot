@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Smart Junior Academy - Summer</div>

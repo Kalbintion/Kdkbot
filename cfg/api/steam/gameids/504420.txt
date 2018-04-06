@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Malazard: The Master of Magic</div>

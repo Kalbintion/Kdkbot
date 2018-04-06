@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Sangokushi Eiketsuden / 三國志英傑伝</div>

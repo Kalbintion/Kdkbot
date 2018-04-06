@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Towards Gold and Glory</div>

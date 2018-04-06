@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Paper Dungeons Crawler</div>

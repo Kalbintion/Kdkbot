@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">City Life 2008</div>

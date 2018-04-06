@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Ninja Stealth 3</div>

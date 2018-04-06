@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Candy Smash VR</div>

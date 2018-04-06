@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Mystery P.I.&trade; - The Lottery Ticket</div>

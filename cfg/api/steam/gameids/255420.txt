@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Magic 2015 - Duels of the Planeswalkers</div>

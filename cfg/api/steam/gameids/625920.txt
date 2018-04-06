@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Master of Magic Chess Deluxe Edition</div>

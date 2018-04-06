@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">StarDrive 2</div>

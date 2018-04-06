@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Minecraft: Story Mode - A Telltale Games Series</div>

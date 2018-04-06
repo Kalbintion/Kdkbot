@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">F-15C for DCS World</div>

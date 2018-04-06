@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Fate/EXTELLA - Slash and Connect</div>

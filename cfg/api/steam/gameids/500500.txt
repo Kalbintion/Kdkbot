@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Simple VR Video Player</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Strike.is: The Game</div>

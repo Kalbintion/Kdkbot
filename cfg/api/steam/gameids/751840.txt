@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Endless Space® 2 - Stellar Prisoner Update</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">RUGBY 18</div>

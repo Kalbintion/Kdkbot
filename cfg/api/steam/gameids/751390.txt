@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">GoPlay Editor - Amazing Game Recorder &amp; Video Editor</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Assault Corps 2</div>

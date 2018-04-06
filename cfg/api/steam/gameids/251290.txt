@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">The Legend of Heroes: Trails in the Sky SC</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Ship Simulator Extremes: Inland Shipping</div>

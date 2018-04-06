@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Anno 2205™</div>

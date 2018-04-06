@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Awesomenauts - The Scrolls of XiPang Announcer</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Discovery! A Seek and Find Adventure</div>

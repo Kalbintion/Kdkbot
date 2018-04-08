@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">DERU - The Art of Cooperation</div>

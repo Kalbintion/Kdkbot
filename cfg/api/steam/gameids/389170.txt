@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">A Lenda do Herói - O Herói desta Canção</div>

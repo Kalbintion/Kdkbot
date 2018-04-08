@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Inferno 2</div>

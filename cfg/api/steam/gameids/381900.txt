@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Bard's Gold</div>

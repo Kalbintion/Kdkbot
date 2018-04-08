@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Fantastic Checkers 2</div>

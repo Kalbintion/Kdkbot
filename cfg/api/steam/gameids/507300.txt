@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Club Manager 2017</div>

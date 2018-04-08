@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Zendikar Card Collection</div>

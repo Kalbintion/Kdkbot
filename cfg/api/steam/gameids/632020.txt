@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Beasts Battle 2</div>

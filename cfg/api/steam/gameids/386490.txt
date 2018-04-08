@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Wanda - A Beautiful Apocalypse</div>

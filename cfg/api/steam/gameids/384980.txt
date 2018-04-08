@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Battle for Blood - Epic battles within 30 seconds!</div>

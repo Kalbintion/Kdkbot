@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Heroes of Issachar - Developer's Edition</div>

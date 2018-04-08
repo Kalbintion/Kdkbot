@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Inherit the Earth: Quest for the Orb</div>

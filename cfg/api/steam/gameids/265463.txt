@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">RPG Maker VX Ace - High Fantasy Resource Pack</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">TEKKEN 7</div>

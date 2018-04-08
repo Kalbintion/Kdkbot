@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">TrackMania Nations Forever</div>

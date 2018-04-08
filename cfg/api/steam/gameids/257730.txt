@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Infinity Wars: Animated Trading Card Game</div>

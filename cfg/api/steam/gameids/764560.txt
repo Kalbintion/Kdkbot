@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Chocolate makes you happy 2</div>

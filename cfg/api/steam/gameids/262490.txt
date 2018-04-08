@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Manga Maker Comipo</div>

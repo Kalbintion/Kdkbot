@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Shantae: Pirate Queen's Quest</div>

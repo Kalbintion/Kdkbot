@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Legend Of Long Night</div>

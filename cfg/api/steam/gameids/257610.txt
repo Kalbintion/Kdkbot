@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">LogoMaker 4</div>

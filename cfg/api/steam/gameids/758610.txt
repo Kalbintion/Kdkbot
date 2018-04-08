@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Botanica: Earthbound Collector's Edition</div>

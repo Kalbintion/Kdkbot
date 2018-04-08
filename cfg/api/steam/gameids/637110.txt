@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Runes of Avalon - Path of Magic</div>

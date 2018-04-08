@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">My Coloring Book: Food and Beverage</div>

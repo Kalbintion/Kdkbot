@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Crappy Day Enhanced Edition</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Learn Japanese To Survive! Kanji Combat</div>

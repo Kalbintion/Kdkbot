@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Weather Lord: In Search of the Shaman</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">M.A.X. 2: Mechanized Assault &amp; Exploration</div>

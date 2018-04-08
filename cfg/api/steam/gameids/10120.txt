@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Aces of the Galaxy&trade;</div>

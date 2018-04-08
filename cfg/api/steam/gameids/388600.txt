@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">articy:draft 3 - Flex License</div>

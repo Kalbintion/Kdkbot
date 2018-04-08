@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Dead Mountaineer's Hotel</div>

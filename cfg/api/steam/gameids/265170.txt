@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Acceleration of SUGURI X-Edition HD</div>

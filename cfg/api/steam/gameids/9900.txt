@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Star Trek Online</div>

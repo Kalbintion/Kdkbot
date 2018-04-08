@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">RPG Maker MV - 8-bit Perfect Collection</div>

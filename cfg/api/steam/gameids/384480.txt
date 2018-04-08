@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Six Sides of the World</div>

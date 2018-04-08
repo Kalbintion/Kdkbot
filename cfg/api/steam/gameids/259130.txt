@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Wasteland 1 - The Original Classic</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Maximum Archery The Game</div>

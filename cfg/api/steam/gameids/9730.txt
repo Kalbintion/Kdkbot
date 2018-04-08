@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Tycoon City: New York</div>

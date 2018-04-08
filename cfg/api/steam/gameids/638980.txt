@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Chess Ultra Academy game pack</div>

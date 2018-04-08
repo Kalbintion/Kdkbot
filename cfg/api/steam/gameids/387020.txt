@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Brawlhalla - All Legends (Current and Future)</div>

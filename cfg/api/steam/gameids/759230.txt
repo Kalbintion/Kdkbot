@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Steam: Rails to Riches - Southwestern France Map</div>

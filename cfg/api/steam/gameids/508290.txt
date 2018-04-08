@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">$1 Ride</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Achievement Clicker - Coal Edition</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Midnight Club 2</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Queen's Quest: Tower of Darkness</div>

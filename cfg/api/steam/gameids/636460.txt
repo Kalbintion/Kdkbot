@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Rugby League Team Manager 2018</div>

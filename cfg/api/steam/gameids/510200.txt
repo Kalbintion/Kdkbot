@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">RPG Maker MV - Frontier Works: Futuristic Heroes and BGM</div>

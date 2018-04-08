@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Frontiers.io - Expansion Pack 2</div>

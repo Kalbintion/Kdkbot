@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">EF-12: Fighting Game Maker</div>

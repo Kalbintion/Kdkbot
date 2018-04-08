@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">F1™ 2017</div>

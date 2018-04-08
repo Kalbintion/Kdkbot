@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">MAGIX Music Maker 2016 Live</div>

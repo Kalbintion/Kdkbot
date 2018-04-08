@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">RPG Maker VX Ace - DS+ Resource Pack</div>

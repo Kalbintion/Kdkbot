@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Rugby Challenge 3 Demo</div>

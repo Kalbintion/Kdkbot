@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">The Great Fantasy Struggle</div>

@@ -1,0 +1,1 @@
+		<div class="apphub_AppName">Pro Strategy Football 2018</div>

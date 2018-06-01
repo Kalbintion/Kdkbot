@@ -25,6 +25,7 @@ import kdkbot.channel.*;
 import kdkbot.commands.MessageParser;
 import kdkbot.filemanager.*;
 import kdkbot.language.*;
+import sx.blah.discord.api.IDiscordClient;
 
 public class Kdkbot extends PircBot {
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
@@ -39,6 +40,7 @@ public class Kdkbot extends PircBot {
 	private Log logger;
 	public Debugger dbg;
 	private WebInterfaceWatcher webWatcher;
+	private IDiscordClient platform_discord;
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
@@ -100,6 +102,9 @@ public class Kdkbot extends PircBot {
 		
 		// Join channels
 		for(int i = 0; i < cfgChannels.length; i++) {
+			if(cfgChannels[i].startsWith("#") == false) {
+				cfgChannels[i] = "#" + cfgChannels[i];
+			}
 			CHANS.put(cfgChannels[i], new Channel(this, cfgChannels[i]));
 			dbg.writeln(this, "Added new channel object for channel: " + cfgChannels[i]);
 			dbg.writeln(this, "Channel object: " + getChannel(cfgChannels[i]));
@@ -119,6 +124,9 @@ public class Kdkbot extends PircBot {
 			TwitterFactory tf = new TwitterFactory(cb.build());
 			status = tf.getInstance();
 		}
+		
+		// Setup Discord interface
+		platform_discord = kdkbot.discord.Core.createClient(botCfg.getSetting("disc_pass"), true);
 		
 		// Setup web related info
 		if (Boolean.parseBoolean(botCfg.getSetting("webEnabled"))) {
@@ -285,13 +293,16 @@ public class Kdkbot extends PircBot {
      * @return -1 if it is already in the channel, 1 if successful, any other value means unsuccessful
      */
     public int enterChannel(String channel) {
+    	Kdkbot.instance.dbg.writeln(this, "Entering channel: " + channel);
     	if (! channel.startsWith("#")) {
     		channel = "#" + channel;
     	}
     	
 		if(this.botCfg.getSetting("channels").contains(channel)) {
+			Kdkbot.instance.dbg.writeln(this, "Channel already entered: " + channel);
 			return -1;
 		} else {
+			Kdkbot.instance.dbg.writeln(this, "Channel not yet entered: " + channel);
 			// Join channel
 			this.sendMessage(channel, String.format(Translate.getTranslate("channel.join", botLanguage), channel));
 			CHANS.put(channel, new Channel(this, channel));
@@ -300,8 +311,10 @@ public class Kdkbot extends PircBot {
 			botCfg.setSetting("channels", botCfg.getSetting("channels") + "," + channel);
 			
 			Channel chan = getChannel(channel);
+			Kdkbot.instance.dbg.writeln(this, "Adding users " + botCfg.getSetting("masterCommands") + " and " + channel.substring(1)  + " to sender rank 5");
 			chan.setSenderRank(botCfg.getSetting("masterCommands"), 5);
 			chan.setSenderRank(channel.substring(1), 5);
+			chan.saveSenderRanks();
 
 			// Initialize new commands list for channel if the channel info doesn't exist
 			Path path = FileSystems.getDefault().getPath("./cfg/" + channel).toAbsolutePath();
@@ -313,7 +326,7 @@ public class Kdkbot extends PircBot {
 					cmdIn.close();
 					cmdOut.close();
 				} catch (IOException e) {
-					chan.sendMessage(Translate.getTranslate("channel.badInitialize", botLanguage));
+					// chan.sendMessage(Translate.getTranslate("channel.badInitialize", botLanguage));
 				}
 			} // else we don't need to attempt to create a new instance for the channels commands
 			
@@ -375,6 +388,9 @@ public class Kdkbot extends PircBot {
     		} else if(info.message.startsWith("&&ReloadNodeData")) {
     			kdkbot.api.warframe.InternalTranslator.reloadNodeData();
     			this.sendMessage(info.channel, "Reloaded node data for Warframe");
+    		} else if(info.message.startsWith("&&ForceSenderSave")) {
+    			info.getChannel().saveSenderRanks();
+    			info.getChannel().sendMessage("Forced sender rank save.");
     		} else if(info.message.startsWith("&&stop")) {
     			this.disconnect();
     			System.exit(0);

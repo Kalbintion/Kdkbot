@@ -30,3 +30,4 @@ cfg/timers.cfg
 cfg/tokens.cfg
 web/php_errors.log
 web/audio-cache/*
+cfg/api/steam/*

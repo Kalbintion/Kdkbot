@@ -28,6 +28,7 @@ public class Channel {
 	public Config cfgChan;
 	public Config cfgTokens;
 	public Config cfgSequenceMessages;
+	// TODO: Optimize cfgPerms and senderRanks duplicating information in memory
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
 	// Other Vars
@@ -252,6 +253,7 @@ public class Channel {
 	 */
 	public void setSenderRank(String target, int rank) {
 		senderRanks.put(target.toLowerCase(), rank);
+		cfgPerms.setSetting(target.toLowerCase(), String.valueOf(rank));
 		this.saveSenderRanks();
 	}
 	
@@ -338,7 +340,6 @@ public class Channel {
 					}
 				}
 				switch(filter.action) {
-					//TODO: Modify log to actually send log data to the right channel for viewing purposes later
 					case 1:
 						Kdkbot.instance.dbg.writeln(this, "Attempting to purge user due to filter");
 						Kdkbot.instance.log("Attempting to purge user " + info.sender + " due to filter #" + filterIndex);
@@ -432,6 +433,38 @@ public class Channel {
 	}
 	
 	/**
+	 * Checks to see if a channel is awaiting authorization
+	 * @param fromChannel The channel to check to see for awaiting response
+	 * @return True if the channel is awaiting response, false otherwise
+	 */
+	public boolean isAwaitingForwarderResponse(String fromChannel) {
+		Iterator<Forwarder> fwdIter = this.forwarders.iterator();
+		while(fwdIter.hasNext()) {
+			Forwarder nxt = fwdIter.next();
+			if(nxt.getChannel().equalsIgnoreCase(fromChannel)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks to see if a channel has an active forwarder with a given channel
+	 * @param fromChannel The channel to check to see for active forwarding
+	 * @return True if the channel is active, false otherwise
+	 */
+	public boolean hasActiveForwarder(String fromChannel) {
+		Iterator<Forwarder> fwdIter = this.forwarders.iterator();
+		while(fwdIter.hasNext()) {
+			Forwarder nxt = fwdIter.next();
+			if(nxt.getChannel().equalsIgnoreCase(fromChannel)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Removes a forwarder from this channel
 	 * @param fromChannel The channel to remove the forwarder to
 	 */
@@ -443,6 +476,26 @@ public class Channel {
 				fwdIter.remove();
 			}
 		}
+	}
+	
+	/**
+	 * Retrieves the active forwarder list.
+	 * @return A string containing every active forwarder, separated by ", " (excluding quotes), null if there are no active forwarders. 
+	 */
+	public String getActiveForwarders() {
+		String allChannels = "";
+		Iterator<Forwarder> fwdIter = this.forwarders.iterator();
+		
+		if(this.forwarders.size() <= 0) {
+			return null;
+		}
+		
+		while(fwdIter.hasNext()) {
+			Forwarder nxt = fwdIter.next();
+			allChannels += nxt.getChannel() + ", ";
+		}
+		
+		return allChannels.substring(0, allChannels.length() - 2);
 	}
 	
 	/**

@@ -36,6 +36,7 @@ public class Commands {
 	private InternalCommand cmdAForward = new InternalCommand("a" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
 	private InternalCommand cmdDForward = new InternalCommand("d" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
 	private InternalCommand cmdSForward = new InternalCommand("s" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
+	private InternalCommand cmdAllForwards = new InternalCommand("all" + cmdForward.getDefaultTrigger(), cmdForward.getDefaultLevel());
 	private InternalCommand cmdFilter = new InternalCommand("filter", 5);
 	private InternalCommand cmdHost = new InternalCommand("host", 3);
 	private InternalCommand cmdUnhost = new InternalCommand("unhost", 3);
@@ -57,7 +58,7 @@ public class Commands {
 	private InternalCommand cmdCounters = new InternalCommand("counter", 1);
 	private InternalCommand cmdEconomy = new InternalCommand("economy", 3);
 	private InternalCommand cmdMoney = new InternalCommand("money", 0);
-	private InternalCommand[] cmdList = {cmdGame, cmdStatus, cmdAma, cmdEconomy, cmdMoney, cmdCounters, cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
+	private InternalCommand[] cmdList = {cmdGame, cmdStatus, cmdAma, cmdEconomy, cmdMoney, cmdCounters, cmdChannel, cmdPerm, cmdPermit, cmdTimers, cmdForward, cmdAllForwards, cmdAForward, cmdDForward, cmdSForward, cmdFilter, cmdHost, cmdUnhost, cmdStatus, cmdQuotes, cmdGame, cmdGiveaway, cmdUrban, cmdTime, cmdStats, cmdMsges, cmdBits, cmdSeen, cmdCommands, cmdUptime, cmdViewers};
 	
 	/**
 	 * Creates a new Commands class with a given channel assignment and channel instance
@@ -299,11 +300,15 @@ public class Commands {
 				String toAuthorize = args[1].toLowerCase();
 				if(!toAuthorize.startsWith("#")) { toAuthorize = "#" + toAuthorize; }
 				
-				Channel fromChan = Kdkbot.instance.getChannel(toAuthorize);
-				fromChan.sendMessage("Forwarding authorization request accepted.");
-				chan.sendMessage("Forwarding authorization request accepted.");
-				fromChan.authorizeForwarder(info.channel);
-				chan.authorizeForwarder(toAuthorize);
+				if(chan.isAwaitingForwarderResponse(toAuthorize)) {
+					Channel fromChan = Kdkbot.instance.getChannel(toAuthorize);
+					fromChan.sendMessage("Forwarding authorization request accepted from " + chan.channel + ".");
+					chan.sendMessage("Forwarding authorization request accepted from " + toAuthorize + ".");
+					fromChan.authorizeForwarder(info.channel);
+					chan.authorizeForwarder(toAuthorize);
+				} else {
+					chan.sendMessage("Channel " + toAuthorize + " was not awaiting response.");
+				}
 			} else {
 				chan.sendMessage("You did not specify a channel to accept the forward request from.");
 			}
@@ -317,11 +322,16 @@ public class Commands {
 				String toDeny = args[1].toLowerCase();
 				if(!toDeny.startsWith("#")) { toDeny = "#" + toDeny; }
 				
-				Channel fromChan = Kdkbot.instance.getChannel(toDeny);
-				fromChan.sendMessage("Forwarding authorization request denied.");
-				chan.sendMessage("Forwarding authorization request denied.");
-				fromChan.denyForwarder(info.channel);
-				chan.denyForwarder(toDeny);
+				if(chan.isAwaitingForwarderResponse(toDeny)) {
+					Channel fromChan = Kdkbot.instance.getChannel(toDeny);
+					fromChan.sendMessage("Forwarding authorization request denied from " + chan.channel + ".");
+					chan.sendMessage("Forwarding authorization request denied from " + toDeny + ".");
+					fromChan.denyForwarder(info.channel);
+					chan.denyForwarder(toDeny);
+				} else {
+					chan.sendMessage("Channel " + toDeny + " was not awaiting response.");
+				}
+				
 			} else {
 				chan.sendMessage("You did not specify a channel to deny the forward request from.");
 			}
@@ -335,13 +345,32 @@ public class Commands {
 				String toStop = args[1].toLowerCase();
 				if(!toStop.startsWith("#")) { toStop = "#" + toStop; }
 				
-				Channel fromChan = Kdkbot.instance.getChannel(toStop);
-				fromChan.sendMessage("Stopping message forwarding.");
-				chan.sendMessage("Stopping message forwarding.");
-				
-				fromChan.removeForwarder(info.channel);
-				chan.removeForwarder(toStop);
+				if(chan.hasActiveForwarder(toStop)) {
+					Channel fromChan = Kdkbot.instance.getChannel(toStop);
+					fromChan.sendMessage("Stopping message forwarding from " + chan.channel + ".");
+					chan.sendMessage("Stopping message forwarding from " + toStop + ".");
+					
+					fromChan.removeForwarder(info.channel);
+					chan.removeForwarder(toStop);
+				} else {
+					chan.sendMessage("Channel " + toStop + " was not actively being forwarded to.");
+				}
+			} else {
+				chan.sendMessage("You did not specify a channel to stop the forwarder from.");
 			}
+		}
+		
+		// Forwarder - All Forwarders
+		else if(info.senderLevel >= cmdAllForwards.getPermissionLevel() &&
+					cmdAllForwards.getAvailability() &&
+					coreWord.equalsIgnoreCase(cmdAllForwards.getTrigger())) {
+			String allForwards = chan.getActiveForwarders();
+			if(allForwards == null) {
+				chan.sendMessage("There are no active forwarders.");
+			} else {
+				chan.sendMessage("All active forwarders: " + chan.getActiveForwarders());
+			}
+			
 		}
 		
 		// Filter Bypass

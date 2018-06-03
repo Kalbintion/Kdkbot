@@ -312,14 +312,62 @@ public final class API {
 			return null;
 		}
 		
-		public static String[] getBaroItems() {
+		public static ArrayList<String> getBaroItems() {
 			JsonObject allData = getData();
+			JsonArray eventData = allData.get("VoidTraders").getAsJsonArray();
 			
-			return null;
+			JsonArray outData = new JsonArray();
+			JsonArray manifestData = eventData.get(0).getAsJsonObject().get("Manifest").getAsJsonArray();
+			
+			for(JsonElement mItem : manifestData) {
+				JsonObject outObj = new JsonObject();
+				JsonObject mData = mItem.getAsJsonObject();
+				
+				outObj.addProperty("Item", mData.get("ItemType").toString());
+				outObj.addProperty("Credits", mData.get("RegularPrice").toString());
+				outObj.addProperty("Ducats", mData.get("PrimePrice").toString());
+				
+				outData.add(outObj);
+			}
+			
+			ArrayList<String> out = new ArrayList<String>();
+			
+			for(JsonElement jOutData : outData) {
+				out.add(jOutData.toString());
+			}
+			
+			return out;
 		}
 		
-		public static String getBaroItemsReadable() {
-			return null;
+		public static ArrayList<String> getBaroItemsReadable() {
+			ArrayList<String> manifestData = getBaroItems();
+			ArrayList<String> outData = new ArrayList<String>();
+			JsonParser parser = new JsonParser();
+			
+			for(String item : manifestData) {
+				JsonObject obj = parser.parse(item).getAsJsonObject();
+				obj.addProperty("Item", InternalTranslator.getReadableName(obj.get("Item").toString().replaceAll("\\\\", "")));
+				item = obj.toString();
+				outData.add(item);
+			}
+			
+			return outData;
+		}
+		
+		public static String getBaroLocation() {
+			JsonObject allData = getData();
+			JsonArray bData = allData.get("VoidTraders").getAsJsonArray();
+			
+			String node = bData.get(0).getAsJsonObject().get("Node").toString().replaceAll("\"", "").replaceAll("HUB", "");
+			
+			return node;
+		}
+		
+		public static boolean isBaroHere() {
+			JsonObject allData = getData();
+			JsonArray bData = allData.get("VoidTraders").getAsJsonArray();
+			JsonObject bd = bData.get(0).getAsJsonObject();
+			if(bd.has("Manifest")) { return true; } else { return false; }
 		}
 		
 		public static String getDailyDeal() {

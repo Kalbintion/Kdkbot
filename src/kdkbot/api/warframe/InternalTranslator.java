@@ -140,11 +140,13 @@ public class InternalTranslator {
 	/**
 	 * Retrieves the human-readable name from a unique name
 	 * @param uniqueName The unique name to get the real name for
-	 * @return The real name, if found, of the item
+	 * @return The real name, if found, of the item otherwise the uniqueName provided
 	 */
 	public static String getReadableName(String uniqueName) {
 		uniqueName = uniqueName.replaceAll("\"", "");
 		String ret = Translate.getTranslate(uniqueName, "enWFUN");
+		
+		if(ret == null) { return uniqueName; }
 		
 		// Set translation of this object to itself for future correction
 		if(ret.equalsIgnoreCase("null")) {

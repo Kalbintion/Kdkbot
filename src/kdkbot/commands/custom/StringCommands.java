@@ -169,30 +169,31 @@ public class StringCommands {
 					while(strCmdIter.hasNext()) {
 						StringCommand strCmd = strCmdIter.next();
 						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
-							if(info.senderLevel >= strCmd.getPermissionLevel()) {
-								if(type.equalsIgnoreCase("trigger")) {
-									Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.trigger", info.sender, strCmd.getTrigger(), toValue);
-									strCmd.setTrigger(toValue);
-								} else if(type.equalsIgnoreCase("rank")) {
-									Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.rank", info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue);
-									strCmd.setPermissionLevel(Integer.parseInt(toValue));
-								} else if(type.equalsIgnoreCase("message")) {
-									Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.msg", info.sender, strCmd.getTrigger());
-									strCmd.messageToSend = toValue;
-								} else if(type.equalsIgnoreCase("available")) {
-									try {
-										boolean bool = Boolean.parseBoolean(csArgs[4]);
-										Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.available",info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getAvailability());
-										strCmd.setAvailability(bool);
-									} catch(Exception e) {
-										Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.available.fail", csArgs[4]);
-									}
+							Kdkbot.instance.dbg.writeln(this, "Found command to edit");
+							if(type.equalsIgnoreCase("trigger")) {
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.trigger", info.sender, strCmd.getTrigger(), toValue);
+								Kdkbot.instance.dbg.writeln(this, "Edited cmd trigger");
+								strCmd.setTrigger(toValue);
+							} else if(type.equalsIgnoreCase("rank")) {
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.rank", info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue);
+								Kdkbot.instance.dbg.writeln(this, "Edited cmd level");
+								strCmd.setPermissionLevel(Integer.parseInt(toValue));
+							} else if(type.equalsIgnoreCase("message")) {
+								Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.msg", info.sender, strCmd.getTrigger());
+								Kdkbot.instance.dbg.writeln(this, "Edited cmd message");
+								strCmd.messageToSend = toValue;
+							} else if(type.equalsIgnoreCase("available")) {
+								try {
+									boolean bool = Boolean.parseBoolean(csArgs[4]);
+									Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.available",info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getAvailability());
+									Kdkbot.instance.dbg.writeln(this, "Edited cmd availability");
+									strCmd.setAvailability(bool);
+								} catch(Exception e) {
+									Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.available.fail", csArgs[4]);
 								}
-							} else {
-								Kdkbot.instance.sendChanMessageTrans(channel, "custom.mod.fail", info.sender);
 							}
-							break;
 						}
+						break;
 					}
 					this.saveCommands();
 				}

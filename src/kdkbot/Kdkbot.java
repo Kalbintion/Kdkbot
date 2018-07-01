@@ -388,9 +388,6 @@ public class Kdkbot extends PircBot {
     		} else if(info.message.startsWith("&&ReloadNodeData")) {
     			kdkbot.api.warframe.InternalTranslator.reloadNodeData();
     			this.sendMessage(info.channel, "Reloaded node data for Warframe");
-    		} else if(info.message.startsWith("&&ForceSenderSave")) {
-    			info.getChannel().saveSenderRanks();
-    			info.getChannel().sendMessage("Forced sender rank save.");
     		} else if(info.message.startsWith("&&stop")) {
     			this.disconnect();
     			System.exit(0);

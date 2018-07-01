@@ -21,30 +21,48 @@ public class Forwarder {
 	
 	// Authorization variable, if this is false then this forwarder hasnt been validated yet
 	private boolean authorized = false;
+	private boolean isRequestor = false;
 	
-	/*
+	/**
 	 * Initializes an empty forwarder that goes to no specific channel
 	 */
 	public Forwarder() {
 		this("");
 	}
 	
-	/*
+	/**
+	 * Initializes an empty forwarder that goes to no specific channel
+	 * @param isRequestor Is this channel the requestor?
+	 */
+	public Forwarder(boolean isRequestor) {
+		this("", isRequestor);
+	}
+	
+	/**
 	 * Initializes a new forwarder that goes to a specific channel
 	 */
 	public Forwarder(String channel) {
 		this(channel, "%USER%: ");
 	}
 	
-	/*
+	public Forwarder(String channel, boolean isRequestor) {
+		this(channel, "%USER%: ", isRequestor);
+	}
+	
+	/**
 	 * Initializes a new forwarder that goes to a specific channel w/ a specific message prefix
 	 */
 	public Forwarder(String channel, String prefixFormat) {
-		this.toChannel = channel;
-		this.prefixFormat = prefixFormat;
+		this(channel, prefixFormat, false);
 	}
 	
-	/*
+	public Forwarder(String channel, String prefixFormat, boolean isRequestor) {
+		this.toChannel = channel;
+		this.prefixFormat = prefixFormat;
+		this.isRequestor = isRequestor;
+	}
+	
+	/**
 	 * Formats the message using the information provided
 	 */
 	public String formatMessage(MessageInfo info) {
@@ -85,6 +103,10 @@ public class Forwarder {
 	 */
 	public boolean isAuthorized() {
 		return this.authorized;
+	}
+	
+	public boolean isRequestor() {
+		return this.isRequestor;
 	}
 	
 	public String getChannel() {

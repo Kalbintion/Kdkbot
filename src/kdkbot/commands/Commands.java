@@ -12,6 +12,7 @@ import kdkbot.commands.quotes.*;
 import kdkbot.commands.ama.AMA;
 import kdkbot.commands.counters.*;
 import kdkbot.commands.custom.*;
+import kdkbot.commands.fwd.Fwd;
 import kdkbot.commands.giveaway.Giveaway;
 import kdkbot.commands.stats.Stats;
 
@@ -27,6 +28,7 @@ public class Commands {
 	public AMA amas;
 	public Timers timers;
 	public Giveaway giveaway;
+	public Fwd forwards;
 	
 	// Additional Commands
 	private InternalCommand cmdChannel = new InternalCommand("channel", 5);
@@ -87,6 +89,8 @@ public class Commands {
 			this.timers.loadTimers();
 			
 			this.giveaway = new Giveaway(channel);
+			
+			this.forwards = new Fwd();
 			
 			load();
 			
@@ -268,27 +272,14 @@ public class Commands {
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 				    cmdForward.getAvailability() &&
 					coreWord.equalsIgnoreCase(cmdForward.getTrigger())) {
-			if(args.length >= 2) {
-				String toChan = args[1].toLowerCase();
-				if(!toChan.startsWith("#")) {
-					toChan = "#" + toChan;
-				}
-				
-				if(Kdkbot.instance.isInChannel(toChan)) {
-					Channel toChanObj = Kdkbot.instance.getChannel(toChan);
-					toChanObj.sendMessage(info.channel + " has requested forwarding permissions. Type '" + toChanObj.cfgChan.getSetting("commandPrefix") + "afwd " + info.channel.replaceAll("#", "") + "' to authorize or '" + toChanObj.cfgChan.getSetting("commandPrefix") + "dfwd " + info.channel.replaceAll("#", "") + "' to deny.");
-					chan.sendMessage("Sent forward request, awaiting reply.");
-					
-					// Add forwarder to both channels
-					chan.forwarders.add(new Forwarder(toChan));
-					toChanObj.forwarders.add(new Forwarder(info.channel));
-				} else {
-					chan.sendMessage(info.sender + ": This bot is not in that channel. Have them join my channel and type !join");
-				}
-				
-			} else {
-				chan.sendMessage(info.sender + ": You did not provide a channel name.");
+			
+			String parts[] = info.getSegments(2);
+			if(parts.length == 2) {
+				// fwd <name>
+				info.message = parts[0] + " req " + parts[1];
 			}
+			
+			this.forwards.executeCommand(info);
 		}
 		
 		// Forwarder - Authorization - Accept
@@ -296,68 +287,38 @@ public class Commands {
 				     cmdForward.getAvailability() && 
 					(coreWord.equalsIgnoreCase("afwd")
 				  || coreWord.equalsIgnoreCase("acceptforward"))) {
-			if(args.length >= 2) {
-				String toAuthorize = args[1].toLowerCase();
-				if(!toAuthorize.startsWith("#")) { toAuthorize = "#" + toAuthorize; }
-				
-				if(chan.isAwaitingForwarderResponse(toAuthorize)) {
-					Channel fromChan = Kdkbot.instance.getChannel(toAuthorize);
-					fromChan.sendMessage("Forwarding authorization request accepted from " + chan.channel + ".");
-					chan.sendMessage("Forwarding authorization request accepted from " + toAuthorize + ".");
-					fromChan.authorizeForwarder(info.channel);
-					chan.authorizeForwarder(toAuthorize);
-				} else {
-					chan.sendMessage("Channel " + toAuthorize + " was not awaiting response.");
-				}
-			} else {
-				chan.sendMessage("You did not specify a channel to accept the forward request from.");
+			String parts[] = info.getSegments(2);
+			if(parts.length == 2) {
+				// afwd <name>
+				info.message = parts[0] + " allow " + parts[1];
 			}
+			
+			this.forwards.executeCommand(info);
 		}
 
 		// Forwarder - Authorization - Deny
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 				     cmdForward.getAvailability() && 
 					coreWord.equalsIgnoreCase("dfwd")) {
-			if(args.length >= 2) {
-				String toDeny = args[1].toLowerCase();
-				if(!toDeny.startsWith("#")) { toDeny = "#" + toDeny; }
-				
-				if(chan.isAwaitingForwarderResponse(toDeny)) {
-					Channel fromChan = Kdkbot.instance.getChannel(toDeny);
-					fromChan.sendMessage("Forwarding authorization request denied from " + chan.channel + ".");
-					chan.sendMessage("Forwarding authorization request denied from " + toDeny + ".");
-					fromChan.denyForwarder(info.channel);
-					chan.denyForwarder(toDeny);
-				} else {
-					chan.sendMessage("Channel " + toDeny + " was not awaiting response.");
-				}
-				
-			} else {
-				chan.sendMessage("You did not specify a channel to deny the forward request from.");
+			String parts[] = info.getSegments(2);
+			if(parts.length == 2) {
+				// dfwd <name>
+				info.message = parts[0] + " deny " + parts[1];
 			}
+			
+			this.forwards.executeCommand(info);
 		}
 		
 		// Forwarder - Stop
 		else if(info.senderLevel >= cmdForward.getPermissionLevel() &&
 				     cmdForward.getAvailability() && 
 					coreWord.equalsIgnoreCase(cmdSForward.getTrigger())) {
-			if(args.length >= 2) {
-				String toStop = args[1].toLowerCase();
-				if(!toStop.startsWith("#")) { toStop = "#" + toStop; }
-				
-				if(chan.hasActiveForwarder(toStop)) {
-					Channel fromChan = Kdkbot.instance.getChannel(toStop);
-					fromChan.sendMessage("Stopping message forwarding from " + chan.channel + ".");
-					chan.sendMessage("Stopping message forwarding from " + toStop + ".");
-					
-					fromChan.removeForwarder(info.channel);
-					chan.removeForwarder(toStop);
-				} else {
-					chan.sendMessage("Channel " + toStop + " was not actively being forwarded to.");
-				}
-			} else {
-				chan.sendMessage("You did not specify a channel to stop the forwarder from.");
+			String parts[] = info.getSegments(2);
+			if(parts.length == 2) {
+				info.message = parts[0] + " del " + parts[1];
 			}
+			
+			this.forwards.executeCommand(info);
 		}
 		
 		// Forwarder - All Forwarders

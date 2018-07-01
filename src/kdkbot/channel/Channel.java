@@ -448,6 +448,17 @@ public class Channel {
 		return false;
 	}
 	
+	public boolean isFwdRequestor(String fromChannel) {
+		Iterator<Forwarder> fwdIter = this.forwarders.iterator();
+		while(fwdIter.hasNext()) {
+			Forwarder nxt = fwdIter.next();
+			if(nxt.getChannel().equalsIgnoreCase(fromChannel)) {
+				return nxt.isRequestor();
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Checks to see if a channel has an active forwarder with a given channel
 	 * @param fromChannel The channel to check to see for active forwarding

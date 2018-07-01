@@ -769,7 +769,7 @@ public class MessageParser {
 		while(matches.find()) {
 			String result = matches.group();
 			
-			toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getBaroItemsReadable());
+			//toParse = toParse.replace(result, kdkbot.api.warframe.API.Warframe.getBaroItemsReadable());
 		}
 		
 		// Warframe Darvo

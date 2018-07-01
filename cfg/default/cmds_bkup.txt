@@ -1,7 +1,0 @@
-﻿1|true|whytwitch|((/ﾟДﾟ)/ Twitch Why U Do Dis (/ﾟДﾟ)/
-1|true|flip|(╯°□°)╯︵ %ARGS%
-1|true|fix|%ARGS% ノ( º _ ºノ)
-1|true|rekt|☐ rekt ☐ not rekt ☑ Tyrannosaurus rekt
-1|true|riot|ヽ༼ຈل͜ຈ༽ﾉ ヽ༼ຈل͜ຈ༽ﾉ  %ARGS% OR RIOT ヽ༼ຈل͜ຈ༽ﾉ ヽ༼ຈل͜ຈ༽ﾉ
-1|true|slap|(>ಠ_ಠ)/ %ARGS%
-1|true|wave|ʕ•ᴥ•ʔ/ %ARGS%

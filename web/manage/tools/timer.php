@@ -39,23 +39,30 @@ foreach($lines as $line) {
 
 if(isset($_GET['delete'])) {
 	unset($items[$_GET['delete']]);
+	$_POST['name'] = $_GET['delete'];
 }
 
 if(isset($_GET['m']) && $_GET['m'] == "s") {
-	echo "<pre>".print_r($_POST,true)."</pre>";
-	echo "<pre>".print_r($items,true)."</pre>";
+    echo "<pre>".print_r($items, true)."</pre>";
+    echo "<pre>".print_r($_POST, true)."</pre>";
+    
 	// Modify array data
-	if(isset($_POST['name'])) {
+	if(isset($_POST['name']) && isset($_POST['time']) && isset($_POST['style'])) {
 		$items[$_POST['name']]["name"] = $_POST['name'];
 		$items[$_POST['name']]["time"] = $_POST['time'];
 		$items[$_POST['name']]["style"] = base64_encode($_POST['style']);
-
-		// Re-save data
-		$out_data = "";
-		foreach($items as $value) {
-			$out_data .= $value["name"] . "|" . $value["time"] . "|" . $value["style"] . "\r\n";
-			file_put_contents("./tools-data/$USER/timers.kdk", $out_data);
-		}
+	}
+	
+	// Re-save data
+	$out_data = "";
+	foreach($items as $value) {
+	    $out_data .= $value["name"] . "|" . $value["time"] . "|" . $value["style"] . "\r\n";
+	}
+	
+	if(file_put_contents("./tools-data/$USER/timers.kdk", $out_data) === false) {
+	    echo "<div class=\"boxError\">Could not update timer: " . $_POST['name'] . "</div>"; // Fail
+	} else {
+	    echo "<div class=\"boxSuccess\">Successfully updated timer: " . $_POST['name'] . "</div>"; // Success
 	}
 }
 
@@ -83,6 +90,7 @@ if(isset($_GET['m']) && $_GET['m'] !== "s") {
 				</tr>
 			  </table></form>";
 	} elseif ($_GET['m'] == "e") {
+	    // TODO: Cause the formatUrl() function to proc once on load
 		echo "<form action=\"?p=manage/tools/timer&m=s\" method=\"POST\"><table class=\"inputs settings minTable\">
 				<tr>
 					<td>Name:</td>
@@ -106,6 +114,7 @@ if(isset($_GET['m']) && $_GET['m'] !== "s") {
 			  </table></form>";
 	}
 } else {
+    // TODO: Show no saved timer message if there are none.
 	foreach($items as $value) {
 		echo "<a href=\"?p=manage/tools/timer&m=e&i=".$value['name']."\"><div class=\"logItem\">".$value['name']."</div></a>";
 	}

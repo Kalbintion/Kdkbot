@@ -233,4 +233,29 @@ public class InternalTranslator {
 				return voidTypeTag;
 		}
 	}
+	
+	public static String getItemCategory(String uniqueName) {
+		uniqueName = uniqueName.substring(1, uniqueName.length() - 1);
+		String[] parts = uniqueName.split("/");
+		
+		if(parts.length < 2) { return uniqueName; }
+		
+		switch(parts[2]) {
+		case "Upgrades":
+			switch(parts[3]) {
+			case "Skins":
+				return "Cosmetic";
+			case "Mods":
+				return "Mods";
+			default:
+				return parts[3];
+			}
+		case "Weapons":
+			return "Weapon";
+		case "Types":
+			return "Misc";
+		default:
+			return parts[2];
+		}
+	}
 }

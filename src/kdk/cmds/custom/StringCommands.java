@@ -174,7 +174,6 @@ public class StringCommands {
 					Iterator<StringCommand> strCmdIter = commands.iterator();
 					while(strCmdIter.hasNext()) {
 						StringCommand strCmd = strCmdIter.next();
-						System.out.println("Checking against command: " + strCmd.getTrigger() + " vs " + trigger);
 						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 							Bot.instance.dbg.writeln(this, "Found command to edit");
 							if(type.equalsIgnoreCase("trigger")) {
@@ -185,7 +184,7 @@ public class StringCommands {
 								Bot.instance.sendChanMessageTrans(channel, "custom.mod.rank", info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue);
 								Bot.instance.dbg.writeln(this, "Edited cmd level");
 								strCmd.setPermissionLevel(Integer.parseInt(toValue));
-							} else if(type.equalsIgnoreCase("message")) {
+							} else if(type.equalsIgnoreCase("message") || type.equalsIgnoreCase("msg")) {
 								System.out.println("Editing command message.");
 								Bot.instance.sendChanMessageTrans(channel, "custom.mod.msg", info.sender, strCmd.getTrigger());
 								Bot.instance.dbg.writeln(this, "Edited cmd message");
@@ -199,6 +198,8 @@ public class StringCommands {
 								} catch(Exception e) {
 									Bot.instance.sendChanMessageTrans(channel, "custom.mod.available.fail", csArgs[4]);
 								}
+							} else {
+								Bot.instance.sendChanMessageTrans(channel, "custom.mod.badedit", csArgs[3]);
 							}
 							break;
 						}

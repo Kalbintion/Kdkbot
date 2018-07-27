@@ -4,29 +4,27 @@ isUserLoggedIn() or die("You need to log in.");
 $channel = getChannelObject($_SESSION['USER']);
 
 if(isset($_POST['update'])) {
-	$output = "";
 	for($i = 0; $i < count($_POST['user']); $i++) {
 		if($_POST['user'][$i] == "") { continue; }
-		$output .= $_POST['user'][$i]."=".$_POST['rank'][$i]."\r\n";
+		if($_POST['isNew'][$i] == 0) {
+		    sql_updateChannelPerm($_SESSION['USER'], $_POST['user'][$i], $_POST['rank'][$i]);
+		} elseif ($_POST['isNew'][$i] == 1) {
+		    sql_insertChannelPerm($_SESSION['USER'], $_POST['user'][$i], $_POST['rank'][$i]);
+		}
 	}
 	
-	if(file_put_contents($channel->pathPerms(), $output) === false) {
-		echo "<div class=\"boxError\">Couldn't update permissions. Please try again later.</div><br />";
-	} else {
-		echo "<div class=\"boxSuccess\">Successfully updated permissions.</div><br />";
-		qChannelUpdate($_SESSION['USER'], "perms");
-	}
+	echo "<div class=\"boxSuccess\">Successfully updated permissions.</div><br />";
+	
+	qChannelUpdate($_SESSION['USER'], "perms");
 }
 
-$perm_contents = file_get_contents($channel->pathPerms());
-$perms = explode("\r\n", $perm_contents);
-asort($perms);
-
-// echo "<pre>".print_r($perms,true)."</pre>";
+$perm_contents = sql_getChannelPerms($_SESSION['USER']);
+$perms = array();
+while($row = $perm_contents->fetch_assoc()) {
+    array_push($perms, $row);
+}
 
 echo "
-	<div class=\"boxWarning\">To remove a person, make the User field blank.</div><br />
-
 	<form action=\"?p=manage/perms\" method=\"POST\">
 	<input type=\"hidden\" value=\"" . $_SESSION['USER'] . "\" name=\"update\" />
 	<table class=\"minTable inputs2\" id=\"permTable\">
@@ -38,10 +36,7 @@ echo "
 $i = 0; $j = 0;
 	foreach($perms as $perm) {
 		$i++; $j++;
-		$parts = explode("=", $perm, 2);
-		if(count($parts) >=2 ) {
-			echo "<tr><td><input type=\"text\" name=\"user[]\" value=\"" . $parts[0] . "\"></td><td><input type=\"number\" name=\"rank[]\" value=\"" . $parts[1] . "\" /></td></tr>";
-		}
+        echo "<tr><td><input type=\"hidden\" value=\"0\" name=\"isNew[]\" /><input type=\"text\" name=\"user[]\" value=\"" . $perm['user'] . "\"</td><td><input type=\"number\" name=\"rank[]\" value=\"" . $perm['level'] . "\" /></td></tr>";
 		
 		if($i == 15 && (count($perms) - $j) != 1) {
 			echo "<tr>

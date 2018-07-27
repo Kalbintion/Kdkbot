@@ -1,4 +1,6 @@
 <?PHP
+include("sql_cmds.php");
+
 	/* Returns the parsed ini file contents
 	 */
 	function getCfgSettings() {
@@ -120,7 +122,7 @@
 		}
 		return false;
 	}
-	
+
 	class Channel {
 		public $baseLocation;
 		

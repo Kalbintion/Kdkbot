@@ -26,7 +26,7 @@
 </a>
 
 <a href="?p=manage/perms">
-<div class="button">
+<div class="button incomplete">
 <img src="./imgs/Key-icon.png">
 <span class="buttonname">Permissions</span>
 <span class="buttontext">Manage and review user permission levels.</span>
@@ -41,11 +41,11 @@
 </div>
 </a>
 
-<a href="?p=manage/cmds_custom">
-<div class="button">
+<a href="#?p=manage/cmds_custom">
+<div class="button incomplete">
 <img src="./imgs/notepad-icon.png">
 <span class="buttonname">Custom Commands</span>
-<span class="buttontext">Manage any custom commands added by !commands</span>
+<span class="buttontext">Manage any custom commands added by !commands<br>NOTE: Currently broken due to data migration.</span>
 </div>
 </a>
 

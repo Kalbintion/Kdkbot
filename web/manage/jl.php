@@ -13,23 +13,12 @@ foreach($lines as $line) {
 if(isset($_GET['t'])) {
 	if($_GET['t'] == "j") {
 		// Joining a channel
-		$cfgArr['channels'] = str_replace("#" . $_SESSION['USER'], "", $cfgArr['channels']);
-		$cfgArr['channels'] = str_replace(",,", ",", $cfgArr['channels']);
-		$cfgArr['channels'] = $cfgArr['channels'] . ",#" . $_SESSION['USER'];
-		
-		if(startsWith($cfgArr['channels'], ",")) {
-			$cfgArr['channels'] = substr($cfgArr['channels'], 1);
-		}
-		
-		//putBaseConfigContents(implode("\r\n", $cfgArr));
+		sql_joinChannel($_SESSION['USER'], "twitch");
 		
 		qChannelUpdate($_SESSION['USER'], "join");
 	} else if($_GET['t'] == "l") {
 		// Leaving a channel
-		$cfgArr['channels'] = str_replace("#" . $_SESSION['USER'], "", $cfgArr['channels']);
-		$cfgArr['channels'] = str_replace(",,", ",", $cfgArr['channels']);
-		
-		//putBaseConfigContents(implode("\r\n", $cfgArr));
+		sql_leaveChannel($_SESSION['USER'], "twitch");
 		
 		qChannelUpdate($_SESSION['USER'], "leave");
 	}
@@ -37,7 +26,7 @@ if(isset($_GET['t'])) {
 echo "<h1>Channel Information For: " . $_SESSION['USER'] . "</h1>
 <h1>Join/Leave</h1>";
 
-if(contains($cfgArr['channels'], "#" . $_SESSION['USER'])) {
+if(sql_isInChannel($_SESSION['USER'], "twitch")) {
 	echo "<a href=\"?p=manage/jl&t=l\">
 			<div class=\"boxError\">Click here to have Kdkbot leave</div>
 		  </a>";

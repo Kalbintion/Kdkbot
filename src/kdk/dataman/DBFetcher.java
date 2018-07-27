@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import kdk.Bot;
+import kdk.cmds.custom.StringCommand;
 
+// TODO: Change DBMan/self to use sanitized statements
+// NOTE: Minimal temporary security risk, db is watched
 public class DBFetcher {
 	public static DBMan _mgr = null;
 	
@@ -121,6 +124,43 @@ public class DBFetcher {
 	
 	public static String getTwitchNick(DBMan mgr) {
 		return getSetting(mgr, "twitch_nick");
+	}
+	
+	public static ArrayList<StringCommand> getChannelCommands(String platform, String channel) {
+		if(_mgr != null) { return getChannelCommands(_mgr, platform, channel); } else { return null; }
+	}
+	
+	public static ArrayList<StringCommand> getChannelCommands(DBMan mgr, String platform, String channel) {
+		ArrayList<StringCommand> cmds = new ArrayList<StringCommand>();
+		ResultSet rs = mgr.queryDB("SELECT * FROM commands WHERE platform=\"" + platform + "\" AND channel=\"" + channel + "\"");
+		try {
+			while(rs.next()) {
+				StringCommand cmd = new StringCommand(rs.getInt("id"), rs.getString("trigger"), rs.getString("message"), rs.getInt("level"), rs.getBoolean("available"));
+				cmds.add(cmd);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return cmds;
+	}
+	
+	public static boolean addChannelCommand(String platform, String channel, StringCommand cmd) {
+		if(_mgr != null) { return addChannelCommand(_mgr, platform, channel, cmd); } else { return false; }
+	}
+	
+	public static boolean addChannelCommand(DBMan mgr, String platform, String channel, StringCommand cmd) {
+		int res = _mgr.updateDB("INSERT INTO commands (`channel`, `trigger`, `available`, `editable`, `level`, `message`, `platform`, `discord_permitted_channels`) VALUES (\"" + channel + "\", \"" + cmd.getTrigger() + "\", " + cmd.getAvailability() + ", true, " + cmd.getPermissionLevel() + ", \"" + cmd.getMessage() + "\", \"" + platform + "\", null);");
+		if(res > 0) { return true; }
+		return false;
+	}
+	
+	public static int updateChannelCommand(String platform, String channel, StringCommand cmd) {
+		return -1; // General Error
+	}
+	
+	public static int updateChannelCommand(String platform, String channel, StringCommand cmd, int targetID) {
+		return -1; // General Error
 	}
 	
 	public static String getTwitterOAuthConsumer() {

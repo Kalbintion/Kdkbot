@@ -3,7 +3,7 @@ package kdk.cmds;
 import kdk.Bot;
 
 public abstract class Command {
-	private Bot instance;
+	private int id; // Database ID
 	private String trigger;
 	private CommandPermissionLevel cpl;
 	private boolean isAvailable;
@@ -41,21 +41,21 @@ public abstract class Command {
 		this.isAvailable = isAvailable;
 		this.helpMessage = helpMessage;
 	}
-	
+
 	/**
-	 * Sets the instance of the bot to use in reference with this command
-	 * @param instance The bots instance to use
+	 * Sets the commands ID
+	 * @param id The ID used in the database to uniquely identify the command.
 	 */
-	public void setBotInstance(Bot instance) {
-		this.instance = instance;
+	public void setID(int id) {
+		this.id = id;
 	}
 	
 	/**
-	 * Gets the instance of the bot to use in reference with this command
-	 * @return The bots instance to use
+	 * Retrieves the commands ID
+	 * @return The ID used in the database to uniquely identify the command.
 	 */
-	public Bot getBotInstance() {
-		return this.instance;
+	public int getID() {
+		return this.id;
 	}
 	
 	/**

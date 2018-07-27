@@ -99,8 +99,8 @@ public class WebInterfaceWatcher {
 						chan.commands.commandStrings.loadCommands();
 						break;
 					case "perms":
-						chan.sendMessage("Online permissions update system is currently unavailable.");
-						// chan.loadSenderRanks();
+						// chan.sendMessage("Online permissions update system is currently unavailable.");
+						chan.loadSenderRanks();
 						break;
 					case "quotes":
 						chan.commands.quotes.loadQuotes();

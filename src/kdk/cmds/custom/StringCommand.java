@@ -8,12 +8,15 @@ public class StringCommand extends Command {
 	public String messageToSend;
 	
 	public StringCommand(String trigger, Bot instance) {
-		this.setBotInstance(instance);
-		this.setTrigger(trigger);
+		this(0, trigger, "", 0, false);
 	}
 	
-	public StringCommand(Bot instance, String trigger, String message, int level, boolean active) {
-		this.setBotInstance(instance);
+	public StringCommand(String trigger, String message, int level, boolean active) {
+		this(0, trigger, message, level, active);
+	}
+	
+	public StringCommand(int id, String trigger, String message, int level, boolean active) {
+		this.setID(id);
 		this.setTrigger(trigger);
 		this.messageToSend = message;
 		this.setPermissionLevel(level);

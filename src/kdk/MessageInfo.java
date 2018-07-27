@@ -7,6 +7,12 @@ import java.util.regex.Pattern;
 import kdk.channel.Channel;
 
 public class MessageInfo {
+	public static final int PLATFORM_OTHER = -1;
+	public static final int PLATFORM_TWITCH = 1;
+	public static final int PLATFORM_DISCORD = 2;
+	public static final int PLATFORM_TWITTER = 3;
+	
+	public int platform;
 	public String channel;
 	public String sender;
 	public String message;

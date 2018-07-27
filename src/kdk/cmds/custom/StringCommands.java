@@ -9,6 +9,7 @@ import java.util.List;
 import kdk.Bot;
 import kdk.MessageInfo;
 import kdk.cmds.Commands;
+import kdk.dataman.DBFetcher;
 import kdk.filemanager.Config;
 import kdk.language.Translate;
 
@@ -39,6 +40,28 @@ public class StringCommands {
 	}
 	
 	public void loadCommands() {
+		this.commands = DBFetcher.getChannelCommands("twitch", this.channel.replaceAll("#", ""));
+		
+		// NOTE: Deprecated
+		// If we cannot find any commands in database, we will need to convert from local copy
+		// Backwards compatibility
+		if(commands == null || commands.size() <= 0) {
+			loadCommandsCfg();
+			for(StringCommand cmd : commands) {
+				boolean res = DBFetcher.addChannelCommand("twitch", channel.replaceAll("#", ""), cmd);
+				if(res == false) {
+					Bot.instance.dbg.writeln("COMMAND ADD FAILURE! twitch, " + channel.replaceAll("#", "") + " for command " + cmd.getTrigger());
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Load the channels custom commands from a local file.
+	 * @deprecated Local copies of commands are no longer supported. Database integration.
+	 */
+	@Deprecated
+	public void loadCommandsCfg() {
 		try {
 			if(this.commands != null && this.commands.size() > 0) {
 				// We need to reset the list before reloading
@@ -59,7 +82,7 @@ public class StringCommands {
 				for(int i = 0; i < args.length; i++) {
 					Bot.instance.dbg.writeln(this, "args[" + i + "] is " + args[i]);
 				}
-				commands.add(new StringCommand(Bot.instance, args[2], args[3], Integer.parseInt(args[0]), Boolean.parseBoolean(args[1])));
+				commands.add(new StringCommand(args[2], args[3], Integer.parseInt(args[0]), Boolean.parseBoolean(args[1])));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -68,17 +91,18 @@ public class StringCommands {
 	
 	public String addCommand(String trigger, String message, String level) {	
 		try {
-			StringCommand toAdd = new StringCommand(Bot.instance, trigger, message, Integer.parseInt(level), true);
+			StringCommand toAdd = new StringCommand(trigger, message, Integer.parseInt(level), true);
 			String outMsg = String.format(Translate.getTranslate("custom.add", Bot.instance.getChannel(this.channel).getLang()), trigger);
 			if(getCommand(trigger) != null) {
 				outMsg = String.format(Translate.getTranslate("custom.add.dupe", Bot.instance.getChannel(this.channel).getLang()), trigger);
 			}
+			DBFetcher.addChannelCommand("twitch", this.channel, toAdd);
 			commands.add(toAdd);
 			this.saveCommands();
 			return outMsg;
 		} catch (NumberFormatException e) {
 			return String.format(Translate.getTranslate("custom.add.failed", Bot.instance.getChannel(this.channel).getLang()), trigger);
-		}		
+		}
 	}
 	
 	public String removeCommand(String trigger) {

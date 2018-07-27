@@ -140,7 +140,7 @@ public class Commands {
 						break;
 				}
 			} else if (coreWord.equalsIgnoreCase("leave")) {
-				Bot.instance.exitChannel(info.sender);
+				Bot.instance.exitChannelDB(info.sender);
 			}
 		}
 		

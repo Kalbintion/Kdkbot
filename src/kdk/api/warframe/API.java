@@ -708,6 +708,9 @@ public final class API {
 		
 		static {
 			renamedItems.put("twin vipers wraith", "wraith twin vipers");
+			renamedItems.put("scimitar avionics blueprint", "scimitar avionics");
+			renamedItems.put("scimitar fuselage blueprint",  "scimitar fuselage");
+			renamedItems.put("scimitar engines blueprint", "scimitar engines");
 		}
 		
 		// Base url to the API, found via site function "make_request()"

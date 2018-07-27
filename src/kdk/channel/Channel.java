@@ -25,11 +25,9 @@ public class Channel {
 	
 	// Path & Config locations (set by Channel() init)
 	public String baseConfigLocation;
-	// public Config cfgPerms;
 	public Config cfgChan;
 	public Config cfgTokens;
 	public Config cfgSequenceMessages;
-	// TODO: Optimize cfgPerms and senderRanks duplicating information in memory
 	public HashMap<String, Integer> senderRanks = new HashMap<String, Integer>();
 	
 	// Other Vars

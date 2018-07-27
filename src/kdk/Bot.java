@@ -140,13 +140,13 @@ public class Bot extends PircBot {
 		}
 		
 		// Setup Discord interface
-		platform_discord = kdk.discord.Core.createClient(botCfg.getSetting("disc_pass"), true);
+		platform_discord = kdk.discord.Core.createClient(DBFetcher.getSetting("discord_user_pass"), true);
 		
 		// Setup web related info
 		if (DBFetcher.getWebEnabled()) {
 			dbg.writeln("Enabled Web Watcher.");
 			dbg.writeln("Watching @ " + DBFetcher.getWatcherLoc());
-			webWatcher = new WebInterfaceWatcher(DBFetcher.getWatcherLoc(), botCfg.getSetting("watcherFile"));
+			webWatcher = new WebInterfaceWatcher(DBFetcher.getWatcherLoc(), DBFetcher.getSetting("watcher_file"));
 			webWatcher.watch();
 		}
 	}
@@ -183,7 +183,7 @@ public class Bot extends PircBot {
 			} catch (NickAlreadyInUseException e) {
 				logger.logln(Translate.getTranslate("log.nickInUse", botLanguage));
 			} catch (UnknownHostException e) {
-				logger.logln(String.format(Translate.getTranslate("log.failedToResolve", botLanguage), botCfg.getSetting("irc")));
+				logger.logln(String.format(Translate.getTranslate("log.failedToResolve", botLanguage), DBFetcher.getSetting("twitch_irc")));
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (IrcException e) {
@@ -315,6 +315,7 @@ public class Bot extends PircBot {
     	
 		if(instance.getChannel(channel) != null) {
 			Bot.instance.dbg.writeln(this, "Channel already entered: " + channel);
+			instance.getChannel(channel).joinChannel();
 			return -1;
 		} else {
 			Bot.instance.dbg.writeln(this, "Channel not yet entered: " + channel);
@@ -359,7 +360,11 @@ public class Bot extends PircBot {
     	
 		// Leave channel
 		this.partChannel(channel);
-		
+    }
+    
+    public void exitChannelDB(String channel) {
+    	exitChannel(channel);
+    	
 		// Remove it from being joined
 		DBFetcher.leaveTwitchChannel(dbm, channel);
     }
@@ -439,7 +444,7 @@ public class Bot extends PircBot {
      * @return The Client ID in plain text for twitch
      */
     public String getClientID() {
-    	return botCfg.getSetting("clientId");
+    	return DBFetcher.getSetting("twitch_client_id");
     }
     
     /**

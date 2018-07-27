@@ -53,7 +53,7 @@ custom.mod.msg=%1$s has changed %2$s's message.
 custom.mod.available=%1$s has changed %2$s's availability to %3$s from %4$s
 custom.mod.available.fail=Unable to discern %1$s as a true/false value.
 custom.mod.fail=%1$s, you do not have the required permission to change this command.
-custom.mod.badedit=Could not recognize %1$s as a proper edit for the command.
+custom.mod.badedit=Could not recognize %1$s as a proper edit type for the command.
 custom.list=You can get this channels list of commands by visiting: tfk.zapto.org/kdkbot/?p=channels&t=c&c=%1$s
 custom.listx.fail=%1$s: You did not specify a valid custom (or 'c') arguments! Given: %2$s
 custom.listx.prefix.a.1=Custom commands 

@@ -22,7 +22,7 @@ public class Stats {
 	public void executeCommand(MessageInfo info) {
 		String[] args = info.getSegments();
 		String subCmd = args[1];
-		UserStat userstat = Bot.instance.getChannel(channel).stats.userStats.get(info.sender);
+		UserStat userstat = Bot.inst.getChannel(channel).stats.userStats.get(info.sender);
 		if(userstat == null) {
 			failedToFind(info);
 			return;
@@ -31,36 +31,36 @@ public class Stats {
 		switch(subCmd) {
 			case "time":
 				if(userstat.firstJoin == 0) {
-					Bot.instance.sendChanMessageTrans(channel, "stats.time.fail", info.sender);
+					Bot.inst.sendChanMessageTrans(channel, "stats.time.fail", info.sender);
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "stats.time", info.sender, getDurationTime(userstat), getFirstJoinDate(userstat));
+					Bot.inst.sendChanMessageTrans(channel, "stats.time", info.sender, getDurationTime(userstat), getFirstJoinDate(userstat));
 				}
 				break;
 			case "msges":
-				Bot.instance.sendChanMessageTrans(channel, "stats.msges", info.sender, getMessageCount(userstat), getCharacterCount(userstat));		
+				Bot.inst.sendChanMessageTrans(channel, "stats.msges", info.sender, getMessageCount(userstat), getCharacterCount(userstat));		
 				break;
 			case "char":
-				Bot.instance.sendChanMessageTrans(channel, "stats.char",info.sender, getCharacterCount(userstat));
+				Bot.inst.sendChanMessageTrans(channel, "stats.char",info.sender, getCharacterCount(userstat));
 				break;
 			case "all":
-				Bot.instance.sendChanMessageTrans(channel, "stats.all", info.sender, getDurationTime(userstat), getFirstJoinDate(userstat), getMessageCount(userstat), getCharacterCount(userstat));
+				Bot.inst.sendChanMessageTrans(channel, "stats.all", info.sender, getDurationTime(userstat), getFirstJoinDate(userstat), getMessageCount(userstat), getCharacterCount(userstat));
 				break;
 			case "bits":
 				if(userstat.bitsDate == 0) {
-					Bot.instance.sendChanMessageTrans(channel, "stats.bits.fail", info.sender);
+					Bot.inst.sendChanMessageTrans(channel, "stats.bits.fail", info.sender);
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "stats.bits", info.sender, getBitCount(userstat), getFirstBitDate(userstat));
+					Bot.inst.sendChanMessageTrans(channel, "stats.bits", info.sender, getBitCount(userstat), getFirstBitDate(userstat));
 				}
 				break;
 		}
 	}
 	
 	public UserStat getUserStat(String user) {
-		return Bot.instance.getChannel(channel).stats.userStats.get(user);
+		return Bot.inst.getChannel(channel).stats.userStats.get(user);
 	}
 	
 	public void failedToFind(MessageInfo info) {
-		Bot.instance.sendChanMessageTrans(channel, "stats.failed", info.sender);
+		Bot.inst.sendChanMessageTrans(channel, "stats.failed", info.sender);
 	}
 
 	public String getFirstJoinDate(UserStat user) {

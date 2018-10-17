@@ -25,6 +25,10 @@ public class Timers extends Command {
 	}
 	
 	public void loadTimers() {
+		loadTimersCfg();
+	}
+	
+	public void loadTimersCfg() {
 		try {
 			if(timers.size() > 0) {
 				// Stop all timers before clearing
@@ -71,7 +75,7 @@ public class Timers extends Command {
 					args = info.getSegments(5);
 					MessageTimer newTimer = new MessageTimer(info.channel, args[2], args[4], Long.parseLong(args[3]));
 					timers.add(newTimer);
-					Bot.instance.sendChanMessageTrans(channel, "timers.new", args[2], args[3], args[4]);
+					Bot.inst.sendChanMessageTrans(channel, "timers.new", args[2], args[3], args[4]);
 					break;
 				case "remove":
 				case "delete":
@@ -81,19 +85,19 @@ public class Timers extends Command {
 						if(t.timerID.equalsIgnoreCase(timerID)) {
 							t.stop();
 							timers.remove(t);
-							Bot.instance.sendChanMessageTrans(channel, "timers.del", timerID);
+							Bot.inst.sendChanMessageTrans(channel, "timers.del", timerID);
 							found = true;
 							break;
 						}
 					}
 					if(!found)
-						Bot.instance.sendChanMessageTrans(channel, "timers.del.fail", timerID);
+						Bot.inst.sendChanMessageTrans(channel, "timers.del.fail", timerID);
 					break;
 				case "edit":
 					// Timers edit <id> <type> <newValue>
 					args = info.getSegments(5); // Must limit the amount of contents, otherwise newValue could be wrong
 					timerID = args[2];
-					Bot.instance.dbg.writeln(this, "Looking to edit timer w/ id: " + timerID);
+					Bot.inst.dbg.writeln(this, "Looking to edit timer w/ id: " + timerID);
 					// Lets find that timer!
 					Iterator<MessageTimer> iter = timers.iterator();
 					while(iter.hasNext()) {
@@ -103,7 +107,7 @@ public class Timers extends Command {
 							// Timer found, need to stop it, create a new timer, and then add a new MessageTimer with the changed value
 							t.stop();
 							
-							Bot.instance.dbg.writeln(this, "ID Found for editing.");
+							Bot.inst.dbg.writeln(this, "ID Found for editing.");
 							
 							String newTimerID = t.timerID;
 							String newMessage = t.message;
@@ -113,31 +117,31 @@ public class Timers extends Command {
 							switch(args[3].toLowerCase()) {
 								case "msg":
 									newMessage = args[4];
-									Bot.instance.sendChanMessageTrans(channel, "timers.mod.msg", timerID);
+									Bot.inst.sendChanMessageTrans(channel, "timers.mod.msg", timerID);
 									break;
 								case "delay":
 									newDelay = Long.parseLong(args[4]);
-									Bot.instance.sendChanMessageTrans(channel, "timers.mod.delay", timerID, args[4]);
+									Bot.inst.sendChanMessageTrans(channel, "timers.mod.delay", timerID, args[4]);
 									break;
 								case "flags":
 									newFlags = args[4];
-									Bot.instance.sendChanMessageTrans(channel, "timers.mod.flags", timerID);
+									Bot.inst.sendChanMessageTrans(channel, "timers.mod.flags", timerID);
 									break;
 								case "needslive":
 									t.flagsVals.REQUIRES_LIVE = Boolean.parseBoolean(args[4]);
 									newFlags = t.flagsVals.toString();
-									Bot.instance.sendChanMessageTrans(channel, "timers.mod.flags.needslive", timerID, args[4]);
+									Bot.inst.sendChanMessageTrans(channel, "timers.mod.flags.needslive", timerID, args[4]);
 									break;
 								case "msgcount":
 									int msgCount = Integer.parseInt(args[4]);
 									if(msgCount <= 0) {
 										t.flagsVals.REQUIRES_MSG_COUNT = false;
 										newFlags =t.flagsVals.toString();
-										Bot.instance.sendChanMessageTrans(channel, "timers.mod.flags.msgcount.clear", timerID);
+										Bot.inst.sendChanMessageTrans(channel, "timers.mod.flags.msgcount.clear", timerID);
 									} else {
 										t.flagsVals.REQUIRES_MSG_COUNT_AMT = args[4];
 										newFlags = t.flagsVals.toString();
-										Bot.instance.sendChanMessageTrans(channel, "timers.mod.flags.msgcount", timerID, args[4]);
+										Bot.inst.sendChanMessageTrans(channel, "timers.mod.flags.msgcount", timerID, args[4]);
 									}
 									break;
 								case "reqgame":
@@ -145,12 +149,12 @@ public class Timers extends Command {
 										t.flagsVals.REQUIRES_GAME = true;
 										t.flagsVals.REQUIRES_GAME_NAME = args[4];
 										newFlags = t.flagsVals.toString();
-										Bot.instance.sendChanMessageTrans(channel, "timers.mod.flags.reqgame", timerID, args[4]);
+										Bot.inst.sendChanMessageTrans(channel, "timers.mod.flags.reqgame", timerID, args[4]);
 									} else {
 										t.flagsVals.REQUIRES_GAME = false;
 										t.flagsVals.REQUIRES_GAME_NAME = "";
 										newFlags = t.flagsVals.toString();
-										Bot.instance.sendChanMessageTrans(channel, "timers.mod.flags.reqgame.clear", timerID);
+										Bot.inst.sendChanMessageTrans(channel, "timers.mod.flags.reqgame.clear", timerID);
 									}
 									break;
 								case "reqtitle":
@@ -158,12 +162,12 @@ public class Timers extends Command {
 										t.flagsVals.REQUIRES_IN_TITLE = true;
 										t.flagsVals.REQUIRES_IN_TITLE_TEXT = args[4];
 										newFlags = t.flagsVals.toString();
-										Bot.instance.sendChanMessageTrans(channel, "timers.mod.flags.reqtitle", timerID, args[4]);
+										Bot.inst.sendChanMessageTrans(channel, "timers.mod.flags.reqtitle", timerID, args[4]);
 									} else {
 										t.flagsVals.REQUIRES_IN_TITLE = false;
 										t.flagsVals.REQUIRES_IN_TITLE_TEXT = "";
 										newFlags = t.flagsVals.toString();
-										Bot.instance.sendChanMessageTrans(channel, "timers.mod.flags.reqtitle.clear", timerID);
+										Bot.inst.sendChanMessageTrans(channel, "timers.mod.flags.reqtitle.clear", timerID);
 									}
 									break;
 							}

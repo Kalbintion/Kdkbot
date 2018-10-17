@@ -189,7 +189,7 @@ public final class APIv3 {
 	
 	public static boolean isEditorOf(String token, String channel) {
 		String res = getResponse(token, URL_CHANNELS + channel.replace("#", "") + URL_CHANNEL_EDITORS, "GET");
-		return res.contains("\"" + Bot.instance.getName() + "\"");
+		return res.contains("\"" + Bot.inst.getName() + "\"");
 	}
 	
 	public static boolean isStreamerLive(String clientID, String channel) {

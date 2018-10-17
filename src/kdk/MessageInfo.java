@@ -86,7 +86,7 @@ public class MessageInfo {
 	 * @return A channel object containing the channel object reference
 	 */
 	public Channel getChannel() {
-		return Bot.instance.getChannel(this.channel);
+		return Bot.inst.getChannel(this.channel);
 	}
 	
 	/**

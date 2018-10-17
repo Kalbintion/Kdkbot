@@ -24,8 +24,14 @@ public class StringCommand extends Command {
 	}
 	
 	public void executeCommand(MessageInfo info) {
-		Bot.instance.dbg.writeln(this, "Attempting to execute command " + this.getTrigger() + " to channel " + info.channel);
-		Bot.instance.getChannel(info.channel).sendMessage(MessageParser.parseMessage(this.messageToSend, info));
+		System.out.println("Last Call: " + getLastCall() + "\nOffset: " + getReactiveOffset() + "\n Time: " + System.currentTimeMillis());
+		if(this.getLastCall() + this.getReactiveOffset() < System.currentTimeMillis()) {
+			Bot.inst.dbg.writeln(this, "Attempting to execute command " + this.getTrigger() + " to channel " + info.channel);
+			Bot.inst.getChannel(info.channel).sendMessage(MessageParser.parseMessage(this.messageToSend, info));
+			setLastCall(System.currentTimeMillis());
+		} else {
+			Bot.inst.dbg.writeln("Could not activate command. Not yet re-activated.\n" + info.message);
+		}
 	}
 	
 	public String getMessage() {

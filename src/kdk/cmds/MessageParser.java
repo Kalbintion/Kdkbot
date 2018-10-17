@@ -228,7 +228,7 @@ public class MessageParser {
 		// Random Basic replacement
 		toParse = toParse.replace("%RND%", Integer.toString(rnd.nextInt()));
 		
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Replace %ARGS% based information
 		if(args[0].length() + 1 < info.message.length()) {
@@ -241,7 +241,7 @@ public class MessageParser {
 		
 		// If it was all replaced, we can default to removing them completely (should remove stray %ARGS%)
 		toParse = toParse.replace("%ARGS%", "");
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Command replacement
 		matches = PATTERN_MAP.get("cmd").matcher(toParse);
@@ -251,7 +251,7 @@ public class MessageParser {
 			
 			String argID = result.substring("%CMD:".length(), result.length()-1);
 			
-			Channel chan = Bot.instance.getChannel(info.channel);
+			Channel chan = Bot.inst.getChannel(info.channel);
 			StringCommand cmdID = chan.commands.commandStrings.getCommand(argID);
 			if(cmdID != null) {
 				toParse = toParse.replace(result, cmdID.messageToSend);
@@ -259,7 +259,7 @@ public class MessageParser {
 				toParse = toParse.replace(result, "No command found for " + argID);
 			}
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Arg specificity
 		matches = PATTERN_MAP.get("argN").matcher(toParse);
@@ -279,7 +279,7 @@ public class MessageParser {
 				toParse = toParse.replace("%ARGS:" + argID + "%", args[argIDInt]);
 			}
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter specificity
 		matches = PATTERN_MAP.get("cntr").matcher(toParse);
@@ -289,7 +289,7 @@ public class MessageParser {
 			
 			String cntrID = result.substring("%CNTR:".length(), result.length()-1);
 			
-			Channel chan = Bot.instance.getChannel(info.channel);
+			Channel chan = Bot.inst.getChannel(info.channel);
 			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
 			Counter cntr = null;
 			while(cntrIter.hasNext()) {
@@ -301,7 +301,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace("%CNTR:" + cntrID + "%", Integer.toString(cntr.value));
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter++ Specificity
 		matches = PATTERN_MAP.get("cntr++").matcher(toParse);
@@ -310,7 +310,7 @@ public class MessageParser {
 			
 			String cntrID = result.substring("%CNTR++:".length(), result.length()-1);
 			
-			Channel chan = Bot.instance.getChannel(info.channel);
+			Channel chan = Bot.inst.getChannel(info.channel);
 			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
 			Counter cntr = null;
 			while(cntrIter.hasNext()) {
@@ -326,7 +326,7 @@ public class MessageParser {
 			// Force a counter save
 			Bot.CHANS.get(info.channel).commands.counters.saveCounters();
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Counter-- Specificity
 		matches = PATTERN_MAP.get("cntr--").matcher(toParse);
@@ -335,7 +335,7 @@ public class MessageParser {
 			
 			String cntrID = result.substring("%CNTR--:".length(), result.length()-1);
 			
-			Channel chan = Bot.instance.getChannel(info.channel);
+			Channel chan = Bot.inst.getChannel(info.channel);
 			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
 			Counter cntr = null;
 			while(cntrIter.hasNext()) {
@@ -351,31 +351,31 @@ public class MessageParser {
 			// Force a counter save
 			Bot.CHANS.get(info.channel).commands.counters.saveCounters();
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Channel Users
 		matches = PATTERN_MAP.get("chanuser").matcher(toParse);
 		while(matches.find()) {
 			String result = matches.group();
 			
-			User[] users = Bot.instance.getUsers(info.channel);
+			User[] users = Bot.inst.getUsers(info.channel);
 			User randomUser = users[rnd.nextInt(users.length)];
 			
 			toParse = toParse.replace(result, randomUser.getNick());
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Channel Users IDX
 		matches = PATTERN_MAP.get("chanuserIdx").matcher(toParse);
 		while(matches.find()) {
 			String result = matches.group();
 			
-			User[] users = Bot.instance.getUsers(info.channel);
+			User[] users = Bot.inst.getUsers(info.channel);
 			int idx = Integer.parseInt(result.substring("%CHANUSER:".length(), result.length() -1));
 			
 			toParse = toParse.replace(result, users[idx].getNick());
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		
 		// Case methods
@@ -386,7 +386,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, result.substring("%UPPER:".length(), result.length()-1).toUpperCase());
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Lower
 		matches = PATTERN_MAP.get("lower").matcher(toParse);
@@ -395,7 +395,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, result.substring("%LOWER:".length(), result.length()-1).toLowerCase());
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Sequence (Seq)
 		matches = PATTERN_MAP.get("seq").matcher(toParse);
@@ -419,7 +419,7 @@ public class MessageParser {
 			messagePiece = charTransform(LEET_MAP, messagePiece);
 			toParse = toParse.replace(result, messagePiece);
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Flip
 		matches = PATTERN_MAP.get("flip").matcher(toParse);
@@ -429,7 +429,7 @@ public class MessageParser {
 			messagePiece = charTransform(FLIP_MAP, messagePiece);
 			toParse = toParse.replace(result, messagePiece);
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Hash
 		matches = PATTERN_MAP.get("hash").matcher(toParse);
@@ -445,7 +445,7 @@ public class MessageParser {
 				toParse = toParse.replace(result, e.getMessage());
 			}
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Reverse String (ie: abc, cba)
 		matches = PATTERN_MAP.get("reverse").matcher(toParse);
@@ -454,7 +454,7 @@ public class MessageParser {
 			String messagePiece = result.substring("%REVERSE:".length(), result.length()-1);
 			toParse = toParse.replace(result, new StringBuilder(messagePiece).reverse().toString());
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Pick
 		matches = PATTERN_MAP.get("pick").matcher(toParse);
@@ -466,7 +466,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, messageParts[new Random().nextInt(messageParts.length)]);
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Replace specificity
 		matches = PATTERN_MAP.get("replace").matcher(toParse);
@@ -488,7 +488,7 @@ public class MessageParser {
 			
 			System.out.println("toParse: " + toParse);
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 				
 		// Join
 		matches = PATTERN_MAP.get("join").matcher(toParse);
@@ -511,7 +511,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, sb.toString());
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 								
 		// YTURL
 		Matcher pattern_yturl_replace_matches = PATTERN_MAP.get("yturl").matcher(info.message);
@@ -528,7 +528,7 @@ public class MessageParser {
 
 			toParse = toParse.replace(result, urlResult);
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// URL
 		Matcher pattern_url_replace_matches = PATTERN_MAP.get("url").matcher(info.message);
@@ -548,7 +548,7 @@ public class MessageParser {
 			
 			toParse = toParse.replace(result, urlResult);
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Pagetitle
 		matches = PATTERN_MAP.get("pagetitle").matcher(toParse);
@@ -559,7 +559,7 @@ public class MessageParser {
 
 			toParse = toParse.replace(result, kdk.api.web.Page.getWebpageTitle(messagePiece));
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Math
 		matches = PATTERN_MAP.get("math").matcher(toParse);
@@ -575,7 +575,7 @@ public class MessageParser {
 			}
 			
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Advanced replacement (specifying max value)
 		matches = PATTERN_MAP.get("rndMax").matcher(toParse);
@@ -589,7 +589,7 @@ public class MessageParser {
 
 			toParse = toParse.replace(result, Integer.toString(rnd.nextInt(maxValue)));
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Advanced replacement (specifying min and max values)
 		matches = PATTERN_MAP.get("rndMinMax").matcher(toParse);
@@ -604,7 +604,7 @@ public class MessageParser {
 
 			toParse = toParse.replace(result, Integer.toString(rnd.nextInt(maxValue - minValue + 1) + minValue));
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
 		// Warframe Market API Implementation
 		matches = PATTERN_MAP.get("wfm").matcher(toParse);
@@ -800,7 +800,7 @@ public class MessageParser {
 			
 			String user = result.substring("%GAME:".length(), result.length() -1);
 			
-			String game = kdk.api.twitch.APIv5.getChannelGameId(Bot.instance.getClientID(), kdk.api.twitch.APIv5.getUserID(Bot.instance.getClientID(), user));
+			String game = kdk.api.twitch.APIv5.getChannelGameId(Bot.inst.getClientID(), kdk.api.twitch.APIv5.getUserID(Bot.inst.getClientID(), user));
 			
 			toParse = toParse.replace(result, game);
 		}
@@ -813,7 +813,7 @@ public class MessageParser {
 
 			String user = result.substring("%TITLE:".length(), result.length() -1);
 			
-			String status = kdk.api.twitch.APIv5.getChannelStatusId(Bot.instance.getClientID(), kdk.api.twitch.APIv5.getUserID(Bot.instance.getClientID(), user));
+			String status = kdk.api.twitch.APIv5.getChannelStatusId(Bot.inst.getClientID(), kdk.api.twitch.APIv5.getUserID(Bot.inst.getClientID(), user));
 			
 			toParse = toParse.replace(result, status);
 			
@@ -829,7 +829,7 @@ public class MessageParser {
 				
 			}
 		}
-		Bot.instance.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 
 		return toParse;
 	}

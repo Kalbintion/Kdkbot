@@ -39,7 +39,7 @@ public class Economy {
 	}
 	
 	public Economy(String channel) {
-		this(Bot.instance.getChannel(channel));
+		this(Bot.inst.getChannel(channel));
 	}
 	
 	public void load() {
@@ -263,7 +263,7 @@ public class Economy {
 	 * @return
 	 */
 	public String handleMessage(MessageInfo info) {
-		Bot.instance.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
+		Bot.inst.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
 		
 		// Enforce senders name to be lowercased - prevents case sensitive issues later on
 		info.sender = info.sender.toLowerCase();

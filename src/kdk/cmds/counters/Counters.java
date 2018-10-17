@@ -28,17 +28,17 @@ public class Counters extends Command {
 		try {
 			if (counters.size() > 0) { counters.clear(); } // Clear counters if needed
 			
-			Bot.instance.dbg.writeln(this, "Starting load process...");
+			Bot.inst.dbg.writeln(this, "Starting load process...");
 			List<String> strings = config.getConfigContents();
-			Bot.instance.dbg.writeln(this, "Loaded contents. Size: " + strings.size());
+			Bot.inst.dbg.writeln(this, "Loaded contents. Size: " + strings.size());
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {
 				String str = string.next();
-				Bot.instance.dbg.writeln(this, "Parsing next string: " + str);
+				Bot.inst.dbg.writeln(this, "Parsing next string: " + str);
 				String[] args = str.split("\\|");
-				Bot.instance.dbg.writeln(this, "Size of args: " + args.length);
+				Bot.inst.dbg.writeln(this, "Size of args: " + args.length);
 				for(int i = 0; i < args.length; i++) {
-					Bot.instance.dbg.writeln(this, "args[" + i + "] is " + args[i]);
+					Bot.inst.dbg.writeln(this, "args[" + i + "] is " + args[i]);
 				}
 				counters.add(new Counter(args[0], Integer.parseInt(args[1])));
 			}
@@ -95,10 +95,10 @@ public class Counters extends Command {
 				if(info.senderLevel >= 2) {
 					if(args.length > 3) {
 						this.addCounter(args[2], amount);
-						Bot.instance.sendChanMessageTrans(channel, "counter.new.value", args[2], args[3]);
+						Bot.inst.sendChanMessageTrans(channel, "counter.new.value", args[2], args[3]);
 					} else {
 						this.addCounter(args[2], 0);
-						Bot.instance.sendChanMessageTrans(channel, "counter.new", args[2], args[3]);
+						Bot.inst.sendChanMessageTrans(channel, "counter.new", args[2], args[3]);
 					}
 				}
 				break;
@@ -106,7 +106,7 @@ public class Counters extends Command {
 			case "remove":
 				if(info.senderLevel >= 2) {
 					this.removeCounter(args[2]);
-					Bot.instance.sendChanMessageTrans(channel, "counter.del", args[2]);
+					Bot.inst.sendChanMessageTrans(channel, "counter.del", args[2]);
 				}
 				break;
 			case "+":
@@ -115,7 +115,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.addValue(amount);
-						Bot.instance.sendChanMessageTrans(channel, "counter.mod.add", args[2], amount, cntr.value);
+						Bot.inst.sendChanMessageTrans(channel, "counter.mod.add", args[2], amount, cntr.value);
 					}
 				}
 				break;
@@ -125,7 +125,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.subtractValue(amount);
-						Bot.instance.sendChanMessageTrans(channel, "counter.mod.sub", args[2], amount, cntr.value);
+						Bot.inst.sendChanMessageTrans(channel, "counter.mod.sub", args[2], amount, cntr.value);
 					}
 				}
 				break;
@@ -135,7 +135,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.multiplyValue(amount);
-						Bot.instance.sendChanMessageTrans(channel, "counter.mod.mul", args[2], amount, cntr.value);
+						Bot.inst.sendChanMessageTrans(channel, "counter.mod.mul", args[2], amount, cntr.value);
 					}
 				}
 				break;
@@ -145,7 +145,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
 						cntr.divideValue(amount);
-						Bot.instance.sendChanMessageTrans(channel, "counter.mod.div", args[2], amount, cntr.value);
+						Bot.inst.sendChanMessageTrans(channel, "counter.mod.div", args[2], amount, cntr.value);
 					}
 				}
 				break;
@@ -154,7 +154,7 @@ public class Counters extends Command {
 				while(cntrIter.hasNext()) {
 					cntr = cntrIter.next();
 					if(cntr.name.equalsIgnoreCase(args[2])) {
-						Bot.instance.sendChanMessageTrans(channel, "counter.mod.get", cntr.name, cntr.value);
+						Bot.inst.sendChanMessageTrans(channel, "counter.mod.get", cntr.name, cntr.value);
 					}
 				}
 				break;
@@ -164,7 +164,7 @@ public class Counters extends Command {
 					cntr = cntrIter.next();
 					out += cntr.name +"=" + cntr.value + " ";
 				}
-				Bot.instance.sendChanMessage(channel, out);
+				Bot.inst.sendChanMessage(channel, out);
 				break;
 			
 		}

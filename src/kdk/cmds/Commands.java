@@ -112,7 +112,7 @@ public class Commands {
 	 * @param info MessageInfo containing the message to process
 	 */
 	public void commandHandler(MessageInfo info) {
-		Bot.instance.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
+		Bot.inst.dbg.writeln(this, "Attempting to parse last message for channel " + info.channel);
 		
 		// Enforce senders name to be lowercased - prevents case sensitive issues later on
 		info.sender = info.sender.toLowerCase();
@@ -121,26 +121,26 @@ public class Commands {
 		String coreWord = info.getSegments()[0].substring(chan.commandPrefix.length());
 		String args[] = info.getSegments();
 		
-		Bot.instance.dbg.writeln(this, "Core Command detected as '" + coreWord + "'");
-		Bot.instance.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
+		Bot.inst.dbg.writeln(this, "Core Command detected as '" + coreWord + "'");
+		Bot.inst.dbg.writeln(this, "Senders level detected as " + info.senderLevel + " for " + info.sender);
 		
 		// These commands are bot-room specific
-		if(info.channel.equalsIgnoreCase("#" + Bot.instance.getNick())) {
-			Bot.instance.dbg.writeln(this, "Running through bot specific channel commands");
+		if(info.channel.equalsIgnoreCase("#" + Bot.inst.getNick())) {
+			Bot.inst.dbg.writeln(this, "Running through bot specific channel commands");
 			if (coreWord.equalsIgnoreCase("join")) {
-				switch(Bot.instance.enterChannel(info.sender)) {
+				switch(Bot.inst.enterChannel(info.sender)) {
 					case -1:
-						Bot.instance.getChannel(info.channel).sendMessage("Already in " + info.sender);
+						Bot.inst.getChannel(info.channel).sendMessage("Already in " + info.sender);
 						break;
 					case 1:
-						Bot.instance.getChannel(info.channel).sendMessage("Joined channel " + info.sender);
+						Bot.inst.getChannel(info.channel).sendMessage("Joined channel " + info.sender);
 						break;
 					default:
-						Bot.instance.getChannel(info.channel).sendMessage("Unknown error occured attempting to join channel " + info.sender);
+						Bot.inst.getChannel(info.channel).sendMessage("Unknown error occured attempting to join channel " + info.sender);
 						break;
 				}
 			} else if (coreWord.equalsIgnoreCase("leave")) {
-				Bot.instance.exitChannelDB(info.sender);
+				Bot.inst.exitChannelDB(info.sender);
 			}
 		}
 		
@@ -234,7 +234,7 @@ public class Commands {
 			}
 		}
 		
-		Bot.instance.dbg.writeln("Hit past command cost checking");
+		Bot.inst.dbg.writeln("Hit past command cost checking");
 		
 		// Permission Ranks
 		if (info.senderLevel >= cmdPerm.getPermissionLevel() &&
@@ -476,7 +476,7 @@ public class Commands {
 				}				
 			} else {
 				// We are looking up who the channel is hosting, we need to get user id then get the host target
-				String hostTarget = kdk.api.twitch.APIv5.getHostTarget(Bot.instance.getClientID(), chan.getUserID());
+				String hostTarget = kdk.api.twitch.APIv5.getHostTarget(Bot.inst.getClientID(), chan.getUserID());
 				if(hostTarget == null) {
 					chan.sendMessage("Currently not hosting anyone.");
 				} else {
@@ -506,10 +506,10 @@ public class Commands {
 			if(chan.channel.equalsIgnoreCase(getChan)) {
 				userID = chan.getUserID();
 			} else {
-				userID = kdk.api.twitch.APIv5.getUserID(Bot.instance.getClientID(), getChan);
+				userID = kdk.api.twitch.APIv5.getUserID(Bot.inst.getClientID(), getChan);
 			}
 			
-			String res = kdk.api.twitch.APIv5.getStreamUptime(Bot.instance.getClientID(), userID);
+			String res = kdk.api.twitch.APIv5.getStreamUptime(Bot.inst.getClientID(), userID);
 			if(res != null) {
 				chan.sendMessage("Stream has been going for " + res);
 			} else {
@@ -519,7 +519,7 @@ public class Commands {
 		// Viewers
 		else if(info.senderLevel >= 1 &&
 				coreWord.equalsIgnoreCase("viewers")) {
-			String res = kdk.api.twitch.APIv5.getStreamViewers(Bot.instance.getClientID(), chan.getUserID());
+			String res = kdk.api.twitch.APIv5.getStreamViewers(Bot.inst.getClientID(), chan.getUserID());
 			if(res == null) {
 				chan.sendMessage("Stream is not currently live!");
 			} else {
@@ -533,14 +533,15 @@ public class Commands {
 		}
 		// Money Command
 		else if(info.senderLevel >= cmdMoney.getPermissionLevel() &&
-				coreWord.equalsIgnoreCase(cmdMoney.getTrigger())) {
+				coreWord.equalsIgnoreCase(cmdMoney.getTrigger()) &&
+				isNotCustCmdTrigger(cmdMoney.getTrigger())) {
 			info.message = "economy money";
 			chan.sendMessage(this.chan.economy.handleMessage(info));
 		}
 		// Giveaway
 		else if(info.senderLevel >= giveaway.getPermissionLevel() &&
 				coreWord.equalsIgnoreCase(giveaway.getTrigger()) &&
-				info.getSegments().length > 1) {
+				isNotCustCmdTrigger(giveaway.getTrigger())) {
 			giveaway.executeCommand(info);
 		} else {
 			// Custom String Commands
@@ -600,6 +601,24 @@ public class Commands {
 					return 0;
 				}
 		}
+	}
+	
+	/**
+	 * Retrieves whether a command is also a custom command. Use to overwrite default internal command behaviour
+	 * @param trigger The trigger word to look-up
+	 * @return True if the command is a custom command, false otherwise
+	 */
+	public boolean isNotCustCmdTrigger(String trigger) {
+		// Custom String Commands
+		Iterator<StringCommand> stringIter = commandStrings.commands.iterator();
+		while(stringIter.hasNext()) {
+			StringCommand stringNext = stringIter.next();
+			// Verify user has access to this command
+			if(stringNext.getTrigger().equalsIgnoreCase(trigger)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static String rankIntToName(int rank) {

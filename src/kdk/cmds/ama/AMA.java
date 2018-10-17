@@ -37,52 +37,52 @@ public class AMA extends Command {
 				try {
 					String question = questions.get(Integer.parseInt(args[2]));
 					if(question != null) {
-						Bot.instance.sendChanMessageTrans(info.channel, "ama.gotQuestion", args[2], question);
+						Bot.inst.sendChanMessageTrans(info.channel, "ama.gotQuestion", args[2], question);
 					} else {
-						Bot.instance.sendChanMessageTrans(info.channel, "ama.dneQuestion", args[2]);
+						Bot.inst.sendChanMessageTrans(info.channel, "ama.dneQuestion", args[2]);
 					}
 				} catch(NumberFormatException e) {
-					Bot.instance.sendChanMessageTrans(info.channel, "ama.exNumberFormat");
+					Bot.inst.sendChanMessageTrans(info.channel, "ama.exNumberFormat");
 				} catch(IndexOutOfBoundsException e) {
-					Bot.instance.sendChanMessageTrans(info.channel, "ama.exIndexOutOfBounds");
+					Bot.inst.sendChanMessageTrans(info.channel, "ama.exIndexOutOfBounds");
 				}
 				break;
 			case "add":
 				questions.add(info.message.substring("ama add ".length()));
-				Bot.instance.sendChanMessageTrans(channel, "ama.addedQuestion");
+				Bot.inst.sendChanMessageTrans(channel, "ama.addedQuestion");
 				saveQuestions();
 				break;
 			case "remove":
 				questions.remove(args[1]);
-				Bot.instance.sendChanMessageTrans(channel, "ama.delQuestion", args[2]);
+				Bot.inst.sendChanMessageTrans(channel, "ama.delQuestion", args[2]);
 				break;
 			case "save":
 				this.saveQuestions();
-				Bot.instance.sendChanMessageTrans(channel, "ama.save");
+				Bot.inst.sendChanMessageTrans(channel, "ama.save");
 				break;
 			case "next":
 				if(questions.size() > 0) {
 					String question = this.questions.get(curIndex++);
-					Bot.instance.sendChanMessageTrans(channel, "ama.next", question);
+					Bot.inst.sendChanMessageTrans(channel, "ama.next", question);
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "ama.nextFail");
+					Bot.inst.sendChanMessageTrans(channel, "ama.nextFail");
 				}
 				break;
 			case "index":
 				if(args.length < 3) {
-					Bot.instance.sendChanMessageTrans(channel, "ama.cur.index", this.curIndex);
+					Bot.inst.sendChanMessageTrans(channel, "ama.cur.index", this.curIndex);
 				} else {
 					this.curIndex = Integer.parseInt(args[2]);
-					Bot.instance.sendChanMessageTrans(channel, "ama.set.index", args[2]);
+					Bot.inst.sendChanMessageTrans(channel, "ama.set.index", args[2]);
 				}
 				break;
 			case "repeat":
 				if(questions.size() > 0) {
 					String question = this.questions.get(--curIndex);
 					curIndex++;
-					Bot.instance.sendChanMessageTrans(channel, "ama.repeat", question);
+					Bot.inst.sendChanMessageTrans(channel, "ama.repeat", question);
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "ama.nextFail");
+					Bot.inst.sendChanMessageTrans(channel, "ama.nextFail");
 				}
 				break;
 		}

@@ -140,14 +140,14 @@ public class Channel {
 	 * Joins the channel this channel object is assigned to
 	 */
 	public void joinChannel() {
-		Bot.instance.joinChannel(this.channel);
+		Bot.inst.joinChannel(this.channel);
 	}
 	
 	/**
 	 * Leaves the channel this channel object is assigned to
 	 */
 	public void leaveChannel() {
-		Bot.instance.partChannel(this.channel);
+		Bot.inst.partChannel(this.channel);
 	}
 	
 	/**
@@ -163,7 +163,7 @@ public class Channel {
 	 * @param reason The reason for leaving
 	 */
 	public void leaveChannel(String reason) {
-		Bot.instance.partChannel(this.channel, reason);
+		Bot.inst.partChannel(this.channel, reason);
 	}
 	
 	/**
@@ -171,7 +171,7 @@ public class Channel {
 	 * @param nick The nick to kick
 	 */
 	public void kickUser(String nick) {
-		Bot.instance.kick(this.channel, nick);
+		Bot.inst.kick(this.channel, nick);
 	}
 	
 	/**
@@ -180,7 +180,7 @@ public class Channel {
 	 * @param reason The reason for the kick
 	 */
 	public void kickUser(String nick, String reason) {
-		Bot.instance.kick(this.channel, nick, reason);
+		Bot.inst.kick(this.channel, nick, reason);
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class Channel {
 		if(msgPrefix.length() > 0) { msgPrefix += " "; } // Append a space
 		if(msgSuffix.length() > 0) { msgSuffix = " " + msgSuffix; } // Prepend a space
 		
-		Bot.instance.sendMessage(channel, msgPrefix + message + msgSuffix);
+		Bot.inst.sendMessage(channel, msgPrefix + message + msgSuffix);
 	}
 	
 	/**
@@ -280,7 +280,7 @@ public class Channel {
 	 * @param message The message to send
 	 */
 	public void sendRawMessage(String message) {
-		Bot.instance.sendMessage(channel, message);
+		Bot.inst.sendMessage(channel, message);
 	}
 	
 	/**
@@ -304,31 +304,31 @@ public class Channel {
 			if(filter.contains(info.message)) {
 				if(filter.ignoresPermit == false && this.filterBypass.containsKey(info.sender)) {
 					if(filterBypass.get(info.sender).intValue() > 0) {
-						Bot.instance.dbg.writeln(this, "Decreased " + info.sender + " permit bypass by 1");
+						Bot.inst.dbg.writeln(this, "Decreased " + info.sender + " permit bypass by 1");
 						filterBypass.put(info.sender, filterBypass.get(info.sender).intValue() - 1);
 						break;
 					}
 				}
 				switch(filter.action) {
 					case 1:
-						Bot.instance.dbg.writeln(this, "Attempting to purge user due to filter");
-						Bot.instance.log("Attempting to purge user " + info.sender + " due to filter #" + filterIndex);
-						Bot.instance.sendMessage(info.channel, "/timeout " + info.sender + " 1");
+						Bot.inst.dbg.writeln(this, "Attempting to purge user due to filter");
+						Bot.inst.log("Attempting to purge user " + info.sender + " due to filter #" + filterIndex);
+						Bot.inst.sendMessage(info.channel, "/timeout " + info.sender + " 1");
 						break;
 					case 2:
-						Bot.instance.dbg.writeln(this, "Attempting to timeout user due to filter");
-						Bot.instance.log("Attempting to timeout user " + info.sender + " due to filter #" + filterIndex);
-						Bot.instance.sendMessage(info.channel, "/timeout " + info.sender);
+						Bot.inst.dbg.writeln(this, "Attempting to timeout user due to filter");
+						Bot.inst.log("Attempting to timeout user " + info.sender + " due to filter #" + filterIndex);
+						Bot.inst.sendMessage(info.channel, "/timeout " + info.sender);
 						break;
 					case 3:
-						Bot.instance.dbg.writeln(this, "Attempting to ban user due to filter");
-						Bot.instance.log("Attempting to ban user " + info.sender + " due to filter #" + filterIndex);
-						Bot.instance.sendMessage(info.channel, "/ban " + info.sender);
+						Bot.inst.dbg.writeln(this, "Attempting to ban user due to filter");
+						Bot.inst.log("Attempting to ban user " + info.sender + " due to filter #" + filterIndex);
+						Bot.inst.sendMessage(info.channel, "/ban " + info.sender);
 						break;
 					case 4:
-						Bot.instance.dbg.writeln(this, "Attempting to respond to user due to filter");
-						Bot.instance.log("Attempting to respond to user " + info.sender + " due to filter #" + filterIndex);
-						Bot.instance.sendChanMessage(info.channel, MessageParser.parseMessage(filter.actionInfo, info));
+						Bot.inst.dbg.writeln(this, "Attempting to respond to user due to filter");
+						Bot.inst.log("Attempting to respond to user " + info.sender + " due to filter #" + filterIndex);
+						Bot.inst.sendChanMessage(info.channel, MessageParser.parseMessage(filter.actionInfo, info));
 						break;
 				}
 			}
@@ -341,7 +341,7 @@ public class Channel {
 			while(fwdIter.hasNext()) {
 				Forwarder fwder = fwdIter.next();
 				if(fwder.isAuthorized()) {
-					Bot.instance.getChannel(fwder.getChannel()).sendRawMessage(fwder.formatMessage(info));
+					Bot.inst.getChannel(fwder.getChannel()).sendRawMessage(fwder.formatMessage(info));
 				}
 			}
 		}
@@ -499,7 +499,7 @@ public class Channel {
 	public String getUserID() {
 		String userID = cfgTokens.getSetting("userID");
 		if(userID == null || userID.equalsIgnoreCase("null")) {
-			userID = kdk.api.twitch.APIv5.getUserID(Bot.instance.getClientID(), channel.replace("#", ""));
+			userID = kdk.api.twitch.APIv5.getUserID(Bot.inst.getClientID(), channel.replace("#", ""));
 			cfgTokens.setSetting("userID", userID);
 		}
 		return userID;

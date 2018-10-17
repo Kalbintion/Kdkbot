@@ -10,7 +10,11 @@ import java.sql.Statement;
 public class DBMan {
 	private static Connection _con = null;
 	private static Statement _stmt = null;
+	private static String _host = "";
+	private static String _user = "";
+	private static String _pass = "";
 	public static boolean connected = false;
+	private static boolean recursed = false;
 	
 	public DBMan(Connection con) {
 		_con = con;
@@ -20,6 +24,19 @@ public class DBMan {
 	public DBMan(String host, String user, String password) {
 		try {
 			_con = DriverManager.getConnection("jdbc:mysql://" + host + "/kdkbot?user=" + user + "&password=" + password);
+			_host = host;
+			_user = user;
+			_pass = password;
+			createStmt();
+		} catch (SQLException e) {
+			writeSQLError(e);
+		}
+	}
+	
+	// Attempts to re-establish connection
+	public void reconnect() {
+		try {
+			_con = DriverManager.getConnection("jdbc:mysql://" + _host + "/kdkbot?user=" + _user + "&password=" + _pass);
 			createStmt();
 		} catch (SQLException e) {
 			writeSQLError(e);
@@ -36,9 +53,9 @@ public class DBMan {
 	}
 	
 	public void writeSQLError(SQLException e) {
-		kdk.Bot.instance.dbg.writeln("SQLException: " + e.getMessage());
-		kdk.Bot.instance.dbg.writeln("SQLState: " + e.getSQLState());
-		kdk.Bot.instance.dbg.writeln("VendorError:" + e.getErrorCode());
+		kdk.Bot.inst.dbg.writeln("SQLException: " + e.getMessage());
+		kdk.Bot.inst.dbg.writeln("SQLState: " + e.getSQLState());
+		kdk.Bot.inst.dbg.writeln("VendorError:" + e.getErrorCode());
 	}
 	
 	public String queryDBStr(String query) {
@@ -77,9 +94,15 @@ public class DBMan {
 		
 		try {
 			ResultSet rs = _stmt.executeQuery(query);
+			recursed = false;
 			return rs;
 		} catch (SQLException e) {
 			writeSQLError(e);
+			if(!recursed) {
+				reconnect();
+				recursed = true;
+				return queryDB(query);
+			}
 			return null;
 		}
 	}
@@ -95,9 +118,16 @@ public class DBMan {
 		if(_con == null) { return -2; }
 		
 		try {
-			return _stmt.executeUpdate(query);
+			int ret = _stmt.executeUpdate(query);
+			recursed = false;
+			return ret;
 		} catch (SQLException e) {
 			writeSQLError(e);
+			if(!recursed) {
+				reconnect();
+				recursed = true;
+				return updateDB(query);
+			}
 			return -3;
 		}
 	}

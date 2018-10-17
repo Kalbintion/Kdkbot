@@ -18,6 +18,7 @@ public class MessageTimer extends TimerTask {
 	public Flags flagsVals;
 	public long delay;
 	private Timer timer;
+	public long reactiveOffset;
 	
 	/**
 	 * Creates a new MessageTimer instance with a provided channel, id, messsage and delay time
@@ -63,36 +64,36 @@ public class MessageTimer extends TimerTask {
 	 */
 	@Override
 	public void run() {
-		Bot.instance.dbg.writeln(this, "Running scheduled task id " + this.timerID + " for channel " + this.channel);
+		Bot.inst.dbg.writeln(this, "Running scheduled task id " + this.timerID + " for channel " + this.channel);
 		
 		MessageInfo info = new MessageInfo(channel, "", message, "", "", 0);
-		Bot.instance.dbg.writeln(this, "Flags: " + this.flags);
+		Bot.inst.dbg.writeln(this, "Flags: " + this.flags);
 
 		if (this.flagsVals.REQUIRES_MSG_COUNT && Integer.parseInt(this.flagsVals.REQUIRES_MSG_COUNT_AMT) > this.flagsVals.MSGES_SINCE_LAST_TRIGGER) {
 			this.flagsVals.MSGES_SINCE_LAST_TRIGGER = 0; // Reset msges count, even if the timer didnt get to run
-			Bot.instance.dbg.writeln(this, "Timer failed. Not enough messages. Channel: " + this.channel + ", id: " + this.timerID);
+			Bot.inst.dbg.writeln(this, "Timer failed. Not enough messages. Channel: " + this.channel + ", id: " + this.timerID);
 			return; // Not enough messages have been sent for this to trigger again
 		}
 		
 		if (this.flagsVals.REQUIRES_LIVE) {
-			if(!kdk.api.twitch.APIv5.isStreamerLive(Bot.instance.getClientID(), Bot.instance.getChannel(channel).getUserID())) {
-				Bot.instance.dbg.writeln(this, "Timer failed. Streamer isn't live. Channel: " + this.channel + ", id: " + this.timerID);
+			if(!kdk.api.twitch.APIv5.isStreamerLive(Bot.inst.getClientID(), Bot.inst.getChannel(channel).getUserID())) {
+				Bot.inst.dbg.writeln(this, "Timer failed. Streamer isn't live. Channel: " + this.channel + ", id: " + this.timerID);
 				return; // Streamer isn't live, we arnt going to send message
 			}
 		}
 		
 		if (this.flagsVals.REQUIRES_GAME) {
-			Channel chan = Bot.instance.getChannel(this.channel);
+			Channel chan = Bot.inst.getChannel(this.channel);
 			String retrievedGame = kdk.api.twitch.APIv5.getChannelGame(DBFetcher.getTwitchOAuth(kdk.Bot.dbm), chan.getUserID()).replaceAll("\"", "");
 			if(!this.flagsVals.REQUIRES_GAME_NAME.equalsIgnoreCase(retrievedGame)) {
-				Bot.instance.dbg.writeln(this, "Timer failed. Game did not match. Match: " + retrievedGame + ", To: " + this.flagsVals.REQUIRES_GAME_NAME + ", Channel: " + this.channel + ", id: " + this.timerID);
+				Bot.inst.dbg.writeln(this, "Timer failed. Game did not match. Match: " + retrievedGame + ", To: " + this.flagsVals.REQUIRES_GAME_NAME + ", Channel: " + this.channel + ", id: " + this.timerID);
 				return;
 			}
 		}
 
-		Bot.instance.dbg.writeln(this, "Triggered timer " + this.timerID + ", all conditions met");
+		Bot.inst.dbg.writeln(this, "Triggered timer " + this.timerID + ", all conditions met");
 		this.flagsVals.MSGES_SINCE_LAST_TRIGGER = 0; // Reset msges count, even if we're not using it
-		Bot.instance.sendMessage(channel, MessageParser.parseMessage(message, info));
+		Bot.inst.sendMessage(channel, MessageParser.parseMessage(message, info));
 		
 		if(flagsVals.RANDOM_MODIFIER) {
 			Random rng = new Random();

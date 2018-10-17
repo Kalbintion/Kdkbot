@@ -8,8 +8,8 @@ import kdk.cmds.Command;
 
 public class Fwd extends Command {
 	public Fwd() {
-		this.setTrigger("ama");
-		this.setPermissionLevel(1);
+		this.setTrigger("fwd");
+		this.setPermissionLevel(5);
 		this.setAvailability(true);
 	}
 	
@@ -27,8 +27,8 @@ public class Fwd extends Command {
 						toChan = "#" + toChan;
 					}
 					
-					if(Bot.instance.isInChannel(toChan)) {
-						targetChan = Bot.instance.getChannel(toChan);
+					if(Bot.inst.isInChannel(toChan)) {
+						targetChan = Bot.inst.getChannel(toChan);
 						targetChan.sendMessage(info.channel + " has requested forwarding permissions. Type '" + targetChan.cfgChan.getSetting("commandPrefix") + "afwd " + info.channel.replaceAll("#", "") + "' to authorize or '" + targetChan.cfgChan.getSetting("commandPrefix") + "dfwd " + info.channel.replaceAll("#", "") + "' to deny.");
 						chan.sendMessage("Sent forward request, awaiting reply.");
 						
@@ -51,7 +51,7 @@ public class Fwd extends Command {
 						if(chan.isFwdRequestor(toAuthorize)) {
 							chan.sendMessage("You cannot accept this forward. Waiting reply from " + toAuthorize + ".");
 						} else {
-							targetChan = Bot.instance.getChannel(toAuthorize);
+							targetChan = Bot.inst.getChannel(toAuthorize);
 							targetChan.sendMessage("Forwarding authorization request accepted from " + chan.channel + ".");
 							chan.sendMessage("Forwarding authorization request accepted from " + toAuthorize + ".");
 							targetChan.authorizeForwarder(info.channel);
@@ -71,7 +71,7 @@ public class Fwd extends Command {
 					if(!toDeny.startsWith("#")) { toDeny = "#" + toDeny; }
 					
 					if(chan.isAwaitingForwarderResponse(toDeny)) {
-						targetChan = Bot.instance.getChannel(toDeny);
+						targetChan = Bot.inst.getChannel(toDeny);
 						targetChan.sendMessage("Forwarding authorization request denied from " + chan.channel + ".");
 						chan.sendMessage("Forwarding authorization request denied from " + toDeny + ".");
 						targetChan.denyForwarder(info.channel);
@@ -88,17 +88,39 @@ public class Fwd extends Command {
 				// !fwd del <name>
 				if(args.length >= 3) {
 					String toStop = args[2].toLowerCase();
-					if(!toStop.startsWith("#")) { toStop = "#" + toStop; }
-					
-					if(chan.hasActiveForwarder(toStop)) {
-						targetChan = Bot.instance.getChannel(toStop);
-						targetChan.sendMessage("Stopping message forwarding from " + chan.channel + ".");
-						chan.sendMessage("Stopping message forwarding from " + toStop + ".");
-						
-						targetChan.removeForwarder(info.channel);
-						chan.removeForwarder(toStop);
+					if(toStop.equalsIgnoreCase("*")) {
+						// Clearing all forwards
+						String fwds = chan.getActiveForwarders();
+						if(fwds == null) { chan.sendMessage("There were no active forwarders to stop!"); } else {
+						System.out.println(fwds);
+						String[] fwd = fwds.split(", ");
+						System.out.println("# Fwds: " + fwd.length);
+						for(String fwdc : fwd) {
+							System.out.println("fwd: " + fwdc);
+							if(!fwdc.startsWith("#")) { fwdc = "#" + fwdc; }
+							System.out.println("fwd-p: " + fwdc);
+							targetChan = Bot.inst.getChannel(fwdc);
+							System.out.println("tChan: " + targetChan);
+							targetChan.sendMessage("Stopping message forwarding from " + chan.channel + ".");
+							targetChan.removeForwarder(info.channel);
+							chan.removeForwarder(fwdc);
+						}
+						chan.sendMessage("Stopped all [" + fwd.length + "] active forwarders.");
+						}
 					} else {
-						chan.sendMessage("Channel " + toStop + " was not actively being forwarded to.");
+						// Clearing one forward
+						if(!toStop.startsWith("#")) { toStop = "#" + toStop; }
+						
+						if(chan.hasActiveForwarder(toStop)) {
+							targetChan = Bot.inst.getChannel(toStop);
+							targetChan.sendMessage("Stopping message forwarding from " + chan.channel + ".");
+							chan.sendMessage("Stopping message forwarding from " + toStop + ".");
+							
+							targetChan.removeForwarder(info.channel);
+							chan.removeForwarder(toStop);
+						} else {
+							chan.sendMessage("Channel " + toStop + " was not actively being forwarded to.");
+						}
 					}
 				} else {
 					chan.sendMessage("You did not specify a channel to stop the forwarder from.");

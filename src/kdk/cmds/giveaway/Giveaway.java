@@ -28,82 +28,82 @@ public class Giveaway extends Command {
 		String[] args = info.getSegments();
 		String subCmd = "";
 
-		if(args.length == 1) { subCmd = "random"; }	else { subCmd = args[1].toLowerCase(); }
+		if(args.length == 1) { subCmd = "status"; }	else { subCmd = args[1].toLowerCase(); }
 		
 		switch(subCmd) {
 			case "start":
 				// giveaway start <triggerword>
 				if(args.length < 3) {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.started.failed");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.started.failed");
 				} else {
 					start(args[2]);
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.started", args[2]);
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.started", args[2]);
 				}
 				break;
 			case "stop":
 				// giveaway stop
 				if(hasStarted()) {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.stopped");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.stopped");
 					stop();
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "count":
 				if(hasStarted()) {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.entered.count", numberOfEntries());
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.entered.count", numberOfEntries());
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "cancel":
 				if(hasStarted()) {
 					cancel();
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "pick":
 				// giveaway pick [n]
 				if(hasStarted()) {
 					if(args.length < 3) {
-						Bot.instance.sendChanMessageTrans(channel, "giveaway.winner", pick());
+						Bot.inst.sendChanMessageTrans(channel, "giveaway.winner", pick());
 					} else {
 						// PickN
 						try {
 							int toPick = Integer.parseInt(args[2]);
-							Bot.instance.sendChanMessageTrans(channel, "giveaway.winners", pickN(toPick));
+							Bot.inst.sendChanMessageTrans(channel, "giveaway.winners", pickN(toPick));
 						} catch (NumberFormatException e) {
-							Bot.instance.sendChanMessageTrans(channel, "giveaway.badnumber", args[2]);
+							Bot.inst.sendChanMessageTrans(channel, "giveaway.badnumber", args[2]);
 						}
 					}
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "pickr":
 				// giveaway pickr [n]
 				if(hasStarted()) {
 					if(args.length < 3) {
-						Bot.instance.sendChanMessageTrans(channel, "giveaway.winner", pick(true));
+						Bot.inst.sendChanMessageTrans(channel, "giveaway.winner", pick(true));
 					} else {
 						// PickN(true)
 						try {
 							int toPick = Integer.parseInt(args[2]);
-							Bot.instance.sendChanMessageTrans(channel, "giveaway.winners", pickN(toPick, true));
+							Bot.inst.sendChanMessageTrans(channel, "giveaway.winners", pickN(toPick, true));
 						} catch (NumberFormatException e) {
-							Bot.instance.sendChanMessageTrans(channel, "giveaway.badnumber", args[2]);
+							Bot.inst.sendChanMessageTrans(channel, "giveaway.badnumber", args[2]);
 						}
 					}
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 			case "reset":
 				if(hasStarted()) {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.reset.live");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.reset.live");
 					entries.clear();
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.reset");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.reset");
 					triggerWord = null;
 					entries.clear();
 				}
@@ -111,37 +111,44 @@ public class Giveaway extends Command {
 			case "add":
 				if(info.senderLevel >= 5) {
 					if(hasStarted()) {
-						Bot.instance.sendChanMessageTrans(channel, "giveaway.manual.add", args[2]);
+						Bot.inst.sendChanMessageTrans(channel, "giveaway.manual.add", args[2]);
 						addEntry(args[2]);
 					} else {
-						Bot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
+						Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 					}
 				}
 				break;
 			case "remove":
 				if(info.senderLevel >= 5) {
 					if(hasStarted()) {
-						Bot.instance.sendChanMessageTrans(channel, "giveaway.manual.del", args[2]);
+						Bot.inst.sendChanMessageTrans(channel, "giveaway.manual.del", args[2]);
 						removeEntry(args[2]);
 					} else {
-						Bot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
+						Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 					}
 				}
 				break;
 			case "pause":
 				if(hasStarted()) {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.paused");;
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.paused");;
 					pause();
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.hasntStarted");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 			case "resume":
 				if(!hasStarted()) {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.resume", this.triggerWord);
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.resume", this.triggerWord);
 					resume();
 				} else {
-					Bot.instance.sendChanMessageTrans(channel, "giveaway.alreadyStarted");
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.alreadyStarted");
+				}
+				break;
+			case "status":
+				if(hasStarted()) {
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.status", this.triggerWord, this.numberOfEntries());
+				} else {
+					Bot.inst.sendChanMessageTrans(channel, "giveaway.hasntStarted");
 				}
 				break;
 		}

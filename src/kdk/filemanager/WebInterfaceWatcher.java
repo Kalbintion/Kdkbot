@@ -83,17 +83,17 @@ public class WebInterfaceWatcher {
 				String channel = parts[0];
 				String type = parts[1];
 				
-				Channel chan = Bot.instance.getChannel(channel);
+				Channel chan = Bot.inst.getChannel(channel);
 				if(chan == null && !type.equalsIgnoreCase("join") && !type.equalsIgnoreCase("leave")) { System.out.println("Couldnt find channel object for " + channel); continue; }
 				switch(type) {
 					case "channel":
 						chan.reload();
 						break;
 					case "leave":
-						Bot.instance.exitChannel(channel);
+						Bot.inst.exitChannel(channel);
 						break;
 					case "join":
-						Bot.instance.enterChannel(channel);
+						Bot.inst.enterChannel(channel);
 						break;
 					case "cmds_cust":
 						chan.commands.commandStrings.loadCommands();

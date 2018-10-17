@@ -23,7 +23,7 @@ public class Translate {
 	 * @return The string found with the provided key in the language requested
 	 */
 	public static String getTranslate(String key, String language) {
-		Bot.instance.dbg.writeln("key: " + key + " - lang: " + language);
+		Bot.inst.dbg.writeln("key: " + key + " - lang: " + language);
 		
 		if(!language.equalsIgnoreCase(lastLanguage)) {
 			langConfig = new Config(basePath + "\\" + language + ".lang");
@@ -31,7 +31,7 @@ public class Translate {
 			lastLanguage = language;
 		}
 		
-		Bot.instance.dbg.writeln("cfgPath: " + basePath + "\\" + language + ".lang");
+		Bot.inst.dbg.writeln("cfgPath: " + basePath + "\\" + language + ".lang");
 		return langConfig.getSetting(key);
 	}
 	
@@ -42,7 +42,7 @@ public class Translate {
 	 * @param text The text to set the key to
 	 */
 	public static void setTranslate(String key, String language, String text) {
-		Bot.instance.dbg.writeln("key: " + key + " - lang: " + language);
+		Bot.inst.dbg.writeln("key: " + key + " - lang: " + language);
 		
 		if(!language.equalsIgnoreCase(lastLanguage)) {
 			langConfig = new Config(basePath + "\\" + language + ".lang");

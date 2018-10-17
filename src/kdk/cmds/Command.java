@@ -1,14 +1,13 @@
 package kdk.cmds;
 
-import kdk.Bot;
-
 public abstract class Command {
 	private int id; // Database ID
 	private String trigger;
 	private CommandPermissionLevel cpl;
 	private boolean isAvailable;
 	private String helpMessage;
-	private int lastCall;
+	private long lastCall;
+	private long reactiveOffset;
 	
 	/**
 	 * Initializes a new command with nothing defaulted
@@ -126,7 +125,7 @@ public abstract class Command {
 	 * Gets this commands last call time, otherwise returns 0
 	 * @return The time this command was last called
 	 */
-	public int getLastCall() {
+	public long getLastCall() {
 		return lastCall;
 	}
 	
@@ -134,9 +133,17 @@ public abstract class Command {
 	 * Sets this commands last call time
 	 * @param time The time to set the last call to
 	 */
-	public void setLastCall(int time) {
+	public void setLastCall(long time) {
 		lastCall = time;
 	}
 	
+	
+	public long getReactiveOffset() {
+		return reactiveOffset;
+	}
+	
+	public void setReactiveOffset(long time) {
+		this.reactiveOffset = time;
+	}
 
 }

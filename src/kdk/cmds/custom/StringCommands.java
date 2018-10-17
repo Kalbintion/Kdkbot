@@ -50,7 +50,7 @@ public class StringCommands {
 			for(StringCommand cmd : commands) {
 				boolean res = DBFetcher.addChannelCommand("twitch", channel.replaceAll("#", ""), cmd);
 				if(res == false) {
-					Bot.instance.dbg.writeln("COMMAND ADD FAILURE! twitch, " + channel.replaceAll("#", "") + " for command " + cmd.getTrigger());
+					Bot.inst.dbg.writeln("COMMAND ADD FAILURE! twitch, " + channel.replaceAll("#", "") + " for command " + cmd.getTrigger());
 				}
 			}
 		}
@@ -68,19 +68,19 @@ public class StringCommands {
 				this.commands.clear();
 			}
 			
-			Bot.instance.dbg.writeln(this, "Starting load process...");
+			Bot.inst.dbg.writeln(this, "Starting load process...");
 			List<String> strings = config.getConfigContents();
-			Bot.instance.dbg.writeln(this, "Loaded contents. Size: " + strings.size());
+			Bot.inst.dbg.writeln(this, "Loaded contents. Size: " + strings.size());
 			Iterator<String> string = strings.iterator();
 			while(string.hasNext()) {
 				String str = string.next();
-				Bot.instance.dbg.writeln(this, "Parsing next string: " + str);
+				Bot.inst.dbg.writeln(this, "Parsing next string: " + str);
 				String[] args = str.split("\\|");
-				Bot.instance.dbg.writeln(this, "Size of args: " + args.length);
-				Bot.instance.dbg.writeln(this, "args[0]: " + Integer.parseInt(args[0]));
-				Bot.instance.dbg.writeln(this, "args[1]: " + Boolean.parseBoolean(args[1]));
+				Bot.inst.dbg.writeln(this, "Size of args: " + args.length);
+				Bot.inst.dbg.writeln(this, "args[0]: " + Integer.parseInt(args[0]));
+				Bot.inst.dbg.writeln(this, "args[1]: " + Boolean.parseBoolean(args[1]));
 				for(int i = 0; i < args.length; i++) {
-					Bot.instance.dbg.writeln(this, "args[" + i + "] is " + args[i]);
+					Bot.inst.dbg.writeln(this, "args[" + i + "] is " + args[i]);
 				}
 				commands.add(new StringCommand(args[2], args[3], Integer.parseInt(args[0]), Boolean.parseBoolean(args[1])));
 			}
@@ -92,16 +92,15 @@ public class StringCommands {
 	public String addCommand(String trigger, String message, String level) {	
 		try {
 			StringCommand toAdd = new StringCommand(trigger, message, Integer.parseInt(level), true);
-			String outMsg = String.format(Translate.getTranslate("custom.add", Bot.instance.getChannel(this.channel).getLang()), trigger);
+			String outMsg = String.format(Translate.getTranslate("custom.add", Bot.inst.getChannel(this.channel).getLang()), trigger);
 			if(getCommand(trigger) != null) {
-				outMsg = String.format(Translate.getTranslate("custom.add.dupe", Bot.instance.getChannel(this.channel).getLang()), trigger);
+				outMsg = String.format(Translate.getTranslate("custom.add.dupe", Bot.inst.getChannel(this.channel).getLang()), trigger);
 			}
 			DBFetcher.addChannelCommand("twitch", this.channel, toAdd);
 			commands.add(toAdd);
-			this.saveCommands();
 			return outMsg;
 		} catch (NumberFormatException e) {
-			return String.format(Translate.getTranslate("custom.add.failed", Bot.instance.getChannel(this.channel).getLang()), trigger);
+			return String.format(Translate.getTranslate("custom.add.failed", Bot.inst.getChannel(this.channel).getLang()), trigger);
 		}
 	}
 	
@@ -112,12 +111,16 @@ public class StringCommands {
 			strCmd = strIter.next();
 			if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 				strIter.remove();
-				return String.format(Translate.getTranslate("custom.del", Bot.instance.getChannel(this.channel).getLang()), trigger);
+				DBFetcher.removeCommand(channel.replaceAll("#", ""), trigger);
+				return String.format(Translate.getTranslate("custom.del", Bot.inst.getChannel(this.channel).getLang()), trigger);
 			}
 		}
-		return String.format(Translate.getTranslate("custom.del.failed", Bot.instance.getChannel(this.channel).getLang()), trigger);
+		return String.format(Translate.getTranslate("custom.del.failed", Bot.inst.getChannel(this.channel).getLang()), trigger);
 	}
 	
+	/**
+	 * @deprecated Old system for saving commands to local file. No longer supported. Database migration.
+	 */
 	public void saveCommands() {
 		try {
 			Iterator<StringCommand> strings = commands.iterator();
@@ -145,19 +148,19 @@ public class StringCommands {
 			case "new":
 				if(info.senderLevel >= 3 ) {
 					String[] csArgs = info.message.split(" ", 5);
-					Bot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+					Bot.inst.dbg.writeln(this, "csArgs size: " + csArgs.length);
 					for(int i = 0 ; i < csArgs.length; i++) {
-						Bot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+						Bot.inst.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 					}
-					Bot.instance.getChannel(channel).sendMessage(addCommand(csArgs[2], csArgs[4], csArgs[3]));
+					Bot.inst.getChannel(channel).sendMessage(addCommand(csArgs[2], csArgs[4], csArgs[3]));
 				}
 				break;
 			case "view":
 				if(info.senderLevel >= 3) {
 					String[] csArgs = info.message.split(" ", 4);
-					Bot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+					Bot.inst.dbg.writeln(this, "csArgs size: " + csArgs.length);
 					for(int i = 0 ; i < csArgs.length; i++) {
-						Bot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+						Bot.inst.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 					}
 					
 					String trigger = csArgs[2];
@@ -168,11 +171,11 @@ public class StringCommands {
 						StringCommand strCmd = strCmdIter.next();
 						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
 							if(type.equalsIgnoreCase("available")) {
-								Bot.instance.sendChanMessageTrans(channel, "custom.view.available", strCmd.getTrigger(), strCmd.getAvailability());
+								Bot.inst.sendChanMessageTrans(channel, "custom.view.available", strCmd.getTrigger(), strCmd.getAvailability());
 							} else if(type.equalsIgnoreCase("level")) {
-								Bot.instance.sendChanMessageTrans(channel, "custom.view.level", strCmd.getTrigger(), strCmd.getPermissionLevel());
+								Bot.inst.sendChanMessageTrans(channel, "custom.view.level", strCmd.getTrigger(), strCmd.getPermissionLevel());
 							} else if(type.equalsIgnoreCase("message") || type.equalsIgnoreCase("msg")) {
-								Bot.instance.sendChanMessageTrans(channel, "custom.view.msg", strCmd.getTrigger(), strCmd.messageToSend);
+								Bot.inst.sendChanMessageTrans(channel, "custom.view.msg", strCmd.getTrigger(), strCmd.messageToSend);
 							}
 							break;
 						}
@@ -180,65 +183,76 @@ public class StringCommands {
 				}
 				break;
 			case "edit":
-				Bot.instance.dbg.writeln("Checking for perm against " + info.senderLevel);
+				Bot.inst.dbg.writeln("Checking for perm against " + info.senderLevel);
 				if(info.senderLevel >= 3) {
-					Bot.instance.dbg.writeln("Editing custom command.");
+					Bot.inst.dbg.writeln("Editing custom command.");
 					String[] csArgs = info.message.split(" ", 5);
-					Bot.instance.dbg.writeln(this, "csArgs size: " + csArgs.length);
+					Bot.inst.dbg.writeln(this, "csArgs size: " + csArgs.length);
 					for(int i = 0 ; i < csArgs.length; i++) {
-						Bot.instance.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
+						Bot.inst.dbg.writeln(this, "csArgs[" + i + "] is " + csArgs[i]);
 					}
 					
 					String trigger = csArgs[2]; // command trigger
 					String type = csArgs[3]; // command edit method
 					String toValue = csArgs[4];
 					
-					Bot.instance.dbg.writeln("Cmd to find - Trigger: " + trigger + ", type: " + type + ", toValue: " + toValue);
+					Bot.inst.dbg.writeln("Cmd to find - Trigger: " + trigger + ", type: " + type + ", toValue: " + toValue);
 					
 					Iterator<StringCommand> strCmdIter = commands.iterator();
 					while(strCmdIter.hasNext()) {
 						StringCommand strCmd = strCmdIter.next();
 						if(strCmd.getTrigger().equalsIgnoreCase(trigger)) {
-							Bot.instance.dbg.writeln(this, "Found command to edit");
+							Bot.inst.dbg.writeln(this, "Found command to edit");
 							if(type.equalsIgnoreCase("trigger")) {
-								Bot.instance.sendChanMessageTrans(channel, "custom.mod.trigger", info.sender, strCmd.getTrigger(), toValue);
-								Bot.instance.dbg.writeln(this, "Edited cmd trigger");
+								Bot.inst.sendChanMessageTrans(channel, "custom.mod.trigger", info.sender, strCmd.getTrigger(), toValue);
+								Bot.inst.dbg.writeln(this, "Edited cmd trigger");
+								DBFetcher.setCommandValue("twitch", channel, trigger, "trigger", toValue);
 								strCmd.setTrigger(toValue);
 							} else if(type.equalsIgnoreCase("rank")) {
-								Bot.instance.sendChanMessageTrans(channel, "custom.mod.rank", info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue);
-								Bot.instance.dbg.writeln(this, "Edited cmd level");
+								Bot.inst.sendChanMessageTrans(channel, "custom.mod.rank", info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue);
+								Bot.inst.dbg.writeln(this, "Edited cmd level");
+								DBFetcher.setCommandValue("twitch", channel, trigger, "level", toValue);
 								strCmd.setPermissionLevel(Integer.parseInt(toValue));
 							} else if(type.equalsIgnoreCase("message") || type.equalsIgnoreCase("msg")) {
 								System.out.println("Editing command message.");
-								Bot.instance.sendChanMessageTrans(channel, "custom.mod.msg", info.sender, strCmd.getTrigger());
-								Bot.instance.dbg.writeln(this, "Edited cmd message");
+								Bot.inst.sendChanMessageTrans(channel, "custom.mod.msg", info.sender, strCmd.getTrigger());
+								Bot.inst.dbg.writeln(this, "Edited cmd message");
+								DBFetcher.setCommandValue("twitch", channel, trigger, "message", toValue);
 								strCmd.messageToSend = toValue;
 							} else if(type.equalsIgnoreCase("available")) {
 								try {
 									boolean bool = Boolean.parseBoolean(csArgs[4]);
-									Bot.instance.sendChanMessageTrans(channel, "custom.mod.available",info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getAvailability());
-									Bot.instance.dbg.writeln(this, "Edited cmd availability");
+									Bot.inst.sendChanMessageTrans(channel, "custom.mod.available",info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getAvailability());
+									Bot.inst.dbg.writeln(this, "Edited cmd availability");
+									DBFetcher.setCommandValue("twitch", channel, trigger, "available", toValue);
 									strCmd.setAvailability(bool);
 								} catch(Exception e) {
-									Bot.instance.sendChanMessageTrans(channel, "custom.mod.available.fail", csArgs[4]);
+									Bot.inst.sendChanMessageTrans(channel, "custom.mod.available.fail", csArgs[4]);
+								}
+							} else if(type.equalsIgnoreCase("reactive") || type.equalsIgnoreCase("re")) {
+								try {
+									long time = Long.parseLong(csArgs[4]) * 1000;
+									Bot.inst.sendChanMessageTrans(channel, "custom.mod.reactive", info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getReactiveOffset());
+									DBFetcher.setCommandValue("twitch", channel, trigger, "reactive_value", String.valueOf(time));
+									strCmd.setReactiveOffset(time);
+								} catch(Exception e) {
+									Bot.inst.sendChanMessageTrans(channel, "custom.mod.reactive.fail", csArgs[4]);
 								}
 							} else {
-								Bot.instance.sendChanMessageTrans(channel, "custom.mod.badedit", csArgs[3]);
+								Bot.inst.sendChanMessageTrans(channel, "custom.mod.badedit", csArgs[3]);
 							}
 							break;
 						}
 					}
-					this.saveCommands();
 				}
 				break;
 			case "remove":
 				if(info.senderLevel >= 3) {
-					Bot.instance.sendChanMessage(channel, removeCommand(info.getSegments()[2]));
-					this.saveCommands();
+					Bot.inst.sendChanMessage(channel, removeCommand(info.getSegments()[2]));
 				}
 				break;
 			case "list":
-				Bot.instance.sendChanMessageTrans(channel, "custom.list", channel.replace("#", ""));
+				Bot.inst.sendChanMessageTrans(channel, "custom.list", channel.replace("#", ""));
 				break;
 			case "listx":
 				// commands list [custom] <rank>
@@ -289,7 +303,7 @@ public class StringCommands {
 						if(info.getSegments()[2].equalsIgnoreCase("c") || info.getSegments()[2].equalsIgnoreCase("custom")) {
 							customCommandsOnly = true;
 						} else {
-							Bot.instance.sendMessage(info.channel, String.format(Translate.getTranslate("custom.listx.fail", info.getChannel().getLang()), info.sender, info.getSegments()[2]));
+							Bot.inst.sendMessage(info.channel, String.format(Translate.getTranslate("custom.listx.fail", info.getChannel().getLang()), info.sender, info.getSegments()[2]));
 							break;
 						}
 						String commandRankStr = info.getSegments()[3];
@@ -350,7 +364,7 @@ public class StringCommands {
 					if(!defaultCommands.contains(nextCommand)) {
 						if(outMessage.length() + nextCommand.length() > 400) {
 							// Length too long, send message and reset string
-							Bot.instance.getChannel(channel).sendMessage(outMessage.toString());
+							Bot.inst.getChannel(channel).sendMessage(outMessage.toString());
 							outMessage = new StringBuilder(400);
 						} else {
 							outMessage.append(nextCommand + ", ");
@@ -361,7 +375,7 @@ public class StringCommands {
 				// Trim off last two characters and 
 				// Finally send the last bit of info to the channel
 				if(outMessage.length() > 2) {
-					Bot.instance.getChannel(channel).sendMessage(outMessage.substring(0, outMessage.length() - 2));
+					Bot.inst.getChannel(channel).sendMessage(outMessage.substring(0, outMessage.length() - 2));
 				} else {
 					// We shouldnt have a message to send
 				}

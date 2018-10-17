@@ -46,42 +46,42 @@ public class Quotes extends Command {
 				try {
 					String quote = quotes.get(args[2]);
 					if(quote != null) {
-						Bot.instance.sendChanMessageTrans(channel, "quotes.get", args[2], quote);
+						Bot.inst.sendChanMessageTrans(channel, "quotes.get", args[2], quote);
 					} else {
-						Bot.instance.sendChanMessageTrans(channel, "quotes.get.fail", args[2]);
+						Bot.inst.sendChanMessageTrans(channel, "quotes.get.fail", args[2]);
 					}
 					
 				} catch(NumberFormatException e) {
-					Bot.instance.sendChanMessageTrans(channel, "quotes.exNFE",info.sender);
+					Bot.inst.sendChanMessageTrans(channel, "quotes.exNFE",info.sender);
 				} catch(IndexOutOfBoundsException e) {
-					Bot.instance.sendChanMessageTrans(channel, "quotes.exIOOB", info.sender);
+					Bot.inst.sendChanMessageTrans(channel, "quotes.exIOOB", info.sender);
 				}
 				break;
 			case "add":
 				quotes.put(Integer.toString(++lastIndex), info.message.substring("quote add ".length()));
-				Bot.instance.sendChanMessageTrans(channel, "quotes.add", lastIndex);
+				Bot.inst.sendChanMessageTrans(channel, "quotes.add", lastIndex);
 				saveQuotes();
 				break;
 			case "remove":
 				quotes.remove(args[2]);
-				Bot.instance.sendChanMessageTrans(channel, "quotes.del", args[2]);
+				Bot.inst.sendChanMessageTrans(channel, "quotes.del", args[2]);
 				break;
 			case "save":
 				this.saveQuotes();
-				Bot.instance.sendChanMessageTrans(channel, "quotes.save");
+				Bot.inst.sendChanMessageTrans(channel, "quotes.save");
 				break;
 			case "reload":
 				this.quotes = new HashMap<String, String>();
 				this.loadQuotes();
-				Bot.instance.sendChanMessageTrans(channel, "quotes.reload");
+				Bot.inst.sendChanMessageTrans(channel, "quotes.reload");
 			case "count":
 			case "amount":
 			case "total":
 			case "size":
-				Bot.instance.sendChanMessageTrans(channel, "quotes.size", quotes.size());
+				Bot.inst.sendChanMessageTrans(channel, "quotes.size", quotes.size());
 				break;
 			case "list":
-				Bot.instance.sendChanMessageTrans(channel, "quotes.list", info.channel.replace("#", ""));
+				Bot.inst.sendChanMessageTrans(channel, "quotes.list", info.channel.replace("#", ""));
 				break;
 			case "random":
 				Random rnd = new Random();
@@ -90,7 +90,7 @@ public class Quotes extends Command {
 					quoteNum = rnd.nextInt(this.quotes.size() + 1);
 				} while(quotes.get(Integer.toString(quoteNum)) == null);
 				
-				Bot.instance.sendChanMessageTrans(channel, "quotes.random", quoteNum, quotes.get(Integer.toString(quoteNum)));
+				Bot.inst.sendChanMessageTrans(channel, "quotes.random", quoteNum, quotes.get(Integer.toString(quoteNum)));
 				
 				break;
 			default:
@@ -99,9 +99,9 @@ public class Quotes extends Command {
 					
 					String quote = quotes.get(String.valueOf(quoteIndex));
 					if(quote != null) {
-						Bot.instance.sendChanMessageTrans(channel, "quotes.get", args[1], quote);
+						Bot.inst.sendChanMessageTrans(channel, "quotes.get", args[1], quote);
 					} else {
-						Bot.instance.sendChanMessageTrans(channel, "quotes.get.fail", args[1]);
+						Bot.inst.sendChanMessageTrans(channel, "quotes.get.fail", args[1]);
 					}
 				} catch(NumberFormatException e) {
 					

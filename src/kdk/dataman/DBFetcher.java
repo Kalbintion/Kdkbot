@@ -1,7 +1,6 @@
 package kdk.dataman;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +12,8 @@ import kdk.cmds.custom.StringCommand;
 // NOTE: Minimal temporary security risk, db is watched
 public class DBFetcher {
 	public static DBMan _mgr = null;
+	public static int ERR_MGR_NOT_SET = -404;
+	private static boolean recursed = false;
 	
 	public static ArrayList<String> getTwitchChannels() {
 		if(_mgr != null) { return getTwitchChannels(_mgr); } else { return null; }
@@ -136,12 +137,18 @@ public class DBFetcher {
 		try {
 			while(rs.next()) {
 				StringCommand cmd = new StringCommand(rs.getInt("id"), rs.getString("trigger"), rs.getString("message"), rs.getInt("level"), rs.getBoolean("available"));
+				cmd.setReactiveOffset(rs.getLong("reactive_value"));
 				cmds.add(cmd);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			if(recursed == false) { // Only try this once
+				mgr.reconnect();
+				recursed = true;
+				return getChannelCommands(mgr, platform, channel);
+			}
 		}
-		
+		recursed = false; // Reset recursed flag
 		return cmds;
 	}
 	
@@ -243,8 +250,14 @@ public class DBFetcher {
 			while(rs.next()) {
 				return rs.getString(column);
 			}
+			recursed = false;
 			return null;
 		} catch (SQLException e) {
+			if(!recursed) {
+				mgr.reconnect();
+				recursed = true;
+				return getSetting(mgr, table, column, find_on);
+			}
 			return null;
 		}
 	}
@@ -268,7 +281,7 @@ public class DBFetcher {
 			mgr.writeSQLError(e);
 			return null;
 		} catch (NumberFormatException e) {
-			Bot.instance.dbg.writeln("NFE: " + e.getMessage());
+			Bot.inst.dbg.writeln("NFE: " + e.getMessage());
 		}
 		
 		return users;
@@ -303,5 +316,46 @@ public class DBFetcher {
 			return Integer.MIN_VALUE;
 		}
 		return Integer.MIN_VALUE;
+	}
+	
+	public static int setCommandValue(String platform, String channel, String command, String column, String new_value) {
+		if(_mgr != null) {
+			return _mgr.updateDB("UPDATE commands SET `" + column + "`=\"" + new_value + "\" WHERE platform=\"" + platform + "\" AND channel=\"" + channel.replaceAll("#", "") + "\" AND `trigger`=\"" + command + "\"");
+		} else {
+			return ERR_MGR_NOT_SET;
+		}
+	}
+	
+	public static int getCommandsByTriggerCnt(String channel, String command) {
+		if(_mgr != null) {
+			ResultSet res = _mgr.queryDB("SELECT id FROM commands WHERE channel=\"" + channel + "\" AND trigger=\"" + command + "\"");
+			try {
+				return res.getFetchSize();
+			} catch (SQLException e) {
+				_mgr.writeSQLError(e);
+				return e.getErrorCode();
+			}
+		} else {
+			return ERR_MGR_NOT_SET;
+		}
+	}
+	
+	public static int removeCommand(String channel, String command) {
+		if (_mgr != null) {
+			return _mgr.updateDB("DELETE FROM commands WHERE channel=\"" + channel + "\" AND trigger=\"" + command + "\"");
+		} else {
+			return ERR_MGR_NOT_SET;
+		}
+	}
+	
+	public static ArrayList<String> getCommandsByTrigger(String channel, String command) {
+		ArrayList<String> ret = new ArrayList<String>();
+		if (_mgr != null) {
+			ResultSet res = _mgr.queryDB("SELECT * FROM commands WHERE channel=\"" + channel + "\" AND trigger =\"" + command + "\"");
+			return ret;
+		} else {
+			ret.add(String.valueOf(ERR_MGR_NOT_SET));
+			return ret;
+		}
 	}
 }

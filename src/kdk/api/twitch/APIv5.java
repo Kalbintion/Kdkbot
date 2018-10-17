@@ -265,7 +265,7 @@ public class APIv5 {
 	 */
 	public static boolean isEditorOf(String token, String channelID) {
 		String res = getResponse(token, URL_CHANNELS + channelID + URL_CHANNEL_EDITORS, "GET");
-		return res.contains("\"" + Bot.instance.getName() + "\"");
+		return res.contains("\"" + Bot.inst.getName() + "\"");
 	}
 	
 	/**

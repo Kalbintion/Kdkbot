@@ -68,10 +68,10 @@ public class InternalTranslator {
 
 			
 		} catch (Exception e) {
-			Bot.instance.dbg.writeln("Error parsing line in ./cfg/api/warframe/solNodes.kdk");
-			Bot.instance.dbg.writeln("Line: " + last_line);
-			Bot.instance.dbg.writeln(e.getMessage());
-			Bot.instance.dbg.writeln(e.getStackTrace().toString());
+			Bot.inst.dbg.writeln("Error parsing line in ./cfg/api/warframe/solNodes.kdk");
+			Bot.inst.dbg.writeln("Line: " + last_line);
+			Bot.inst.dbg.writeln(e.getMessage());
+			Bot.inst.dbg.writeln(e.getStackTrace().toString());
 		}
 		
 		try {
@@ -94,10 +94,10 @@ public class InternalTranslator {
 				marketReplace.put(from, to);
 			}
 		} catch (Exception e) {
-			Bot.instance.dbg.writeln("Error parsing line in ./cfg/api/warframe/marketRenames.kdk");
-			Bot.instance.dbg.writeln("Line: " + last_line);
-			Bot.instance.dbg.writeln(e.getMessage());
-			Bot.instance.dbg.writeln(e.getStackTrace().toString());
+			Bot.inst.dbg.writeln("Error parsing line in ./cfg/api/warframe/marketRenames.kdk");
+			Bot.inst.dbg.writeln("Line: " + last_line);
+			Bot.inst.dbg.writeln(e.getMessage());
+			Bot.inst.dbg.writeln(e.getStackTrace().toString());
 		}
 		
 		if(solNodesMap.size() > 0) { solNodesMap.clear(); }

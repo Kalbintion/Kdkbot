@@ -125,7 +125,7 @@ public class Stats {
 			user.timeSpent += user.lastLeave - user.lastJoin;
 			
 			// Economy hook
-			Bot.instance.getChannel(this.channel).economy.handleTime(info.sender, user.lastLeave - user.lastJoin);
+			Bot.inst.getChannel(this.channel).economy.handleTime(info.sender, user.lastLeave - user.lastJoin);
 		} else {
 			user.messageCount++;
 			user.characterCount += info.message.toCharArray().length;

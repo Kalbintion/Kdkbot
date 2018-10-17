@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Timer;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,7 @@ import org.jibble.pircbot.*;
 
 import kdk.channel.*;
 import kdk.cmds.MessageParser;
+import kdk.cmds.fwd.LiveChecker;
 import kdk.dataman.DBFetcher;
 import kdk.dataman.DBMan;
 import kdk.filemanager.*;
@@ -30,7 +32,7 @@ import sx.blah.discord.api.IDiscordClient;
 
 public class Bot extends PircBot {
 	public static HashMap<String, Channel> CHANS = new HashMap<String, Channel>();
-	public static Bot instance;
+	public static Bot inst;
 	public static String botLanguage = "enUS";
 	public static DBMan dbm;
 	
@@ -43,6 +45,7 @@ public class Bot extends PircBot {
 	public Debugger dbg;
 	private WebInterfaceWatcher webWatcher;
 	private IDiscordClient platform_discord;
+	private static LiveChecker fwdLiveChecker = new LiveChecker();
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
@@ -54,8 +57,8 @@ public class Bot extends PircBot {
      * Initialization of the basic bot
      */
 	public Bot() throws Exception {
-		if(instance == null) { // Protection against initializing the bot more than once - singleton!
-			instance = this;
+		if(inst == null) { // Protection against initializing the bot more than once - singleton!
+			inst = this;
 		} else {
 			throw new Exception("Bot instance already created!");
 		}
@@ -149,6 +152,10 @@ public class Bot extends PircBot {
 			webWatcher = new WebInterfaceWatcher(DBFetcher.getWatcherLoc(), DBFetcher.getSetting("watcher_file"));
 			webWatcher.watch();
 		}
+		
+		// Setup forwarder live checker
+		Timer fwdLiveChk = new Timer();  // 5 Minutes      5 Minutes
+		fwdLiveChk.schedule(fwdLiveChecker, 5 * 60 * 1000, 5 * 60 * 1000);
 	}
 
 	/**
@@ -301,6 +308,18 @@ public class Bot extends PircBot {
     	
     	return Bot.CHANS.get(channel);
     }
+        
+    public ArrayList<Channel> getAllChannels() {
+    	ArrayList<Channel> c = new ArrayList<Channel>();
+    	
+    	Iterator<Map.Entry<String, Channel>> iter = CHANS.entrySet().iterator();
+    	while(iter.hasNext()) {
+    		Map.Entry<String, Channel> pair = (Map.Entry<String, Channel>) iter.next();
+    		c.add(pair.getValue());
+    	}
+    	
+    	return c;
+    }
     
     /**
      * Sets up and joins a particular channel
@@ -308,17 +327,17 @@ public class Bot extends PircBot {
      * @return -1 if it is already in the channel, 1 if successful, any other value means unsuccessful
      */
     public int enterChannel(String channel) {
-    	Bot.instance.dbg.writeln(this, "Entering channel: " + channel);
+    	Bot.inst.dbg.writeln(this, "Entering channel: " + channel);
     	if (! channel.startsWith("#")) {
     		channel = "#" + channel;
     	}
     	
-		if(instance.getChannel(channel) != null) {
-			Bot.instance.dbg.writeln(this, "Channel already entered: " + channel);
-			instance.getChannel(channel).joinChannel();
+		if(inst.getChannel(channel) != null) {
+			Bot.inst.dbg.writeln(this, "Channel already entered: " + channel);
+			inst.getChannel(channel).joinChannel();
 			return -1;
 		} else {
-			Bot.instance.dbg.writeln(this, "Channel not yet entered: " + channel);
+			Bot.inst.dbg.writeln(this, "Channel not yet entered: " + channel);
 			// Join channel
 			this.sendMessage(channel, String.format(Translate.getTranslate("channel.join", botLanguage), channel));
 			CHANS.put(channel, new Channel(this, channel));
@@ -327,7 +346,7 @@ public class Bot extends PircBot {
 			DBFetcher.joinTwitchChannel(dbm, channel);
 			
 			Channel chan = getChannel(channel);
-			Bot.instance.dbg.writeln(this, "Adding users " + botCfg.getSetting("masterCommands") + " and " + channel.substring(1)  + " to sender rank 5");
+			Bot.inst.dbg.writeln(this, "Adding users " + botCfg.getSetting("masterCommands") + " and " + channel.substring(1)  + " to sender rank 5");
 			chan.setSenderRank(botCfg.getSetting("masterCommands"), 5);
 			chan.setSenderRank(channel.substring(1), 5);
 
@@ -420,15 +439,15 @@ public class Bot extends PircBot {
     		} else if(info.message.startsWith("&&status ")) {
     			try {
 					Bot.status.updateStatus(info.message.substring("&&status ".length()));
-					Bot.instance.sendMessage(info.channel, Translate.getTranslate("bot.mastercommands.status", botLanguage));
+					Bot.inst.sendMessage(info.channel, Translate.getTranslate("bot.mastercommands.status", botLanguage));
 				} catch (TwitterException e) {
-					Bot.instance.sendMessage(info.channel, String.format(Translate.getTranslate("bot.mastercommands.statusFail", botLanguage), e.getMessage()));
+					Bot.inst.sendMessage(info.channel, String.format(Translate.getTranslate("bot.mastercommands.statusFail", botLanguage), e.getMessage()));
 					e.printStackTrace();
 				}
     		} else if(info.message.startsWith("&&ram?")) {
-    			Bot.instance.sendMessage(info.channel, String.format(Translate.getTranslate("bot.mastercommands.ram", botLanguage), (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024));
+    			Bot.inst.sendMessage(info.channel, String.format(Translate.getTranslate("bot.mastercommands.ram", botLanguage), (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024));
     		} else if(info.message.startsWith("&&gc")) {
-    			Bot.instance.sendMessage(info.channel, Translate.getTranslate("bot.mastercommands.gc", botLanguage));
+    			Bot.inst.sendMessage(info.channel, Translate.getTranslate("bot.mastercommands.gc", botLanguage));
     			System.gc();
     			System.gc();
     		} else if(info.message.startsWith("&&sql ")) {

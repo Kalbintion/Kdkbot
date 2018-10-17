@@ -142,7 +142,7 @@ public class Filters {
 							newAdditionalInfo = Translate.getTranslate("filters.add.info", info.getChannel().getLang());
 							break;
 					}
-					Bot.instance.sendChanMessageTrans(channel, "filters.add", parts[3], newAdditionalInfo);
+					Bot.inst.sendChanMessageTrans(channel, "filters.add", parts[3], newAdditionalInfo);
 					saveFilters();
 				break;
 			case "remove":
@@ -152,7 +152,7 @@ public class Filters {
 					int idx = Integer.parseInt(parts[2]);
 					
 					this.filters.remove(idx);
-					Bot.instance.sendChanMessageTrans(channel, "filters.remove", parts[2]);
+					Bot.inst.sendChanMessageTrans(channel, "filters.remove", parts[2]);
 				} catch(NumberFormatException e) {
 					// We must be dealing with a human name
 					Iterator<Filter> it = this.filters.iterator();
@@ -160,13 +160,13 @@ public class Filters {
 						Filter nxt = it.next();
 						if(nxt.humanName.equalsIgnoreCase(parts[2])) {
 							it.remove();
-							Bot.instance.sendChanMessageTrans(channel, "filters.remove", parts[2]);
+							Bot.inst.sendChanMessageTrans(channel, "filters.remove", parts[2]);
 							break;
 						}
 					}
 				} catch(IndexOutOfBoundsException e) {
 					// IOOB exception
-					Bot.instance.sendChanMessageTrans(channel, "filters.remove.fail", parts[2]);
+					Bot.inst.sendChanMessageTrans(channel, "filters.remove.fail", parts[2]);
 				}
 				
 				saveFilters();
@@ -178,13 +178,13 @@ public class Filters {
 				
 				switch(parts[3]) {
 					case "type":
-						Bot.instance.sendChanMessageTrans(channel, "filters.view.type", parts[2], parts[3], toView.action);
+						Bot.inst.sendChanMessageTrans(channel, "filters.view.type", parts[2], parts[3], toView.action);
 						break;
 					case "regex":
-						Bot.instance.sendChanMessageTrans(channel, "filters.view.regex", parts[2], parts[3], toView.toFind.toString());
+						Bot.inst.sendChanMessageTrans(channel, "filters.view.regex", parts[2], parts[3], toView.toFind.toString());
 						break;
 					case "info":
-						Bot.instance.sendChanMessageTrans(channel, "filters.view.info", parts[2], parts[3], toView.actionInfo);
+						Bot.inst.sendChanMessageTrans(channel, "filters.view.info", parts[2], parts[3], toView.actionInfo);
 						break;
 				}
 				break;
@@ -209,7 +209,7 @@ public class Filters {
 					case "flag":
 						// Toggles flag values based on <new_value>
 				}
-				Bot.instance.sendChanMessageTrans(channel, "filters.mod", parts[2], parts[3], parts[4]);
+				Bot.inst.sendChanMessageTrans(channel, "filters.mod", parts[2], parts[3], parts[4]);
 				saveFilters();
 				break;
 			case "save":
@@ -218,7 +218,7 @@ public class Filters {
 					// |filter reload
 				break;
 			case "size":
-				Bot.instance.sendChanMessageTrans(channel, "filters.size", filters.size());
+				Bot.inst.sendChanMessageTrans(channel, "filters.size", filters.size());
 				break;
 		}
 	}

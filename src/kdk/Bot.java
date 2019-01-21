@@ -130,6 +130,10 @@ public class Bot extends PircBot {
 		// Instantiate a MessageParser
 		new MessageParser();
 		
+		// Setup forwarder live checker
+		Timer fwdLiveChk = new Timer("fwdLiveChk", true);  // 5 Minutes      5 Minutes
+		fwdLiveChk.schedule(fwdLiveChecker, 5 * 60 * 1000, 5 * 60 * 1000);
+		
 		// Setup Twitter interface
 		if (useTwitter) {
 			ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -152,10 +156,6 @@ public class Bot extends PircBot {
 			webWatcher = new WebInterfaceWatcher(DBFetcher.getWatcherLoc(), DBFetcher.getSetting("watcher_file"));
 			webWatcher.watch();
 		}
-		
-		// Setup forwarder live checker
-		Timer fwdLiveChk = new Timer();  // 5 Minutes      5 Minutes
-		fwdLiveChk.schedule(fwdLiveChecker, 5 * 60 * 1000, 5 * 60 * 1000);
 	}
 
 	/**
@@ -191,12 +191,12 @@ public class Bot extends PircBot {
 				logger.logln(Translate.getTranslate("log.nickInUse", botLanguage));
 			} catch (UnknownHostException e) {
 				logger.logln(String.format(Translate.getTranslate("log.failedToResolve", botLanguage), DBFetcher.getSetting("twitch_irc")));
-			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (IrcException e) {
 				logger.logln(Translate.getTranslate("log.ircException", botLanguage));
 			} catch (TwitterException e) {
-				
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 			
 			// Only sleep if we havent reconnected, otherwise we can safely exit this function.
@@ -479,6 +479,16 @@ public class Bot extends PircBot {
     		// In the event an invalid channel is provided, we don't care, toss away the request.
     		return;
     	}
+    }
+    
+    /**
+     * Returns a MessageInfo instance containing a particular message for a channel for the purposes of standardized internal command spoofing.
+     * @param channel The channel to be the target of the spoof
+     * @param message The message to be spoofed
+     * @return a new MessageInfo object containing bot data with spoofed message and channel
+     */
+    public static MessageInfo spoofMessage(String channel, String message) {
+    	return new MessageInfo(channel, inst.getNick(), message, "self", "localhost", Integer.MAX_VALUE);
     }
     
     /**

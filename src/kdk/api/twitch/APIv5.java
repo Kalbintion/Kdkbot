@@ -424,9 +424,12 @@ public class APIv5 {
 			JsonParser parser = new JsonParser();
 			JsonObject jObj = parser.parse(res).getAsJsonObject();
 			JsonArray jUsers = jObj.get("users").getAsJsonArray();
-			JsonObject jFirst = jUsers.get(0).getAsJsonObject();
-			
-			return jFirst.get("_id").toString().replace("\"", "");
+			if(jUsers.size() > 0) {
+				JsonObject jFirst = jUsers.get(0).getAsJsonObject();
+				return jFirst.get("_id").toString().replace("\"", "");
+			} else {
+				return null;
+			}
 		} catch(NullPointerException e) {
 			return null;
 		}

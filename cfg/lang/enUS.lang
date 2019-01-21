@@ -51,6 +51,8 @@ custom.mod.trigger=%1$s has changed %2$s to %3$s
 custom.mod.rank=%1$s has changed %2$s's level from %3$s to %4$s
 custom.mod.msg=%1$s has changed %2$s's message.
 custom.mod.available=%1$s has changed %2$s's availability to %3$s from %4$s
+custom.mod.reactive=%1$s has changed %2$s's re-activation time to %3$s seconds from %4$s.
+custom.mod.reactive.fail=Unable to discern %1$s as a number.
 custom.mod.available.fail=Unable to discern %1$s as a true/false value.
 custom.mod.fail=%1$s, you do not have the required permission to change this command.
 custom.mod.badedit=Could not recognize %1$s as a proper edit type for the command.
@@ -87,6 +89,7 @@ giveaway.manual.del=Manually removed user: %1$s from the entrants list.
 giveaway.paused=Pausing the giveaway! Entries will no longer be allowed until resumed.
 giveaway.alreadyStarted=Giveaway already active! Cannot resume.
 giveaway.resume=Resumed giveaway. Entrants may now enter again using keyword: %1$s
+giveaway.status=Giveaway is currently active. Send '%1$s' in chat to be entered! Currently have %2$s entrants.
 
 timers.new=Added new timer with id %1$s with a delay of %2$s seconds and a message of %3$s
 timers.del=Deleted timer with id %1$s

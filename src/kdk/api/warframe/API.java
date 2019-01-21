@@ -711,6 +711,9 @@ public final class API {
 			renamedItems.put("scimitar avionics blueprint", "scimitar avionics");
 			renamedItems.put("scimitar fuselage blueprint",  "scimitar fuselage");
 			renamedItems.put("scimitar engines blueprint", "scimitar engines");
+			renamedItems.put("primed pistol ammo mutation", "primed pistol mutation");
+			renamedItems.put("primed rifle ammo mutation", "primed rifle mutation");
+			renamedItems.put("primed shotgun ammo mutation", "primed shotgun mutation");
 		}
 		
 		// Base url to the API, found via site function "make_request()"
@@ -879,8 +882,14 @@ public final class API {
 		
 		private static JsonArray getOnly(JsonObject toSearch, String filterStatus, String filterBuySell) {
 			JsonObject toSearchC = cloneJson(toSearch);
-			JsonArray jArr = toSearchC.getAsJsonObject("payload").getAsJsonArray("orders");
+			JsonArray jArr;
 			
+			try {
+				jArr = toSearchC.getAsJsonObject("payload").getAsJsonArray("orders");
+			} catch(NullPointerException e) {
+				return null;
+			}
+				
 			Iterator<JsonElement> iter = jArr.iterator();
 			
 			while(iter.hasNext()) {

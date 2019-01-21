@@ -29,7 +29,7 @@ public class UserStat {
 	
 	/**
 	 * Creates a string representation of this object in the format of:
-	 * username:since:time spent:message count:last join:last leave
+	 * username:since:time spent:message count:last join:last leave:charCnt:bitsCnt:bitsDate
 	 */
 	@Override
 	public String toString() {

@@ -16,12 +16,13 @@ public class Fwd extends Command {
 	public void executeCommand(MessageInfo info) {
 		String[] args = info.message.split(" ");
 		Channel chan = info.getChannel();
-		Channel targetChan;
-
-		switch(args[1]) {
+		Channel targetChan = null;
+		Bot.inst.dbg.writeln("Processing message info. " + info.toString());
+		switch(args[1].toLowerCase()) {
 			case "req":
-				// !fwd req <name>
-				if(args.length >= 3) {
+				// !fwd req <name> ...
+				if(args.length == 3) {
+					// !fwd req <name>
 					String toChan = args[2].toLowerCase();
 					if(!toChan.startsWith("#")) {
 						toChan = "#" + toChan;
@@ -30,12 +31,49 @@ public class Fwd extends Command {
 					if(Bot.inst.isInChannel(toChan)) {
 						targetChan = Bot.inst.getChannel(toChan);
 						targetChan.sendMessage(info.channel + " has requested forwarding permissions. Type '" + targetChan.cfgChan.getSetting("commandPrefix") + "afwd " + info.channel.replaceAll("#", "") + "' to authorize or '" + targetChan.cfgChan.getSetting("commandPrefix") + "dfwd " + info.channel.replaceAll("#", "") + "' to deny.");
-						chan.sendMessage("Sent forward request, awaiting reply.");
+						chan.sendMessage("Sent forward request to " + toChan + ", awaiting reply.");
 						
 						chan.forwarders.add(new Forwarder(toChan, true));
 						targetChan.forwarders.add(new Forwarder(info.channel));
 					} else {
-						chan.sendMessage(info.sender + ": This bot is not in that channel. Have them join my channel and type !join");
+						chan.sendMessage(info.sender + ": This bot is not in " + toChan.replaceAll("#", "") + ". Have them join my channel and type !join");
+					}
+				} else if(args.length > 3) {
+					// !fwd req <name> <name> ...
+					String sent = "";
+					String failed = "";
+					
+					for(int i = 2; i < args.length; i++) {
+						String toChan = args[i].toLowerCase();
+						if(!toChan.startsWith("#")) {
+							toChan = "#" + toChan;
+						}
+						
+						if(Bot.inst.isInChannel(toChan)) {
+							targetChan = Bot.inst.getChannel(toChan);
+							targetChan.sendMessage(info.channel + " has requested forwarding permissions. Type '" + targetChan.cfgChan.getSetting("commandPrefix") + "afwd " + info.channel.replaceAll("#", "") + "' to authorize or '" + targetChan.cfgChan.getSetting("commandPrefix") + "dfwd " + info.channel.replaceAll("#", "") + "' to deny.");
+							
+							chan.forwarders.add(new Forwarder(toChan, true));
+							targetChan.forwarders.add(new Forwarder(info.channel));
+							
+							sent += toChan + ", ";
+						} else {
+							failed += toChan + ", ";
+						}
+					}
+					
+					System.out.println("Failed {" + failed.length() + "}: " + failed);
+					System.out.println("Sent {" + sent.length() + "}: " + sent);
+					
+					if(failed.length() > 0) { failed = failed.substring(0,  failed.length()-2); } // Trim off excess ', '
+					if(sent.length() > 0) { sent = sent.substring(0, sent.length()-2); } // Trim off excess ', '
+					
+					if(failed.length() > 0) {
+						// At least one failure
+						chan.sendMessage("Sent forward requests to " + sent + ". Could not send to " + failed + ".");
+					} else {
+						// No failure to include
+						chan.sendMessage("Sent forward requests to " + sent);
 					}
 				} else {
 					chan.sendMessage(info.sender + ": You did not provide a channel name.");

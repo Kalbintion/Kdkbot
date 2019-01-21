@@ -96,4 +96,16 @@ public class MessageInfo {
 	public String getChannelLang() {
 		return getChannel().getLang();
 	}
+	
+	@Override
+	public String toString() {
+		return  "Platform: " + this.platform + "\r\n" +
+				"Channel: " + this.channel + "\r\n" +
+				"Sender: " + this.sender + "\r\n" +
+				"Login: " + this.login + "\r\n" + 
+				"Hostname: " + this.hostname + "\r\n" +
+				"SenderLevel: " + this.senderLevel + "\r\n" +
+				"Timestamp: " + this.timestamp + "\r\n" +
+				"Message: " + this.message + "\r\n";
+	}
 }

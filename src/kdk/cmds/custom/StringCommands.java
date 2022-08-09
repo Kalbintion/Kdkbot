@@ -96,7 +96,7 @@ public class StringCommands {
 			if(getCommand(trigger) != null) {
 				outMsg = String.format(Translate.getTranslate("custom.add.dupe", Bot.inst.getChannel(this.channel).getLang()), trigger);
 			}
-			DBFetcher.addChannelCommand("twitch", this.channel, toAdd);
+			DBFetcher.addChannelCommand("twitch", this.channel.replaceAll("#", ""), toAdd);
 			commands.add(toAdd);
 			return outMsg;
 		} catch (NumberFormatException e) {
@@ -206,25 +206,25 @@ public class StringCommands {
 							if(type.equalsIgnoreCase("trigger")) {
 								Bot.inst.sendChanMessageTrans(channel, "custom.mod.trigger", info.sender, strCmd.getTrigger(), toValue);
 								Bot.inst.dbg.writeln(this, "Edited cmd trigger");
-								DBFetcher.setCommandValue("twitch", channel, trigger, "trigger", toValue);
+								DBFetcher.setCommandValue("twitch", channel.replaceAll("#", ""), trigger, "trigger", toValue);
 								strCmd.setTrigger(toValue);
 							} else if(type.equalsIgnoreCase("rank")) {
 								Bot.inst.sendChanMessageTrans(channel, "custom.mod.rank", info.sender, strCmd.getTrigger(), strCmd.getPermissionLevel(), toValue);
 								Bot.inst.dbg.writeln(this, "Edited cmd level");
-								DBFetcher.setCommandValue("twitch", channel, trigger, "level", toValue);
+								DBFetcher.setCommandValue("twitch", channel.replaceAll("#", ""), trigger, "level", toValue);
 								strCmd.setPermissionLevel(Integer.parseInt(toValue));
 							} else if(type.equalsIgnoreCase("message") || type.equalsIgnoreCase("msg")) {
 								System.out.println("Editing command message.");
 								Bot.inst.sendChanMessageTrans(channel, "custom.mod.msg", info.sender, strCmd.getTrigger());
 								Bot.inst.dbg.writeln(this, "Edited cmd message");
-								DBFetcher.setCommandValue("twitch", channel, trigger, "message", toValue);
+								DBFetcher.setCommandValue("twitch", channel.replaceAll("#", ""), trigger, "message", toValue);
 								strCmd.messageToSend = toValue;
 							} else if(type.equalsIgnoreCase("available")) {
 								try {
 									boolean bool = Boolean.parseBoolean(csArgs[4]);
 									Bot.inst.sendChanMessageTrans(channel, "custom.mod.available",info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getAvailability());
 									Bot.inst.dbg.writeln(this, "Edited cmd availability");
-									DBFetcher.setCommandValue("twitch", channel, trigger, "available", toValue);
+									DBFetcher.setCommandValue("twitch", channel.replaceAll("#", ""), trigger, "available", toValue);
 									strCmd.setAvailability(bool);
 								} catch(Exception e) {
 									Bot.inst.sendChanMessageTrans(channel, "custom.mod.available.fail", csArgs[4]);
@@ -233,7 +233,7 @@ public class StringCommands {
 								try {
 									long time = Long.parseLong(csArgs[4]) * 1000;
 									Bot.inst.sendChanMessageTrans(channel, "custom.mod.reactive", info.sender, strCmd.getTrigger(), csArgs[4], strCmd.getReactiveOffset());
-									DBFetcher.setCommandValue("twitch", channel, trigger, "reactive_value", String.valueOf(time));
+									DBFetcher.setCommandValue("twitch", channel.replaceAll("#", ""), trigger, "reactive_value", String.valueOf(time));
 									strCmd.setReactiveOffset(time);
 								} catch(Exception e) {
 									Bot.inst.sendChanMessageTrans(channel, "custom.mod.reactive.fail", csArgs[4]);

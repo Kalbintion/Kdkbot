@@ -161,26 +161,12 @@ public class APIv5 {
 	 * @param channel The channel to retrieve the object for
 	 * @return The amount of time a stream has been live, in the format of nDnHnMnS where n is a number, or null in the event it was unable to find the information
 	 */
+	@SuppressWarnings("unused")
 	public static String getStreamUptime(String clientID, String channelID) {
 		String res = getStreamObject(clientID, channelID);
 		JsonParser parser = new JsonParser();
 		try {
-			JsonObject jObj = parser.parse(res).getAsJsonObject();
-			// 2017-04-26T15:22:37Z
-			DateFormat dFormat = new SimpleDateFormat("'\"'yyyy-MM-dd'T'HH:mm:ss'Z\"'");
-			dFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-			
-			DateFormat dFormat2 = new SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy");
-			dFormat2.setTimeZone(TimeZone.getTimeZone("CST"));
-			
-			JsonObject stream = jObj.get("stream").getAsJsonObject();
-			String created_at = stream.get("created_at").toString();
-
-			Date dStart = dFormat.parse(created_at);
-			Date dNow = dFormat2.parse(new Date().toString());
-			dNow.toString();
-
-			long dDiff = dNow.getTime() - dStart.getTime();
+			long dDiff = getStreamUptimeRaw(clientID, channelID);
 
 			long dSec = dDiff / 1000 % 60;
 			long dMin = dDiff / 1000 / 60 % 60;
@@ -194,8 +180,35 @@ public class APIv5 {
 			if(dSec > 0 || dMin > 0 || dHour > 0 || dDay > 0) { out += dSec + "S"; }
 			
 			return out;
-		} catch(ParseException | NullPointerException | IllegalStateException e) {
+		} catch(NullPointerException | IllegalStateException e) {
 			return null;
+		}
+	}
+	
+	public static long getStreamUptimeRaw(String clientID, String channelID) {
+		String res = getStreamObject(clientID, channelID);
+		JsonParser parser = new JsonParser();
+		try {
+			JsonObject jObj = parser.parse(res).getAsJsonObject();
+			// 2017-04-26T15:22:37Z
+			DateFormat dFormat = new SimpleDateFormat("'\"'yyyy-MM-dd'T'HH:mm:ss'Z\"'");
+			dFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+			
+			DateFormat dFormat2 = new SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy");
+			dFormat2.setTimeZone(TimeZone.getTimeZone("CST"));
+			
+			JsonObject stream = jObj.get("stream").getAsJsonObject();
+			String created_at = stream.get("created_at").toString();
+			
+			Date dStart = dFormat.parse(created_at);
+			Date dNow = dFormat2.parse(new Date().toString());
+			dNow.toString();
+			
+			long dDiff = dNow.getTime() - dStart.getTime();
+			
+			return dDiff;
+		} catch(ParseException | NullPointerException | IllegalStateException e) {
+			return -1;
 		}
 	}
 
@@ -265,6 +278,7 @@ public class APIv5 {
 	 */
 	public static boolean isEditorOf(String token, String channelID) {
 		String res = getResponse(token, URL_CHANNELS + channelID + URL_CHANNEL_EDITORS, "GET");
+		if(res == null) { return false; }
 		return res.contains("\"" + Bot.inst.getName() + "\"");
 	}
 	

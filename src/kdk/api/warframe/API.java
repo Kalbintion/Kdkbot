@@ -354,6 +354,27 @@ public final class API {
 			return outData;
 		}
 		
+		/**
+		 * Returns an estimated name for an item based on its internal name.
+		 * @param internal_name The internal string to check.
+		 * @return The guessed name from the internal name string
+		 */
+		public static String guessItemName(String internal_name) {
+			System.out.println("Guessing: " + internal_name);
+			if(internal_name.contains("/")) {
+				String[] parts = internal_name.split("/");
+				String ret = parts[parts.length-1]; // Grab last element of internal name
+				ret = ret.replaceAll("([A-Z])", " $1"); // Camel Case Spacing
+				return ret.trim(); // Return Trimmed
+			} else {
+				return internal_name;
+			}
+		}
+		
+		/**
+		 * Returns Baro Ki'Teer's location
+		 * @return
+		 */
 		public static String getBaroLocation() {
 			JsonObject allData = getData();
 			JsonArray bData = allData.get("VoidTraders").getAsJsonArray();
@@ -363,6 +384,10 @@ public final class API {
 			return node;
 		}
 		
+		/**
+		 * Returns if Baro Ki'Teer is at a relay or not
+		 * @return
+		 */
 		public static boolean isBaroHere() {
 			JsonObject allData = getData();
 			JsonArray bData = allData.get("VoidTraders").getAsJsonArray();
@@ -370,17 +395,29 @@ public final class API {
 			if(bd.has("Manifest")) { return true; } else { return false; }
 		}
 		
+		/**
+		 * Returns Darvo's Daily Deal
+		 * @return A string containing the JSON data
+		 */
 		public static String getDailyDeal() {
 			JsonObject data = getDailyDealHelper();
 			
 			return data.toString();
 		}
 		
+		/**
+		 * Returns Darvo's Daily Deal in a human readable format
+		 * @return A human readable string containing the daily deal from Darvo
+		 */
 		public static String getDailyDealReadable() {
 			JsonObject data = getDailyDealHelper();
 			return InternalTranslator.getReadableName(data.get("name").toString()) + " " + data.get("curPrice") + " [" + data.get("oriPrice") + "] " + data.get("curAmount") + "/" + data.get("oriAmount");
 		}
 		
+		/**
+		 * Retrieves Darvo's Daily Deal information for use in other functions
+		 * @return A JSON Object contianing the information about Darvo's Daily Deal
+		 */
 		private static JsonObject getDailyDealHelper() {
 			JsonObject allData = getData();
 			JsonObject data = allData.get("DailyDeals").getAsJsonArray().get(0).getAsJsonObject();
@@ -804,8 +841,8 @@ public final class API {
 			while(iter.hasNext()) {
 				JsonElement nxt = iter.next();
 				JsonObject jObj = nxt.getAsJsonObject();
-				int price = Integer.parseInt(jObj.get("platinum").toString());
-				int count = Integer.parseInt(jObj.get("quantity").toString());
+				int price = (int) Math.floor(Float.parseFloat(jObj.get("platinum").toString())); //Integer.parseInt(jObj.get("platinum").toString());
+				int count = (int) Math.floor(Float.parseFloat(jObj.get("quantity").toString())); //Integer.parseInt(jObj.get("quantity").toString());
 				
 				if(lowestPrice == -1 || price < lowestPrice) {
 					lowestPrice = price;
@@ -829,12 +866,12 @@ public final class API {
 			if(numberOfPeople > 0) {
 				if(toParse.size() % 2 == 0) {
 					// then we are even
-					int midPoint1 = Integer.parseInt(toParse.get(midPoint).getAsJsonObject().get("platinum").toString());
-					int midPoint2 = Integer.parseInt(toParse.get(midPoint + 1).getAsJsonObject().get("platinum").toString());
+					int midPoint1 = (int) Math.floor(Float.parseFloat(toParse.get(midPoint).getAsJsonObject().get("platinum").toString())); //Integer.parseInt(toParse.get(midPoint).getAsJsonObject().get("platinum").toString());
+					int midPoint2 = (int) Math.floor(Float.parseFloat(toParse.get(midPoint + 1).getAsJsonObject().get("platinum").toString())); //Integer.parseInt(toParse.get(midPoint + 1).getAsJsonObject().get("platinum").toString());
 					values.addProperty("median", (midPoint1 + midPoint2) / 2);
 				} else {
 					// we are odd
-					values.addProperty("median", Integer.parseInt(toParse.get(midPoint).getAsJsonObject().get("platinum").toString()));
+					values.addProperty("median", (int) Math.floor(Float.parseFloat(toParse.get(midPoint).getAsJsonObject().get("platinum").toString())));
 				}
 			} else {
 				values.addProperty("median", 0);

@@ -32,11 +32,16 @@ public class Fwd extends Command {
 					
 					if(Bot.inst.isInChannel(toChan)) {
 						targetChan = Bot.inst.getChannel(toChan);
-						Bot.inst.sendChanMessageTrans(targetChan.channel, "fwd.request.receive", info.channel, targetChan.cfgChan.getSetting("commandPrefix"), info.channel.replaceAll("#",  ""));
-						Bot.inst.sendChanMessageTrans(chan.channel, "fwd.request.sent", toChan);
 						
-						chan.forwarders.add(new Forwarder(toChan, true));
-						targetChan.forwarders.add(new Forwarder(info.channel));
+						if(!targetChan.hasActiveForwarder(toChan) && !chan.hasActiveForwarder(toChan)) {
+							Bot.inst.sendChanMessageTrans(targetChan.channel, "fwd.request.receive", info.channel, targetChan.cfgChan.getSetting("commandPrefix"), info.channel.replaceAll("#",  ""));
+							Bot.inst.sendChanMessageTrans(chan.channel, "fwd.request.sent", toChan);
+							
+							chan.forwarders.add(new Forwarder(toChan, true));
+							targetChan.forwarders.add(new Forwarder(info.channel));
+						} else {
+							Bot.inst.sendChanMessageTrans(chan.channel, "fwd.request.pending", toChan);
+						}
 					} else {
 						Bot.inst.sendChanMessageTrans(info.channel, "fwd.error.botNotIn", info.sender, toChan.replaceAll("#", ""));
 					}

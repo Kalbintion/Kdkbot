@@ -244,7 +244,6 @@ public class DBFetcher {
 	
 	
 	public static String getSetting(DBMan mgr, String table, String column, String find_on) {
-		System.out.println("Query: " + "SELECT " + column + " FROM " + table + " WHERE name='" + find_on + "'");
 		ResultSet rs = mgr.queryDB("SELECT " + column + " FROM " + table + " WHERE name='" + find_on + "'");
 		try {
 			while(rs.next()) {

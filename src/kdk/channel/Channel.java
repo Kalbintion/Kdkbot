@@ -3,7 +3,6 @@ package kdk.channel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import kdk.*;
 import kdk.cmds.*;
@@ -35,6 +34,13 @@ public class Channel {
 	public boolean commandProcessing = true;
 	public boolean logChat = true;
 	public String language = "enUS";
+	
+	// Hydration Data
+	public boolean hydrationAlert = false; // Alert Notification
+	public int hydrationPerHour = 4; // Ounces Per Hour
+	public int hydrationFreq = 1; // Frequency Per Hour
+	public long hydrationLastAnnounce = 0; // Last announcement check
+	public boolean hydrationMetric = false; // Use metric?
 	
 	/**
 	 * Constructs a new channel instance with no references
@@ -134,6 +140,31 @@ public class Channel {
 		if(cfgChan.getSetting("lang") == null) {
 			cfgChan.setSetting("lang", "enUS");
 		}
+		
+		// Hydration?
+		if(cfgChan.getSetting("hydrationAlert") == null) {
+			cfgChan.setSetting("hydrationAlert", "false");
+		}
+		
+		this.hydrationAlert = Boolean.parseBoolean(cfgChan.getSetting("hydrationAlert"));
+		
+		if(cfgChan.getSetting("hydrationFreq") == null) {
+			cfgChan.setSetting("hydrationFreq", "1");
+		}
+		
+		this.hydrationFreq = Integer.parseInt(cfgChan.getSetting("hydrationFreq"));
+		
+		if(cfgChan.getSetting("hydrationPerHour") == null) {
+			cfgChan.setSetting("hydrationPerHour", "4");
+		}
+		
+		this.hydrationPerHour = Integer.parseInt(cfgChan.getSetting("hydrationPerHour"));
+		
+		if(cfgChan.getSetting("hydrationMetric") == null) {
+			cfgChan.setSetting("hydrationMetric", "false");
+		}
+		
+		this.hydrationMetric = Boolean.parseBoolean(cfgChan.getSetting("hydrationMetric"));
 	}
 	
 	/**
@@ -259,7 +290,7 @@ public class Channel {
 	}
 	
 	/**
-	 * Sends a message to the channel, using channel specific settings
+	 * Sends an untranslated message to the channel, using channel specific settings
 	 * @param message The message to send
 	 */
 	public void sendMessage(String message) {
@@ -273,6 +304,15 @@ public class Channel {
 		if(msgSuffix.length() > 0) { msgSuffix = " " + msgSuffix; } // Prepend a space
 		
 		Bot.inst.sendMessage(channel, msgPrefix + message + msgSuffix);
+	}
+	
+	/**
+	 * Sends a message to the channel, using channel specific settings
+	 * @param key The translation key to use
+	 * @param args The fill-in arguments for the message
+	 */
+	public void sendTrans(String key, Object... args) {
+		Bot.inst.sendChanMessageTrans(channel, key, args);
 	}
 	
 	/**
@@ -340,7 +380,7 @@ public class Channel {
 			Iterator<Forwarder> fwdIter = forwarders.iterator();
 			while(fwdIter.hasNext()) {
 				Forwarder fwder = fwdIter.next();
-				if(fwder.isAuthorized()) {
+				if(fwder.isAuthorized() && !isIgnoredUser(info.sender)) {
 					Bot.inst.getChannel(fwder.getChannel()).sendRawMessage(fwder.formatMessage(info));
 				}
 			}
@@ -363,6 +403,16 @@ public class Channel {
 		}
 		
 
+	}
+	
+	public boolean isIgnoredUser(String user) {
+		Bot.inst.dbg.writeln("[isIgnoredUser] USER: " + user);
+		if(user.startsWith("#")) { user = user.replaceAll("#", ""); }
+		if(user.equalsIgnoreCase("pretzelrocks")) { return true; }
+		if(user.equalsIgnoreCase("streamlabs")) { return true; }
+		if(user.equalsIgnoreCase("coebot")) { return true; }
+		Bot.inst.dbg.writeln("[isIgnoreUser] User Not Ignored");
+		return false;
 	}
 	
 	public void extraHandler(MessageInfo info) {

@@ -44,7 +44,9 @@ public class MessageParser {
 		PATTERN_MAP.put("args", Pattern.compile("%ARGS%"));
 		PATTERN_MAP.put("cntr", Pattern.compile("%CNTR:.*?%"));
 		PATTERN_MAP.put("cntr++", Pattern.compile("%CNTR\\+\\+:.*?%"));
+		PATTERN_MAP.put("++cntr", Pattern.compile("%\\+\\+CNTR:.*?%"));
 		PATTERN_MAP.put("cntr--", Pattern.compile("%CNTR--:.*?%"));
+		PATTERN_MAP.put("--cntr", Pattern.compile("%--CNTR:.*?%"));
 		PATTERN_MAP.put("rndMax", Pattern.compile("%RND:\\d*?%"));
 		PATTERN_MAP.put("rndMinMax", Pattern.compile("%RND:-?\\d*?,-?\\d*?%"));
 		PATTERN_MAP.put("chanuser", Pattern.compile("%CHANUSER%"));
@@ -212,6 +214,7 @@ public class MessageParser {
 	 * @param info The message information to substitute some options information
 	 * @return Finalized string containing a fully parsed message
 	 */
+	@SuppressWarnings("unused")
 	public static String parseMessage(String toParse, MessageInfo info) {
 		String args[] = info.message.split(" ");
 		Matcher matches;
@@ -328,6 +331,31 @@ public class MessageParser {
 		}
 		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
 		
+		// ++Counter Specificity
+		matches = PATTERN_MAP.get("++cntr").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
+			
+			String cntrID = result.substring("%++CNTR:".length(), result.length()-1);
+			
+			Channel chan = Bot.inst.getChannel(info.channel);
+			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
+			Counter cntr = null;
+			while(cntrIter.hasNext()) {
+				cntr = cntrIter.next();
+				if(cntr.name.equalsIgnoreCase(cntrID)) {
+					break;
+				}
+			}
+			
+			cntr.value++;
+			toParse = toParse.replace("%++CNTR:" + cntrID + "%", Integer.toString(cntr.value));
+			
+			// Force a counter save
+			Bot.CHANS.get(info.channel).commands.counters.saveCounters();
+		}
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		
 		// Counter-- Specificity
 		matches = PATTERN_MAP.get("cntr--").matcher(toParse);
 		while(matches.find()) {
@@ -347,6 +375,31 @@ public class MessageParser {
 			
 			toParse = toParse.replace("%CNTR--:" + cntrID + "%", Integer.toString(cntr.value));
 			cntr.value--;
+			
+			// Force a counter save
+			Bot.CHANS.get(info.channel).commands.counters.saveCounters();
+		}
+		Bot.inst.dbg.writeln(MessageParser.class, "toParse = " + toParse);
+		
+		// --Counter Specificity
+		matches = PATTERN_MAP.get("--cntr").matcher(toParse);
+		while(matches.find()) {
+			String result = matches.group();
+			
+			String cntrID = result.substring("%--CNTR:".length(), result.length()-1);
+			
+			Channel chan = Bot.inst.getChannel(info.channel);
+			Iterator<Counter> cntrIter = chan.commands.counters.counters.iterator();
+			Counter cntr = null;
+			while(cntrIter.hasNext()) {
+				cntr = cntrIter.next();
+				if(cntr.name.equalsIgnoreCase(cntrID)) {
+					break;
+				}
+			}
+			
+			cntr.value--;
+			toParse = toParse.replace("%--CNTR:" + cntrID + "%", Integer.toString(cntr.value));
 			
 			// Force a counter save
 			Bot.CHANS.get(info.channel).commands.counters.saveCounters();

@@ -1,5 +1,6 @@
 package kdk.discord;
 
+import kdk.Bot;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -16,7 +17,9 @@ public class Core {
 				return clientBuilder.build();
 			}
 		} catch(DiscordException e) {
+			Bot.inst.logger.logln("DiscordException");
 			e.printStackTrace();
+			System.exit(2);
 			return null;
 		}
 	}

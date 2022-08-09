@@ -88,7 +88,6 @@ public class DBMan {
 	 * @return The resulting set for the query, null if connection or an error occurred.
 	 */
 	public ResultSet queryDB(String query) {
-		System.out.println("[DBG] Query: " + query);
 		if(_stmt == null) { return null; }
 		if(_con == null) { return null; }
 		
@@ -113,7 +112,6 @@ public class DBMan {
 	 * @return either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
 	 */
 	public int updateDB(String query) {
-		System.out.println("[DBG] Query: " + query);
 		if(_stmt == null) { return -1; }
 		if(_con == null) { return -2; }
 		

@@ -63,6 +63,7 @@ SolNode96|Titan (Saturn)|Survival|Grineer|21|26|Grineer Galleon
 SolNode97|Amalthea (Jupiter)|Spy|Corpus|17|19|Corpus Gas City
 SolNode99|War (Mars)|Assassination|Grineer|11|13|Grineer Settlement
 SolNode100|Elara (Jupiter)|Survival|Corpus|15|20|Corpus Gas City
+SolNode101|Kiliken (Venus)
 SolNode102|Oceanum (Pluto)|Spy|Corpus|32|36|Corpus Outpost
 SolNode103|M Prime (Mercury)|Exterminate|Infested|7|9|Grineer Asteroid
 SolNode107|Venera (Venus)|Capture|Corpus|5|7|Corpus Outpost
@@ -78,6 +79,7 @@ SolNode123|V Prime (Venus)|Survival|Corpus|3|8|Corpus Ship
 SolNode125|Io (Jupiter)|Defense|Corpus|15|20|Corpus Gas City
 SolNode126|Metis (Jupiter)|Rescue|Corpus|20|22|Corpus Gas City
 SolNode128|E Gate (Venus)|Exterminate|Corpus|3|5|Corpus Outpost
+SolNode129|Orb Vallis (Venus)|Free Roam|Corpus
 SolNode130|Lares (Mercury)|Defense|Infestation|6|11|Grineer Asteroid
 SolNode131|Pallas (Ceres)|Exterminate|Grineer|12|14|Grineer Shipyard
 SolNode132|Bode (Ceres)|Spy|Grineer|12|14|Grineer Shipyard
@@ -118,6 +120,7 @@ SolNode214|Sorath (Europa)|Hijack|Corpus|19|21|Corpus Ice Planet
 SolNode215|Valac (Europa)|Spy|Corpus|18|20|Corpus Ship
 SolNode216|Valefor (Europa)|Excavation|Corpus|18|23|Corpus Ice Planet
 SolNode217|Orias (Europa)|Rescue|Corpus|20|22|Corpus Ice Planet
+SolNode220|Kokabiel (Europa)
 SolNode224|Odin (Mercury)|Interception|Grineer|6|11|Grineer Galleon
 SolNode225|Suisei (Mercury)|Spy|Grineer|8|10|Grineer Galleon
 SolNode226|Pantheon (Mercury)|Exterminate|Grineer|6|8|Grineer Galleon

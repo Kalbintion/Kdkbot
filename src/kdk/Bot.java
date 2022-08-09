@@ -20,6 +20,7 @@ import org.jibble.pircbot.*;
 import kdk.channel.*;
 import kdk.cmds.MessageParser;
 import kdk.cmds.fwd.LiveChecker;
+import kdk.cmds.hydration.HydrationChecker;
 import kdk.dataman.DBFetcher;
 import kdk.dataman.DBMan;
 import kdk.filemanager.*;
@@ -41,11 +42,12 @@ public class Bot extends PircBot {
 	private boolean _verbose = false;
 	private boolean _logChat = false;
 	private Pattern logIgnores;
-	private Log logger;
+	public Log logger;
 	public Debugger dbg;
 	private WebInterfaceWatcher webWatcher;
-	private IDiscordClient platform_discord;
+	// private IDiscordClient platform_discord;
 	private static LiveChecker fwdLiveChecker = new LiveChecker();
+	private static HydrationChecker hydrationChecker = new HydrationChecker();
 	
 	private HashMap<String, ArrayList<String>> messageDuplicatorList;
 	
@@ -56,6 +58,7 @@ public class Bot extends PircBot {
     /**
      * Initialization of the basic bot
      */
+	@SuppressWarnings("unused")
 	public Bot() throws Exception {
 		if(inst == null) { // Protection against initializing the bot more than once - singleton!
 			inst = this;
@@ -132,7 +135,11 @@ public class Bot extends PircBot {
 		
 		// Setup forwarder live checker
 		Timer fwdLiveChk = new Timer("fwdLiveChk", true);  // 5 Minutes      5 Minutes
-		fwdLiveChk.schedule(fwdLiveChecker, 5 * 60 * 1000, 5 * 60 * 1000);
+		// fwdLiveChk.schedule(fwdLiveChecker, 5 * 60 * 1000, 5 * 60 * 1000);
+		
+		// Setup Hydration checker
+		Timer hydrationChk = new Timer("hydrationChk", true); // 3 Minute	3 Minute
+		hydrationChk.schedule(hydrationChecker, 3 * 60 * 1000, 3 * 60 * 1000);
 		
 		// Setup Twitter interface
 		if (useTwitter) {
@@ -147,7 +154,7 @@ public class Bot extends PircBot {
 		}
 		
 		// Setup Discord interface
-		platform_discord = kdk.discord.Core.createClient(DBFetcher.getSetting("discord_user_pass"), true);
+		// platform_discord = kdk.discord.Core.createClient(DBFetcher.getSetting("discord_user_pass"), true);
 		
 		// Setup web related info
 		if (DBFetcher.getWebEnabled()) {
@@ -174,11 +181,11 @@ public class Bot extends PircBot {
 			
 			try {
 				if((retryAttempts - 1) % 100 == 0) {
-					status.updateStatus(Translate.getTranslate("twitter.disconnectStatus", botLanguage));
+					// status.updateStatus(Translate.getTranslate("twitter.disconnectStatus", botLanguage));
 				}
 				
 				this.reconnect();
-				platform_discord.login();
+				// platform_discord.login();
 				Iterator<Entry<String, Channel>> chanIter = CHANS.entrySet().iterator();
 				
 				while(chanIter.hasNext()) {
@@ -193,9 +200,11 @@ public class Bot extends PircBot {
 				logger.logln(String.format(Translate.getTranslate("log.failedToResolve", botLanguage), DBFetcher.getSetting("twitch_irc")));
 			} catch (IrcException e) {
 				logger.logln(Translate.getTranslate("log.ircException", botLanguage));
-			} catch (TwitterException e) {
-				e.printStackTrace();
+			//} catch (TwitterException e) {
+			//	logger.logln(Translate.getTranslate("log.twitterException", botLanguage));
 			} catch (IOException e) {
+				this.disconnect();
+			} catch(Exception e) {
 				e.printStackTrace();
 			}
 			
@@ -284,12 +293,14 @@ public class Bot extends PircBot {
 	 */
 	public void onMessage(String channel, String sender, String login, String hostname, String message) {
     	// Message Duplicator
-    	if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !sender.equalsIgnoreCase("jtv") && !sender.equalsIgnoreCase("monstercat")) {
+    	/* if(messageDuplicatorList.get(channel) != null && !sender.equalsIgnoreCase("coebot") && !sender.equalsIgnoreCase("jtv") && !sender.equalsIgnoreCase("monstercat")) {
     		Iterator<String> msgDupeIter = messageDuplicatorList.get(channel).iterator();
     		while(msgDupeIter.hasNext()) {
-        		this.sendMessage(msgDupeIter.next(), sender + ": " + message);
+    			if(!isIgnoredUser(sender)) {
+            		this.sendMessage(msgDupeIter.next(), sender + ": " + message);
+    			}
     		}
-    	}
+    	} */
     	
     	MessageInfo info = new MessageInfo(channel, sender, message, login, hostname, CHANS.get(channel).getSenderRank(sender));
     	
@@ -298,7 +309,7 @@ public class Bot extends PircBot {
     	
     	CHANS.get(channel).messageHandler(info);
 	}
-    
+	
     public Channel getChannel(String channel) {
     	dbg.writeln(this, "Requested for channel object for channel " + channel);
     		
@@ -454,6 +465,16 @@ public class Bot extends PircBot {
     			System.out.println(Bot.dbm.queryDBStr(info.getSegments(2)[1]));
     		} else if(info.message.startsWith("&&sql2 ")) {
     			System.out.println(DBFetcher.getSetting(dbm, "settings", "value", info.getSegments(2)[1]));
+    		} else if(info.message.startsWith("&&joinDiscord ")) {
+
+    		} else if(info.message.startsWith("&&fwd ")) {
+    			String parts[] = info.getSegments();
+    			Channel chan = getChannel(parts[1]);
+    			Channel targetChan = getChannel(parts[2]);
+    			chan.forwarders.add(new Forwarder(parts[2], true));
+				targetChan.forwarders.add(new Forwarder(parts[1]));
+				chan.forwarders.get(chan.forwarders.size() - 1).authorize();
+				targetChan.forwarders.get(targetChan.forwarders.size() - 1).authorize();
     		}
     	}
     }

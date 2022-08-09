@@ -33,3 +33,4 @@ web/audio-cache/*
 cfg/api/steam/*
 cfg/secrets/*
 web/tools-data/*
+Discord4J-*-shaded.jar
